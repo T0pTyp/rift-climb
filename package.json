@@ -7,6 +7,8 @@
   "scripts": {
     "start": "python3 -m http.server 8080",
     "test:level": "node tests/validate-level.mjs",
-    "test:e2e": "node tests/e2e.mjs"
+    "test:physics": "node tests/physics.mjs",
+    "test:e2e": "node tests/e2e.mjs",
+    "test:perf": "node tests/perf.mjs"
   }
 }

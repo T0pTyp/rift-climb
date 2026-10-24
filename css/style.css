@@ -35,6 +35,24 @@ html, body {
 
 #app { position: fixed; inset: 0; }
 
+/* Hintergrund + Vignette je Dimension als Compositor-Ebenen (spart Vollbild-Gradients im Canvas) */
+#app::before, #app::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  transition: opacity 0.12s linear;
+}
+#app::before {
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(47, 214, 255, 0.22) 100%),
+    linear-gradient(180deg, #04102a, #02040c);
+}
+#app::after {
+  opacity: 0;
+  background:
+    radial-gradient(ellipse 75% 60% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(255, 45, 138, 0.22) 100%),
+    linear-gradient(180deg, #2a0420, #0c0208);
+}
+body[data-dim="R"] #app::after { opacity: 1; }
+
 #game {
   position: absolute;
   inset: 0;
@@ -173,6 +191,24 @@ h2 { margin: 0; font-size: 26px; letter-spacing: 0.08em; text-shadow: 0 0 14px v
   box-shadow: 0 0 18px rgba(47, 214, 255, 0.35);
 }
 .btn.small { min-height: 44px; font-size: 15px; }
+
+/* Todesscreen: kompakt oben, Unfallstelle (Spieler bei ~78 % Höhe) bleibt sichtbar */
+.overlay.death {
+  align-items: flex-start;
+  padding-top: calc(70px + var(--safe-top));
+  background: linear-gradient(180deg, rgba(2, 2, 8, 0.82) 0%, rgba(2, 2, 8, 0.45) 55%, rgba(2, 2, 8, 0) 70%);
+  cursor: pointer;
+}
+.panel.compact { gap: 8px; padding: 16px 16px 14px; }
+.death-head { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.death-head .big { font-size: 50px; }
+.death-meta { text-align: left; }
+.death-meta h2 { font-size: 18px; }
+.reason { margin: 0; font-weight: 800; font-size: 14px; letter-spacing: 0.04em; color: var(--white); }
+.tap-hint { margin: 0; font-size: 13px; opacity: 0.75; animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: 0.35; } }
+.btn-row { display: flex; gap: 10px; }
+.btn-row .btn { min-height: 48px; font-size: 16px; }
 .btn:active, .icon-btn:active { transform: scale(0.97); filter: brightness(1.3); }
 .btn:focus-visible, .icon-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 

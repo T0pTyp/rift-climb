@@ -52,6 +52,7 @@
         <div class="help">
           <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
           <p>Jeder Tipp wechselt die Dimension. <span class="c-b">Blau</span> aktiv: blaue Hindernisse töten, rote sind Geister. <span class="c-r">Rot</span> umgekehrt. <span class="c-w">Weiß</span> tötet immer.</p>
+          <p>Tipp Richtung Wand = nur Farbwechsel, ohne Spurwechsel.</p>
           <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
         </div>
       </div>
@@ -66,15 +67,23 @@
       </div>
     </section>
 
-    <section id="death" class="overlay" hidden>
-      <div class="panel">
-        <h2 id="death-title">Rift verloren</h2>
-        <div class="big" id="death-pct">0%</div>
+    <section id="death" class="overlay death" hidden>
+      <div class="panel compact">
+        <div class="death-head">
+          <div class="big" id="death-pct">0%</div>
+          <div class="death-meta">
+            <h2 id="death-title">Rift verloren</h2>
+            <p class="sub">Best: <strong id="death-best">0%</strong></p>
+          </div>
+        </div>
         <p id="death-new" class="new-best" hidden>Neue Bestleistung!</p>
-        <p class="sub">Bestleistung: <strong id="death-best">0%</strong></p>
-        <button id="btn-death-restart" class="btn primary" type="button">Sofort neu starten</button>
-        <button id="btn-death-menu" class="btn" type="button">Menü</button>
-        <p class="desktop-only hint-key">Enter / Leertaste = Neustart</p>
+        <p id="death-reason" class="reason"></p>
+        <p class="tap-hint">Tippen = sofort neu starten</p>
+        <div class="btn-row">
+          <button id="btn-death-restart" class="btn primary" type="button">Neustart</button>
+          <button id="btn-death-menu" class="btn" type="button">Menü</button>
+        </div>
+        <p class="desktop-only hint-key">Enter / Leertaste / A / D = Neustart</p>
       </div>
     </section>
 

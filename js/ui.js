@@ -2,6 +2,18 @@ import { COLORS } from './dimensions.js';
 
 const $ = (sel) => document.querySelector(sel);
 
+// iOS/WebKit stellt den nachgelagerten "click" eines Touches erst nach dem Ausblenden des Overlays zu;
+// er würde sonst das Element darunter treffen (z. B. den Pause-Button). Buttons reagieren auf pointerup,
+// daher blockiert dieser kurze Schutz nur Geister-Klicks, keine echten Eingaben.
+const CLICK_SHIELD_MS = 400;
+let clickShieldUntil = 0;
+document.addEventListener('click', (e) => {
+  if (performance.now() < clickShieldUntil) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+
 /**
  * Zuverlässiger Tap-Handler für Overlay-Buttons (Fix für iOS Safari):
  * - reagiert auf pointerup UND click, führt die Aktion aber nur einmal aus
@@ -12,12 +24,13 @@ export function bindTap(el, action, onGesture) {
   let downInside = false;
   let lastFire = -Infinity;
   const fire = (e) => {
+    e.stopPropagation();
     if (onGesture) onGesture();
     const now = performance.now();
     if (now - lastFire < 450) return;
     lastFire = now;
     e.preventDefault();
-    e.stopPropagation();
+    if (e.type === 'pointerup') clickShieldUntil = now + CLICK_SHIELD_MS;
     action(e);
   };
   el.addEventListener('pointerdown', (e) => {
@@ -58,6 +71,7 @@ export class UI {
       deathBest: $('#death-best'),
       deathNew: $('#death-new'),
       deathTitle: $('#death-title'),
+      deathReason: $('#death-reason'),
       winSub: $('#win-sub'),
       checkpoint: $('#checkpoint-toast'),
     };
@@ -69,6 +83,8 @@ export class UI {
     bindTap($('#btn-resume'), () => h.onResume(), g);
     for (const id of ['#btn-pause-restart', '#btn-death-restart', '#btn-win-restart']) bindTap($(id), () => h.onRestart(), g);
     for (const id of ['#btn-pause-menu', '#btn-death-menu', '#btn-win-menu']) bindTap($(id), () => h.onMenu(), g);
+    // Tipp irgendwo auf den Todesscreen = sofortiger Neustart (Buttons stoppen die Weitergabe selbst)
+    bindTap(this.screens.death, () => h.onDeathTap(), g);
     this.lastHud = '';
   }
 
@@ -104,8 +120,9 @@ export class UI {
     document.body.dataset.dim = dim;
   }
 
-  showDeath({ pct, best, isNewBest }) {
+  showDeath({ pct, best, isNewBest, reason }) {
     this.el.deathPct.textContent = `${pct}%`;
+    this.el.deathReason.textContent = reason || '';
     this.el.deathBest.textContent = `${best}%`;
     this.el.deathNew.hidden = !isNewBest;
     this.show('death');

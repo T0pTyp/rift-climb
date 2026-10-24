@@ -2,6 +2,7 @@ import { Game } from './game.js';
 import { UI } from './ui.js';
 import { Input } from './input.js';
 import { AudioEngine } from './audio.js';
+import { MAX_FRAME_DT } from './config.js';
 
 const STORAGE_KEY = 'riftclimb.pulse.v1';
 
@@ -30,8 +31,16 @@ function createStorage() {
 const params = new URLSearchParams(location.search);
 const debug = {
   autoplay: params.has('autoplay'),
-  speed: Math.min(8, Math.max(0.25, parseFloat(params.get('speed')) || 1)),
+  autoplayOffset: clampNum(parseFloat(params.get('offset')), 0.06, 0.32, 0.12),
+  speed: clampNum(parseFloat(params.get('speed')), 0.25, 8, 1),
+  hitboxes: params.has('debug'),
+  manual: params.has('manual'),
+  trace: params.has('trace'),
 };
+
+function clampNum(v, min, max, fallback) {
+  return Number.isFinite(v) ? Math.min(max, Math.max(min, v)) : fallback;
+}
 
 const canvas = document.getElementById('game');
 const storage = createStorage();
@@ -53,11 +62,17 @@ const ui = new UI({
   onPause: () => game.pause(),
   onResume: () => game.resume(),
   onRestart: () => game.restart(),
+  onDeathTap: () => game.confirm(),
   onMenu: () => game.toMenu(),
 });
 
 const input = new Input(canvas, {
-  onImpulse: (dir) => game.impulse(dir),
+  onPress: (dir, ts) => {
+    // Simulation erst bis zum Eingabezeitpunkt vorspulen: der Impuls wirkt dort,
+    // wo die Figur beim Tipp tatsächlich war (keine Verzögerung um bis zu einen Frame).
+    advanceTo(eventTime(ts));
+    game.press(dir);
+  },
   onPause: () => (game.state === 'paused' ? game.resume() : game.pause()),
   onConfirm: () => {
     unlockAudio();
@@ -104,10 +119,21 @@ ui.updateMenu(storage.stats, storage.muted);
 ui.show('menu');
 
 let last = performance.now();
-function frame(now) {
-  const dt = Math.min(0.1, (now - last) / 1000) * debug.speed;
+
+function eventTime(ts) {
+  const now = performance.now();
+  return Number.isFinite(ts) && ts <= now && ts > now - 1000 ? ts : now;
+}
+
+function advanceTo(now) {
+  if (debug.manual || now <= last) return;
+  const dt = Math.min(MAX_FRAME_DT, (now - last) / 1000) * debug.speed;
   last = now;
   game.update(dt);
+}
+
+function frame(now) {
+  advanceTo(now);
   game.render();
   requestAnimationFrame(frame);
 }

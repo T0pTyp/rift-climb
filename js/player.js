@@ -1,45 +1,81 @@
-import { LANES, laneCenter } from './level.js';
-import { easeOutCubic, clamp } from './physics.js';
+import { laneCenter } from './level.js';
+import { LANES, STEER_OMEGA, TILT_PER_SPEED, TILT_MAX, TRAIL_LEN, TRAIL_SAMPLE_SEC, HIT_RADIUS } from './config.js';
+import { clamp, springStep } from './physics.js';
 import { otherDim } from './dimensions.js';
 
-export const IMPULSE_MS = 340;
-export const HIT_RADIUS = 8;
+export { IMPULSE_MS, HIT_RADIUS } from './config.js';
 
+/**
+ * Spielfigur. Seitliche Bewegung: kritisch gedämpfte Feder zur Zielspur
+ * (stetige Geschwindigkeit, kein Überschwingen, exakt unabhängig von der Schrittweite).
+ */
 export class Player {
   constructor() {
-    this.reset(1, 'B');
+    this.trailX = new Float32Array(TRAIL_LEN);
+    this.trailY = new Float32Array(TRAIL_LEN);
+    this.body = { x: 0, v: 0 };
+    this.reset(1, 'B', 0);
   }
 
-  reset(lane, dim) {
+  reset(lane, dim, worldY) {
     this.lane = lane;
     this.dim = dim;
-    this.x = laneCenter(lane);
-    this.fromX = this.x;
-    this.dashT = 1;
-    this.dashDir = 0;
-    this.trail = [];
+    this.body.x = laneCenter(lane);
+    this.body.v = 0;
+    this.lastDir = 0;
+    this.pop = 0;
+    this.wallBump = 0;
+    this.trailCount = 0;
+    this.trailHead = 0;
+    this.trailClock = 0;
+    for (let i = 0; i < TRAIL_LEN; i++) {
+      this.trailX[i] = this.body.x;
+      this.trailY[i] = worldY || 0;
+    }
   }
 
+  get x() { return this.body.x; }
+  get vx() { return this.body.v; }
+  get hitRadius() { return HIT_RADIUS; }
+
+  /** Noch unterwegs zur Zielspur (für Checkpoints). */
   get dashing() {
-    return this.dashT < 1;
+    return Math.abs(this.body.x - laneCenter(this.lane)) > 2 || Math.abs(this.body.v) > 30;
   }
 
-  /** dir: +1 = nach rechts oben, -1 = nach links oben. Jeder Impuls wechselt die Dimension. */
+  get tilt() {
+    return clamp(this.body.v * TILT_PER_SPEED, -TILT_MAX, TILT_MAX);
+  }
+
+  /**
+   * dir: +1 = nach rechts oben, -1 = nach links oben. Jeder Impuls wechselt die Dimension.
+   * Rückgabe: true, wenn die Figur an der Wand steht (nur Dimensionswechsel).
+   */
   impulse(dir) {
-    this.fromX = this.x;
-    this.lane = clamp(this.lane + dir, 0, LANES - 1);
-    this.dashT = 0;
-    this.dashDir = dir;
+    const next = clamp(this.lane + dir, 0, LANES - 1);
+    const atWall = next === this.lane;
+    this.lane = next;
+    this.lastDir = dir;
     this.dim = otherDim(this.dim);
+    this.pop = 1;
+    if (atWall) this.wallBump = dir;
+    return atWall;
   }
 
-  update(dt) {
-    if (this.dashT < 1) {
-      this.dashT = Math.min(1, this.dashT + (dt * 1000) / IMPULSE_MS);
-      const target = laneCenter(this.lane);
-      this.x = this.fromX + (target - this.fromX) * easeOutCubic(this.dashT);
-    } else {
-      this.x = laneCenter(this.lane);
+  update(dt, worldY) {
+    springStep(this.body, laneCenter(this.lane), STEER_OMEGA, dt);
+    this.pop = Math.max(0, this.pop - dt * 7);
+    if (this.wallBump) {
+      this.wallBump -= Math.sign(this.wallBump) * dt * 8;
+      if (Math.abs(this.wallBump) < 0.05) this.wallBump = 0;
+    }
+    this.trailClock += dt;
+    if (this.trailClock >= TRAIL_SAMPLE_SEC) {
+      this.trailClock -= TRAIL_SAMPLE_SEC;
+      this.trailHead = (this.trailHead + 1) % TRAIL_LEN;
+      this.trailX[this.trailHead] = this.body.x;
+      this.trailY[this.trailHead] = worldY;
+      if (this.trailCount < TRAIL_LEN) this.trailCount++;
     }
   }
 }

@@ -1,104 +1,93 @@
 // Handgebautes Level. Jede Reihe liegt exakt auf einem Beat (120 BPM).
 // Zeichen je Spur (4 Spuren, links -> rechts):
 //   .  frei   B  blaues Hindernis   R  rotes Hindernis   W  weißes Hindernis (immer tödlich)
+import { LANES, LANE_W, UNITS_PER_BEAT, START_LANE, START_DIM } from './config.js';
 
-export const BPM = 120;
-export const BEAT_SEC = 60 / BPM;
-export const UNITS_PER_BEAT = 130;
-export const CLIMB_SPEED = UNITS_PER_BEAT / BEAT_SEC;
-export const LANES = 4;
-export const LANE_W = 90;
-export const WORLD_W = LANES * LANE_W;
-export const START_LANE = 1;
-export const START_DIM = 'B';
-export const BAR_THICKNESS = 14;
-export const CHECKPOINT_EVERY_BEATS = 8;
+export {
+  BPM, BEAT_SEC, UNITS_PER_BEAT, CLIMB_SPEED, LANES, LANE_W, WORLD_W, START_LANE, START_DIM,
+  BAR_THICKNESS, CHECKPOINT_EVERY_BEATS,
+} from './config.js';
 
-const ROWS = [
-  // --- Abschnitt 1: Einführung (alle 4 Beats, eine Farbe pro Reihe)
-  [8, 'BB..'],
-  [12, '..RR'],
-  [16, 'BBB.'],
-  [20, '.RRR'],
-  [24, 'BB..'],
-  [28, '..RR'],
-  // --- Abschnitt 2: Zwei Farben (alle 2 Beats)
-  [32, 'BBRR'],
-  [34, 'RRBB'],
-  [36, 'BBBB'],
-  [38, 'RRRR'],
-  [40, 'BBRR'],
-  [42, 'RBBR'],
-  [44, 'BRRB'],
-  [46, 'RRBB'],
-  [48, 'BBBR'],
-  [50, 'RBBB'],
-  [52, 'RRRR'],
-  [54, 'BBBB'],
-  [56, 'BRBR'],
-  [58, 'RBRB'],
-  [60, 'BBRR'],
-  [62, 'RRBB'],
-  // --- Abschnitt 3: Weiß kommt dazu (alle 2 Beats, erste 1-Beat-Folgen)
-  [64, 'W.BB'],
-  [66, 'WRRW'],
-  [68, 'BBWW'],
-  [70, 'W..W'],
-  [72, 'RRRW'],
-  [74, 'WBBB'],
-  [76, 'WW.R'],
-  [77, 'WWB.'],
-  [78, 'WRRR'],
-  [80, 'BBWW'],
-  [82, 'RRBW'],
-  [84, 'WBRR'],
-  [85, 'WRBB'],
-  [86, 'W.WW'],
-  [88, 'RRWW'],
-  [90, 'BRWW'],
-  [92, 'WRBW'],
-  [93, 'BRBW'],
-  [94, 'WWBR'],
-  // --- Abschnitt 4: Finale (jeder Beat)
-  [96, 'BBBB'],
-  [97, 'RRRR'],
-  [98, 'BBBB'],
-  [99, 'RRRR'],
-  [100, 'WBBW'],
-  [101, 'WRRW'],
-  [102, 'BRWW'],
-  [103, 'RB.W'],
-  [104, 'WW.R'],
-  [105, 'WWBR'],
-  [106, 'W.RR'],
-  [107, 'WBRB'],
-  [108, 'BBRW'],
-  [109, 'RBRW'],
-  [110, 'BWRR'],
-  [111, 'RWBB'],
-  [112, 'WRRR'],
-  [113, 'WBBB'],
-  [114, 'WRWB'],
-  [115, 'WBWR'],
-  [116, 'RRRR'],
-  [117, 'BBBB'],
-  [118, 'RRWW'],
-  [119, 'BBWW'],
-  [120, 'BRWW'],
-  [121, 'W.RR'],
-  [122, 'WRBW'],
-  [123, 'BRBW'],
-  [124, 'BBBB'],
-  [125, 'RRRR'],
-  [126, 'BBBB'],
-  [127, 'RRRR'],
+// labelBeat: Position der Abschnittsmarke im Level (zwischen zwei Reihen, nie auf einem Hindernis)
+export const SECTIONS = [
+  { id: 'A', name: 'Einstieg', from: 0, labelBeat: 0 },
+  { id: 'B', name: 'Herausforderung', from: 30, labelBeat: 28 },
+  { id: 'C', name: 'Finale', from: 58, labelBeat: 57.6 },
 ];
 
-export const FINISH_BEAT = 132;
+const ROWS = [
+  // --- A: Einstieg – alle 4 Beats (2 s), jede Reihe lehrt genau eine Regel
+  [6, '.WWW'], //  Tipp rechts -> schräg links hoch
+  [10, 'W.WW'], // Tipp links -> schräg rechts hoch
+  [14, 'RRRR'], // Geister (inaktive Farbe) sind harmlos -> nicht tippen
+  [18, 'BBBB'], // alles aktiv -> tippen = Dimension wechseln
+  [22, 'W..W'], // Weiß tötet immer, zurück in die Mitte
+  [26, 'RBBR'], // Richtung und Dimension kombinieren
+  // --- B: Herausforderung – alle 2 Beats, rhythmische Doppel-Reihen im 1-Beat-Abstand
+  [30, 'BBRR'],
+  [32, 'RRBB'],
+  [34, 'W..W'],
+  [36, 'BRRB'],
+  [37, 'RBBR'],
+  [40, 'WBRW'],
+  [42, 'BRRW'],
+  [44, 'BBWW'],
+  [46, 'WWRR'],
+  [48, 'RBWW'],
+  [49, 'BRWW'],
+  [52, 'W.BR'],
+  [54, 'RB.W'],
+  [56, 'RRRR'],
+  [57, 'BBBB'],
+  // --- C: Finale – jeder Beat; Wand-Tipps, Farbwechsel-Ketten, Kreuzungen
+  [59, '.WWW'],
+  [60, 'BWWW'],
+  [61, 'RWWW'],
+  [62, 'BWWW'],
+  [63, 'RWWW'],
+  [64, 'BBWW'],
+  [65, 'WRBW'],
+  [66, 'WWBR'],
+  [67, 'WWRR'],
+  [68, 'WWWB'],
+  [69, 'WWWR'],
+  [70, 'RWBB'],
+  [71, 'BRRW'],
+  [72, 'BBRW'],
+  [73, 'RBWW'],
+  [74, 'WBRB'],
+  [75, 'WRRB'],
+  [76, 'WBBB'],
+  [77, 'RRRR'],
+  [78, 'BBBB'],
+  [79, 'RRRR'],
+  [80, 'W..W'],
+  [81, 'WBRW'],
+  [82, 'RRBB'],
+];
+
+/** Kurze Hinweise im Abschnitt A (dimensionsunabhängig formuliert). */
+export const HINTS = [
+  [3, 'TIPP RECHTS = ↖'],
+  [8, 'TIPP LINKS = ↗'],
+  [12, 'GESTRICHELT = HARMLOS'],
+  [16, 'JEDER TIPP WECHSELT DIE FARBE'],
+  [20, 'WEISS TÖTET IMMER'],
+  [24, 'RICHTUNG + FARBE WÄHLEN'],
+  [58.35, 'TIPP ZUR WAND = NUR FARBWECHSEL'],
+];
+
+export const FINISH_BEAT = 84;
 export const LEVEL_LENGTH = FINISH_BEAT * UNITS_PER_BEAT;
 
 export function laneCenter(lane) {
   return lane * LANE_W + LANE_W / 2;
+}
+
+export function sectionAt(beat) {
+  let s = SECTIONS[0];
+  for (const sec of SECTIONS) if (beat >= sec.from) s = sec;
+  return s;
 }
 
 /** Wandelt die Reihen in Hindernis-Rechtecke um (benachbarte gleiche Farben verschmelzen). */
@@ -162,7 +151,7 @@ export function survivesRow(pattern, lane, dim) {
 
 /**
  * Prüft das Level auf Lösbarkeit. Konservatives Modell: höchstens ein Tipp
- * pro Beat zwischen zwei Reihen (ein Impuls dauert 340 ms, ein Beat 500 ms).
+ * pro Beat zwischen zwei Reihen (ein Impuls ist nach ~90 ms spursicher, ein Beat dauert 500 ms).
  * Liefert pro Reihe die "lebendigen" Zustände (von dort ist das Ziel erreichbar)
  * und eine Musterlösung mit minimaler Tippanzahl.
  */
@@ -217,6 +206,9 @@ export function validateLevel(rows = ROWS) {
           }
         }
       }
+    }
+    for (let k = 0; k < rows.length; k++) {
+      if (alive[k].size === 0) errors.push(`Reihe ${k}: kein Zustand führt zum Ziel`);
     }
   }
 

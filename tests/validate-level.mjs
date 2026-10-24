@@ -1,8 +1,10 @@
-import { validateLevel, getRows, FINISH_BEAT } from '../js/level.js';
+import { validateLevel, getRows, FINISH_BEAT, BEAT_SEC } from '../js/level.js';
 
 const rows = getRows();
 const res = validateLevel(rows);
 let ok = res.ok;
+const duration = FINISH_BEAT * BEAT_SEC;
+if (duration < 30 || duration > 45) { ok = false; console.error(`Leveldauer ${duration} s außerhalb 30–45 s`); }
 const beats = rows.map((r) => r[0]);
 if (beats.some((b, i) => i > 0 && b <= beats[i - 1])) { ok = false; console.error('Reihen nicht aufsteigend'); }
 if (beats[beats.length - 1] >= FINISH_BEAT) { ok = false; console.error('Reihe hinter der Ziellinie'); }

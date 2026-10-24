@@ -1,5 +1,10 @@
 // Prozedurale Musik + Effekte über WebAudio (keine Samples, keine geschützte Musik).
-import { BEAT_SEC } from './level.js';
+import { BEAT_SEC } from './config.js';
+import { FINISH_BEAT, SECTIONS } from './level.js';
+
+const B_FROM = SECTIONS[1].from;
+const C_FROM = SECTIONS[2].from;
+const B_MID = Math.round((B_FROM + C_FROM) / 2 / 4) * 4;
 
 const STEP = BEAT_SEC / 4; // 16tel
 const LOOKAHEAD = 0.12;
@@ -88,9 +93,9 @@ export class AudioEngine {
     const sub = step % 4;
     const bar = Math.floor(beat / 4);
     const chord = bar % 4;
-    const intensity = beat < 32 ? 0 : beat < 64 ? 1 : beat < 96 ? 2 : 3;
-    if (beat >= 132) {
-      if (sub === 0 && beat < 136) this.kick(t);
+    const intensity = beat < B_FROM ? 0 : beat < B_MID ? 1 : beat < C_FROM ? 2 : 3;
+    if (beat >= FINISH_BEAT) {
+      if (sub === 0 && beat < FINISH_BEAT + 4) this.kick(t);
       return;
     }
 
@@ -194,32 +199,35 @@ export class AudioEngine {
     }
   }
 
-  sfx(name, dim) {
+  sfx(name, dim, atWall) {
     if (!this.ready || this.muted) return;
     const t = this.ctx.currentTime;
     if (name === 'switch') {
       const c = this.ctx;
       const o = c.createOscillator();
       o.type = 'triangle';
-      const base = dim === 'B' ? 660 : 495;
+      // Blau höher, Rot tiefer: die aktive Dimension ist auch hörbar
+      const base = dim === 'B' ? 740 : 494;
       o.frequency.setValueAtTime(base, t);
-      o.frequency.exponentialRampToValueAtTime(base * 1.5, t + 0.08);
+      o.frequency.exponentialRampToValueAtTime(base * 1.5, t + 0.06);
       const g = c.createGain();
-      this.env(g, t, 0.16, 0.12);
+      this.env(g, t, 0.15, 0.09);
       o.connect(g).connect(this.master);
       o.start(t);
-      o.stop(t + 0.14);
+      o.stop(t + 0.11);
+      this.noiseHit(t, 0.06, 0.05, 'highpass', 3500);
+      if (atWall) this.noiseHit(t, 0.12, 0.06, 'bandpass', 600);
     } else if (name === 'death') {
-      this.noiseHit(t, 0.5, 0.45, 'lowpass', 1200);
+      this.noiseHit(t, 0.45, 0.25, 'lowpass', 1400);
       const o = this.ctx.createOscillator();
-      o.type = 'sawtooth';
-      o.frequency.setValueAtTime(300, t);
-      o.frequency.exponentialRampToValueAtTime(40, t + 0.4);
+      o.type = 'square';
+      o.frequency.setValueAtTime(220, t);
+      o.frequency.exponentialRampToValueAtTime(55, t + 0.22);
       const g = this.ctx.createGain();
-      this.env(g, t, 0.25, 0.4);
+      this.env(g, t, 0.18, 0.24);
       o.connect(g).connect(this.master);
       o.start(t);
-      o.stop(t + 0.45);
+      o.stop(t + 0.26);
     } else if (name === 'checkpoint') {
       [880, 1318.5].forEach((f, i) => this.lead(t + i * 0.07, f, 0.06));
     } else if (name === 'win') {
