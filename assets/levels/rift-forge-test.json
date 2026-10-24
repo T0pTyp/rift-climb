@@ -1,0 +1,198 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "rift-forge-test",
+  "name": "RIFT FORGE TEST",
+  "description": "Kurzes Beispiel aus LEVEL FORGE: freie Breiten, eine hohe Barriere und zwei Rift-Siegel mit eigener Öffnungsdauer.",
+  "bpm": 120,
+  "height": 4290,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 4160
+  },
+  "objects": [
+    {
+      "id": "hint-intro",
+      "type": "hint",
+      "y": 130,
+      "text": "RIFT FORGE TEST"
+    },
+    {
+      "id": "wall-a",
+      "type": "obstacle",
+      "x": 3,
+      "y": 520,
+      "w": 170,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "blue-a",
+      "type": "obstacle",
+      "x": 200,
+      "y": 910,
+      "w": 150,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "red-a",
+      "type": "obstacle",
+      "x": 150,
+      "y": 1300,
+      "w": 210,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "hint-seal",
+      "type": "hint",
+      "y": 1560,
+      "text": "PULSE ÖFFNET SIEGEL"
+    },
+    {
+      "id": "seal-a",
+      "type": "seal",
+      "x": 93,
+      "y": 1690,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "wall-b",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1690,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-c",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1690,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "barrier-a",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2080,
+      "w": 84,
+      "h": 130,
+      "dimension": "both"
+    },
+    {
+      "id": "blue-b",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2080,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "blue-c",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2470,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "blue-d",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2470,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "seal-b",
+      "type": "seal",
+      "x": 3,
+      "y": 2860,
+      "w": 354,
+      "h": 14,
+      "openSec": 0.7
+    },
+    {
+      "id": "red-b",
+      "type": "obstacle",
+      "x": 100,
+      "y": 3250,
+      "w": 70,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "blue-e",
+      "type": "obstacle",
+      "x": 190,
+      "y": 3250,
+      "w": 167,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "wall-d",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3640,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "blue-f",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3640,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 1,
+        "dir": 1
+      },
+      {
+        "t": 4.3,
+        "dir": -1
+      },
+      {
+        "t": 6.25,
+        "dir": 1
+      },
+      {
+        "t": 7.3,
+        "dir": 1
+      },
+      {
+        "t": 9,
+        "dir": -1
+      },
+      {
+        "t": 10.75,
+        "dir": -1
+      },
+      {
+        "t": 13.3,
+        "dir": 1
+      }
+    ],
+    "recordedAt": "LEVEL FORGE Playtest-Aufzeichnung (Beispiel)"
+  }
+}

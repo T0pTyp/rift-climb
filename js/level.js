@@ -1,139 +1,14 @@
-// Handgebautes Level. Jede Reihe liegt exakt auf einem Beat (120 BPM).
+// Spur-Solver: beweist die Lösbarkeit eines Levels im Spur- und Reihenmodell.
+// Eingabe: Reihen [schritt, "B.RW"] (ein Schritt = 0,5 s = 130 u, siehe laneRows in level-data.js).
 // Zeichen je Spur (4 Spuren, links -> rechts):
 //   .  frei   B  blaues Hindernis   R  rotes Hindernis   W  weißes Hindernis (immer tödlich)
 //   S  Rift-Siegel (gold, in beiden Dimensionen tödlich, solange es nicht von einem Rift Pulse geöffnet ist)
 import {
-  LANES, LANE_W, UNITS_PER_BEAT, START_LANE, START_DIM, BAR_INSET_X, PULSE_RADIUS, SEAL_PLAN_DY,
+  LANES, LANE_W, START_LANE, START_DIM, BAR_INSET_X, PULSE_RADIUS, SEAL_PLAN_DY,
 } from './config.js';
+import { laneCenter } from './level-data.js';
 
-export {
-  BPM, BEAT_SEC, UNITS_PER_BEAT, CLIMB_SPEED, LANES, LANE_W, WORLD_W, START_LANE, START_DIM,
-  BAR_THICKNESS, CHECKPOINT_EVERY_BEATS,
-} from './config.js';
-
-// labelBeat: Position der Abschnittsmarke im Level (zwischen zwei Reihen, nie auf einem Hindernis)
-// Abschnittsgrenzen nach Fortschritt: A 0–25 %, B 25–60 %, C 60–85 %, D 85–100 %.
-export const SECTIONS = [
-  { id: 'A', name: 'Einführung', from: 0, labelBeat: 0 },
-  { id: 'B', name: 'Kombination', from: 22, labelBeat: 22 },
-  { id: 'C', name: 'Präzision', from: 53, labelBeat: 52.6 },
-  { id: 'D', name: 'Abschluss', from: 75, labelBeat: 75 },
-];
-
-const ROWS = [
-  // --- A: Einführung – alle 3 Beats, jede Reihe lehrt genau eine Regel, zum Schluss ein einzelnes Siegel
-  [4, '.WWW'], //  Tipp rechts -> schräg links hoch
-  [7, 'W.WW'], //  Tipp links -> schräg rechts hoch
-  [10, 'RRRR'], // Geister (inaktive Farbe) sind harmlos -> nicht tippen
-  [13, 'BBBB'], // alles aktiv -> tippen = Dimension wechseln
-  [16, 'W..W'], // Weiß tötet immer, zurück in die Mitte
-  [20, 'SSSS'], // Rift-Siegel über die ganze Breite: kurz davor tippen, die Welle öffnet es
-  // --- B: Kombination – Farbregeln aus M2 plus Siegel, deren Öffnungs-Tipp die Dimension mitwechselt
-  [24, 'RBBR'],
-  [26, 'BBRR'],
-  [28, 'RRBB'],
-  [30, 'W..W'],
-  [32, 'BRRB'],
-  [33, 'RBBR'],
-  [35, 'WSSW'], // Siegel in der Mitte ...
-  [36, 'BBRR'], // ... und direkt danach zählt die neue Dimension
-  [38, 'RSSB'],
-  [40, 'BRRW'],
-  [42, 'BBWW'],
-  [44, 'SSRR'],
-  [45, 'RBWW'],
-  [46, 'WWRR'],
-  [48, 'RBWW'],
-  [49, 'BRWW'],
-  [51, 'BSSR'],
-  [52, 'RRBB'],
-  // --- C: Präzision – jeder Beat; Wand-Tipps öffnen Siegel, Diagonale durch Siegel, Richtungswechsel
-  [54, '.WWW'],
-  [55, 'SWWW'],
-  [56, 'RWWW'],
-  [57, 'SWWW'],
-  [58, 'BWWW'],
-  [59, 'BBWW'],
-  [60, 'WSBW'],
-  [61, 'WWSR'],
-  [62, 'WWWS'],
-  [63, 'WWRB'],
-  [64, 'WBRW'],
-  [65, 'BSWW'],
-  [66, 'RBWW'],
-  [67, 'WBRW'],
-  [68, 'WRSW'],
-  [69, 'WWRB'],
-  [70, 'WWRR'],
-  [71, 'RBSW'],
-  [72, 'BRRW'],
-  [73, 'BBRW'],
-  [74, 'RBWW'],
-  // --- D: Abschluss – nur Bekanntes, dicht und rhythmisch
-  [76, 'RRRR'],
-  [77, 'SSSS'],
-  [78, 'BBBB'],
-  [79, 'W..W'],
-  [80, 'WSSW'],
-  [81, 'RBBR'],
-  [82, 'BRRB'],
-  [83, 'SSSS'],
-  [84, 'RRBB'],
-  [85, 'W..W'],
-];
-
-/** Kurze Hinweise im Abschnitt A (dimensionsunabhängig formuliert). */
-export const HINTS = [
-  [2, 'TIPP RECHTS = ↖'],
-  [5.5, 'TIPP LINKS = ↗'],
-  [8.5, 'GESTRICHELT = HARMLOS'],
-  [11.5, 'JEDER TIPP WECHSELT DIE FARBE'],
-  [14.5, 'WEISS TÖTET IMMER'],
-  [18, 'JEDER TIPP SENDET EINEN PULSE'],
-  [18.7, 'PULSE ÖFFNET GOLD-SIEGEL'],
-  [53.4, 'TIPP ZUR WAND = NUR FARBWECHSEL'],
-];
-
-export const FINISH_BEAT = 88;
-export const LEVEL_LENGTH = FINISH_BEAT * UNITS_PER_BEAT;
-
-export function laneCenter(lane) {
-  return lane * LANE_W + LANE_W / 2;
-}
-
-export function sectionAt(beat) {
-  let s = SECTIONS[0];
-  for (const sec of SECTIONS) if (beat >= sec.from) s = sec;
-  return s;
-}
-
-/** Wandelt die Reihen in Hindernis-Rechtecke um (benachbarte gleiche Farben verschmelzen). */
-export function buildObstacles(rows = ROWS) {
-  const obstacles = [];
-  rows.forEach(([beat, pattern], rowIndex) => {
-    let i = 0;
-    while (i < LANES) {
-      const c = pattern[i];
-      if (c === '.') { i++; continue; }
-      let j = i;
-      while (j + 1 < LANES && pattern[j + 1] === c) j++;
-      obstacles.push({
-        rowIndex,
-        beat,
-        color: c,
-        y: beat * UNITS_PER_BEAT,
-        x0: i * LANE_W,
-        x1: (j + 1) * LANE_W,
-      });
-      i = j + 1;
-    }
-  });
-  return obstacles;
-}
-
-export function getRows() {
-  return ROWS;
-}
+export { laneCenter };
 
 function stateKey(lane, dim) {
   return lane + dim;
@@ -192,10 +67,10 @@ export function survivesRow(pattern, lane, dim, origin = null) {
  * Liefert pro Reihe die "lebendigen" Zustände (von dort ist das Ziel erreichbar)
  * und eine Musterlösung mit minimaler Tippanzahl.
  */
-export function validateLevel(rows = ROWS) {
+export function validateLevel(rows, start = { lane: START_LANE, dim: START_DIM }) {
   const errors = [];
   const layers = [];
-  let current = new Map([[stateKey(START_LANE, START_DIM), { lane: START_LANE, dim: START_DIM, parentKey: null, taps: [], cost: 0 }]]);
+  let current = new Map([[stateKey(start.lane, start.dim), { lane: start.lane, dim: start.dim, parentKey: null, taps: [], cost: 0 }]]);
   let prevBeat = 0;
   for (let k = 0; k < rows.length; k++) {
     const [beat, pattern] = rows[k];

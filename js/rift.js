@@ -1,10 +1,9 @@
 // Rift Pulse und Rift-Siegel: Impulserzeugung und Siegel-Zustände.
 // Läuft im festen Simulationsschritt des Spiels (Spielzeit t), dadurch unabhängig von der Bildrate.
+// Siegel: { x0, x1 (sichtbare Kanten), y (Mitte), hh (sichtbare Halbhöhe), openSec } aus buildLevelRuntime.
 import {
-  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, PULSE_POOL, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS,
+  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, PULSE_POOL, SEAL_OPEN_SEC,
 } from './config.js';
-
-const SEAL_HALF_VIS = BAR_THICKNESS / 2;
 
 /** Radius einer Welle nach `age` Sekunden (easeOutQuad); Logik und Darstellung nutzen dieselbe Kurve. */
 export function pulseRadius(age) {
@@ -15,8 +14,8 @@ export function pulseRadius(age) {
 
 /** Abstand eines Punkts zum sichtbaren Rechteck eines Siegels. */
 export function distToSeal(x, y, s) {
-  const dx = Math.max(s.x0 + BAR_INSET_X - x, 0, x - (s.x1 - BAR_INSET_X));
-  const dy = Math.max(s.y - SEAL_HALF_VIS - y, 0, y - (s.y + SEAL_HALF_VIS));
+  const dx = Math.max(s.x0 - x, 0, x - s.x1);
+  const dy = Math.max(s.y - s.hh - y, 0, y - (s.y + s.hh));
   return Math.hypot(dx, dy);
 }
 
@@ -24,6 +23,8 @@ export class RiftField {
   /** seals: Hindernisse mit color 'S', aufsteigend nach y sortiert. */
   constructor(seals) {
     this.seals = seals;
+    this.maxHh = 0;
+    for (const s of seals) this.maxHh = Math.max(this.maxHh, s.hh);
     this.pulses = [];
     for (let i = 0; i < PULSE_POOL; i++) this.pulses.push({ live: false, growing: false, x: 0, y: 0, t0: 0, id: 0, color: '#fff' });
     this.nextId = 1;
@@ -68,12 +69,12 @@ export class RiftField {
       if (p.growing) {
         const r = pulseRadius(age);
         for (const s of this.seals) {
-          if (s.y + SEAL_HALF_VIS < p.y - PULSE_RADIUS) continue;
-          if (s.y - SEAL_HALF_VIS > p.y + PULSE_RADIUS) break;
+          if (s.y + s.hh < p.y - PULSE_RADIUS) continue;
+          if (s.y - this.maxHh > p.y + PULSE_RADIUS) break;
           if (s.pulseId === p.id || distToSeal(p.x, p.y, s) > r) continue;
           const wasOpen = this.isOpen(s, t);
           s.pulseId = p.id;
-          s.openUntil = t + SEAL_OPEN_SEC;
+          s.openUntil = t + (s.openSec || SEAL_OPEN_SEC);
           if (!wasOpen) s.openedAt = t;
           s.timesOpened++;
           if (onOpen) onOpen(s, wasOpen);
