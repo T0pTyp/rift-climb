@@ -41,7 +41,14 @@
 
     <section id="menu" class="overlay">
       <div class="panel">
-        <h1 class="logo">RIFT CLIMB<span>PULSE</span></h1>
+        <div class="brand-row">
+          <div class="riftling-badge" aria-hidden="true">
+            <img class="rb-body rb-b" src="assets/riftling/body-blue.svg" alt="">
+            <img class="rb-body rb-r" src="assets/riftling/body-red.svg" alt="">
+            <img class="rb-eye" src="assets/riftling/eye.svg" alt="">
+          </div>
+          <h1 class="logo">RIFT CLIMB<span>PULSE</span></h1>
+        </div>
         <p class="tagline">Steig im Takt. Wechsle die Dimension.</p>
         <button id="btn-start" class="btn primary" type="button">Start</button>
         <button id="btn-practice" class="btn" type="button">Übungsmodus</button>
@@ -54,7 +61,8 @@
             <span class="sr-only">Level</span>
             <select id="level-select" aria-label="Level wählen"></select>
           </label>
-          <button id="btn-sound" class="btn small" type="button" aria-pressed="true">Sound: AN</button>
+          <button id="btn-sound" class="btn small stack" type="button" aria-pressed="true"><small>Sound</small>AN</button>
+          <button id="btn-gfx" class="btn small stack" type="button" title="Grafikqualität: Hoch / Mittel / Niedrig – nur Darstellung, Gameplay identisch"><small>Grafik</small>HOCH</button>
         </div>
         <div class="help">
           <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
@@ -63,7 +71,7 @@
           <p>Jeder Tipp sendet einen <b>Rift Pulse</b>: er öffnet nahe <span class="c-s">Gold-Siegel</span> kurz. Leuchtet ein Siegel, ist es in Reichweite.</p>
           <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
         </div>
-        <a id="forge-link" class="forge-link desktop-only" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
+        <a id="forge-link" class="forge-link" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
       </div>
     </section>
 

@@ -70,6 +70,7 @@ export class UI {
       menuBest: $('#menu-best'),
       menuAttempts: $('#menu-attempts'),
       soundBtn: $('#btn-sound'),
+      gfxBtn: $('#btn-gfx'),
       deathPct: $('#death-pct'),
       deathBest: $('#death-best'),
       deathNew: $('#death-new'),
@@ -82,6 +83,7 @@ export class UI {
     bindTap($('#btn-start'), () => h.onStart('normal'), g);
     bindTap($('#btn-practice'), () => h.onStart('practice'), g);
     bindTap(this.el.soundBtn, () => h.onSoundToggle(), g);
+    bindTap(this.el.gfxBtn, () => h.onGfxToggle(), g);
     bindTap($('#btn-pause'), () => h.onPause(), g);
     bindTap($('#btn-resume'), () => h.onResume(), g);
     for (const id of ['#btn-pause-restart', '#btn-death-restart', '#btn-win-restart']) bindTap($(id), () => h.onRestart(), g);
@@ -129,8 +131,12 @@ export class UI {
   }
 
   updateSound(muted) {
-    this.el.soundBtn.textContent = muted ? 'Sound: AUS' : 'Sound: AN';
+    this.el.soundBtn.innerHTML = `<small>Sound</small>${muted ? 'AUS' : 'AN'}`;
     this.el.soundBtn.setAttribute('aria-pressed', String(!muted));
+  }
+
+  updateGfx(label) {
+    this.el.gfxBtn.innerHTML = `<small>Grafik</small>${label}`;
   }
 
   updateHud(pct, dim, attempts, mode) {
