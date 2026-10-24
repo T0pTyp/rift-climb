@@ -28,6 +28,7 @@
       <div class="hud-row">
         <span id="hud-dim" class="chip" data-dim="B">BLAU</span>
         <span id="hud-mode" class="chip practice" hidden>PRACTICE</span>
+        <span id="hud-playtest" class="chip playtest" hidden>PLAYTEST</span>
         <span id="hud-attempts" class="chip muted">Versuch 1</span>
       </div>
       <div id="checkpoint-toast" class="toast"></div>
@@ -48,7 +49,13 @@
           <div><span class="label">Bestleistung</span><strong id="menu-best">0%</strong></div>
           <div><span class="label">Versuche</span><strong id="menu-attempts">0</strong></div>
         </div>
-        <button id="btn-sound" class="btn small" type="button" aria-pressed="true">Sound: AN</button>
+        <div class="menu-row">
+          <label class="level-pick" id="level-pick" hidden>
+            <span class="sr-only">Level</span>
+            <select id="level-select" aria-label="Level wählen"></select>
+          </label>
+          <button id="btn-sound" class="btn small" type="button" aria-pressed="true">Sound: AN</button>
+        </div>
         <div class="help">
           <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
           <p>Jeder Tipp wechselt die Dimension. <span class="c-b">Blau</span> aktiv: blaue Hindernisse töten, rote sind Geister. <span class="c-r">Rot</span> umgekehrt. <span class="c-w">Weiß</span> tötet immer.</p>
@@ -56,6 +63,7 @@
           <p>Jeder Tipp sendet einen <b>Rift Pulse</b>: er öffnet nahe <span class="c-s">Gold-Siegel</span> kurz. Leuchtet ein Siegel, ist es in Reichweite.</p>
           <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
         </div>
+        <a id="forge-link" class="forge-link desktop-only" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
       </div>
     </section>
 

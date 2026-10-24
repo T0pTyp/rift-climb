@@ -1,12 +1,7 @@
 // Prozedurale Musik + Effekte über WebAudio (keine Samples, keine geschützte Musik).
+// Tempo (BPM) und Intensitätsstufen kommen aus dem geladenen Level (setLevel).
 import { BEAT_SEC } from './config.js';
-import { FINISH_BEAT, SECTIONS } from './level.js';
 
-const B_FROM = SECTIONS[1].from;
-const C_FROM = SECTIONS[2].from;
-const B_MID = Math.round((B_FROM + C_FROM) / 2 / 4) * 4;
-
-const STEP = BEAT_SEC / 4; // 16tel
 const LOOKAHEAD = 0.12;
 const ROOTS = [110, 87.31, 130.81, 98]; // Am, F, C, G (pro Takt)
 const CHORDS = [
@@ -22,6 +17,19 @@ export class AudioEngine {
     this.muted = false;
     this.nextStep = 0;
     this.noise = null;
+    this.setLevel(null);
+  }
+
+  /** Tempo und Intensitätsstufen (Abschnitte B/C) aus den Laufzeitdaten eines Levels; null = 120 BPM, 88 Beats. */
+  setLevel(rt) {
+    this.beatSec = rt ? rt.beatSec : BEAT_SEC;
+    this.step = this.beatSec / 4; // 16tel
+    const upb = rt ? rt.unitsPerBeat : 130;
+    const secs = rt ? rt.sections : null;
+    this.finishBeat = rt ? Math.ceil(rt.finishBeat - 1e-6) : 88;
+    this.bFrom = secs && secs[1] ? Math.round(secs[1].y / upb) : 22;
+    this.cFrom = secs && secs[2] ? Math.round(secs[2].y / upb) : 53;
+    this.bMid = Math.round((this.bFrom + this.cFrom) / 2 / 4) * 4;
   }
 
   /** Muss synchron in einem Nutzer-Gesten-Handler aufgerufen werden (iOS Safari). */
@@ -70,7 +78,7 @@ export class AudioEngine {
   }
 
   seek(gameTime) {
-    this.nextStep = Math.max(0, Math.ceil(gameTime / STEP - 1e-6));
+    this.nextStep = Math.max(0, Math.ceil(gameTime / this.step - 1e-6));
   }
 
   /** Plant alle 16tel, die im Lookahead-Fenster liegen, relativ zur Spielzeit. */
@@ -80,8 +88,8 @@ export class AudioEngine {
       return;
     }
     const now = this.ctx.currentTime;
-    while (this.nextStep * STEP < gameTime + LOOKAHEAD) {
-      const stepTime = this.nextStep * STEP;
+    while (this.nextStep * this.step < gameTime + LOOKAHEAD) {
+      const stepTime = this.nextStep * this.step;
       const when = now + Math.max(0, stepTime - gameTime);
       this.playStep(this.nextStep, when);
       this.nextStep++;
@@ -93,9 +101,9 @@ export class AudioEngine {
     const sub = step % 4;
     const bar = Math.floor(beat / 4);
     const chord = bar % 4;
-    const intensity = beat < B_FROM ? 0 : beat < B_MID ? 1 : beat < C_FROM ? 2 : 3;
-    if (beat >= FINISH_BEAT) {
-      if (sub === 0 && beat < FINISH_BEAT + 4) this.kick(t);
+    const intensity = beat < this.bFrom ? 0 : beat < this.bMid ? 1 : beat < this.cFrom ? 2 : 3;
+    if (beat >= this.finishBeat) {
+      if (sub === 0 && beat < this.finishBeat + 4) this.kick(t);
       return;
     }
 
@@ -192,10 +200,10 @@ export class AudioEngine {
       const g = c.createGain();
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(0.05, t + 0.3);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + BEAT_SEC * 4);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + this.beatSec * 4);
       o.connect(g).connect(this.master);
       o.start(t);
-      o.stop(t + BEAT_SEC * 4 + 0.05);
+      o.stop(t + this.beatSec * 4 + 0.05);
     }
   }
 

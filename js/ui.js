@@ -64,6 +64,9 @@ export class UI {
       dim: $('#hud-dim'),
       attempts: $('#hud-attempts'),
       mode: $('#hud-mode'),
+      playtest: $('#hud-playtest'),
+      levelPick: $('#level-pick'),
+      levelSelect: $('#level-select'),
       menuBest: $('#menu-best'),
       menuAttempts: $('#menu-attempts'),
       soundBtn: $('#btn-sound'),
@@ -85,7 +88,30 @@ export class UI {
     for (const id of ['#btn-pause-menu', '#btn-death-menu', '#btn-win-menu']) bindTap($(id), () => h.onMenu(), g);
     // Tipp irgendwo auf den Todesscreen = sofortiger Neustart (Buttons stoppen die Weitergabe selbst)
     bindTap(this.screens.death, () => h.onDeathTap(), g);
+    this.el.levelSelect.addEventListener('change', () => h.onLevelChange(this.el.levelSelect.value));
     this.lastHud = '';
+  }
+
+  /** Levelauswahl im Menü (nur bei mehreren Leveln); im Playtest führen „Menü“-Buttons zurück in den Editor. */
+  setLevels(levels, current, playtest) {
+    const sel = this.el.levelSelect;
+    sel.textContent = '';
+    if (levels && levels.length > 1) {
+      for (const l of levels) {
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.textContent = l.name;
+        sel.appendChild(opt);
+      }
+      sel.value = current.id;
+      this.el.levelPick.hidden = false;
+    }
+    if (playtest) {
+      document.body.dataset.playtest = '1';
+      this.el.playtest.hidden = false;
+      this.el.playtest.textContent = `PLAYTEST · ${current.name}`.slice(0, 32);
+      for (const id of ['#btn-pause-menu', '#btn-death-menu', '#btn-win-menu']) $(id).textContent = 'Editor';
+    }
   }
 
   show(name) {
