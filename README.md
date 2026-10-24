@@ -116,10 +116,29 @@ Zustände, die Musterlösung und die Siegel-Durchflüge. Zusätzlich spielt der 
 
 Musik und Effekte werden prozedural per WebAudio erzeugt; die Intensität steigt mit den Abschnitten A–D.
 
-## LEVEL FORGE – visueller Level-Editor (M4)
+## Grafik und Riftling (M5)
+
+- **Riftling:** die Spielfigur ist ein Tropfenwesen aus echten SVG-Ebenen (`assets/riftling/body-blue.svg`,
+  `body-red.svg`, `eye.svg`), die einmal je Zoomstufe gerastert und dann als Bild gezeichnet werden (`js/art/riftling.js`).
+  Die Hitbox bleibt der Kreis aus `js/config.js` – Optik und Kollision sind getrennt.
+- **Animationen** (`js/art/riftling-anim.js`): Idle-Atmen, Flug links/rechts (Neigung, Flossen), Dimensionswechsel
+  (Weiß-Blitz, Ebenen-Überblendung), Pulse-Rückstoß, Tod (Zerplatzen in Splitter, Ausblenden) und Respawn (Einblenden).
+  Alle Animationen laufen auf der Spielzeit, nicht auf der Bildrate.
+- **Effekte** (`js/art/effects.js`, `js/particles.js`): Schweif-Band, Funken, Splitter, Pulse-Ringe, Siegel-Öffnung;
+  Hindernisse als Neonröhren mit Kern und Glow (`js/shapes.js`, gemeinsam mit dem Editor).
+- **Hintergrund** (`js/art/backdrop.js`): mehrlagige Parallax-Türme je Dimension, vorgerastert; gezeichnet werden nur
+  die belegten Streifen und nur der sichtbare Teil jeder Kachel.
+- **Grafikstufen** HOCH / MITTEL / NIEDRIG (Menü-Button „Grafik“, `js/art/quality.js`): steuern Partikelmenge,
+  Glow, Hintergrundlagen und die maximale Pixeldichte (2,5 / 2 / 1,5). Gameplay, Timing und Kollision sind in allen
+  Stufen identisch. Ohne gespeicherte Wahl starten schwächere Geräte mit MITTEL; fällt die Bildrate im Spiel dauerhaft
+  unter ca. 42 FPS (Mittel über 180 Frames), schaltet das Spiel automatisch eine Stufe herunter – nur solange die Stufe
+  nicht von Hand gewählt wurde. `?gfx=high|medium|low` erzwingt eine Stufe (Tests).
+
+## LEVEL FORGE – visueller Level-Editor (M4, mobil seit M4.5)
 
 **Öffnen:** https://t0ptyp.github.io/rift-climb/assets/forge/ (lokal: `http://localhost:8080/assets/forge/`), oder im
-Spielmenü am Desktop über „Level-Editor“. Ausgelegt für Maus und Tastatur ab 1024 px Breite.
+Spielmenü über „Level-Editor“. Am Desktop mit Maus und Tastatur, auf Smartphones und Tablets per Touch
+(siehe [Bedienung auf dem Smartphone](#bedienung-auf-dem-smartphone)).
 
 Aufbau: oben Datei-Aktionen, Undo/Redo, **PLAYTEST** / **AB HIER**, Raster und Zoom · links Werkzeuge und Objektpalette ·
 Mitte das Spielfeld (360 u breit, 4 Spuren, Beat-Linien mit Zeitangabe) · rechts Eigenschaften und die Live-Prüfung.
@@ -166,6 +185,33 @@ abschaltbar bis pixelgenau (0,5 u). Nicht vorhandene Spielelemente erfindet der 
 In Eingabefeldern lösen Editor-Kürzel nicht aus. Die Dimensionsansicht (Beide/Blau/Rot) zeigt wie im Spiel, was in der
 gewählten Dimension tödlich ist (massiv) und was ein Geist ist (blass, gestrichelt); sie verändert keine Leveldaten.
 Optional: Hitboxen, Pulse-Reichweite, Rhythmus-**Vorschau** (Kamera steigt mit 260 u/s) und Metronom.
+
+### Bedienung auf dem Smartphone
+
+Layout ab ≤ 760 px Breite (oder Touch-Querformat bis 520 px Höhe): oben Titel, Undo/Redo, Speichern und Menü ·
+Mitte das Spielfeld · darunter eine waagerecht scrollbare Leiste mit Werkzeugen und Palette · unten das Dock
+**Eigenschaften · Prüfung · Ansicht (Beide/Blau/Rot) · Playtest**. Tablets (761–1024 px) behalten das Desktop-Layout
+mit schmaleren Spalten und größeren Touch-Zielen. Alle Bedienelemente sind mindestens 44 px groß, Safe Areas werden beachtet.
+
+| Geste | Wirkung |
+| --- | --- |
+| Palette antippen, dann ins Feld tippen | Objekt setzen (erneutes Antippen der Palette beendet das Setzen) |
+| Tippen auf ein Objekt / ins Leere | auswählen / Auswahl aufheben |
+| Ein Finger auf einem Objekt ziehen | verschieben (ein Undo-Schritt); runde Griffe ändern die Größe |
+| Ein Finger im Leeren ziehen | Kamera schieben (mit Werkzeug „Rahmen“: Mehrfachauswahl) |
+| Zwei Finger | schieben und zoomen (Pinch) um die Fingermitte |
+| Lange drücken (≈ 0,5 s) auf ein Objekt | Kontextmenü: Duplizieren, Löschen, Eigenschaften |
+| Knopf „⤢“ rechts oben im Feld | Zoom einpassen |
+
+- **Eigenschaften** öffnen sich als Bottom Sheet; Zahlenfelder haben −/+-Knöpfe (je Tipp ein Undo-Schritt).
+  Bei offener Bildschirmtastatur rückt das Sheet über die Tastatur (`visualViewport`), das aktive Feld bleibt sichtbar.
+- **Menü (☰):** Neu, Öffnen, Importieren, Exportieren, Ab hier testen, Rhythmus-Vorschau, Playtest-Modus, Raster/Snap
+  und Anzeigeoptionen – dieselben Funktionen wie am Desktop.
+- **Speichern:** Autospeicherung wie am Desktop (IndexedDB), zusätzlich wird dauerhafter Speicher angefragt
+  (`navigator.storage.persist`). Browser – v. a. iOS Safari – können lokale Daten trotzdem löschen; der Editor weist
+  darauf hin. Sichern daher per **Exportieren**: auf Touch-Geräten mit Teilen-Dialog (Web Share, z. B. „In Dateien sichern“),
+  sonst als Download. Das exportierte JSON ist identisch mit dem Desktop-Export.
+- **Playtest** läuft im Vollbild; der große Button „Zurück zum Editor“ beendet ihn jederzeit, Änderungen bleiben erhalten.
 
 ### Prüfung, Playtest und Nachweis
 
@@ -246,7 +292,7 @@ Weitere Parameter: `?autoplay=1` (Solver-Lösung), `&offset=0.3` (Tipp-Zeitpunkt
   Hover nur auf echten Hover-Geräten; `touch-action: manipulation`; Klick-Schutz gegen Geister-Klicks nach Overlay-Wechsel.
   AudioContext wird synchron in der Geste entsperrt.
 - Spiel-Eingabe nur über Pointer Events (Touch-Events nur als Fallback), 200 ms Sperre nach Start, 45-ms-Doppel-Filter.
-- Canvas mit Device Pixel Ratio (max. 2,5); Hintergrund und Vignette als CSS-Ebenen (spart Vollbild-Gradients im Canvas).
+- Canvas mit Device Pixel Ratio (max. 2,5 / 2 / 1,5 je Grafikstufe); Hintergrund und Vignette als CSS-Ebenen (spart Vollbild-Gradients im Canvas).
 - Partikel-Pool fester Größe, Schweif als Ringpuffer – keine Allokationen im Game Loop.
 - Kein Scrollen/Zoomen, Safe Areas, Portrait-Layout, Querformat-Hinweis, Auto-Pause bei `visibilitychange`/`pagehide`.
 
@@ -267,10 +313,13 @@ node tests/rift-pulse.mjs            # Rift Pulse/Siegel: Reichweite, Öffnen/Sc
 node tests/tune-impulse.mjs          # Vergleich der Impulsmodelle
 npm i --no-save playwright && npx playwright install chromium webkit
 python3 -m http.server 8080 &
-node tests/e2e.mjs                   # 96 Browser-Checks (Szenarien inkl. Siegel, Bildraten, Desktop, Practice, 100 %, iPhone/Pixel)
-node tests/perf.mjs                  # Frame-Zeiten im echten rAF-Loop (Pixel 7, 4× CPU-Drosselung)
+node tests/e2e.mjs                   # 100 Browser-Checks (Szenarien inkl. Siegel, Bildraten, Desktop, Practice, 100 %, iPhone/Pixel, Grafikstufen)
+node tests/perf.mjs                  # Frame-Zeiten im echten rAF-Loop (Pixel 7, 4× CPU-Drosselung); GFX=high|medium|low wählt die Stufe
+node tests/m5-visuals.mjs            # 25 Checks Grafik/Riftling: Animationen, Stufen, Lesbarkeit auf 320 px, Gameplay unverändert
 node tests/screenshots.mjs           # Portrait-Screenshots (Menü, Pulse öffnet Siegel, Reichweite, Debug, Tod)
-node tests/forge-e2e.mjs             # 70 LEVEL-FORGE-Checks mit echten Maus-/Tastatureingaben (QS-Liste M4 inkl. Playtest, Import/Export, Mobil)
+node tests/m5-screenshots.mjs        # Riftling-Übersicht, Gameplay, mobiler Editor (SHOT_DIR=… setzt den Zielordner)
+node tests/forge-e2e.mjs             # 70 LEVEL-FORGE-Checks mit echten Maus-/Tastatureingaben (QS-Liste M4 inkl. Playtest, Import/Export)
+node tests/forge-mobile-e2e.mjs      # 50 Touch-Checks des mobilen Editors (iPhone 13, Querformat, Tablet, Desktop, WebKit)
 node tests/forge-screenshots.mjs     # Editor-Screenshots (Editor, Playtest, Prüfung)
 ```
 
@@ -298,10 +347,12 @@ rift-climb/
 │   ├── input.js               # Pointer/Touch/Tastatur, Doppel-Filter
 │   ├── audio.js               # Prozedurale WebAudio-Musik + SFX
 │   ├── ui.js                  # DOM-Overlays, HUD, robuster Tap-Handler, Klick-Schutz
+│   ├── art/                   # Grafik: quality (Stufen), riftling (SVG-Figur), riftling-anim, effects, backdrop
 │   └── forge/                 # LEVEL FORGE: main (Steuerung), view (Kamera/Rendering), history (Undo/Redo),
-│                              #   panels (Eigenschaften/Prüfung), store (IndexedDB)
+│                              #   panels (Eigenschaften/Prüfung), store (IndexedDB), touch (Gesten)
 ├── assets/
 │   ├── icon.svg
+│   ├── riftling/              # SVG-Ebenen der Spielfigur
 │   ├── forge/index.html       # Editor-Seite
 │   └── levels/                # index.json + Level-Dateien (rift-main, rift-forge-test)
 ├── tests/                     # Solver, Physik, Playwright-E2E, Performance, Screenshots
@@ -321,7 +372,10 @@ Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft d
 - Ein Tipp wird mit dem Zeitstempel des Browser-Events verarbeitet; auf Geräten mit hoher Touch-Latenz
   (Hardware/Compositor) bleibt diese Latenz natürlich bestehen.
 - Kein Kalibrierungsmenü für Audio-Latenz.
-- LEVEL FORGE ist für Desktop (Maus + Tastatur) gebaut; auf Touch-Geräten wird der Editor-Link im Menü ausgeblendet.
+- Der mobile Editor ist nur in Emulation getestet (Chromium mit echten CDP-Touch-Events, WebKit-Smoke-Test);
+  Bildschirmtastatur und Web Share sind in den Tests simuliert. Ein echtes iOS Safari stand nicht zur Verfügung.
+- Grafikstufe HOCH ist in headless Chromium (Software-Rasterung) langsam; auf echten GPUs nicht gemessen.
+  Die automatische Herabstufung fängt zu langsame Geräte ab.
 - Veröffentlichen geht bewusst nur über Export + Commit (statisches Hosting, keine Schreibrechte im Browser).
 - Level mit freien Maßen beweist kein Solver; ihr Nachweis ist ein aufgezeichneter Lauf. Er belegt Lösbarkeit,
   nicht Fairness – Warnungen der Prüfung ersetzen kein Playtesting mit Menschen.

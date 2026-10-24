@@ -4,7 +4,8 @@
 import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, PULSE_RADIUS, HIT_RADIUS } from '../config.js';
 import { COLORS, isDeadly } from '../dimensions.js';
 import { DIMENSION_COLOR, laneCenter, unitsPerBeat, halfHeights, START_DIMENSIONS } from '../level-data.js';
-import { drawBar, drawSealClosed, drawSealOpen, drawShip, drawFinish } from '../shapes.js';
+import { drawBar, drawSealClosed, drawSealOpen, drawFinish } from '../shapes.js';
+import { drawRiftling, IDLE_POSE } from '../art/riftling.js';
 
 export const ZOOM_MIN = 0.12;
 export const ZOOM_MAX = 6;
@@ -34,6 +35,17 @@ export class ForgeView {
     this.W = 1;
     this.H = 1;
     this.dpr = 1;
+    // Touch-Bedienung: größere Trefferflächen und Griffe (Finger statt Mauszeiger)
+    this.touch = false;
+  }
+
+  /** Schmale Ansicht (Smartphone): Spielfeld fast randlos, Beat-Beschriftung innen. */
+  get compact() {
+    return this.W < 600;
+  }
+
+  get handlePx() {
+    return this.touch ? 18 : HANDLE_PX;
   }
 
   resize() {
@@ -57,6 +69,7 @@ export class ForgeView {
 
   /** Zoom so, dass die Spielfeldbreite (360 u) mit Rand in die Ansicht passt. */
   fitZoom() {
+    if (this.compact) return clamp((this.W - 20) / WORLD_W, ZOOM_MIN, 2.4);
     return clamp(Math.min((this.W - 140) / WORLD_W, this.H / (130 * 6)), ZOOM_MIN, 2.4);
   }
 
@@ -112,7 +125,7 @@ export class ForgeView {
 
   /** Treffertest: zuoberst gezeichnetes Objekt unter dem Weltpunkt; Pseudo-Objekte Start/Ziel/Testmarker. */
   hitTest(doc, wx, wy, extras) {
-    const tol = 4 / this.cam.z;
+    const tol = (this.touch ? 14 : 4) / this.cam.z;
     const vis = this.visibleObjects(doc, 20);
     let best = null;
     let bestArea = Infinity;
@@ -135,7 +148,7 @@ export class ForgeView {
     const pts = this.handlePoints(o);
     if (!pts) return null;
     for (const [k, p] of Object.entries(pts)) {
-      if (Math.abs(sx - p.x) <= HANDLE_PX && Math.abs(sy - p.y) <= HANDLE_PX) return k;
+      if (Math.abs(sx - p.x) <= this.handlePx && Math.abs(sy - p.y) <= this.handlePx) return k;
     }
     return null;
   }
@@ -147,7 +160,7 @@ export class ForgeView {
     const b = this.toScreen(o.x + o.w, o.y - o.h / 2);
     const my = (a.y + b.y) / 2;
     const mx = (a.x + b.x) / 2;
-    const r = HANDLE_PX;
+    const r = this.handlePx;
     const offY = b.y - a.y < 4 * r ? r + 3 : 0;
     const offX = b.x - a.x < 4 * r ? r + 3 : 0;
     return {
@@ -156,6 +169,12 @@ export class ForgeView {
       t: { x: mx, y: a.y - offY },
       b: { x: mx, y: b.y + offY },
     };
+  }
+
+  /** Start-/Testmarker: derselbe Riftling wie im Spiel (Farbe der Startdimension). */
+  marker(x, y, dim, alpha) {
+    const pose = { ...IDLE_POSE, blend: dim === 'R' ? 1 : 0, alpha, glow: 0.7 };
+    drawRiftling(this.ctx, x, y, pose, this.dpr * this.cam.z, 1);
   }
 
   render(s) {
@@ -261,7 +280,7 @@ export class ForgeView {
     ctx.lineTo(WORLD_W, 0);
     ctx.stroke();
     const startDim = START_DIMENSIONS[lvl.start.dimension];
-    drawShip(ctx, laneCenter(lvl.start.lane), 0, startDim);
+    this.marker(laneCenter(lvl.start.lane), 0, startDim, 1);
     ctx.font = '800 10px system-ui, sans-serif';
     ctx.fillStyle = '#1affb2';
     ctx.fillText('START', laneCenter(lvl.start.lane), 26);
@@ -332,7 +351,7 @@ export class ForgeView {
       ctx.lineTo(WORLD_W, -t.y);
       ctx.stroke();
       ctx.setLineDash([]);
-      drawShip(ctx, laneCenter(t.lane), -t.y, t.dim, 0, 0, 0.75);
+      this.marker(laneCenter(t.lane), -t.y, t.dim, 0.75);
       ctx.font = '800 10px system-ui, sans-serif';
       ctx.fillStyle = '#1affb2';
       ctx.textAlign = 'left';
@@ -393,7 +412,7 @@ export class ForgeView {
       } else if (g.type === 'obstacle') {
         drawBar(ctx, objColor(g), g.x, -g.y, g.w, g.h / 2, true);
       } else if (g.type === 'start' || g.type === 'test') {
-        drawShip(ctx, laneCenter(g.lane), -g.y, g.dim || 'B');
+        this.marker(laneCenter(g.lane), -g.y, g.dim || 'B', 1);
       } else if (g.type === 'finish') {
         drawFinish(ctx, WORLD_W, -g.y, '');
       }
@@ -424,11 +443,17 @@ export class ForgeView {
     ctx.textBaseline = 'middle';
     const fieldLeft = this.toScreen(0, 0).x;
     if (s.beats && upb * z >= 18) {
+      // Ohne Platz links vom Spielfeld: Beschriftung innen, knapp über der Beatlinie
+      const inside = fieldLeft < 70;
+      if (inside) { ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; }
       for (const k of beatLabels) {
         const sy = this.toScreen(0, k * upb).y;
         ctx.fillStyle = k % 4 === 0 ? 'rgba(47,214,255,0.85)' : 'rgba(160,200,255,0.45)';
-        ctx.fillText(`${k} · ${(k * upb / CLIMB_SPEED).toFixed(2)} s`, fieldLeft - 8, sy);
+        const t = (k * upb / CLIMB_SPEED).toFixed(2);
+        if (inside) ctx.fillText(k % 4 === 0 ? `${k} · ${t} s` : String(k), Math.max(2, fieldLeft) + 3, sy - 1);
+        else ctx.fillText(`${k} · ${t} s`, fieldLeft - 8, sy);
       }
+      ctx.textBaseline = 'middle';
     }
     if (selObjs.length === 1 && selObjs[0].type !== 'hint') {
       const o = selObjs[0];
@@ -436,7 +461,19 @@ export class ForgeView {
       const b = this.toScreen(o.x + o.w, o.y - o.h / 2);
       const pts = this.handlePoints(o);
       ctx.fillStyle = SEL;
-      for (const p of Object.values(pts)) ctx.fillRect(p.x - 4, p.y - 4, 8, 8);
+      if (this.touch) {
+        for (const p of Object.values(pts)) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+          ctx.fillStyle = SEL;
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#04040c';
+          ctx.stroke();
+        }
+      } else {
+        for (const p of Object.values(pts)) ctx.fillRect(p.x - 4, p.y - 4, 8, 8);
+      }
       ctx.font = '700 11px ui-monospace, monospace';
       ctx.textAlign = 'center';
       const label = `${fmt(o.w)} × ${fmt(o.h)} u  ·  x ${fmt(o.x)}  y ${fmt(o.y)}`;

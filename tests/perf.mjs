@@ -9,7 +9,8 @@ const ctx = await browser.newContext({ ...devices['Pixel 7'] });
 const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.THROTTLE || 4) });
-await page.goto(`${BASE}?autoplay=1`);
+const GFX = process.env.GFX ? `&gfx=${process.env.GFX}` : '';
+await page.goto(`${BASE}?autoplay=1${GFX}`);
 await page.waitForFunction(() => window.__RIFT);
 await page.evaluate(() => {
   const g = window.__RIFT;
@@ -41,6 +42,8 @@ const r = await page.evaluate(() => {
     heapKB: (heap1 - m.heap0) / 1024,
   };
 });
+const gfxId = await page.evaluate(() => (window.__RIFT.gfx ? window.__RIFT.gfx.id : '-'));
+console.log(`Grafik: ${gfxId}`);
 console.log(`Frames ${r.frames}, Ø-FPS ${r.fps.toFixed(1)}, Frame-Intervall p95 ${r.gapP95.toFixed(1)} ms, Frames > 25 ms: ${r.longFrames}`);
 console.log(`JS pro Frame (update+render): Ø ${r.jsAvg.toFixed(2)} ms, p95 ${r.jsP95.toFixed(2)} ms, p99 ${r.jsP99.toFixed(2)} ms; Heap-Δ ${r.heapKB.toFixed(0)} KB`);
 await browser.close();

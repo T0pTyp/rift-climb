@@ -4,6 +4,7 @@ import { Input } from './input.js';
 import { AudioEngine } from './audio.js';
 import { MAX_FRAME_DT } from './config.js';
 import { validateLevelData, validateIndex } from './level-data.js';
+import { QUALITY, defaultQuality, nextQuality } from './art/quality.js';
 
 const STORAGE_KEY = 'riftclimb.pulse.v1';
 const LEVEL_DIR = 'assets/levels/';
@@ -30,14 +31,18 @@ function createStorage(levelId, memoryOnly) {
   return {
     stats,
     muted: !!(main && main.muted),
+    gfx: main && QUALITY[main.gfx] ? main.gfx : defaultQuality(),
+    gfxManual: !!(main && main.gfxManual),
     save() {
       // Playtest aus dem Editor: nichts dauerhaft speichern (keine Bestleistung, keine Versuche)
       if (memoryOnly) return;
       try {
-        localStorage.setItem(key, JSON.stringify({ stats: this.stats, muted: this.muted }));
+        localStorage.setItem(key, JSON.stringify({ stats: this.stats, muted: this.muted, gfx: this.gfx, gfxManual: this.gfxManual }));
         if (key !== STORAGE_KEY) {
           const m = readJson(STORAGE_KEY) || {};
           m.muted = this.muted;
+          m.gfx = this.gfx;
+          m.gfxManual = this.gfxManual;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
         }
       } catch { /* ignorieren */ }
@@ -131,6 +136,12 @@ async function boot() {
       audio.setMuted(storage.muted);
       ui.updateSound(storage.muted);
     },
+    onGfxToggle: () => {
+      storage.gfx = nextQuality(game.gfx.id);
+      storage.gfxManual = true;
+      storage.save();
+      applyQuality(storage.gfx);
+    },
     onPause: () => game.pause(),
     onResume: () => game.resume(),
     onRestart: () => game.restart(),
@@ -167,14 +178,41 @@ async function boot() {
   const events = playtest ? {
     onWin: (r) => postToEditor({ type: 'forge:result', won: true, mode: r.mode, attempts: r.attempts, replay: r.replay, from: r.from }),
   } : {};
-  game = new Game({ canvas, ui, audio, input, storage, debug, level, events });
+  game = new Game({ canvas, ui, audio, input, storage, debug, level, events, quality: params.get('gfx') || storage.gfx });
   window.__RIFT = game;
+
+  function applyQuality(id) {
+    game.setQuality(id);
+    resize();
+    ui.updateGfx(game.gfx.label);
+  }
+
+  // Automatische Stufe nur ohne eigene Wahl: ruckelt es im Lauf deutlich, eine Stufe tiefer (nur Darstellung).
+  const autoGfx = !storage.gfxManual && !params.get('gfx') && !debug.manual;
+  const perf = { sum: 0, n: 0, last: 0 };
+  function watchFrameRate(now) {
+    if (!autoGfx || game.state !== 'playing' || document.hidden) { perf.last = 0; return; }
+    if (perf.last) {
+      const gap = now - perf.last;
+      if (gap < 250) { perf.sum += gap; perf.n++; }
+    }
+    perf.last = now;
+    if (perf.n < 180) return;
+    const avg = perf.sum / perf.n;
+    perf.sum = 0;
+    perf.n = 0;
+    if (avg > 24 && game.gfx.id !== 'low') {
+      storage.gfx = game.gfx.id === 'high' ? 'medium' : 'low';
+      storage.save();
+      applyQuality(storage.gfx);
+    }
+  }
 
   function resize() {
     const vv = window.visualViewport;
     const w = Math.round(vv ? vv.width : window.innerWidth);
     const h = Math.round(vv ? vv.height : window.innerHeight);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, game.gfx.dprCap);
     canvas.style.width = `${w}px`;
     canvas.style.height = `${h}px`;
     game.resize(w, h, dpr);
@@ -200,6 +238,7 @@ async function boot() {
 
   ui.setLevels(index ? index.levels : null, level, playtest);
   ui.updateMenu(storage.stats, storage.muted);
+  ui.updateGfx(game.gfx.label);
 
   let last = performance.now();
 
@@ -217,6 +256,7 @@ async function boot() {
 
   function frame(now) {
     advanceTo(now);
+    watchFrameRate(now);
     game.render();
     requestAnimationFrame(frame);
   }

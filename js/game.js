@@ -8,10 +8,17 @@ import { validateLevel } from './level.js';
 import { buildLevelRuntime, levelFromRows } from './level-data.js';
 import { RiftField, pulseRadius, distToSeal } from './rift.js';
 import { Player } from './player.js';
-import { ParticlePool } from './particles.js';
+import { ParticlePool, PARTICLE_KIND } from './particles.js';
 import { COLORS, isDeadly } from './dimensions.js';
 import { circleRectOverlap, clamp } from './physics.js';
-import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawShip, drawFinish } from './shapes.js';
+import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawFinish, setGlowLevel } from './shapes.js';
+import { RiftlingAnimator } from './art/riftling-anim.js';
+import { drawRiftling, riftlingArt } from './art/riftling.js';
+import { drawTrail, drawParticles } from './art/effects.js';
+import { Backdrop } from './art/backdrop.js';
+import { qualityOf } from './art/quality.js';
+
+const K = PARTICLE_KIND;
 
 const REACH_DASH = [4, 7];
 const CHECKPOINT_SPACING = CHECKPOINT_EVERY_BEATS * UNITS_PER_BEAT;
@@ -21,7 +28,7 @@ export class Game {
    * level: geprüftes JSON-Level (validateLevelData(...).level). rows: Reihenliste (nur für Tests, wird migriert).
    * events: { onWin({ mode, attempts, replay, from }) } – z. B. für den Playtest aus LEVEL FORGE.
    */
-  constructor({ canvas, ui, audio, input, storage, debug, level, rows, events }) {
+  constructor({ canvas, ui, audio, input, storage, debug, level, rows, events, quality }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.ui = ui;
@@ -47,7 +54,14 @@ export class Game {
     this.startFrom = null;
     this.recording = null;
     this.player = new Player();
-    this.particles = new ParticlePool();
+    this.gfx = qualityOf(quality);
+    setGlowLevel(this.gfx.glow);
+    this.particles = new ParticlePool(this.gfx.cap);
+    this.anim = new RiftlingAnimator();
+    this.backdrop = new Backdrop();
+    this.art = riftlingArt;
+    riftlingArt.load();
+    this.realT = 0;
     this.state = 'menu';
     this.mode = 'normal';
     this.t = 0;
@@ -106,6 +120,34 @@ export class Game {
     };
     this.canvas.width = Math.round(cssW * dpr);
     this.canvas.height = Math.round(cssH * dpr);
+    this.backdrop.configure(cssW, cssH, dpr, this.gfx.backdrop, this.gfx.shards);
+  }
+
+  /** Grafikstufe wechseln (nur Darstellung): Partikel-Pool, Glow, Hintergrund. Auflösung setzt main.js. */
+  setQuality(id) {
+    this.gfx = qualityOf(id);
+    setGlowLevel(this.gfx.glow);
+    this.particles = new ParticlePool(this.gfx.cap);
+    const v = this.view;
+    this.backdrop.configure(v.cssW, v.cssH, v.dpr, this.gfx.backdrop, this.gfx.shards);
+  }
+
+  /** Partikelanzahl nach Grafikstufe (mindestens eines, damit jedes Ereignis sichtbar bleibt). */
+  burst(n) {
+    return Math.max(1, Math.round(n * this.gfx.particles));
+  }
+
+  /** Energie sammelt sich zur Figur (Respawn/Neustart): Partikel fliegen von einem Ring zur Mitte. */
+  converge(n, radius, life, climbing) {
+    const p = this.player;
+    const col = COLORS[p.dim].main;
+    const vy0 = climbing ? CLIMB_SPEED : 0;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2 + Math.random() * 0.4;
+      const r = radius * (0.8 + Math.random() * 0.4);
+      const l = life * (0.75 + Math.random() * 0.25);
+      this.particles.spawn(p.x + Math.cos(a) * r, this.y + Math.sin(a) * r, -Math.cos(a) * r / l, -Math.sin(a) * r / l + vy0, l, 2 + Math.random() * 1.5, i % 3 ? col : '#ffffff', 1, climbing ? K.GLOW : K.SPARK);
+    }
   }
 
   /** from: { y, lane, dim } = ab dieser Höhe starten (PLAY FROM HERE im Editor), sonst Levelstart. */
@@ -130,6 +172,8 @@ export class Game {
     this.player.reset(st.lane, st.dim, this.y);
     this.dimBlend = st.dim === 'R' ? 1 : 0;
     this.particles.clear();
+    this.anim.reset(this.dimBlend, { rebuild: true, duration: 0.28 });
+    this.converge(this.burst(12), 30, 0.26, true);
     this.flash = 0;
     this.shake = 0;
     this.switchPulse = 0;
@@ -238,22 +282,34 @@ export class Game {
     const col = COLORS[p.dim].main;
     this.rift.emit(p.x, this.y, this.t, col);
     this.audio.sfx('switch', p.dim, atWall);
+    this.anim.onSwitch(dir);
     const y = this.y;
-    for (let i = 0; i < 10; i++) {
+    // Rückstoß nach unten-hinten (Funken) und Energie-Impuls als kleiner Ring in der neuen Dimensionsfarbe
+    for (let i = 0, n = this.burst(10); i < n; i++) {
       const a = Math.PI * (1.15 + Math.random() * 0.7);
       const s = 70 + Math.random() * 130;
-      this.particles.spawn(p.x, y - 6, Math.cos(a) * s - dir * 70, Math.sin(a) * s, 0.32 + Math.random() * 0.12, 2 + Math.random() * 1.5, col, 0.9);
+      this.particles.spawn(p.x, y - 6, Math.cos(a) * s - dir * 70, Math.sin(a) * s, 0.32 + Math.random() * 0.12, 2 + Math.random() * 1.5, col, 0.9, i % 2 ? K.SPARK : K.SQUARE);
+    }
+    for (let i = 0, n = this.burst(10); i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      this.particles.spawn(p.x + Math.cos(a) * 10, y + Math.sin(a) * 10, Math.cos(a) * 150, Math.sin(a) * 150 + CLIMB_SPEED, 0.2, 1.8, i % 2 ? col : '#ffffff', 0.86, K.GLOW);
     }
     if (atWall) {
       const wx = dir > 0 ? WORLD_W - 2 : 2;
-      for (let i = 0; i < 8; i++) {
-        this.particles.spawn(wx, y + (Math.random() - 0.5) * 24, -dir * (60 + Math.random() * 120), (Math.random() - 0.5) * 120, 0.28, 2, '#ffffff', 0.88);
+      for (let i = 0, n = this.burst(8); i < n; i++) {
+        this.particles.spawn(wx, y + (Math.random() - 0.5) * 24, -dir * (60 + Math.random() * 120), (Math.random() - 0.5) * 120, 0.28, 2, '#ffffff', 0.88, K.SPARK);
       }
     }
   }
 
   update(dt) {
     this.menuT += dt;
+    this.realT += dt;
+    const p = this.player;
+    this.anim.update(dt, {
+      vx: p.vx, tilt: p.tilt, targetBlend: p.dim === 'R' ? 1 : 0,
+      alive: this.state !== 'dying' && this.state !== 'dead',
+    });
     this.flash = Math.max(0, this.flash - dt * 6);
     this.shake = Math.max(0, this.shake - dt * 5);
     this.switchPulse = Math.max(0, this.switchPulse - dt * 4);
@@ -307,9 +363,9 @@ export class Game {
 
     // Schweif-Partikel proportional zur zurückgelegten Seitenstrecke (bildratenunabhängig)
     this.emitDist += Math.abs(p.vx) * h;
-    if (this.emitDist > 9) {
+    if (this.emitDist > 9 / this.gfx.particles) {
       this.emitDist = 0;
-      this.particles.spawn(p.x, y - 8, -p.vx * 0.15, -60, 0.26, 2.5, COLORS[p.dim].main, 0.9);
+      this.particles.spawn(p.x + (Math.random() - 0.5) * 6, y - 10, -p.vx * 0.15, -60, 0.3, 2.6, COLORS[p.dim].main, 0.9, K.GLOW);
     }
 
     this.rift.step(this.t, this.onSealOpen);
@@ -362,6 +418,13 @@ export class Game {
     if (line.objs.some((o) => o.color === 'S' && p.x >= o.x0 && p.x <= o.x1)) {
       this.sealStreak++;
       if (this.sealStreak % 3 === 0) this.shake = Math.max(this.shake, SEAL_STREAK_SHAKE);
+      // Präzise Aktion: durch ein geöffnetes Siegel – kurzer goldener Lichtimpuls an der Figur
+      this.anim.onPrecise();
+      for (let i = 0, n = this.burst(10); i < n; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const s = 60 + Math.random() * 90;
+        this.particles.spawn(p.x, this.y, Math.cos(a) * s, Math.sin(a) * s + CLIMB_SPEED * 0.8, 0.3, 1.8, i % 2 ? COLORS.S.main : '#ffffff', 0.9, K.GLOW);
+      }
     }
     // Mit Spur-Solver: nur Zustände, von denen das Ziel erreichbar ist; sonst nur "nicht mitten im Spurwechsel"
     const alive = this.validation.alive ? this.validation.alive[k] : null;
@@ -397,11 +460,18 @@ export class Game {
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
     this.sealStreak = 0;
     const colors = [COLORS[o.color].main, '#ffffff', COLORS[p.dim].main];
-    for (let i = 0; i < 34; i++) {
+    // Trefferimpuls (Funken) und Energiefragmente des Körpers (Splitter in der Dimensionsfarbe)
+    for (let i = 0, n = this.burst(18); i < n; i++) {
       const a = Math.random() * Math.PI * 2;
-      const s = 90 + Math.random() * 260;
-      this.particles.spawn(p.x, y, Math.cos(a) * s, Math.sin(a) * s, 0.45 + Math.random() * 0.25, 2 + Math.random() * 2.5, colors[i % 3], 0.9);
+      const s = 120 + Math.random() * 280;
+      this.particles.spawn(p.x, y, Math.cos(a) * s, Math.sin(a) * s, 0.35 + Math.random() * 0.2, 2 + Math.random() * 1.5, colors[i % 3], 0.88, K.SPARK);
     }
+    for (let i = 0, n = this.burst(16); i < n; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const s = 50 + Math.random() * 150;
+      this.particles.spawn(p.x + Math.cos(a) * 6, y + Math.sin(a) * 8, Math.cos(a) * s, Math.sin(a) * s + 40, 0.55 + Math.random() * 0.3, 2.8 + Math.random() * 2.6, i % 4 ? COLORS[p.dim].main : COLORS[p.dim].light, 0.93, K.SHARD, 260);
+    }
+    this.anim.onDeath();
     this.shake = DEATH_SHAKE;
     this.flash = 0;
     this.audio.sfx('death');
@@ -440,6 +510,8 @@ export class Game {
     this.rift.reset();
     this.sealStreak = 0;
     this.player.reset(cp.lane, cp.dim, this.y);
+    this.anim.reset(cp.dim === 'R' ? 1 : 0, { rebuild: true, duration: RESPAWN_SEC * 0.6 });
+    this.converge(this.burst(16), 40, RESPAWN_SEC * 0.5, false);
     this.state = 'respawn';
     this.respawnTimer = RESPAWN_SEC;
     this.audio.seek(this.t);
@@ -486,9 +558,13 @@ export class Game {
     const dim = this.player.dim;
     const inGame = this.state !== 'menu';
 
-    // Hintergrund und Vignette liegen als CSS-Ebenen unter dem (transparenten) Canvas.
+    // Farbverlauf und Vignette liegen als CSS-Ebenen unter dem (transparenten) Canvas, darüber die Parallax-Ebenen.
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.gfx.backdrop > 0) {
+      ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0);
+      this.backdrop.render(ctx, camY * v.scale, blend, inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
+    }
 
     const amp = this.shake * this.shake * SHAKE_PX;
     const sx = amp ? (Math.random() - 0.5) * amp : 0;
@@ -552,16 +628,7 @@ export class Game {
     this.renderMarkers(ctx, camY, psy, H);
 
     // Partikel (unter den Hindernissen, damit Effekte nie verdecken)
-    const ps = this.particles.items;
-    for (let i = 0; i < this.particles.count; i++) {
-      const q = ps[i];
-      const qy = psy - (q.y - camY);
-      if (qy < -10 || qy > H + 10) continue;
-      ctx.globalAlpha = q.life / q.max;
-      ctx.fillStyle = q.color;
-      ctx.fillRect(q.x - q.size / 2, qy - q.size / 2, q.size, q.size);
-    }
-    ctx.globalAlpha = 1;
+    drawParticles(ctx, this.particles, camY, psy, H);
 
     this.renderObstacles(ctx, camY, psy, H, dim);
     this.renderPlayer(ctx, psy);
@@ -694,7 +761,7 @@ export class Game {
     const rift = this.rift;
     if (!rift.isOpen(o, t)) {
       const reach = this.state === 'playing' && rift.inReach(o, this.player.x, this.y);
-      drawSealClosed(ctx, x0, oy, w, hh, reach, reach ? 0.5 + 0.5 * Math.sin(t * 28) : 0);
+      drawSealClosed(ctx, x0, oy, w, hh, reach, reach ? 0.5 + 0.5 * Math.sin(t * 28) : 0, t);
       return;
     }
     const rem = rift.remaining(o, t);
@@ -702,25 +769,18 @@ export class Game {
     drawSealOpen(ctx, x0, oy, w, hh, rem / o.openSec, warn, t - o.openedAt);
   }
 
+  /** Riftling: Energie-Schweif (Breite nach Geschwindigkeit) und Figur in der aktuellen Animationspose. */
   renderPlayer(ctx, sy) {
     const p = this.player;
-    if (this.state === 'dying' || this.state === 'dead') return;
-    if (this.state === 'respawn' && Math.floor(this.respawnTimer * 10) % 2 === 0) return;
-    const col = COLORS[p.dim];
-    const y = this.y;
-
-    // Schweif aus dem Ringpuffer (älteste zuerst)
-    const n = p.trailCount;
-    for (let i = n - 1; i >= 1; i--) {
-      const idx = (p.trailHead - i + p.trailX.length) % p.trailX.length;
-      const f = 1 - i / n;
-      ctx.globalAlpha = f * 0.4;
-      ctx.fillStyle = col.main;
-      const s = 2 + f * 6;
-      ctx.fillRect(p.trailX[idx] - s / 2, sy - (p.trailY[idx] - y) - s / 2, s, s);
+    const pose = this.anim.pose;
+    const v = this.view;
+    const dead = this.state === 'dying' || this.state === 'dead';
+    if (!dead) {
+      const col = COLORS[p.dim];
+      drawTrail(ctx, p, p.x, sy, this.y, col.main, 4.5 + this.anim.speed * 4, this.gfx.ribbonCore);
     }
-    ctx.globalAlpha = 1;
-    drawShip(ctx, p.x, sy, p.dim, p.tilt, p.pop);
+    if (dead && this.state === 'dead' && pose.alpha <= 0.01) return;
+    drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale, this.gfx.glow);
   }
 
   renderDeath(ctx, camY, psy) {
@@ -817,6 +877,7 @@ export class Game {
       `x ${p.x.toFixed(1)}  y ${this.y.toFixed(0)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
       `vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,
+      `Grafik ${this.gfx.label}  Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];
     ctx.font = '600 10px ui-monospace, monospace';
     ctx.textAlign = 'left';
