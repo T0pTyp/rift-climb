@@ -7,9 +7,11 @@ import {
 } from '../level-data.js';
 import { checkPlayability } from '../playcheck.js';
 import { LevelDoc } from './history.js';
-import { ForgeView, objRect, fmt } from './view.js';
+import { ForgeView, objRect, fmt, ZOOM_MIN, ZOOM_MAX } from './view.js';
 import { ForgeStore } from './store.js';
 import { PropsPanel, renderIssues } from './panels.js';
+import { riftlingArt } from '../art/riftling.js';
+import { TouchGestures } from './touch.js';
 
 const $ = (s) => document.querySelector(s);
 const PLAYTEST_KEY = 'riftforge.playtest';
@@ -71,6 +73,11 @@ const S = {
 };
 
 const view = new ForgeView($('#view'));
+// Smartphone-Layout (gleiche Abfrage wie in css/forge.css) und grobe Zeiger (Finger)
+const phoneMq = window.matchMedia('(max-width: 760px), (pointer: coarse) and (max-height: 520px)');
+const coarseMq = window.matchMedia('(pointer: coarse)');
+const isPhone = () => phoneMq.matches;
+view.touch = coarseMq.matches;
 const store = new ForgeStore();
 let doc = null;
 let props = null;
@@ -247,12 +254,19 @@ function updateSelInfo() {
     const o = doc.get(id);
     text = id === '__start' ? 'Startposition' : id === '__finish' ? 'Ziellinie' : id === '__test' ? 'Testmarker' : o ? `${o.id} (${o.type === 'seal' ? 'Rift-Siegel' : o.type === 'hint' ? 'Hinweis' : 'Hindernis'})` : '';
   } else if (n > 1) text = `${n} Objekte ausgewählt`;
+  if (isPhone()) {
+    if (S.tool === 'place') text = `Setzen: ${KINDS[S.kind].label} – ins Feld tippen`;
+    else if (!n) text = S.tool === 'hand' ? 'Hand: ziehen verschiebt die Ansicht' : S.tool === 'marquee' ? 'Rahmen: ziehen wählt mehrere Objekte' : 'Objekt antippen zum Auswählen';
+  }
   $('#sel-info').textContent = text;
+  syncSheetTitle();
 }
 
 function updateButtons() {
   $('#btn-undo').disabled = !doc.canUndo;
   $('#btn-redo').disabled = !doc.canRedo;
+  $('#m-undo').disabled = !doc.canUndo;
+  $('#m-redo').disabled = !doc.canRedo;
   const last = doc.undoStack[doc.undoStack.length - 1];
   const next = doc.redoStack[doc.redoStack.length - 1];
   $('#btn-undo').title = `Rückgängig (Strg/Cmd+Z)${last ? ': ' + last.label : ''}`;
@@ -313,7 +327,12 @@ function runValidation() {
   if (S.play && S.play.replay && S.play.replay.killer && !S.issuesById.has(S.play.replay.killer.id)) S.issuesById.set(S.play.replay.killer.id, 'warning');
   renderIssues($('#check-list'), $('#check-summary'), res.issues, S.play, focusIssue);
   const errs = res.issues.filter((i) => i.severity === 'error').length;
-  for (const id of ['#btn-playtest', '#btn-playfrom', '#btn-export']) $(id).classList.toggle('blocked', errs > 0);
+  for (const id of ['#btn-playtest', '#btn-playfrom', '#btn-export', '#dk-play']) $(id).classList.toggle('blocked', errs > 0);
+  const warns = res.issues.filter((i) => i.severity === 'warning').length;
+  const badge = $('#dk-check-badge');
+  badge.hidden = !errs && !warns;
+  badge.textContent = String(errs || warns);
+  badge.dataset.state = errs ? 'error' : 'warn';
   requestRender();
   return res;
 }
@@ -378,6 +397,7 @@ function setSaveState(state = S.saveState) {
   el.dataset.state = st;
   el.title = 'Lokal im Browser (IndexedDB). „Speichern“ legt das Level in der lokalen Bibliothek ab; veröffentlicht wird nur über Export + Commit ins Repo.';
   $('#btn-save').classList.toggle('dirty', !isClean());
+  $('#m-save').classList.toggle('dirty', !isClean());
 }
 
 async function saveLocal() {
@@ -416,6 +436,28 @@ function download(name, text) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+/**
+ * Touch-Geräte: Teilen-Dialog mit Datei (iOS „In Dateien sichern“, AirDrop …), sonst normaler Download.
+ * Kein Teilen möglich oder fehlgeschlagen → Download als Rückfall.
+ */
+async function shareOrDownload(name, text) {
+  if (coarseMq.matches && navigator.canShare && typeof File === 'function') {
+    const file = new File([text], name, { type: 'application/json' });
+    let can = false;
+    try { can = navigator.canShare({ files: [file] }); } catch { can = false; }
+    if (can) {
+      try {
+        await navigator.share({ files: [file], title: name });
+        return 'shared';
+      } catch (err) {
+        if (err && err.name === 'AbortError') return 'aborted';
+      }
+    }
+  }
+  download(name, text);
+  return 'downloaded';
+}
+
 function exportText() {
   const res = validateLevelData(doc.level);
   if (!res.ok) return { ok: false, res };
@@ -438,11 +480,15 @@ function exportLevel() {
     focusIssue(out.res.issues.find((i) => i.severity === 'error'));
     return null;
   }
-  download(`${out.level.id}.json`, out.text);
-  let msg = `Exportiert: ${out.level.id}.json`;
+  const name = `${out.level.id}.json`;
+  let msg = '';
   if (out.dropped) msg += ' – veralteter Testlauf entfernt';
   if (out.play.ok !== true) msg += ' · Hinweis: Die Deploy-Prüfung verlangt einen Nachweis (Playtest bis zum Ziel).';
-  toast(msg, out.play.ok === true ? 'ok' : 'warn');
+  out.delivery = shareOrDownload(name, out.text).then((how) => {
+    if (how === 'aborted') { toast('Teilen abgebrochen – nichts exportiert.'); return how; }
+    toast(`${how === 'shared' ? 'Geteilt' : 'Exportiert'}: ${name}${msg}`, out.play.ok === true ? 'ok' : 'warn');
+    return how;
+  });
   return out;
 }
 
@@ -714,6 +760,7 @@ function setTool(tool) {
   for (const b of document.querySelectorAll('.pal')) b.classList.toggle('active', tool === 'place' && b.dataset.kind === S.kind);
   if (tool !== 'place') S.ghost = null;
   updateCursor();
+  if (doc) updateSelInfo();
   requestRender();
 }
 
@@ -722,6 +769,7 @@ function setKind(kind) {
     toast('Dreieckige Stacheln gibt es im Spiel nicht – LEVEL FORGE erfindet keine neuen Mechaniken. Nutze Hindernisse oder Barrieren.', 'warn');
     return;
   }
+  if (isPhone() && S.tool === 'place' && S.kind === kind) { setTool('select'); return; }
   S.kind = kind;
   setTool('place');
 }
@@ -729,6 +777,8 @@ function setKind(kind) {
 function setDimMode(m) {
   S.dimMode = m;
   for (const b of document.querySelectorAll('.seg [data-dim]')) b.classList.toggle('active', b.dataset.dim === m);
+  $('#dk-dim').dataset.dim = m;
+  $('#dk-dim-label').textContent = { both: 'Beide', B: 'Blau', R: 'Rot' }[m];
   savePrefs();
   requestRender();
 }
@@ -737,6 +787,7 @@ function setToggle(key, v) {
   S[key] = v;
   const map = { beats: '#tg-beats', hitboxes: '#tg-hitboxes', showReach: '#tg-reach', metronome: '#tg-metronome' };
   if (map[key]) $(map[key]).checked = v;
+  syncMirrors();
   savePrefs();
   props.refresh();
   requestRender();
@@ -752,6 +803,7 @@ function setGrid(patch) {
   const tg = $('#btn-grid-toggle');
   tg.setAttribute('aria-pressed', String(S.grid.enabled));
   tg.classList.toggle('active', S.grid.enabled);
+  syncMirrors();
   savePrefs();
   requestRender();
 }
@@ -926,6 +978,7 @@ function updateCursorReadout(p) {
 }
 
 function onPointerDown(e) {
+  if (TouchGestures.isTouch(e)) return;
   if (S.rhythm) stopRhythm();
   view.canvas.focus();
   const p = pointerWorld(e);
@@ -990,45 +1043,14 @@ function onPointerDown(e) {
 }
 
 function onPointerMove(e) {
+  if (TouchGestures.isTouch(e)) return;
   const p = pointerWorld(e);
   S.pointer = p;
   S.altDown = e.altKey;
   updateCursorReadout(p);
   const d = S.drag;
   if (d) {
-    if (d.kind === 'pan') {
-      view.cam.x = d.cx - (p.sx - d.sx) / view.cam.z;
-      view.cam.y = d.cy + (p.sy - d.sy) / view.cam.z;
-      view.clampCamera(doc.level.height);
-      requestRender();
-    } else if (d.kind === 'marquee') {
-      S.marquee.x1 = p.sx;
-      S.marquee.y1 = p.sy;
-      requestRender();
-    } else if (d.kind === 'move') {
-      updateMove(d, p.wx, p.wy, p.sx, p.sy);
-      props.refresh();
-    } else if (d.kind === 'resize') {
-      updateResize(d, p.wx, p.wy);
-      props.refresh();
-    } else if (d.kind === '__start') {
-      d.tx.touchMeta();
-      doc.level.start.lane = laneAt(p.wx);
-      doc.touched();
-      props.refresh();
-    } else if (d.kind === '__finish') {
-      d.tx.touchMeta();
-      const y = Math.max(LIMITS.finish[0], snapY(p.wy));
-      doc.level.finish.y = y;
-      if (doc.level.height < y) doc.level.height = y;
-      doc.touched();
-      props.refresh();
-    } else if (d.kind === '__test' && S.testMarker) {
-      S.testMarker.y = Math.max(0, snapY(p.wy));
-      S.testMarker.lane = laneAt(p.wx);
-      props.refresh();
-      requestRender();
-    }
+    applyDrag(d, p);
     return;
   }
   if (S.tool === 'place') {
@@ -1047,11 +1069,53 @@ function onPointerMove(e) {
   }
 }
 
+/** Laufenden Zieh-Vorgang (Maus oder Finger) auf den Zeigerpunkt p anwenden. */
+function applyDrag(d, p) {
+  if (d.kind === 'pan') {
+    view.cam.x = d.cx - (p.sx - d.sx) / view.cam.z;
+    view.cam.y = d.cy + (p.sy - d.sy) / view.cam.z;
+    view.clampCamera(doc.level.height);
+    requestRender();
+  } else if (d.kind === 'marquee') {
+    S.marquee.x1 = p.sx;
+    S.marquee.y1 = p.sy;
+    requestRender();
+  } else if (d.kind === 'move') {
+    updateMove(d, p.wx, p.wy, p.sx, p.sy);
+    props.refresh();
+  } else if (d.kind === 'resize') {
+    updateResize(d, p.wx, p.wy);
+    props.refresh();
+  } else if (d.kind === '__start') {
+    d.tx.touchMeta();
+    doc.level.start.lane = laneAt(p.wx);
+    doc.touched();
+    props.refresh();
+  } else if (d.kind === '__finish') {
+    d.tx.touchMeta();
+    const y = Math.max(LIMITS.finish[0], snapY(p.wy));
+    doc.level.finish.y = y;
+    if (doc.level.height < y) doc.level.height = y;
+    doc.touched();
+    props.refresh();
+  } else if (d.kind === '__test' && S.testMarker) {
+    S.testMarker.y = Math.max(0, snapY(p.wy));
+    S.testMarker.lane = laneAt(p.wx);
+    props.refresh();
+    requestRender();
+  }
+}
+
 function onPointerUp(e) {
+  if (TouchGestures.isTouch(e)) return;
   const d = S.drag;
   if (!d) return;
   S.drag = null;
   try { view.canvas.releasePointerCapture(e.pointerId); } catch { /* bereits freigegeben */ }
+  finishDrag(d);
+}
+
+function finishDrag(d) {
   if (d.kind === 'marquee') {
     const m = S.marquee;
     S.marquee = null;
@@ -1184,6 +1248,7 @@ function playtest(fromHere = false) {
     toast(`Playtest nicht möglich: Browser-Speicher blockiert (${err.message}).`, 'error');
     return false;
   }
+  closeSheets();
   S.playtest = { from, mode, levelJson: stripReplay(res.level) };
   $('#pt-title').textContent = `PLAYTEST · ${res.level.name}${from ? ` · ab y ${fmt(from.y)}` : ''}`;
   $('#playtest').hidden = false;
@@ -1284,7 +1349,7 @@ function stopRhythm() {
 function bindPalette() {
   for (const b of document.querySelectorAll('.pal')) {
     b.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
+      if (e.button !== 0 || TouchGestures.isTouch(e)) return;
       const kind = b.dataset.kind;
       if (!KINDS[kind]) return;
       const start = { x: e.clientX, y: e.clientY };
@@ -1320,6 +1385,328 @@ function bindPalette() {
     });
     b.addEventListener('click', () => setKind(b.dataset.kind));
   }
+}
+
+// ------------------------------------------------------------------ Touch-Bedienung (Smartphone und Tablet)
+
+function touchPoint(p) {
+  const w = view.toWorld(p.x, p.y);
+  return { sx: p.x, sy: p.y, wx: w.x, wy: w.y, inside: true };
+}
+
+function finishPlacement(p) {
+  const placed = placeAt(S.kind, p.wx, p.wy);
+  if (placed) placed.tx.commit();
+  S.ghost = null;
+  props.render();
+  updateSelInfo();
+  requestRender();
+}
+
+const touchHandlers = {
+  tap(p0) {
+    if (S.rhythm) stopRhythm();
+    closeCtxMenu();
+    commitEdit();
+    const p = touchPoint(p0);
+    S.pointer = p;
+    if (S.tool === 'place') { finishPlacement(p); return; }
+    if (S.tool === 'hand') return;
+    const hit = view.hitTest(doc, p.wx, p.wy, { testMarker: S.testMarker });
+    if (S.tool === 'delete') {
+      if (hit && !PSEUDO.has(hit)) { S.selection = new Set([hit]); deleteSelection(); }
+      else if (hit === '__test') removeTestMarker();
+      return;
+    }
+    setSelection(hit ? [hit] : []);
+  },
+
+  longPress(p0) {
+    const p = touchPoint(p0);
+    const hit = view.hitTest(doc, p.wx, p.wy, { testMarker: S.testMarker });
+    if (!hit || S.tool === 'place' || S.tool === 'hand') return;
+    commitEdit();
+    if (!S.selection.has(hit)) setSelection([hit]);
+    if (navigator.vibrate) navigator.vibrate(12);
+    openCtxMenu(p0, hit);
+  },
+
+  dragStart(p0, p1) {
+    if (S.rhythm) stopRhythm();
+    closeCtxMenu();
+    commitEdit();
+    const a = touchPoint(p0);
+    S.pointer = a;
+    if (S.tool === 'place') {
+      S.drag = { kind: 'ghost' };
+      touchHandlers.drag(p1);
+      return;
+    }
+    const pan = () => ({ kind: 'pan', sx: a.sx, sy: a.sy, cx: view.cam.x, cy: view.cam.y });
+    if (S.tool === 'hand') S.drag = pan();
+    else if (S.tool === 'marquee') {
+      S.drag = { kind: 'marquee', add: false };
+      S.marquee = { x0: a.sx, y0: a.sy, x1: a.sx, y1: a.sy };
+    } else {
+      const single = S.selection.size === 1 ? doc.get([...S.selection][0]) : null;
+      const handle = view.handleAt(single, a.sx, a.sy);
+      const hit = handle ? null : view.hitTest(doc, a.wx, a.wy, { testMarker: S.testMarker });
+      if (handle) startResize(single, handle, a.wx, a.wy);
+      else if (PSEUDO.has(hit)) {
+        setSelection([hit]);
+        S.drag = { kind: hit, tx: hit === '__test' ? null : doc.begin(hit === '__start' ? 'Start verschieben' : 'Ziel verschieben'), sx: a.sx, sy: a.sy, moved: false };
+      } else if (hit) {
+        if (!S.selection.has(hit)) setSelection([hit]);
+        const real = [...S.selection].filter((id) => !PSEUDO.has(id));
+        S.selection = new Set(real);
+        startMove(doc.begin(real.length > 1 ? `${real.length} Objekte verschieben` : 'Verschieben'), a.wx, a.wy, a.sx, a.sy, hit);
+      } else S.drag = pan();
+    }
+    applyDrag(S.drag, touchPoint(p1));
+  },
+
+  drag(p0) {
+    const d = S.drag;
+    if (!d) return;
+    const p = touchPoint(p0);
+    S.pointer = p;
+    if (d.kind === 'ghost') {
+      S.ghost = ghostFor(S.kind, p.wx, p.wy);
+      requestRender();
+      return;
+    }
+    applyDrag(d, p);
+  },
+
+  dragEnd(p0) {
+    const d = S.drag;
+    S.drag = null;
+    if (!d) return;
+    if (d.kind === 'ghost') { finishPlacement(touchPoint(p0)); return; }
+    finishDrag(d);
+    if (d.kind === 'move' || d.kind === 'resize') props.refresh();
+  },
+
+  cancel() {
+    const d = S.drag;
+    S.drag = null;
+    S.ghost = null;
+    S.marquee = null;
+    if (d && d.tx) d.tx.cancel();
+    props.refresh();
+    requestRender();
+  },
+
+  pinchStart(mid) {
+    closeCtxMenu();
+    S.pinch = { z0: view.cam.z, w0: view.toWorld(mid.x, mid.y) };
+  },
+
+  pinch({ mid, scale }) {
+    const pz = S.pinch;
+    if (!pz) return;
+    // Der Weltpunkt unter der ursprünglichen Fingermitte folgt der aktuellen Fingermitte (Zoom + Verschieben)
+    view.cam.z = clamp(pz.z0 * scale, ZOOM_MIN, ZOOM_MAX);
+    view.cam.x = pz.w0.x - (mid.x - view.W / 2) / view.cam.z;
+    view.cam.y = pz.w0.y + (mid.y - view.H / 2) / view.cam.z;
+    view.clampCamera(doc.level.height);
+    requestRender();
+  },
+
+  pinchEnd() {
+    S.pinch = null;
+  },
+};
+
+// ------------------------------------------------------------------ Kontextmenü (langes Drücken)
+
+function openCtxMenu(p, hit) {
+  const m = $('#ctx-menu');
+  const pseudo = PSEUDO.has(hit);
+  m.querySelector('[data-act="duplicate"]').hidden = pseudo;
+  const del = m.querySelector('[data-act="delete"]');
+  del.hidden = hit === '__start' || hit === '__finish';
+  del.textContent = hit === '__test' ? 'Testmarker entfernen' : 'Löschen';
+  m.hidden = false;
+  const r = view.canvas.getBoundingClientRect();
+  const w = m.offsetWidth;
+  const h = m.offsetHeight;
+  const x = clamp(r.left + p.x - w / 2, 8, window.innerWidth - w - 8);
+  let y = r.top + p.y - h - 24;
+  if (y < r.top + 4) y = Math.min(r.top + p.y + 24, window.innerHeight - h - 8);
+  m.style.left = `${Math.round(x)}px`;
+  m.style.top = `${Math.round(y)}px`;
+}
+
+function closeCtxMenu() {
+  $('#ctx-menu').hidden = true;
+}
+
+function onCtxAction(act) {
+  closeCtxMenu();
+  if (act === 'duplicate') duplicate();
+  else if (act === 'delete') deleteSelection();
+  else if (act === 'props') openSheet('props');
+}
+
+// ------------------------------------------------------------------ Bottom Sheets und Menü (Smartphone)
+
+function openSheet(kind) {
+  closeCtxMenu();
+  if (kind) document.body.dataset.sheet = kind;
+  else delete document.body.dataset.sheet;
+  $('#dk-props').classList.toggle('active', kind === 'props');
+  $('#dk-check').classList.toggle('active', kind === 'check');
+  syncSheetTitle();
+  if (kind === 'props') requestAnimationFrame(ensureVisible);
+}
+
+function toggleSheet(kind) {
+  openSheet(document.body.dataset.sheet === kind ? null : kind);
+}
+
+function syncSheetTitle() {
+  const t = $('#sheet-title');
+  if (!t) return;
+  if (document.body.dataset.sheet === 'check') { t.textContent = `Prüfung ${$('#check-summary').textContent}`.trim(); return; }
+  const h = props && props.root.querySelector('.panel-title');
+  t.textContent = h ? h.textContent : 'Eigenschaften';
+}
+
+function closeSheets() {
+  openSheet(null);
+  closeMenuSheet();
+}
+
+/** Ausgewähltes Objekt über dem Bottom Sheet sichtbar halten (Sheet verdeckt den unteren Teil der Ansicht). */
+function ensureVisible() {
+  if (!doc || document.body.dataset.sheet !== 'props') return;
+  const id = [...S.selection][0];
+  if (!id) return;
+  let y;
+  if (id === '__start') y = 0;
+  else if (id === '__finish') y = doc.level.finish.y;
+  else if (id === '__test') y = S.testMarker ? S.testMarker.y : null;
+  else y = doc.get(id) ? doc.get(id).y : null;
+  if (y === null || y === undefined) return;
+  const cr = view.canvas.getBoundingClientRect();
+  const sheetTop = $('.props').getBoundingClientRect().top - cr.top;
+  const visible = Math.max(80, Math.min(view.H, sheetTop));
+  const sy = view.toScreen(0, y).y;
+  if (sy > 36 && sy < visible - 36) return;
+  view.cam.y = y + (visible * 0.5 - view.H / 2) / view.cam.z;
+  requestRender();
+}
+
+function openMenuSheet() {
+  closeCtxMenu();
+  openSheet(null);
+  syncMirrors();
+  $('#menu-sheet').hidden = false;
+  $('#sheet-scrim').hidden = false;
+  $('#m-menu').setAttribute('aria-expanded', 'true');
+}
+
+function closeMenuSheet() {
+  $('#menu-sheet').hidden = true;
+  $('#sheet-scrim').hidden = true;
+  $('#m-menu').setAttribute('aria-expanded', 'false');
+}
+
+/** Bedienelemente im Menü-Sheet spiegeln die vorhandenen Desktop-Felder (eine Quelle für Zustand und Logik). */
+function bindMirrors() {
+  for (const m of document.querySelectorAll('[data-mirror]')) {
+    const orig = $(m.dataset.mirror);
+    if (m.tagName === 'SELECT') m.innerHTML = orig.innerHTML;
+    m.addEventListener('change', () => {
+      if (m.type === 'checkbox') orig.checked = m.checked;
+      else orig.value = m.value;
+      orig.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
+}
+
+function syncMirrors() {
+  for (const m of document.querySelectorAll('[data-mirror]')) {
+    const orig = $(m.dataset.mirror);
+    if (m.type === 'checkbox') m.checked = orig.checked;
+    else m.value = orig.value;
+  }
+}
+
+/** Bildschirmtastatur: sichtbare Höhe und Tastaturhöhe als CSS-Variablen (Sheet bleibt darüber bedienbar). */
+function updateViewportVars() {
+  const vv = window.visualViewport;
+  const h = vv ? vv.height : window.innerHeight;
+  const kb = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+  const st = document.documentElement.style;
+  st.setProperty('--vvh', `${Math.round(h)}px`);
+  st.setProperty('--kb', `${Math.round(kb)}px`);
+  document.body.dataset.kb = kb > 80 ? '1' : '0';
+  const dock = $('#dock');
+  st.setProperty('--dock-h', `${dock && dock.offsetParent ? Math.round(dock.getBoundingClientRect().height) : 0}px`);
+}
+
+function bindMobile() {
+  new TouchGestures(view.canvas, touchHandlers);
+  // Zeigerart merken: Finger bekommen größere Trefferflächen und Griffe
+  view.canvas.addEventListener('pointerdown', (e) => {
+    const t = TouchGestures.isTouch(e);
+    if (t !== view.touch) { view.touch = t; requestRender(); }
+  }, true);
+  $('#m-undo').addEventListener('click', () => doc.undo());
+  $('#m-redo').addEventListener('click', () => doc.redo());
+  $('#m-save').addEventListener('click', saveLocal);
+  $('#m-menu').addEventListener('click', openMenuSheet);
+  $('#menu-close').addEventListener('click', closeMenuSheet);
+  $('#sheet-scrim').addEventListener('click', closeMenuSheet);
+  $('#sheet-close').addEventListener('click', () => openSheet(null));
+  $('#m-fit').addEventListener('click', () => { view.resetZoom(); view.clampCamera(doc.level.height); requestRender(); });
+  $('#m-export').addEventListener('click', () => { closeMenuSheet(); exportLevel(); });
+  for (const b of document.querySelectorAll('#menu-sheet [data-click]')) {
+    b.addEventListener('click', () => { closeMenuSheet(); $(b.dataset.click).click(); });
+  }
+  bindMirrors();
+  $('#dk-props').addEventListener('click', () => toggleSheet('props'));
+  $('#dk-check').addEventListener('click', () => toggleSheet('check'));
+  $('#dk-dim').addEventListener('click', () => setDimMode({ both: 'B', B: 'R', R: 'both' }[S.dimMode]));
+  $('#dk-play').addEventListener('click', () => playtest(false));
+  for (const b of document.querySelectorAll('#ctx-menu [data-act]')) b.addEventListener('click', () => onCtxAction(b.dataset.act));
+  document.addEventListener('pointerdown', (e) => {
+    const m = $('#ctx-menu');
+    if (!m.hidden && !m.contains(e.target)) closeCtxMenu();
+  }, true);
+  // Feld im Sheet nach dem Einblenden der Tastatur sichtbar halten
+  $('.props').addEventListener('focusin', (e) => {
+    if (!isPhone() || !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    setTimeout(() => e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }), 320);
+  });
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateViewportVars);
+    window.visualViewport.addEventListener('scroll', updateViewportVars);
+  }
+  window.addEventListener('resize', updateViewportVars);
+  updateViewportVars();
+  // Größe der Arbeitsfläche folgt dem Layout (Drehen, Browserleisten, Sheets)
+  if (window.ResizeObserver) {
+    new ResizeObserver(updateViewportVars).observe($('#dock'));
+    let w0 = 0;
+    let h0 = 0;
+    new ResizeObserver(() => {
+      const r = view.canvas.getBoundingClientRect();
+      if (Math.abs(r.width - w0) < 0.5 && Math.abs(r.height - h0) < 0.5) return;
+      const firstFit = !w0 || (w0 < 600) !== (r.width < 600);
+      w0 = r.width;
+      h0 = r.height;
+      view.resize();
+      if (doc) {
+        if (firstFit) { const y = view.cam.y; view.resetZoom(); view.cam.y = y; }
+        view.clampCamera(doc.level.height);
+      }
+      requestRender();
+    }).observe(view.canvas);
+  }
+  phoneMq.addEventListener('change', () => { closeSheets(); closeCtxMenu(); if (doc) updateSelInfo(); });
 }
 
 // ------------------------------------------------------------------ Start
@@ -1378,6 +1765,7 @@ function bindUi() {
   $('#snap-y').addEventListener('change', (e) => setGrid({ snapY: e.target.value }));
   $('#grid-show').addEventListener('change', (e) => setGrid({ show: e.target.checked }));
   $('#snap-on').addEventListener('change', (e) => setGrid({ enabled: e.target.checked }));
+  bindMobile();
 
   // Drag-and-drop einer JSON-Datei direkt auf den Editor = Import
   document.addEventListener('dragover', (e) => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
@@ -1429,6 +1817,16 @@ async function boot() {
     }
   }
   setSaveState(restored ? 'draft' : S.saveState);
+  riftlingArt.load().then(requestRender, () => {});
+  // Bitte um dauerhaften Speicher (Browser darf IndexedDB dann nicht still aufräumen); Ergebnis nur als Hinweis
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then((ok) => {
+      S.persisted = ok;
+      const n = $('#m-storage-note');
+      if (n) n.dataset.persisted = ok ? '1' : '0';
+      if (n && ok) n.append(' Dauerhafter Speicher wurde vom Browser gewährt.');
+    }).catch(() => {});
+  }
   document.body.dataset.ready = '1';
 }
 
