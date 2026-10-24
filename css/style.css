@@ -95,6 +95,7 @@ body[data-dim="R"] #app::after { opacity: 1; }
 #hud-dim[data-dim="R"] { color: var(--red); border-color: var(--red); box-shadow: 0 0 10px rgba(255, 45, 138, 0.4); }
 .chip.practice { color: var(--green); border-color: var(--green); }
 .chip.muted { color: rgba(255, 255, 255, 0.75); }
+.chip.playtest { color: #ffc23d; border-color: #ffc23d; box-shadow: 0 0 10px rgba(255, 194, 61, 0.35); }
 
 .icon-btn {
   pointer-events: auto;
@@ -227,6 +228,25 @@ h2 { margin: 0; font-size: 26px; letter-spacing: 0.08em; text-shadow: 0 0 14px v
 .stats .label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.7; }
 .stats strong { font-size: 22px; font-variant-numeric: tabular-nums; }
 
+.menu-row { display: flex; gap: 10px; }
+.menu-row .btn { flex: 1; }
+.level-pick { flex: 1.3; display: flex; }
+.level-pick select {
+  width: 100%; min-height: 44px; padding: 0 12px;
+  border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.06); color: var(--white);
+  font: inherit; font-size: 15px; font-weight: 800; letter-spacing: 0.04em;
+}
+.level-pick select option { background: #0b0b1e; color: #fff; }
+.level-pick select:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.forge-link {
+  font-size: 12px; font-weight: 800; letter-spacing: 0.14em;
+  color: #ffc23d; text-decoration: none; opacity: 0.85;
+}
+.forge-link:hover, .forge-link:focus-visible { opacity: 1; text-shadow: 0 0 8px rgba(255, 194, 61, 0.6); }
+.tagline.error { color: #ff6b6b; opacity: 1; font-weight: 700; }
+body[data-playtest="1"] .forge-link, body[data-playtest="1"] .level-pick { display: none; }
 .help { font-size: 12.5px; line-height: 1.45; opacity: 0.85; text-align: left; }
 .help p { margin: 4px 0; }
 .c-b { color: var(--blue); font-weight: 700; }

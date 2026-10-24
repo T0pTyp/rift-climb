@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#04040c">
+  <meta name="description" content="LEVEL FORGE – visueller Level-Editor für RIFT CLIMB: PULSE.">
+  <title>LEVEL FORGE · RIFT CLIMB</title>
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/forge.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../../" title="Zum Spiel (RIFT CLIMB: PULSE)">
+      <span class="brand-main">LEVEL FORGE</span><span class="brand-sub">RIFT CLIMB</span>
+    </a>
+    <nav class="menu" aria-label="Datei">
+      <button id="btn-new" type="button" title="Neues, leeres Level">Neu</button>
+      <button id="btn-open" type="button" title="Spiel-Level oder lokal gespeichertes Level öffnen">Öffnen</button>
+      <button id="btn-save" type="button" title="Im Browser speichern (Strg/Cmd+S) – nicht auf GitHub">Speichern</button>
+      <button id="btn-import" type="button" title="JSON-Leveldatei importieren">Importieren</button>
+      <button id="btn-export" type="button" title="Als JSON-Datei herunterladen">Exportieren</button>
+      <button id="btn-publish" class="icon" type="button" title="Wie kommt ein Level ins Spiel?" aria-label="Veröffentlichen – Anleitung">?</button>
+      <input id="file-import" type="file" accept=".json,application/json" hidden>
+    </nav>
+    <nav class="menu" aria-label="Bearbeiten">
+      <button id="btn-undo" class="icon" type="button" title="Rückgängig (Strg/Cmd+Z)" aria-label="Rückgängig">&#8630;</button>
+      <button id="btn-redo" class="icon" type="button" title="Wiederherstellen (Strg/Cmd+Y oder Strg/Cmd+Shift+Z)" aria-label="Wiederherstellen">&#8631;</button>
+    </nav>
+    <nav class="menu" aria-label="Test">
+      <button id="btn-playtest" class="accent" type="button" title="Level sofort spielen (ohne Export, eigener Testzustand)">&#9654; PLAYTEST</button>
+      <button id="btn-playfrom" type="button" title="Ab dem Testmarker spielen (ohne Marker: ab der Bildmitte)">&#9654; AB HIER</button>
+    </nav>
+    <nav class="menu" aria-label="Ansicht">
+      <div class="popover-wrap">
+        <button id="btn-grid-settings" type="button" title="Raster- und Snap-Einstellungen" aria-haspopup="true" aria-expanded="false">Raster &#9662;</button>
+        <div id="grid-pop" class="popover" hidden>
+          <label class="pop-row"><span>Rastergröße</span>
+            <select id="grid-size">
+              <option value="5">5 u</option><option value="10">10 u</option><option value="15">15 u</option>
+              <option value="30">30 u</option><option value="45">45 u (halbe Spur)</option><option value="90">90 u (Spur)</option>
+            </select>
+          </label>
+          <label class="pop-row"><span>Snap horizontal</span>
+            <select id="snap-x">
+              <option value="lane">Spuren (wie im Spiel)</option><option value="grid">Raster</option><option value="off">aus (pixelgenau)</option>
+            </select>
+          </label>
+          <label class="pop-row"><span>Snap vertikal</span>
+            <select id="snap-y">
+              <option value="beat">ganzer Beat</option><option value="half">halber Beat</option><option value="quarter">Viertelbeat</option>
+              <option value="grid">Raster</option><option value="off">aus (pixelgenau)</option>
+            </select>
+          </label>
+          <label class="pop-row check"><input id="grid-show" type="checkbox"> <span>Raster anzeigen</span></label>
+          <label class="pop-row check"><input id="snap-on" type="checkbox"> <span>Snap aktiv (G)</span></label>
+          <p class="pop-note">Alt gedrückt halten = Snap kurz aus. Spurgenau + ganzer Beat bei 120 BPM = vom Spur-Solver exakt prüfbar.</p>
+        </div>
+      </div>
+      <button id="btn-zoom-reset" type="button" title="Zoom zurücksetzen: Spielfeldbreite einpassen (0)">Zoom <span id="zoom-label">100%</span></button>
+    </nav>
+    <div class="doc-info">
+      <span id="level-title" class="level-title" title="Aktueller Levelname">–</span>
+      <span id="save-status" class="save-status" data-state="idle">Lädt…</span>
+    </div>
+  </header>
+
+  <aside class="toolbar" aria-label="Werkzeuge">
+    <div class="tool-group" role="radiogroup" aria-label="Werkzeug">
+      <button class="tool" data-tool="select" type="button" title="Auswählen (V) – Klick wählt, Ziehen verschiebt, Ziehen ins Leere = Rahmen">
+        <svg viewBox="0 0 24 24"><path d="M5 3l14 8-6 1.5L10 19z"/></svg><span>Auswahl</span></button>
+      <button class="tool" data-tool="move" type="button" title="Verschieben (M) – Ziehen bewegt die ganze Auswahl">
+        <svg viewBox="0 0 24 24"><path d="M12 2l3 3h-2v6h6V9l3 3-3 3v-2h-6v6h2l-3 3-3-3h2v-6H5v2l-3-3 3-3v2h6V5H9z"/></svg><span>Bewegen</span></button>
+      <button class="tool" data-tool="place" type="button" title="Platzieren (P) – gewähltes Palettenobjekt per Klick setzen">
+        <svg viewBox="0 0 24 24"><path d="M11 4h2v7h7v2h-7v7h-2v-7H4v-2h7z"/></svg><span>Setzen</span></button>
+      <button class="tool" data-tool="marquee" type="button" title="Mehrfachauswahl (R) – Rahmen aufziehen, Shift = hinzufügen">
+        <svg viewBox="0 0 24 24"><path d="M3 3h5v2H5v3H3zm13 0h5v5h-2V5h-3zM3 16h2v3h3v2H3zm16 0h2v5h-5v-2h3z"/></svg><span>Rahmen</span></button>
+      <button class="tool" data-tool="delete" type="button" title="Löschen (X) – angeklicktes Objekt entfernen">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4zm-3 6h12l-1 12H7z"/></svg><span>Löschen</span></button>
+      <button class="tool" data-tool="hand" type="button" title="Kamera schieben (H) – auch Leertaste halten oder mittlere Maustaste">
+        <svg viewBox="0 0 24 24"><path d="M8 11V5a1.5 1.5 0 013 0v5h1V3.5a1.5 1.5 0 013 0V10h1V5a1.5 1.5 0 013 0v9c0 4-3 7-7 7-3 0-5-2-6.5-4L3 13a1.5 1.5 0 012.3-1.8z"/></svg><span>Hand</span></button>
+      <button id="btn-grid-toggle" class="tool toggle" type="button" title="Raster/Snap an/aus (G)" aria-pressed="true">
+        <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zm2 2v4h4V5zm6 0v4h4V5zm6 0v4h2V5zM5 11v4h4v-4zm6 0v4h4v-4zm6 0v4h2v-4zM5 17v2h4v-2zm6 0v2h4v-2zm6 0v2h2v-2z"/></svg><span>Raster</span></button>
+    </div>
+    <h2 class="side-title">Objekte</h2>
+    <div id="palette" class="palette" aria-label="Objektpalette">
+      <button class="pal" data-kind="neutral" type="button" title="Neutrales Hindernis – tödlich in beiden Dimensionen (weiß)"><i class="sw sw-w"></i><span>Neutral</span></button>
+      <button class="pal" data-kind="blue" type="button" title="Blaues Hindernis – tödlich in der blauen Dimension"><i class="sw sw-b"></i><span>Blau</span></button>
+      <button class="pal" data-kind="red" type="button" title="Rotes Hindernis – tödlich in der roten Dimension"><i class="sw sw-r"></i><span>Rot</span></button>
+      <button class="pal" data-kind="barrier" type="button" title="Rechteckige Barriere – hohes Hindernis (Dimension in den Eigenschaften wählbar)"><i class="sw sw-barrier"></i><span>Barriere</span></button>
+      <button class="pal" data-kind="seal" type="button" title="Rift-Siegel – geschlossen tödlich, ein Rift Pulse öffnet es kurz"><i class="sw sw-s"></i><span>Rift-Siegel</span></button>
+      <button class="pal" data-kind="hint" type="button" title="Hinweistext – nur Anzeige, keine Kollision"><i class="sw sw-hint">T</i><span>Hinweis</span></button>
+      <button class="pal" data-kind="start" type="button" title="Startposition – Startspur festlegen (immer auf der Startlinie y 0)"><i class="sw sw-start"></i><span>Start</span></button>
+      <button class="pal" data-kind="finish" type="button" title="Zielbereich – Ziellinie setzen"><i class="sw sw-finish"></i><span>Ziel</span></button>
+      <button class="pal" data-kind="test" type="button" title="Testmarker – Starthöhe für PLAY FROM HERE (nur Editor)"><i class="sw sw-test"></i><span>Testmarker</span></button>
+      <button class="pal unavailable" data-kind="spikes" type="button" aria-disabled="true"
+        title="Dreieckige Stacheln: im Spiel nicht vorhanden. LEVEL FORGE erfindet keine neue Mechanik – rechteckige Hindernisse und Barrieren decken die vorhandene Kollision ab."><i class="sw sw-spikes"></i><span>Stacheln</span><em>nicht verfügbar</em></button>
+    </div>
+    <p class="side-note">Palette anklicken und ins Feld klicken – oder direkt ins Feld ziehen.</p>
+  </aside>
+
+  <main class="stage" id="stage">
+    <div class="stage-bar">
+      <div class="seg" role="radiogroup" aria-label="Dimensionsansicht">
+        <button data-dim="both" type="button" title="Beide Dimensionen: alles hervorgehoben (1)">Beide</button>
+        <button data-dim="B" type="button" title="Blaue Dimension: tödliche Objekte massiv, Geister transparent (2)">Blau</button>
+        <button data-dim="R" type="button" title="Rote Dimension: tödliche Objekte massiv, Geister transparent (3)">Rot</button>
+      </div>
+      <label class="tg" title="Beat-Marker (ganze, halbe, Viertelbeats) aus BPM und Steiggeschwindigkeit"><input id="tg-beats" type="checkbox"> Beats</label>
+      <label class="tg" title="Kollisionsflächen aller Objekte anzeigen"><input id="tg-hitboxes" type="checkbox"> Hitboxen</label>
+      <label class="tg" title="Pulse-Reichweite ausgewählter Rift-Siegel anzeigen"><input id="tg-reach" type="checkbox"> Reichweite</label>
+      <button id="btn-rhythm" type="button" title="Rhythmus-Vorschau: Kamera steigt mit Spielgeschwindigkeit (260 u/s) ab Bildmitte">&#9835; Vorschau</button>
+      <label class="tg" title="Metronom-Klick auf jedem Beat während der Rhythmus-Vorschau (selbst erzeugte Töne)"><input id="tg-metronome" type="checkbox"> Metronom</label>
+    </div>
+    <canvas id="view" tabindex="0" aria-label="Levelansicht"></canvas>
+    <div class="statusbar">
+      <span id="cursor-pos">x – · y –</span>
+      <span id="sel-info">Keine Auswahl</span>
+      <span id="draw-info"></span>
+    </div>
+  </main>
+
+  <aside class="props" aria-label="Eigenschaften">
+    <div id="props-body" class="props-body"></div>
+    <section class="check">
+      <h2 class="panel-title">Prüfung <span id="check-summary" class="check-summary"></span></h2>
+      <ul id="check-list" class="check-list"></ul>
+      <p class="side-note">Fehler verhindern Playtest und Export. Warnungen weisen auf problematisches Design hin – sie sind keine Spielbarkeitsgarantie.</p>
+    </section>
+  </aside>
+
+  <div id="playtest" class="playtest" hidden>
+    <div class="pt-bar">
+      <strong id="pt-title">PLAYTEST</strong>
+      <label class="tg">Modus
+        <select id="pt-mode"><option value="normal">Normal</option><option value="practice">Übung (Checkpoints)</option></select>
+      </label>
+      <label class="tg"><input id="pt-debug" type="checkbox"> Hitboxen</label>
+      <button id="pt-restart" type="button" title="Playtest neu laden">Neu starten</button>
+      <span class="pt-note">Testzustand: keine Bestleistung, kein Fortschritt. Steuerung: A/D oder Pfeile, P = Pause, Esc = zurück zum Editor.</span>
+      <button id="pt-exit" class="accent" type="button" title="Zurück zum Editor – nichts geht verloren">Zurück zum Editor</button>
+    </div>
+    <div class="pt-frame-wrap"><iframe id="pt-frame" title="Playtest" allow="autoplay"></iframe></div>
+  </div>
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card">
+      <h2 id="modal-title"></h2>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="../../js/forge/main.js"></script>
+</body>
+</html>
