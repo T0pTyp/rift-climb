@@ -6,18 +6,22 @@ import {
 import {
   SIM_DT, BAR_INSET_X, HIT_HALF_H, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
   CAMERA_PLAYER_Y, CAMERA_MIN_BOTTOM, SWITCH_SHAKE, DEATH_SHAKE, SHAKE_PX,
+  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_OPEN_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE,
 } from './config.js';
+import { RiftField, pulseRadius, distToSeal } from './rift.js';
 import { Player } from './player.js';
 import { ParticlePool } from './particles.js';
 import { COLORS, isDeadly } from './dimensions.js';
 import { circleRectOverlap, clamp } from './physics.js';
 
 const DASH = [6, 5];
+const SEAL_DASH = [3, 4];
+const REACH_DASH = [4, 7];
 const NO_DASH = [];
 const COLLIDE_RANGE = HIT_HALF_H + HIT_RADIUS + 2;
 
 export class Game {
-  constructor({ canvas, ui, audio, input, storage, debug }) {
+  constructor({ canvas, ui, audio, input, storage, debug, rows }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.ui = ui;
@@ -25,8 +29,11 @@ export class Game {
     this.input = input;
     this.storage = storage;
     this.debug = debug;
-    this.rows = getRows();
+    this.rows = rows || getRows();
     this.obstacles = buildObstacles(this.rows);
+    this.seals = this.obstacles.filter((o) => o.color === 'S');
+    this.rift = new RiftField(this.seals);
+    this.onSealOpen = this.onSealOpen.bind(this);
     this.validation = validateLevel(this.rows);
     if (!this.validation.ok) console.error('Level nicht lösbar:', this.validation.errors);
     this.player = new Player();
@@ -39,7 +46,7 @@ export class Game {
     this.flash = 0;
     this.shake = 0;
     this.switchPulse = 0;
-    this.ring = { age: 1, x: 0, y: 0, color: '#fff' };
+    this.sealStreak = 0;
     this.dimBlend = 0;
     this.respawnTimer = 0;
     this.deathTimer = 0;
@@ -111,7 +118,8 @@ export class Game {
     this.flash = 0;
     this.shake = 0;
     this.switchPulse = 0;
-    this.ring.age = 1;
+    this.rift.reset();
+    this.sealStreak = 0;
     this.killer = null;
     this.lastRowPassed = -1;
     this.rowSolvable = true;
@@ -130,13 +138,19 @@ export class Game {
     if (!this.debug.autoplay || !this.validation.solution) return;
     const startIdx = this.lastRowPassed + 1;
     const offset = this.debug.autoplayOffset;
+    const lead = this.debug.sealLead;
     this.validation.solution.forEach((taps, k) => {
       if (k < startIdx) return;
       const prevT = k === 0 ? 0.5 : this.rows[k - 1][0] * BEAT_SEC + offset;
+      const hasSeal = this.rows[k][1].includes('S');
       taps.forEach((tap, i) => {
-        this.autoplayQueue.push({ t: Math.max(prevT, this.t + 0.05) + i * BEAT_SEC, dir: tap === 'R' ? 1 : -1 });
+        let t = Math.max(prevT, this.t + 0.05) + i * BEAT_SEC;
+        // Öffnungs-Tipp vor einer Siegel-Reihe: `lead` Sekunden vor dem Siegel
+        if (hasSeal && i === taps.length - 1) t = Math.max(t, this.rows[k][0] * BEAT_SEC - lead);
+        this.autoplayQueue.push({ t, dir: tap === 'R' ? 1 : -1 });
       });
     });
+    this.autoplayQueue.sort((a, b) => a.t - b.t);
   }
 
   pause() {
@@ -191,10 +205,7 @@ export class Game {
     this.switchPulse = 1;
     this.shake = Math.max(this.shake, SWITCH_SHAKE);
     const col = COLORS[p.dim].main;
-    this.ring.age = 0;
-    this.ring.x = p.x;
-    this.ring.y = this.y;
-    this.ring.color = col;
+    this.rift.emit(p.x, this.y, this.t, col);
     this.audio.sfx('switch', p.dim, atWall);
     const y = this.y;
     for (let i = 0; i < 10; i++) {
@@ -215,7 +226,6 @@ export class Game {
     this.flash = Math.max(0, this.flash - dt * 6);
     this.shake = Math.max(0, this.shake - dt * 5);
     this.switchPulse = Math.max(0, this.switchPulse - dt * 4);
-    this.ring.age = Math.min(1, this.ring.age + dt / 0.38);
     const targetBlend = this.player.dim === 'R' ? 1 : 0;
     this.dimBlend += (targetBlend - this.dimBlend) * Math.min(1, dt * 16);
     this.particles.update(dt);
@@ -271,12 +281,14 @@ export class Game {
       this.particles.spawn(p.x, y - 8, -p.vx * 0.15, -60, 0.26, 2.5, COLORS[p.dim].main, 0.9);
     }
 
+    this.rift.step(this.t, this.onSealOpen);
+
     const obs = this.obstacles;
     while (this.obsLo < obs.length && obs[this.obsLo].y < y - COLLIDE_RANGE) this.obsLo++;
     for (let i = this.obsLo; i < obs.length; i++) {
       const o = obs[i];
       if (o.y > y + COLLIDE_RANGE) break;
-      if (!isDeadly(o.color, p.dim)) continue;
+      if (!this.deadlyNow(o, p.dim)) continue;
       if (circleRectOverlap(p.x, y, HIT_RADIUS, o.x0 + BAR_INSET_X, o.y - HIT_HALF_H, o.x1 - BAR_INSET_X, o.y + HIT_HALF_H)) {
         this.die(o);
         return;
@@ -296,8 +308,28 @@ export class Game {
     if (y >= LEVEL_LENGTH) this.win();
   }
 
+  /** Geschlossene Siegel sind in beiden Dimensionen tödlich, geöffnete gar nicht; sonst Dimensionsregel. */
+  deadlyNow(o, dim) {
+    if (o.color === 'S') return !this.rift.isOpen(o, this.t);
+    return isDeadly(o.color, dim);
+  }
+
+  onSealOpen(s, wasOpen) {
+    if (wasOpen) return;
+    const w = s.x1 - s.x0 - BAR_INSET_X * 2;
+    for (let i = 0; i < 14; i++) {
+      const px = s.x0 + BAR_INSET_X + Math.random() * w;
+      this.particles.spawn(px, s.y + (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 90, 40 + Math.random() * 120, 0.3 + Math.random() * 0.15, 2 + Math.random() * 1.5, i % 3 ? COLORS.S.main : '#ffffff', 0.9);
+    }
+    this.audio.sfx('seal');
+  }
+
   onRowPassed(k) {
     const p = this.player;
+    if (this.rows[k][1][p.lane] === 'S') {
+      this.sealStreak++;
+      if (this.sealStreak % 3 === 0) this.shake = Math.max(this.shake, SEAL_STREAK_SHAKE);
+    }
     const alive = this.validation.alive[k];
     this.rowSolvable = !!alive && alive.has(p.lane + p.dim) && !p.dashing;
     if (this.mode !== 'practice') return;
@@ -311,6 +343,9 @@ export class Game {
 
   deathReason(o, dim) {
     if (o.color === 'W') return 'WEISS tötet immer';
+    if (o.color === 'S') {
+      return o.timesOpened > 0 ? 'GOLD-SIEGEL hat sich wieder geschlossen' : 'GOLD-SIEGEL war zu – tippe, wenn es aufleuchtet';
+    }
     const name = COLORS[o.color].name;
     return `${name} ist in der ${dim === 'B' ? 'blauen' : 'roten'} Dimension aktiv`;
   }
@@ -319,6 +354,7 @@ export class Game {
     const p = this.player;
     const y = this.y;
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
+    this.sealStreak = 0;
     const colors = [COLORS[o.color].main, '#ffffff', COLORS[p.dim].main];
     for (let i = 0; i < 34; i++) {
       const a = Math.random() * Math.PI * 2;
@@ -360,6 +396,8 @@ export class Game {
     this.lastRowPassed = cp.row;
     this.obsLo = 0;
     this.killer = null;
+    this.rift.reset();
+    this.sealStreak = 0;
     this.player.reset(cp.lane, cp.dim, this.y);
     this.state = 'respawn';
     this.respawnTimer = RESPAWN_SEC;
@@ -462,19 +500,8 @@ export class Game {
 
     if (!inGame) return;
 
-    // Wechsel-Ring (Energieimpuls) – unter den Hindernissen
-    if (this.ring.age < 1) {
-      const a = this.ring.age;
-      const ry = psy - (this.ring.y - camY);
-      ctx.globalAlpha = (1 - a) * 0.7;
-      ctx.strokeStyle = this.ring.color;
-      ctx.lineWidth = 3 * (1 - a) + 1;
-      ctx.beginPath();
-      ctx.arc(this.ring.x, ry, 14 + a * 120, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = 1;
-    }
+    // Rift Pulse (Energiewelle) und Reichweiten-Hinweis – unter den Hindernissen
+    this.renderPulses(ctx, camY, psy);
 
     this.renderMarkers(ctx, camY, psy, H);
 
@@ -557,7 +584,9 @@ export class Game {
       const x0 = o.x0 + BAR_INSET_X;
       const w = o.x1 - o.x0 - BAR_INSET_X * 2;
       const col = COLORS[o.color];
-      if (isDeadly(o.color, dim)) {
+      if (o.color === 'S') {
+        this.renderSeal(ctx, o, oy, x0, w, hh);
+      } else if (isDeadly(o.color, dim)) {
         const g = 4 + (o.color === 'W' ? 0 : pop * 5);
         ctx.fillStyle = col.glow;
         ctx.fillRect(x0 - g, oy - hh - g, w + g * 2, BAR_THICKNESS + g * 2);
@@ -584,6 +613,111 @@ export class Game {
         ctx.lineWidth = 1;
       }
     }
+  }
+
+  renderPulses(ctx, camY, psy) {
+    const live = this.state === 'playing' || this.state === 'paused' || this.state === 'respawn';
+    if (!live) return;
+    const p = this.player;
+    const y = this.y;
+
+    // Reichweiten-Hinweis: dezenter Kreis, sobald ein geschlossenes Siegel naht; deutlicher, wenn ein Tipp es jetzt öffnet
+    let near = 0;
+    let reach = false;
+    for (const s of this.seals) {
+      if (s.y + HIT_HALF_H + HIT_RADIUS < y) continue;
+      if (s.y > y + PULSE_RADIUS + UNITS_PER_BEAT) break;
+      if (this.rift.isOpen(s, this.t)) continue;
+      near = Math.max(near, clamp(1 - (s.y - y - PULSE_RADIUS) / UNITS_PER_BEAT, 0, 1));
+      if (this.rift.inReach(s, p.x, y)) reach = true;
+    }
+    if (near > 0) {
+      ctx.strokeStyle = COLORS.S.main;
+      ctx.globalAlpha = reach ? 0.45 : 0.18 * near;
+      ctx.lineWidth = reach ? 2 : 1.5;
+      ctx.setLineDash(REACH_DASH);
+      ctx.beginPath();
+      ctx.arc(p.x, psy, PULSE_RADIUS, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash(NO_DASH);
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 1;
+    }
+
+    for (const q of this.rift.pulses) {
+      if (!q.live) continue;
+      const age = this.t - q.t0;
+      const r = pulseRadius(age);
+      const fade = age <= PULSE_GROW_SEC ? 1 : 1 - (age - PULSE_GROW_SEC) / PULSE_FADE_SEC;
+      if (fade <= 0 || r <= 0) continue;
+      const qy = psy - (q.y - camY);
+      ctx.globalAlpha = 0.07 * fade;
+      ctx.fillStyle = q.color;
+      ctx.beginPath();
+      ctx.arc(q.x, qy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 0.85 * fade;
+      ctx.strokeStyle = q.color;
+      ctx.lineWidth = 1 + 3 * fade;
+      ctx.stroke();
+      ctx.globalAlpha = 0.6 * fade;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(q.x, qy, Math.max(0, r - 4), 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /** Geschlossen: massives Gold mit Rautenmuster und heller Kontur. Offen: gestrichelter Rahmen + Countdown-Balken. */
+  renderSeal(ctx, o, oy, x0, w, hh) {
+    const t = this.t;
+    const rift = this.rift;
+    const col = COLORS.S;
+    if (!rift.isOpen(o, t)) {
+      const reach = this.state === 'playing' && rift.inReach(o, this.player.x, this.y);
+      const shimmer = reach ? 0.5 + 0.5 * Math.sin(t * 28) : 0;
+      const g = reach ? 6 + shimmer * 3 : 4;
+      ctx.fillStyle = col.glow;
+      ctx.fillRect(x0 - g, oy - hh - g, w + g * 2, hh * 2 + g * 2);
+      ctx.fillStyle = col.main;
+      ctx.fillRect(x0, oy - hh, w, hh * 2);
+      ctx.fillStyle = 'rgba(90,40,0,0.6)';
+      ctx.beginPath();
+      for (let cx = x0 + 9; cx < x0 + w - 5; cx += 18) {
+        ctx.moveTo(cx, oy - 4.5); ctx.lineTo(cx + 4.5, oy); ctx.lineTo(cx, oy + 4.5); ctx.lineTo(cx - 4.5, oy);
+      }
+      ctx.fill();
+      ctx.strokeStyle = reach ? '#ffffff' : '#fff1c2';
+      ctx.globalAlpha = reach ? 0.65 + 0.35 * shimmer : 0.9;
+      ctx.lineWidth = reach ? 2.5 : 1.5;
+      ctx.strokeRect(x0 + 0.75, oy - hh + 0.75, w - 1.5, hh * 2 - 1.5);
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 1;
+      return;
+    }
+    const rem = rift.remaining(o, t);
+    const age = t - o.openedAt;
+    if (age < 0.18) {
+      const a = age / 0.18;
+      ctx.globalAlpha = 1 - a;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x0 - a * 6, oy - hh - a * 10, w + a * 12, hh * 2 + a * 20);
+    }
+    const warn = rem < SEAL_WARN_SEC && Math.floor(rem * 40) % 2 === 0;
+    ctx.globalAlpha = warn ? 0.95 : 0.5;
+    ctx.strokeStyle = col.main;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash(SEAL_DASH);
+    ctx.strokeRect(x0 + 1, oy - hh + 1, w - 2, hh * 2 - 2);
+    ctx.setLineDash(NO_DASH);
+    const f = rem / SEAL_OPEN_SEC;
+    ctx.globalAlpha = 0.55;
+    ctx.fillStyle = col.main;
+    ctx.fillRect(x0 + (w - w * f) / 2, oy - 1.5, w * f, 3);
+    ctx.globalAlpha = 1;
+    ctx.lineWidth = 1;
   }
 
   renderPlayer(ctx, sy) {
@@ -668,8 +802,37 @@ export class Game {
       if (o.y < bottom) continue;
       if (o.y > top) break;
       const oy = psy - (o.y - camY);
-      ctx.strokeStyle = isDeadly(o.color, dim) ? '#ffea00' : 'rgba(160,160,160,0.6)';
-      ctx.strokeRect(o.x0 + BAR_INSET_X, oy - HIT_HALF_H, o.x1 - o.x0 - BAR_INSET_X * 2, HIT_HALF_H * 2);
+      const deadly = this.deadlyNow(o, dim);
+      if (o.color === 'S') {
+        ctx.strokeStyle = deadly ? '#ff8800' : 'rgba(160,160,160,0.6)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(o.x0 + BAR_INSET_X, oy - HIT_HALF_H, o.x1 - o.x0 - BAR_INSET_X * 2, HIT_HALF_H * 2);
+        ctx.lineWidth = 1;
+        const rem = this.rift.remaining(o, this.t);
+        ctx.font = '700 10px ui-monospace, monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'bottom';
+        ctx.fillStyle = deadly ? '#ff8800' : '#cccccc';
+        ctx.fillText(`${deadly ? 'ZU' : 'OFFEN ' + rem.toFixed(2) + ' s'}  d ${distToSeal(p.x, this.y, o).toFixed(0)}`, o.x0 + BAR_INSET_X + 2, oy - HIT_HALF_H - 3);
+        ctx.textBaseline = 'alphabetic';
+      } else {
+        ctx.strokeStyle = deadly ? '#ffea00' : 'rgba(160,160,160,0.6)';
+        ctx.strokeRect(o.x0 + BAR_INSET_X, oy - HIT_HALF_H, o.x1 - o.x0 - BAR_INSET_X * 2, HIT_HALF_H * 2);
+      }
+    }
+    // Pulse-Reichweite (Referenz) und aktuelle Wellenradien
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx.setLineDash(REACH_DASH);
+    ctx.beginPath();
+    ctx.arc(p.x, psy, PULSE_RADIUS, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash(NO_DASH);
+    for (const q of this.rift.pulses) {
+      if (!q.growing) continue;
+      ctx.strokeStyle = '#ff00ff';
+      ctx.beginPath();
+      ctx.arc(q.x, psy - (q.y - camY), pulseRadius(this.t - q.t0), 0, Math.PI * 2);
+      ctx.stroke();
     }
     ctx.strokeStyle = '#00ff66';
     ctx.beginPath();
@@ -681,11 +844,20 @@ export class Game {
     ctx.stroke();
 
     const solver = this.lastRowPassed < 0 ? 'Start' : this.rowSolvable ? 'lösbar' : 'Sackgasse';
+    const next = this.seals.find((s) => s.y + HIT_HALF_H + HIT_RADIUS >= this.y);
+    let sealLine = 'Nächstes Siegel: –';
+    if (next) {
+      const open = this.rift.isOpen(next, this.t);
+      sealLine = `Siegel B${next.beat}: ${open ? 'OFFEN ' + this.rift.remaining(next, this.t).toFixed(2) + ' s' : 'ZU'}  ` +
+        `d ${distToSeal(p.x, this.y, next).toFixed(0)} u${!open && this.rift.inReach(next, p.x, this.y) ? '  IN REICHWEITE' : ''}`;
+    }
     const lines = [
+      `Pulse R ${PULSE_RADIUS} u  Öffnung ${SEAL_OPEN_SEC} s  Wellen ${this.rift.activePulses}  gesendet ${this.rift.emitted}`,
+      sealLine,
       `FPS ${this.stats.fps.toFixed(0)}  Sim ${Math.round(1 / SIM_DT)} Hz  Schritte/Frame ${this.stats.frameSteps}`,
       `t ${this.t.toFixed(3)} s  Beat ${this.beat.toFixed(2)}/${FINISH_BEAT}  Abschnitt ${sectionAt(this.beat).id}`,
-      `x ${p.x.toFixed(1)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
-      `y ${this.y.toFixed(0)}  vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s`,
+      `x ${p.x.toFixed(1)}  y ${this.y.toFixed(0)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
+      `vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,
     ];
     ctx.font = '600 10px ui-monospace, monospace';

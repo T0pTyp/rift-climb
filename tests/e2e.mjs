@@ -66,14 +66,20 @@ async function scenarioTests() {
   }, { taps, dt });
 
   let r = await run([]);
-  check('[szenario] Ohne Tipp: Tod an Reihe 6 (Weiß)', r.state === 'dying' && r.beat === 6 && r.color === 'W' && /WEISS/.test(r.reason), JSON.stringify(r));
+  check('[szenario] Ohne Tipp: Tod an der ersten Reihe (Weiß)', r.state === 'dying' && r.beat === 4 && r.color === 'W' && /WEISS/.test(r.reason), JSON.stringify(r));
   check('[szenario] Todesposition passt zum sichtbaren Hindernis', Math.abs(r.ky - r.oy) <= 13 + 1e-6, `Abstand ${(r.ky - r.oy).toFixed(2)} u`);
 
-  r = await run([{ t: 0.5, dir: -1 }, { t: 3.4, dir: 1 }]);
-  check('[szenario] Blaue Dimension: rote Reihe (inaktiv) passierbar, blaue Reihe tötet', r.beat === 18 && r.color === 'B' && /BLAU/.test(r.reason), JSON.stringify(r));
+  r = await run([{ t: 0.5, dir: -1 }, { t: 2.5, dir: 1 }]);
+  check('[szenario] Blaue Dimension: rote Reihe (inaktiv) passierbar, blaue Reihe tötet', r.beat === 13 && r.color === 'B' && /BLAU/.test(r.reason), JSON.stringify(r));
 
-  r = await run([{ t: 0.5, dir: -1 }, { t: 3.4, dir: 1 }, { t: 7.4, dir: 1 }]);
-  check('[szenario] Rote Dimension: blaue Reihen (inaktiv) passierbar, rote Reihe tötet', r.beat === 30 && r.color === 'R' && /ROT/.test(r.reason), JSON.stringify(r));
+  r = await run([{ t: 0.5, dir: -1 }, { t: 2.5, dir: 1 }, { t: 4.0, dir: 1 }]);
+  check('[szenario] Rote Dimension: rote Reihe tötet', r.beat === 10 && r.color === 'R' && /ROT/.test(r.reason), JSON.stringify(r));
+
+  // Rift-Siegel bei Beat 20 (10 s): ohne Öffnungs-Tipp tödlich, mit Tipp 0,25 s davor passierbar
+  r = await run([{ t: 0.5, dir: -1 }, { t: 2.5, dir: 1 }, { t: 5.6, dir: 1 }]);
+  check('[m3] Geschlossenes Rift-Siegel tötet (mit Todesgrund)', r.beat === 20 && r.color === 'S' && /SIEGEL war zu/.test(r.reason), JSON.stringify(r));
+  r = await run([{ t: 0.5, dir: -1 }, { t: 2.5, dir: 1 }, { t: 5.6, dir: 1 }, { t: 9.75, dir: 1 }]);
+  check('[m3] Rift Pulse öffnet das Siegel -> passierbar (nächster Tod erst an einer Farbreihe)', r.beat === 28 && r.color === 'B', JSON.stringify(r));
 
   // Kollisionsgenauigkeit unabhängig von der Bildrate (auch bei 10 FPS)
   const tDeath = [];
@@ -136,15 +142,16 @@ async function desktopTests(type, label) {
   const dbl = await page.evaluate(() => {
     const g = window.__RIFT;
     const c = document.getElementById('game');
-    const before = { lane: g.player.lane, dim: g.player.dim, ign: g.input.ignored };
+    const before = { lane: g.player.lane, dim: g.player.dim, ign: g.input.ignored, pulses: g.rift.emitted };
     const r = c.getBoundingClientRect();
     for (let i = 0; i < 2; i++) {
       c.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true, clientX: r.left + r.width * 0.2, clientY: r.top + r.height / 2, pointerId: 1, isPrimary: true, button: 0 }));
     }
-    return { before, after: { lane: g.player.lane, dim: g.player.dim, ign: g.input.ignored } };
+    return { before, after: { lane: g.player.lane, dim: g.player.dim, ign: g.input.ignored, pulses: g.rift.emitted } };
   });
   check(`[${label}] Doppelte Touch-Verarbeitung -> nur ein Impuls/Dimensionswechsel`,
     dbl.after.lane === dbl.before.lane + 1 && dbl.after.dim !== dbl.before.dim && dbl.after.ign === dbl.before.ign + 1, JSON.stringify(dbl));
+  check(`[${label}] Doppelte Touch-Verarbeitung -> genau ein Rift Pulse`, dbl.after.pulses === dbl.before.pulses + 1);
   await page.waitForTimeout(300);
   await page.keyboard.press('a');
 
@@ -153,7 +160,7 @@ async function desktopTests(type, label) {
   await page.click('#btn-resume');
   check(`[${label}] Weiter per Button`, (await state(page)).state === 'playing');
 
-  // Tod an Reihe 6 (Weiß), Spieler steht auf Spur 1
+  // Tod an der ersten Reihe (Weiß), Spieler steht auf Spur 1
   await waitState(page, ['dying', 'dead']);
   s = await state(page);
   check(`[${label}] Kollision beendet Versuch mit Todesgrund`, s.killerColor === 'W' && /WEISS/.test(s.reason), s.reason);
@@ -268,9 +275,12 @@ async function mobileTests(type, deviceName, label) {
   check(`[${label}] Start-Tap löst keinen Impuls aus`, s.lane === 1 && s.dim === 'B');
 
   await page.waitForTimeout(250);
+  const pulses0 = await page.evaluate(() => window.__RIFT.rift.emitted);
   await page.touchscreen.tap(vp.width * 0.2, vp.height * 0.6);
   s = await state(page);
   check(`[${label}] Tipp links = schräg rechts oben (genau 1 Impuls)`, s.lane === 2 && s.dim === 'R', `lane=${s.lane} dim=${s.dim}`);
+  const pulses1 = await page.evaluate(() => window.__RIFT.rift.emitted);
+  check(`[${label}] Touch-Tipp sendet genau einen Rift Pulse (ohne Zusatzverzögerung, im selben Event)`, pulses1 === pulses0 + 1, `${pulses0} -> ${pulses1}`);
   await page.waitForTimeout(300);
   await page.touchscreen.tap(vp.width * 0.8, vp.height * 0.6);
   s = await state(page);

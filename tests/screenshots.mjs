@@ -1,4 +1,5 @@
-// Erzeugt Portrait-Screenshots (iPhone 13, WebKit): Menü, Gameplay mit Dimensionswechsel, Debug-Modus, Todesscreen.
+// Erzeugt Portrait-Screenshots (iPhone 13, WebKit): Menü, Rift Pulse öffnet ein Siegel, Annäherung (Reichweite),
+// Debug-Modus mit Pulse-Radius/Siegel-Hitboxen/Restzeit, Todesscreen an einem geschlossenen Siegel.
 // Aufruf: SHOT_DIR=/pfad node tests/screenshots.mjs   (lokaler Server auf BASE_URL, Standard http://localhost:8080/)
 import { webkit, devices } from 'playwright';
 
@@ -14,10 +15,11 @@ async function at(query, beat, extra) {
   await page.tap('#btn-start');
   await page.evaluate((b) => {
     const g = window.__RIFT;
-    while (g.state === 'playing' && g.beat < b) g.update(1 / 120);
+    while (g.state === 'playing' && g.beat < b) g.update(1 / 240);
   }, beat);
   if (extra) await page.evaluate(extra);
-  await page.waitForTimeout(150);
+  await page.evaluate(() => window.__RIFT.render());
+  await page.waitForTimeout(100);
   return { ctx, page };
 }
 
@@ -28,48 +30,41 @@ async function at(query, beat, extra) {
   await page.goto(BASE);
   await page.waitForFunction(() => window.__RIFT);
   await page.waitForTimeout(400);
-  await page.screenshot({ path: `${DIR}/rift-climb-m2-menu.png` });
+  await page.screenshot({ path: `${DIR}/rift-climb-m3-menu.png` });
   await ctx.close();
 }
 
-// Gameplay kurz nach einem Dimensionswechsel im Abschnitt C (Ring, Partikel, Farbimpuls sichtbar)
+// Rift Pulse öffnet ein Siegel (Diagonale in Abschnitt C, Siegel bei Beat 61): Welle, Öffnungsblitz, Partikel
 {
-  const sol = await (async () => {
-    const { ctx, page } = await at('', 0);
-    const r = await page.evaluate(() => {
-      const g = window.__RIFT;
-      const q = g.autoplayQueue.find((e) => e.t / 0.5 > 64.5);
-      return q.t / 0.5;
-    });
-    await ctx.close();
-    return r;
-  })();
-  const { ctx, page } = await at('', sol + 0.12);
-  await page.evaluate(() => window.__RIFT.render());
-  await page.screenshot({ path: `${DIR}/rift-climb-m2-gameplay.png` });
+  const { ctx, page } = await at('', 61 - 0.5 + 0.2);
+  await page.screenshot({ path: `${DIR}/rift-climb-m3-pulse.png` });
   await ctx.close();
 }
 
-// Debug-Modus mit Hitboxen und Bewegungsdaten
+// Annäherung: Siegel leuchtet, Reichweitenkreis sichtbar (Abschnitt A, kurz vor dem ersten Siegel)
 {
-  const { ctx, page } = await at('&debug=1', 47.3);
-  await page.evaluate(() => window.__RIFT.render());
-  await page.screenshot({ path: `${DIR}/rift-climb-m2-debug.png` });
+  const { ctx, page } = await at('', 20 - 0.62);
+  await page.screenshot({ path: `${DIR}/rift-climb-m3-reach.png` });
   await ctx.close();
 }
 
-// Todesscreen mit Todesgrund (Tod durch erzwungenen Fehl-Tipp)
+// Debug: Pulse-Radius, Siegel-Hitboxen, Öffnungsstatus und Restzeit
 {
-  const { ctx, page } = await at('', 21.2, () => {
+  const { ctx, page } = await at('&debug=1', 60.78);
+  await page.screenshot({ path: `${DIR}/rift-climb-m3-debug.png` });
+  await ctx.close();
+}
+
+// Todesscreen: kein Tipp vor dem ersten Siegel
+{
+  const { ctx, page } = await at('', 18.5, () => {
     const g = window.__RIFT;
     g.autoplayQueue.length = 0;
     g.debug.autoplay = false;
-    g.impulse(-1);
     while (g.state === 'playing' || g.state === 'dying') g.update(1 / 120);
     g.update(0.1);
-    g.render();
   });
-  await page.screenshot({ path: `${DIR}/rift-climb-m2-death.png` });
+  await page.screenshot({ path: `${DIR}/rift-climb-m3-death.png` });
   await ctx.close();
 }
 

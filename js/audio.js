@@ -228,6 +228,20 @@ export class AudioEngine {
       o.connect(g).connect(this.master);
       o.start(t);
       o.stop(t + 0.26);
+    } else if (name === 'seal') {
+      // Siegel öffnet: heller, metallischer Doppelton
+      const c = this.ctx;
+      [1567.98, 2349.32].forEach((f, i) => {
+        const o = c.createOscillator();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(f, t + i * 0.035);
+        const g = c.createGain();
+        this.env(g, t + i * 0.035, 0.11, 0.16);
+        o.connect(g).connect(this.master);
+        o.start(t + i * 0.035);
+        o.stop(t + i * 0.035 + 0.18);
+      });
+      this.noiseHit(t, 0.07, 0.12, 'highpass', 6000);
     } else if (name === 'checkpoint') {
       [880, 1318.5].forEach((f, i) => this.lead(t + i * 0.07, f, 0.06));
     } else if (name === 'win') {

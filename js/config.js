@@ -42,6 +42,21 @@ export const CHECKPOINT_EVERY_BEATS = 8;
 export const CAMERA_PLAYER_Y = 0.78;
 export const CAMERA_MIN_BOTTOM = 100;
 
+// Rift Pulse: jeder gültige Impuls sendet vom Spieler eine Kreiswelle aus, die Rift-Siegel öffnet.
+// 120 u = 1/3 der Spielfeldbreite: erreicht Siegel in der eigenen und der Nachbarspur (48 u seitlich),
+// nie zwei Spuren entfernt (138 u). Gemessen bis zum sichtbaren Rand des Siegels.
+export const PULSE_RADIUS = 120;
+export const PULSE_GROW_SEC = 0.15; // Ausbreitung bis zum vollen Radius (easeOutQuad, Logik = Optik)
+export const PULSE_FADE_SEC = 0.22; // nur Optik
+export const PULSE_POOL = 6;
+// Ein erreichtes Siegel bleibt so lange offen. Bei maximaler Entfernung (Reichweite 120 u, Öffnung nach 0,15 s)
+// ist der Spieler 0,54 s nach dem Tipp vollständig durch – 0,11 s vor dem Schließen.
+export const SEAL_OPEN_SEC = 0.5;
+export const SEAL_WARN_SEC = 0.15; // Flackern kurz vor dem Schließen
+// Solver-Annahme: Öffnungs-Tipp etwa auf dem Offbeat vor dem Siegel (halber Beat Abstand zum Siegelrand).
+export const SEAL_PLAN_DY = 58;
+export const SEAL_STREAK_SHAKE = 0.18; // dezenter Shake nach 3 Siegeln in Folge
+
 // Feedback
 export const SWITCH_SHAKE = 0.12; // minimaler Screen-Shake beim Dimensionswechsel (0..1)
 export const DEATH_SHAKE = 0.8;

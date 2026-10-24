@@ -1,7 +1,10 @@
 // Handgebautes Level. Jede Reihe liegt exakt auf einem Beat (120 BPM).
 // Zeichen je Spur (4 Spuren, links -> rechts):
 //   .  frei   B  blaues Hindernis   R  rotes Hindernis   W  weißes Hindernis (immer tödlich)
-import { LANES, LANE_W, UNITS_PER_BEAT, START_LANE, START_DIM } from './config.js';
+//   S  Rift-Siegel (gold, in beiden Dimensionen tödlich, solange es nicht von einem Rift Pulse geöffnet ist)
+import {
+  LANES, LANE_W, UNITS_PER_BEAT, START_LANE, START_DIM, BAR_INSET_X, PULSE_RADIUS, SEAL_PLAN_DY,
+} from './config.js';
 
 export {
   BPM, BEAT_SEC, UNITS_PER_BEAT, CLIMB_SPEED, LANES, LANE_W, WORLD_W, START_LANE, START_DIM,
@@ -9,75 +12,89 @@ export {
 } from './config.js';
 
 // labelBeat: Position der Abschnittsmarke im Level (zwischen zwei Reihen, nie auf einem Hindernis)
+// Abschnittsgrenzen nach Fortschritt: A 0–25 %, B 25–60 %, C 60–85 %, D 85–100 %.
 export const SECTIONS = [
-  { id: 'A', name: 'Einstieg', from: 0, labelBeat: 0 },
-  { id: 'B', name: 'Herausforderung', from: 30, labelBeat: 28 },
-  { id: 'C', name: 'Finale', from: 58, labelBeat: 57.6 },
+  { id: 'A', name: 'Einführung', from: 0, labelBeat: 0 },
+  { id: 'B', name: 'Kombination', from: 22, labelBeat: 22 },
+  { id: 'C', name: 'Präzision', from: 53, labelBeat: 52.6 },
+  { id: 'D', name: 'Abschluss', from: 75, labelBeat: 75 },
 ];
 
 const ROWS = [
-  // --- A: Einstieg – alle 4 Beats (2 s), jede Reihe lehrt genau eine Regel
-  [6, '.WWW'], //  Tipp rechts -> schräg links hoch
-  [10, 'W.WW'], // Tipp links -> schräg rechts hoch
-  [14, 'RRRR'], // Geister (inaktive Farbe) sind harmlos -> nicht tippen
-  [18, 'BBBB'], // alles aktiv -> tippen = Dimension wechseln
-  [22, 'W..W'], // Weiß tötet immer, zurück in die Mitte
-  [26, 'RBBR'], // Richtung und Dimension kombinieren
-  // --- B: Herausforderung – alle 2 Beats, rhythmische Doppel-Reihen im 1-Beat-Abstand
-  [30, 'BBRR'],
-  [32, 'RRBB'],
-  [34, 'W..W'],
-  [36, 'BRRB'],
-  [37, 'RBBR'],
-  [40, 'WBRW'],
-  [42, 'BRRW'],
-  [44, 'BBWW'],
+  // --- A: Einführung – alle 3 Beats, jede Reihe lehrt genau eine Regel, zum Schluss ein einzelnes Siegel
+  [4, '.WWW'], //  Tipp rechts -> schräg links hoch
+  [7, 'W.WW'], //  Tipp links -> schräg rechts hoch
+  [10, 'RRRR'], // Geister (inaktive Farbe) sind harmlos -> nicht tippen
+  [13, 'BBBB'], // alles aktiv -> tippen = Dimension wechseln
+  [16, 'W..W'], // Weiß tötet immer, zurück in die Mitte
+  [20, 'SSSS'], // Rift-Siegel über die ganze Breite: kurz davor tippen, die Welle öffnet es
+  // --- B: Kombination – Farbregeln aus M2 plus Siegel, deren Öffnungs-Tipp die Dimension mitwechselt
+  [24, 'RBBR'],
+  [26, 'BBRR'],
+  [28, 'RRBB'],
+  [30, 'W..W'],
+  [32, 'BRRB'],
+  [33, 'RBBR'],
+  [35, 'WSSW'], // Siegel in der Mitte ...
+  [36, 'BBRR'], // ... und direkt danach zählt die neue Dimension
+  [38, 'RSSB'],
+  [40, 'BRRW'],
+  [42, 'BBWW'],
+  [44, 'SSRR'],
+  [45, 'RBWW'],
   [46, 'WWRR'],
   [48, 'RBWW'],
   [49, 'BRWW'],
-  [52, 'W.BR'],
-  [54, 'RB.W'],
-  [56, 'RRRR'],
-  [57, 'BBBB'],
-  // --- C: Finale – jeder Beat; Wand-Tipps, Farbwechsel-Ketten, Kreuzungen
-  [59, '.WWW'],
-  [60, 'BWWW'],
-  [61, 'RWWW'],
-  [62, 'BWWW'],
-  [63, 'RWWW'],
-  [64, 'BBWW'],
-  [65, 'WRBW'],
-  [66, 'WWBR'],
-  [67, 'WWRR'],
-  [68, 'WWWB'],
-  [69, 'WWWR'],
-  [70, 'RWBB'],
-  [71, 'BRRW'],
-  [72, 'BBRW'],
-  [73, 'RBWW'],
-  [74, 'WBRB'],
-  [75, 'WRRB'],
-  [76, 'WBBB'],
-  [77, 'RRRR'],
+  [51, 'BSSR'],
+  [52, 'RRBB'],
+  // --- C: Präzision – jeder Beat; Wand-Tipps öffnen Siegel, Diagonale durch Siegel, Richtungswechsel
+  [54, '.WWW'],
+  [55, 'SWWW'],
+  [56, 'RWWW'],
+  [57, 'SWWW'],
+  [58, 'BWWW'],
+  [59, 'BBWW'],
+  [60, 'WSBW'],
+  [61, 'WWSR'],
+  [62, 'WWWS'],
+  [63, 'WWRB'],
+  [64, 'WBRW'],
+  [65, 'BSWW'],
+  [66, 'RBWW'],
+  [67, 'WBRW'],
+  [68, 'WRSW'],
+  [69, 'WWRB'],
+  [70, 'WWRR'],
+  [71, 'RBSW'],
+  [72, 'BRRW'],
+  [73, 'BBRW'],
+  [74, 'RBWW'],
+  // --- D: Abschluss – nur Bekanntes, dicht und rhythmisch
+  [76, 'RRRR'],
+  [77, 'SSSS'],
   [78, 'BBBB'],
-  [79, 'RRRR'],
-  [80, 'W..W'],
-  [81, 'WBRW'],
-  [82, 'RRBB'],
+  [79, 'W..W'],
+  [80, 'WSSW'],
+  [81, 'RBBR'],
+  [82, 'BRRB'],
+  [83, 'SSSS'],
+  [84, 'RRBB'],
+  [85, 'W..W'],
 ];
 
 /** Kurze Hinweise im Abschnitt A (dimensionsunabhängig formuliert). */
 export const HINTS = [
-  [3, 'TIPP RECHTS = ↖'],
-  [8, 'TIPP LINKS = ↗'],
-  [12, 'GESTRICHELT = HARMLOS'],
-  [16, 'JEDER TIPP WECHSELT DIE FARBE'],
-  [20, 'WEISS TÖTET IMMER'],
-  [24, 'RICHTUNG + FARBE WÄHLEN'],
-  [58.35, 'TIPP ZUR WAND = NUR FARBWECHSEL'],
+  [2, 'TIPP RECHTS = ↖'],
+  [5.5, 'TIPP LINKS = ↗'],
+  [8.5, 'GESTRICHELT = HARMLOS'],
+  [11.5, 'JEDER TIPP WECHSELT DIE FARBE'],
+  [14.5, 'WEISS TÖTET IMMER'],
+  [18, 'JEDER TIPP SENDET EINEN PULSE'],
+  [18.7, 'PULSE ÖFFNET GOLD-SIEGEL'],
+  [53.4, 'TIPP ZUR WAND = NUR FARBWECHSEL'],
 ];
 
-export const FINISH_BEAT = 84;
+export const FINISH_BEAT = 88;
 export const LEVEL_LENGTH = FINISH_BEAT * UNITS_PER_BEAT;
 
 export function laneCenter(lane) {
@@ -122,12 +139,30 @@ function stateKey(lane, dim) {
   return lane + dim;
 }
 
+/** origin = Spur vor dem letzten Tipp (Ursprung der letzten Welle), null ohne Tipp. */
 function applyTaps(lane, dim, taps) {
+  let origin = null;
   for (const t of taps) {
+    origin = lane;
     lane = Math.max(0, Math.min(LANES - 1, lane + (t === 'R' ? 1 : -1)));
     dim = dim === 'B' ? 'R' : 'B';
   }
-  return { lane, dim };
+  return { lane, dim, origin };
+}
+
+/**
+ * Öffnet die letzte Welle (aus Spur `origin`, Offbeat vor der Reihe) das Siegel-Segment, das `lane` enthält?
+ * Die eigentliche Prüfung läuft gegen dieselben Konfigurationswerte wie das Spiel.
+ */
+export function sealReachable(pattern, lane, origin) {
+  if (origin === null || origin === undefined || pattern[lane] !== 'S') return false;
+  let i = lane;
+  let j = lane;
+  while (i > 0 && pattern[i - 1] === 'S') i--;
+  while (j < LANES - 1 && pattern[j + 1] === 'S') j++;
+  const ox = laneCenter(origin);
+  const dx = Math.max(i * LANE_W + BAR_INSET_X - ox, 0, ox - ((j + 1) * LANE_W - BAR_INSET_X));
+  return Math.hypot(dx, SEAL_PLAN_DY) <= PULSE_RADIUS;
 }
 
 function tapSequences(maxTaps) {
@@ -144,14 +179,16 @@ function tapSequences(maxTaps) {
   return seqs;
 }
 
-export function survivesRow(pattern, lane, dim) {
+export function survivesRow(pattern, lane, dim, origin = null) {
   const c = pattern[lane];
+  if (c === 'S') return sealReachable(pattern, lane, origin);
   return c === '.' || (c !== 'W' && c !== dim);
 }
 
 /**
  * Prüft das Level auf Lösbarkeit. Konservatives Modell: höchstens ein Tipp
  * pro Beat zwischen zwei Reihen (ein Impuls ist nach ~90 ms spursicher, ein Beat dauert 500 ms).
+ * Rift-Siegel: passierbar nur, wenn der letzte Tipp vor der Reihe (Offbeat) es mit seiner Welle erreicht.
  * Liefert pro Reihe die "lebendigen" Zustände (von dort ist das Ziel erreichbar)
  * und eine Musterlösung mit minimaler Tippanzahl.
  */
@@ -171,7 +208,7 @@ export function validateLevel(rows = ROWS) {
     for (const [key, st] of current) {
       for (const seq of seqs) {
         const r = applyTaps(st.lane, st.dim, seq);
-        if (!survivesRow(pattern, r.lane, r.dim)) continue;
+        if (!survivesRow(pattern, r.lane, r.dim, r.origin)) continue;
         const nk = stateKey(r.lane, r.dim);
         const prev = next.get(nk);
         const cost = st.cost + seq.length;
@@ -200,7 +237,7 @@ export function validateLevel(rows = ROWS) {
       for (const [key, st] of layers[k]) {
         for (const seq of seqs) {
           const r = applyTaps(st.lane, st.dim, seq);
-          if (alive[k + 1].has(stateKey(r.lane, r.dim)) && survivesRow(rows[k + 1][1], r.lane, r.dim)) {
+          if (alive[k + 1].has(stateKey(r.lane, r.dim)) && survivesRow(rows[k + 1][1], r.lane, r.dim, r.origin)) {
             alive[k].add(key);
             break;
           }

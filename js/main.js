@@ -32,6 +32,7 @@ const params = new URLSearchParams(location.search);
 const debug = {
   autoplay: params.has('autoplay'),
   autoplayOffset: clampNum(parseFloat(params.get('offset')), 0.06, 0.32, 0.12),
+  sealLead: clampNum(parseFloat(params.get('lead')), 0.08, 0.45, 0.25),
   speed: clampNum(parseFloat(params.get('speed')), 0.25, 8, 1),
   hitboxes: params.has('debug'),
   manual: params.has('manual'),
