@@ -1,27 +1,27 @@
 import {
-  BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, LANES, LANE_W, LEVEL_LENGTH, FINISH_BEAT,
-  START_LANE, START_DIM, CHECKPOINT_EVERY_BEATS, BAR_THICKNESS, HINTS, SECTIONS,
-  buildObstacles, getRows, validateLevel, sectionAt,
-} from './level.js';
-import {
-  SIM_DT, BAR_INSET_X, HIT_HALF_H, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
+  BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, LANES, LANE_W, CHECKPOINT_EVERY_BEATS,
+  SIM_DT, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
   CAMERA_PLAYER_Y, CAMERA_MIN_BOTTOM, SWITCH_SHAKE, DEATH_SHAKE, SHAKE_PX,
-  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_OPEN_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE,
+  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE,
 } from './config.js';
+import { validateLevel } from './level.js';
+import { buildLevelRuntime, levelFromRows } from './level-data.js';
 import { RiftField, pulseRadius, distToSeal } from './rift.js';
 import { Player } from './player.js';
 import { ParticlePool } from './particles.js';
 import { COLORS, isDeadly } from './dimensions.js';
 import { circleRectOverlap, clamp } from './physics.js';
+import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawShip, drawFinish } from './shapes.js';
 
-const DASH = [6, 5];
-const SEAL_DASH = [3, 4];
 const REACH_DASH = [4, 7];
-const NO_DASH = [];
-const COLLIDE_RANGE = HIT_HALF_H + HIT_RADIUS + 2;
+const CHECKPOINT_SPACING = CHECKPOINT_EVERY_BEATS * UNITS_PER_BEAT;
 
 export class Game {
-  constructor({ canvas, ui, audio, input, storage, debug, rows }) {
+  /**
+   * level: geprüftes JSON-Level (validateLevelData(...).level). rows: Reihenliste (nur für Tests, wird migriert).
+   * events: { onWin({ mode, attempts, replay, from }) } – z. B. für den Playtest aus LEVEL FORGE.
+   */
+  constructor({ canvas, ui, audio, input, storage, debug, level, rows, events }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.ui = ui;
@@ -29,13 +29,23 @@ export class Game {
     this.input = input;
     this.storage = storage;
     this.debug = debug;
-    this.rows = rows || getRows();
-    this.obstacles = buildObstacles(this.rows);
-    this.seals = this.obstacles.filter((o) => o.color === 'S');
+    this.events = events || {};
+    this.levelData = level || levelFromRows(rows || [], { id: 'test', name: 'Test' });
+    this.level = buildLevelRuntime(this.levelData);
+    this.rows = this.level.rows;
+    this.lines = this.level.lines;
+    this.obstacles = this.level.obstacles;
+    this.seals = this.level.seals;
+    this.collideRange = this.level.maxChh + HIT_RADIUS + 2;
     this.rift = new RiftField(this.seals);
     this.onSealOpen = this.onSealOpen.bind(this);
-    this.validation = validateLevel(this.rows);
-    if (!this.validation.ok) console.error('Level nicht lösbar:', this.validation.errors);
+    // Spur-Solver nur für Level im Spurmodell; freie Level werden über einen aufgezeichneten Lauf nachgewiesen.
+    this.validation = this.rows
+      ? validateLevel(this.rows, this.level.start)
+      : { ok: null, errors: [], alive: null, solution: null, reachable: [] };
+    if (this.audio.setLevel) this.audio.setLevel(this.level);
+    this.startFrom = null;
+    this.recording = null;
     this.player = new Player();
     this.particles = new ParticlePool();
     this.state = 'menu';
@@ -53,7 +63,7 @@ export class Game {
     this.deathAge = 0;
     this.killer = null;
     this.checkpoint = null;
-    this.lastRowPassed = -1;
+    this.lastRowPassed = -1; // Index in this.lines (= Reihe im Spurmodell)
     this.obsLo = 0;
     this.emitDist = 0;
     this.view = { cssW: 1, cssH: 1, dpr: 1, scale: 1, offsetX: 0, viewH: 600, playerSY: 468 };
@@ -67,12 +77,13 @@ export class Game {
     return this.t * CLIMB_SPEED;
   }
 
+  /** Musikalischer Beat (Level-BPM). */
   get beat() {
-    return this.t / BEAT_SEC;
+    return this.t / this.level.beatSec;
   }
 
   get progress() {
-    return Math.floor(clamp(this.y / LEVEL_LENGTH, 0, 1) * 100);
+    return Math.floor(clamp(this.y / this.level.finishY, 0, 1) * 100);
   }
 
   get attemptsDisplay() {
@@ -97,8 +108,10 @@ export class Game {
     this.canvas.height = Math.round(cssH * dpr);
   }
 
-  start(mode) {
+  /** from: { y, lane, dim } = ab dieser Höhe starten (PLAY FROM HERE im Editor), sonst Levelstart. */
+  start(mode, from = null) {
     this.mode = mode;
+    this.startFrom = from;
     this.sessionAttempts = 0;
     this.restart();
   }
@@ -110,10 +123,12 @@ export class Game {
     } else {
       this.sessionAttempts++;
     }
-    this.t = 0;
+    const from = this.startFrom;
+    const st = from || this.level.start;
+    this.t = from ? from.y / CLIMB_SPEED : 0;
     this.acc = 0;
-    this.player.reset(START_LANE, START_DIM, 0);
-    this.dimBlend = START_DIM === 'R' ? 1 : 0;
+    this.player.reset(st.lane, st.dim, this.y);
+    this.dimBlend = st.dim === 'R' ? 1 : 0;
     this.particles.clear();
     this.flash = 0;
     this.shake = 0;
@@ -121,21 +136,36 @@ export class Game {
     this.rift.reset();
     this.sealStreak = 0;
     this.killer = null;
-    this.lastRowPassed = -1;
+    this.lastRowPassed = this.linesBelow(this.y);
     this.rowSolvable = true;
     this.obsLo = 0;
     this.trace.length = 0;
-    this.checkpoint = { t: 0, lane: START_LANE, dim: START_DIM, beat: 0, row: -1 };
+    this.checkpoint = { t: this.t, lane: st.lane, dim: st.dim, beat: this.y / UNITS_PER_BEAT, row: this.lastRowPassed };
+    // Aufzeichnung (Nachweis der Durchspielbarkeit) nur für vollständige Läufe im Normalmodus
+    this.recording = this.mode === 'normal' && !from ? [] : null;
     this.state = 'playing';
-    this.audio.seek(0);
+    this.audio.seek(this.t);
     this.ui.show(null);
     this.input.guard();
     this.setupAutoplay();
   }
 
+  /** Index der letzten Linie, die der Spieler bei Höhe y bereits vollständig passiert hat. */
+  linesBelow(y) {
+    let k = -1;
+    while (k + 1 < this.lines.length && this.lines[k + 1].y + this.lines[k + 1].chh + HIT_RADIUS < y) k++;
+    return k;
+  }
+
   setupAutoplay() {
     this.autoplayQueue = [];
-    if (!this.debug.autoplay || !this.validation.solution) return;
+    if (!this.debug.autoplay) return;
+    if (!this.validation.solution) {
+      // Ohne Spur-Lösung: aufgezeichneten Lauf abspielen (nur sinnvoll ab Levelstart)
+      const rep = this.level.replay;
+      if (rep && !this.startFrom) for (const tap of rep.taps) if (tap.t > this.t + 1e-9) this.autoplayQueue.push({ t: tap.t, dir: tap.dir });
+      return;
+    }
     const startIdx = this.lastRowPassed + 1;
     const offset = this.debug.autoplayOffset;
     const lead = this.debug.sealLead;
@@ -180,6 +210,7 @@ export class Game {
   /** Spielfeld-Eingabe (Tipp oder Taste). Bedeutung hängt vom Zustand ab. */
   press(dir) {
     if (this.state === 'playing') {
+      if (this.recording) this.recording.push({ t: Math.round(this.t * 1e4) / 1e4, dir });
       this.impulse(dir);
       return true;
     }
@@ -284,19 +315,20 @@ export class Game {
     this.rift.step(this.t, this.onSealOpen);
 
     const obs = this.obstacles;
-    while (this.obsLo < obs.length && obs[this.obsLo].y < y - COLLIDE_RANGE) this.obsLo++;
+    const range = this.collideRange;
+    while (this.obsLo < obs.length && obs[this.obsLo].y < y - range) this.obsLo++;
     for (let i = this.obsLo; i < obs.length; i++) {
       const o = obs[i];
-      if (o.y > y + COLLIDE_RANGE) break;
+      if (o.y > y + range) break;
       if (!this.deadlyNow(o, p.dim)) continue;
-      if (circleRectOverlap(p.x, y, HIT_RADIUS, o.x0 + BAR_INSET_X, o.y - HIT_HALF_H, o.x1 - BAR_INSET_X, o.y + HIT_HALF_H)) {
+      if (circleRectOverlap(p.x, y, HIT_RADIUS, o.x0, o.y - o.chh, o.x1, o.y + o.chh)) {
         this.die(o);
         return;
       }
     }
 
-    while (this.lastRowPassed + 1 < this.rows.length &&
-      this.rows[this.lastRowPassed + 1][0] * UNITS_PER_BEAT + HIT_HALF_H + HIT_RADIUS < y) {
+    const lines = this.lines;
+    while (this.lastRowPassed + 1 < lines.length && lines[this.lastRowPassed + 1].y + lines[this.lastRowPassed + 1].chh + HIT_RADIUS < y) {
       this.lastRowPassed++;
       this.onRowPassed(this.lastRowPassed);
     }
@@ -305,7 +337,7 @@ export class Game {
       this.trace.push(`${this.t.toFixed(4)}:${p.x.toFixed(6)}:${p.lane}${p.dim}`);
     }
 
-    if (y >= LEVEL_LENGTH) this.win();
+    if (y >= this.level.finishY) this.win();
   }
 
   /** Geschlossene Siegel sind in beiden Dimensionen tödlich, geöffnete gar nicht; sonst Dimensionsregel. */
@@ -316,9 +348,9 @@ export class Game {
 
   onSealOpen(s, wasOpen) {
     if (wasOpen) return;
-    const w = s.x1 - s.x0 - BAR_INSET_X * 2;
+    const w = s.x1 - s.x0;
     for (let i = 0; i < 14; i++) {
-      const px = s.x0 + BAR_INSET_X + Math.random() * w;
+      const px = s.x0 + Math.random() * w;
       this.particles.spawn(px, s.y + (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 90, 40 + Math.random() * 120, 0.3 + Math.random() * 0.15, 2 + Math.random() * 1.5, i % 3 ? COLORS.S.main : '#ffffff', 0.9);
     }
     this.audio.sfx('seal');
@@ -326,19 +358,28 @@ export class Game {
 
   onRowPassed(k) {
     const p = this.player;
-    if (this.rows[k][1][p.lane] === 'S') {
+    const line = this.lines[k];
+    if (line.objs.some((o) => o.color === 'S' && p.x >= o.x0 && p.x <= o.x1)) {
       this.sealStreak++;
       if (this.sealStreak % 3 === 0) this.shake = Math.max(this.shake, SEAL_STREAK_SHAKE);
     }
-    const alive = this.validation.alive[k];
-    this.rowSolvable = !!alive && alive.has(p.lane + p.dim) && !p.dashing;
+    // Mit Spur-Solver: nur Zustände, von denen das Ziel erreichbar ist; sonst nur "nicht mitten im Spurwechsel"
+    const alive = this.validation.alive ? this.validation.alive[k] : null;
+    const safe = !p.dashing && (!this.validation.alive || (!!alive && alive.has(p.lane + p.dim)));
+    this.rowSolvable = safe;
     if (this.mode !== 'practice') return;
-    const beat = this.rows[k][0];
-    if (beat - this.checkpoint.beat < CHECKPOINT_EVERY_BEATS) return;
-    if (p.dashing || !alive || !alive.has(p.lane + p.dim)) return;
+    const beat = line.y / UNITS_PER_BEAT;
+    if (line.y - this.checkpoint.beat * UNITS_PER_BEAT < CHECKPOINT_SPACING) return;
+    if (!safe) return;
     this.checkpoint = { t: this.t, lane: p.lane, dim: p.dim, beat, row: k };
     this.audio.sfx('checkpoint');
     this.ui.toast('CHECKPOINT');
+  }
+
+  sectionAt(y) {
+    let s = this.level.sections[0];
+    for (const sec of this.level.sections) if (y >= sec.y) s = sec;
+    return s;
   }
 
   deathReason(o, dim) {
@@ -415,6 +456,10 @@ export class Game {
     }
     this.audio.sfx('win');
     this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay });
+    if (this.events.onWin) {
+      const replay = this.recording ? { taps: this.recording.slice() } : null;
+      this.events.onWin({ mode: this.mode, attempts: this.attemptsDisplay, replay, from: this.startFrom });
+    }
   }
 
   /** Tastatur-Bestätigung (Enter/Leertaste/R) auf Overlays. */
@@ -460,7 +505,8 @@ export class Game {
     }
 
     const accent = blend < 0.5 ? COLORS.B : COLORS.R;
-    const beatF = camY / UNITS_PER_BEAT;
+    const upb = this.level.unitsPerBeat;
+    const beatF = camY / upb;
     const pulse = this.state === 'menu' ? 0.3 : 1 - (beatF - Math.floor(beatF));
 
     ctx.lineWidth = 1;
@@ -472,10 +518,10 @@ export class Game {
     }
     ctx.stroke();
 
-    const firstBeat = Math.floor((camY - (H - psy)) / UNITS_PER_BEAT) - 1;
-    const lastBeat = Math.ceil((camY + psy) / UNITS_PER_BEAT) + 1;
+    const firstBeat = Math.floor((camY - (H - psy)) / upb) - 1;
+    const lastBeat = Math.ceil((camY + psy) / upb) + 1;
     for (let b = firstBeat; b <= lastBeat; b++) {
-      const by = psy - (b * UNITS_PER_BEAT - camY);
+      const by = psy - (b * upb - camY);
       const strong = b % 4 === 0;
       ctx.strokeStyle = strong ? accent.glow : 'rgba(255,255,255,0.04)';
       ctx.globalAlpha = strong ? 0.3 + 0.5 * pulse : 1;
@@ -529,16 +575,16 @@ export class Game {
 
     // Abschnitts-Marken und Hinweise im Abschnitt A
     ctx.font = '800 11px system-ui, sans-serif';
-    for (const sec of SECTIONS) {
-      if (sec.from === 0) continue;
-      const by = psy - (sec.labelBeat * UNITS_PER_BEAT - camY);
+    for (const sec of this.level.sections) {
+      if (sec.auto || sec.y === 0) continue;
+      const by = psy - (sec.labelY - camY);
       if (by < -20 || by > H + 20) continue;
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
       ctx.fillText(`${sec.id} · ${sec.name.toUpperCase()}`, WORLD_W / 2, by);
     }
     ctx.font = '800 14px system-ui, sans-serif';
-    for (const [beat, text] of HINTS) {
-      const by = psy - (beat * UNITS_PER_BEAT - camY);
+    for (const [hy, text] of this.level.hints) {
+      const by = psy - (hy - camY);
       if (by < -20 || by > H + 20) continue;
       ctx.globalAlpha = clamp((H - by) / 120, 0, 1) * 0.85;
       ctx.fillStyle = '#ffffff';
@@ -546,18 +592,10 @@ export class Game {
     }
     ctx.globalAlpha = 1;
 
-    const fy = psy - (LEVEL_LENGTH - camY);
-    if (fy > -40 && fy < H + 40) {
-      for (let i = 0; i < 18; i++) {
-        ctx.fillStyle = i % 2 ? '#ffffff' : '#1affb2';
-        ctx.fillRect(i * 20, fy - 6, 20, 6);
-      }
-      ctx.fillStyle = '#1affb2';
-      ctx.font = '800 16px system-ui, sans-serif';
-      ctx.fillText('RIFT CLEARED · 100 %', WORLD_W / 2, fy - 20);
-    }
+    const fy = psy - (this.level.finishY - camY);
+    if (fy > -40 && fy < H + 40) drawFinish(ctx, WORLD_W, fy);
 
-    if (this.mode === 'practice' && this.checkpoint && this.checkpoint.beat > 0) {
+    if (this.mode === 'practice' && this.checkpoint && this.checkpoint.t > 0) {
       const cy = psy - (this.checkpoint.t * CLIMB_SPEED - camY);
       if (cy > -10 && cy < H + 10) {
         ctx.strokeStyle = 'rgba(26,255,178,0.6)';
@@ -571,45 +609,25 @@ export class Game {
     }
   }
 
+  /** Zeichnet nur Objekte im sichtbaren Ausschnitt (Hindernisse sind nach y sortiert). */
   renderObstacles(ctx, camY, psy, H, dim) {
-    const top = camY + psy + 40;
+    const top = camY + psy + 40 + this.level.maxHh;
     const bottom = camY - (H - psy) - 40;
-    const hh = BAR_THICKNESS / 2;
     const pop = this.switchPulse;
     const killerO = this.killer && (this.state === 'dying' || this.state === 'dead') ? this.killer.o : null;
     for (const o of this.obstacles) {
-      if (o.y < bottom) continue;
+      if (o.y + o.hh < bottom) continue;
       if (o.y > top) break;
       const oy = psy - (o.y - camY);
-      const x0 = o.x0 + BAR_INSET_X;
-      const w = o.x1 - o.x0 - BAR_INSET_X * 2;
-      const col = COLORS[o.color];
-      if (o.color === 'S') {
-        this.renderSeal(ctx, o, oy, x0, w, hh);
-      } else if (isDeadly(o.color, dim)) {
-        const g = 4 + (o.color === 'W' ? 0 : pop * 5);
-        ctx.fillStyle = col.glow;
-        ctx.fillRect(x0 - g, oy - hh - g, w + g * 2, BAR_THICKNESS + g * 2);
-        ctx.fillStyle = col.main;
-        ctx.fillRect(x0, oy - hh, w, BAR_THICKNESS);
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.fillRect(x0 + 2, oy - 1.5, w - 4, 3);
-      } else {
-        ctx.globalAlpha = 0.14;
-        ctx.fillStyle = col.main;
-        ctx.fillRect(x0, oy - hh, w, BAR_THICKNESS);
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = col.ghost;
-        ctx.lineWidth = 2;
-        ctx.setLineDash(DASH);
-        ctx.strokeRect(x0 + 1, oy - hh + 1, w - 2, BAR_THICKNESS - 2);
-        ctx.setLineDash(NO_DASH);
-        ctx.lineWidth = 1;
-      }
+      const x0 = o.x0;
+      const w = o.x1 - o.x0;
+      const hh = o.hh;
+      if (o.color === 'S') this.renderSeal(ctx, o, oy, x0, w, hh);
+      else drawBar(ctx, o.color, x0, oy, w, hh, isDeadly(o.color, dim), pop);
       if (o === killerO && Math.floor(this.deathAge * 12) % 2 === 0) {
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 3;
-        ctx.strokeRect(x0 - 3, oy - hh - 3, w + 6, BAR_THICKNESS + 6);
+        ctx.strokeRect(x0 - 3, oy - hh - 3, w + 6, hh * 2 + 6);
         ctx.lineWidth = 1;
       }
     }
@@ -625,10 +643,10 @@ export class Game {
     let near = 0;
     let reach = false;
     for (const s of this.seals) {
-      if (s.y + HIT_HALF_H + HIT_RADIUS < y) continue;
-      if (s.y > y + PULSE_RADIUS + UNITS_PER_BEAT) break;
+      if (s.y + s.chh + HIT_RADIUS < y) continue;
+      if (s.y - this.level.maxHh > y + PULSE_RADIUS + UNITS_PER_BEAT) break;
       if (this.rift.isOpen(s, this.t)) continue;
-      near = Math.max(near, clamp(1 - (s.y - y - PULSE_RADIUS) / UNITS_PER_BEAT, 0, 1));
+      near = Math.max(near, clamp(1 - (s.y - s.hh + 7 - y - PULSE_RADIUS) / UNITS_PER_BEAT, 0, 1));
       if (this.rift.inReach(s, p.x, y)) reach = true;
     }
     if (near > 0) {
@@ -674,50 +692,14 @@ export class Game {
   renderSeal(ctx, o, oy, x0, w, hh) {
     const t = this.t;
     const rift = this.rift;
-    const col = COLORS.S;
     if (!rift.isOpen(o, t)) {
       const reach = this.state === 'playing' && rift.inReach(o, this.player.x, this.y);
-      const shimmer = reach ? 0.5 + 0.5 * Math.sin(t * 28) : 0;
-      const g = reach ? 6 + shimmer * 3 : 4;
-      ctx.fillStyle = col.glow;
-      ctx.fillRect(x0 - g, oy - hh - g, w + g * 2, hh * 2 + g * 2);
-      ctx.fillStyle = col.main;
-      ctx.fillRect(x0, oy - hh, w, hh * 2);
-      ctx.fillStyle = 'rgba(90,40,0,0.6)';
-      ctx.beginPath();
-      for (let cx = x0 + 9; cx < x0 + w - 5; cx += 18) {
-        ctx.moveTo(cx, oy - 4.5); ctx.lineTo(cx + 4.5, oy); ctx.lineTo(cx, oy + 4.5); ctx.lineTo(cx - 4.5, oy);
-      }
-      ctx.fill();
-      ctx.strokeStyle = reach ? '#ffffff' : '#fff1c2';
-      ctx.globalAlpha = reach ? 0.65 + 0.35 * shimmer : 0.9;
-      ctx.lineWidth = reach ? 2.5 : 1.5;
-      ctx.strokeRect(x0 + 0.75, oy - hh + 0.75, w - 1.5, hh * 2 - 1.5);
-      ctx.globalAlpha = 1;
-      ctx.lineWidth = 1;
+      drawSealClosed(ctx, x0, oy, w, hh, reach, reach ? 0.5 + 0.5 * Math.sin(t * 28) : 0);
       return;
     }
     const rem = rift.remaining(o, t);
-    const age = t - o.openedAt;
-    if (age < 0.18) {
-      const a = age / 0.18;
-      ctx.globalAlpha = 1 - a;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(x0 - a * 6, oy - hh - a * 10, w + a * 12, hh * 2 + a * 20);
-    }
     const warn = rem < SEAL_WARN_SEC && Math.floor(rem * 40) % 2 === 0;
-    ctx.globalAlpha = warn ? 0.95 : 0.5;
-    ctx.strokeStyle = col.main;
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash(SEAL_DASH);
-    ctx.strokeRect(x0 + 1, oy - hh + 1, w - 2, hh * 2 - 2);
-    ctx.setLineDash(NO_DASH);
-    const f = rem / SEAL_OPEN_SEC;
-    ctx.globalAlpha = 0.55;
-    ctx.fillStyle = col.main;
-    ctx.fillRect(x0 + (w - w * f) / 2, oy - 1.5, w * f, 3);
-    ctx.globalAlpha = 1;
-    ctx.lineWidth = 1;
+    drawSealOpen(ctx, x0, oy, w, hh, rem / o.openSec, warn, t - o.openedAt);
   }
 
   renderPlayer(ctx, sy) {
@@ -738,31 +720,7 @@ export class Game {
       ctx.fillRect(p.trailX[idx] - s / 2, sy - (p.trailY[idx] - y) - s / 2, s, s);
     }
     ctx.globalAlpha = 1;
-
-    const scale = 1 + p.pop * 0.28;
-    ctx.save();
-    ctx.translate(p.x, sy);
-    ctx.rotate(p.tilt);
-    ctx.scale(scale * (1 - p.pop * 0.12), scale);
-    ctx.globalAlpha = 0.8 + p.pop * 0.2;
-    ctx.fillStyle = col.glow;
-    ctx.beginPath();
-    ctx.arc(0, 0, 20 + p.pop * 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = p.pop > 0.6 ? '#ffffff' : col.main;
-    ctx.beginPath();
-    ctx.moveTo(0, -15);
-    ctx.lineTo(11, 10);
-    ctx.lineTo(0, 5);
-    ctx.lineTo(-11, 10);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    drawShip(ctx, p.x, sy, p.dim, p.tilt, p.pop);
   }
 
   renderDeath(ctx, camY, psy) {
@@ -799,25 +757,25 @@ export class Game {
     const bottom = camY - (H - psy) - 20;
     ctx.lineWidth = 1;
     for (const o of this.obstacles) {
-      if (o.y < bottom) continue;
-      if (o.y > top) break;
+      if (o.y + o.hh < bottom) continue;
+      if (o.y - this.level.maxHh > top) break;
       const oy = psy - (o.y - camY);
       const deadly = this.deadlyNow(o, dim);
       if (o.color === 'S') {
         ctx.strokeStyle = deadly ? '#ff8800' : 'rgba(160,160,160,0.6)';
         ctx.lineWidth = 2;
-        ctx.strokeRect(o.x0 + BAR_INSET_X, oy - HIT_HALF_H, o.x1 - o.x0 - BAR_INSET_X * 2, HIT_HALF_H * 2);
+        ctx.strokeRect(o.x0, oy - o.chh, o.x1 - o.x0, o.chh * 2);
         ctx.lineWidth = 1;
         const rem = this.rift.remaining(o, this.t);
         ctx.font = '700 10px ui-monospace, monospace';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'bottom';
         ctx.fillStyle = deadly ? '#ff8800' : '#cccccc';
-        ctx.fillText(`${deadly ? 'ZU' : 'OFFEN ' + rem.toFixed(2) + ' s'}  d ${distToSeal(p.x, this.y, o).toFixed(0)}`, o.x0 + BAR_INSET_X + 2, oy - HIT_HALF_H - 3);
+        ctx.fillText(`${deadly ? 'ZU' : 'OFFEN ' + rem.toFixed(2) + ' s'}  d ${distToSeal(p.x, this.y, o).toFixed(0)}`, o.x0 + 2, oy - o.chh - 3);
         ctx.textBaseline = 'alphabetic';
       } else {
         ctx.strokeStyle = deadly ? '#ffea00' : 'rgba(160,160,160,0.6)';
-        ctx.strokeRect(o.x0 + BAR_INSET_X, oy - HIT_HALF_H, o.x1 - o.x0 - BAR_INSET_X * 2, HIT_HALF_H * 2);
+        ctx.strokeRect(o.x0, oy - o.chh, o.x1 - o.x0, o.chh * 2);
       }
     }
     // Pulse-Reichweite (Referenz) und aktuelle Wellenradien
@@ -843,8 +801,8 @@ export class Game {
     ctx.lineTo(p.x + p.vx * 0.1, psy - CLIMB_SPEED * 0.1);
     ctx.stroke();
 
-    const solver = this.lastRowPassed < 0 ? 'Start' : this.rowSolvable ? 'lösbar' : 'Sackgasse';
-    const next = this.seals.find((s) => s.y + HIT_HALF_H + HIT_RADIUS >= this.y);
+    const solver = !this.validation.alive ? 'Lauf-Nachweis' : this.lastRowPassed < 0 ? 'Start' : this.rowSolvable ? 'lösbar' : 'Sackgasse';
+    const next = this.seals.find((s) => s.y + s.chh + HIT_RADIUS >= this.y);
     let sealLine = 'Nächstes Siegel: –';
     if (next) {
       const open = this.rift.isOpen(next, this.t);
@@ -852,10 +810,10 @@ export class Game {
         `d ${distToSeal(p.x, this.y, next).toFixed(0)} u${!open && this.rift.inReach(next, p.x, this.y) ? '  IN REICHWEITE' : ''}`;
     }
     const lines = [
-      `Pulse R ${PULSE_RADIUS} u  Öffnung ${SEAL_OPEN_SEC} s  Wellen ${this.rift.activePulses}  gesendet ${this.rift.emitted}`,
+      `Pulse R ${PULSE_RADIUS} u  Öffnung ${next ? next.openSec : '–'} s  Wellen ${this.rift.activePulses}  gesendet ${this.rift.emitted}`,
       sealLine,
       `FPS ${this.stats.fps.toFixed(0)}  Sim ${Math.round(1 / SIM_DT)} Hz  Schritte/Frame ${this.stats.frameSteps}`,
-      `t ${this.t.toFixed(3)} s  Beat ${this.beat.toFixed(2)}/${FINISH_BEAT}  Abschnitt ${sectionAt(this.beat).id}`,
+      `t ${this.t.toFixed(3)} s  Beat ${this.beat.toFixed(2)}/${this.level.finishBeat.toFixed(0)}  Abschnitt ${this.sectionAt(this.y).id}  ${this.level.bpm} BPM`,
       `x ${p.x.toFixed(1)}  y ${this.y.toFixed(0)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
       `vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,

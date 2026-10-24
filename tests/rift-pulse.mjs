@@ -2,7 +2,9 @@
 // Aufruf: node tests/rift-pulse.mjs
 import { Game } from '../js/game.js';
 import { RiftField, pulseRadius, distToSeal } from '../js/rift.js';
-import { laneCenter, getRows, validateLevel, sealReachable, sectionAt } from '../js/level.js';
+import { laneCenter, validateLevel, sealReachable } from '../js/level.js';
+import { laneRows, buildLevelRuntime } from '../js/level-data.js';
+import { loadLevel } from './lib/levels.mjs';
 import {
   PULSE_RADIUS, PULSE_GROW_SEC, SEAL_OPEN_SEC, UNITS_PER_BEAT, BEAT_SEC, CLIMB_SPEED, HIT_HALF_H, HIT_RADIUS,
   SIM_DT, WORLD_W, LANE_W, BAR_THICKNESS,
@@ -16,8 +18,17 @@ function check(name, cond, detail = '') {
   console.log(`${cond ? 'PASS' : 'FAIL'}  ${name}${detail ? '  – ' + detail : ''}`);
 }
 
+const MAIN = loadLevel('rift-main');
+const MAIN_RT = buildLevelRuntime(MAIN);
+const getRows = () => laneRows(MAIN);
+const sectionAt = (beat) => {
+  let s = MAIN_RT.sections[0];
+  for (const sec of MAIN_RT.sections) if (beat * UNITS_PER_BEAT >= sec.y) s = sec;
+  return s;
+};
+
 const noop = () => {};
-function makeGame({ rows, mode = 'normal', autoplay = false, offset = 0.12, lead = 0.25 } = {}) {
+function makeGame({ rows, level, mode = 'normal', autoplay = false, offset = 0.12, lead = 0.25 } = {}) {
   const g = new Game({
     canvas: { getContext: () => ({}), width: 0, height: 0 },
     ui: { show: noop, updateHud: noop, toast: noop, showDeath: noop, showWin: noop, updateMenu: noop },
@@ -26,6 +37,7 @@ function makeGame({ rows, mode = 'normal', autoplay = false, offset = 0.12, lead
     storage: { stats: { best: 0, attempts: 0, clears: 0 }, save: noop },
     debug: { autoplay, autoplayOffset: offset, sealLead: lead, speed: 1 },
     rows,
+    level: rows ? undefined : level || MAIN,
   });
   g.start(mode);
   return g;
@@ -75,7 +87,7 @@ const T = (beat) => beat * BEAT_SEC;
 
 // 3./4. Reichweite: innerhalb öffnet, außerhalb bleibt zu (RiftField direkt)
 {
-  const mk = (lane0, lane1, beat) => ({ color: 'S', beat, y: beat * UNITS_PER_BEAT, x0: lane0 * LANE_W, x1: (lane1 + 1) * LANE_W });
+  const mk = (lane0, lane1, beat) => ({ color: 'S', beat, y: beat * UNITS_PER_BEAT, x0: lane0 * LANE_W + 3, x1: (lane1 + 1) * LANE_W - 3, hh: BAR_THICKNESS / 2, chh: HIT_HALF_H, openSec: SEAL_OPEN_SEC });
   const seals = [mk(1, 1, 2), mk(3, 3, 2), mk(0, 3, 4)];
   const rf = new RiftField(seals);
   const y0 = 2 * UNITS_PER_BEAT - 60;

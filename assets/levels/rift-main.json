@@ -1,0 +1,1280 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "rift-main",
+  "name": "RIFT CLIMB",
+  "description": "Das handgebaute Hauptlevel: vier Abschnitte, 44 s, mit Rift-Siegeln.",
+  "bpm": 120,
+  "height": 11440,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 11440
+  },
+  "sections": [
+    {
+      "id": "A",
+      "name": "Einführung",
+      "y": 0,
+      "labelY": 0
+    },
+    {
+      "id": "B",
+      "name": "Kombination",
+      "y": 2860,
+      "labelY": 2860
+    },
+    {
+      "id": "C",
+      "name": "Präzision",
+      "y": 6890,
+      "labelY": 6838
+    },
+    {
+      "id": "D",
+      "name": "Abschluss",
+      "y": 9750,
+      "labelY": 9750
+    }
+  ],
+  "objects": [
+    {
+      "id": "b4-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 520,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b7-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 910,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b7-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 910,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b10-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1300,
+      "w": 354,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b13-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1690,
+      "w": 354,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b16-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2080,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b16-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 2080,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b20-0",
+      "type": "seal",
+      "x": 3,
+      "y": 2600,
+      "w": 354,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b24-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3120,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b24-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 3120,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b24-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3120,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b26-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3380,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b26-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3380,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b28-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3640,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b28-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3640,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b30-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3900,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b30-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3900,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b32-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4160,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b32-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4160,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b32-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4160,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b33-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4290,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b33-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4290,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b33-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4290,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b35-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4550,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b35-1",
+      "type": "seal",
+      "x": 93,
+      "y": 4550,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b35-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4550,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b36-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4680,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b36-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 4680,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b38-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4940,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b38-1",
+      "type": "seal",
+      "x": 93,
+      "y": 4940,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b38-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4940,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b40-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5200,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b40-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5200,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b40-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 5200,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b42-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5460,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b42-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5460,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b44-0",
+      "type": "seal",
+      "x": 3,
+      "y": 5720,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b44-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5720,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b45-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5850,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b45-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5850,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b45-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5850,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b46-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5980,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b46-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5980,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b48-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6240,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b48-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 6240,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b48-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6240,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b49-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6370,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b49-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 6370,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b49-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6370,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b51-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6630,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b51-1",
+      "type": "seal",
+      "x": 93,
+      "y": 6630,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b51-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 6630,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b52-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6760,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b52-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6760,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b54-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 7020,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b55-0",
+      "type": "seal",
+      "x": 3,
+      "y": 7150,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b55-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 7150,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b56-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7280,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b56-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 7280,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b57-0",
+      "type": "seal",
+      "x": 3,
+      "y": 7410,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b57-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 7410,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b58-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7540,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b58-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 7540,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b59-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7670,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b59-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7670,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b60-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7800,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b60-1",
+      "type": "seal",
+      "x": 93,
+      "y": 7800,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b60-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7800,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b60-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7800,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b61-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7930,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b61-2",
+      "type": "seal",
+      "x": 183,
+      "y": 7930,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b61-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7930,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b62-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8060,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b62-3",
+      "type": "seal",
+      "x": 273,
+      "y": 8060,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b63-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8190,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b63-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8190,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b63-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8190,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b64-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8320,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b64-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8320,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b64-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8320,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b64-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8320,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b65-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8450,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b65-1",
+      "type": "seal",
+      "x": 93,
+      "y": 8450,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b65-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8450,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b66-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8580,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b66-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8580,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b66-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8580,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b67-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8710,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b67-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8710,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b67-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8710,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b67-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8710,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b68-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8840,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b68-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8840,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b68-2",
+      "type": "seal",
+      "x": 183,
+      "y": 8840,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b68-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8840,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b69-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8970,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b69-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8970,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b69-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8970,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b70-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9100,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b70-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9100,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b71-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9230,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b71-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9230,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b71-2",
+      "type": "seal",
+      "x": 183,
+      "y": 9230,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b71-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9230,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b72-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9360,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b72-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9360,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b72-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9360,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b73-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9490,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b73-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9490,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b73-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9490,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b74-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9620,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b74-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9620,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b74-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9620,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b76-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9880,
+      "w": 354,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b77-0",
+      "type": "seal",
+      "x": 3,
+      "y": 10010,
+      "w": 354,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b78-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10140,
+      "w": 354,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b79-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10270,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b79-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10270,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b80-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10400,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b80-1",
+      "type": "seal",
+      "x": 93,
+      "y": 10400,
+      "w": 174,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b80-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10400,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b81-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10530,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b81-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 10530,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b81-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10530,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b82-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10660,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b82-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 10660,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b82-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10660,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b83-0",
+      "type": "seal",
+      "x": 3,
+      "y": 10790,
+      "w": 354,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "b84-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10920,
+      "w": 174,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "b84-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10920,
+      "w": 174,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "b85-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11050,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "b85-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 11050,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "hint-0",
+      "type": "hint",
+      "y": 260,
+      "text": "TIPP RECHTS = ↖"
+    },
+    {
+      "id": "hint-1",
+      "type": "hint",
+      "y": 715,
+      "text": "TIPP LINKS = ↗"
+    },
+    {
+      "id": "hint-2",
+      "type": "hint",
+      "y": 1105,
+      "text": "GESTRICHELT = HARMLOS"
+    },
+    {
+      "id": "hint-3",
+      "type": "hint",
+      "y": 1495,
+      "text": "JEDER TIPP WECHSELT DIE FARBE"
+    },
+    {
+      "id": "hint-4",
+      "type": "hint",
+      "y": 1885,
+      "text": "WEISS TÖTET IMMER"
+    },
+    {
+      "id": "hint-5",
+      "type": "hint",
+      "y": 2340,
+      "text": "JEDER TIPP SENDET EINEN PULSE"
+    },
+    {
+      "id": "hint-6",
+      "type": "hint",
+      "y": 2431,
+      "text": "PULSE ÖFFNET GOLD-SIEGEL"
+    },
+    {
+      "id": "hint-7",
+      "type": "hint",
+      "y": 6942,
+      "text": "TIPP ZUR WAND = NUR FARBWECHSEL"
+    }
+  ]
+}
