@@ -1,9 +1,28 @@
 // Ausführlicher Level-Bericht: Erreichbarkeit pro Reihe, Abschnitte, Musterlösung, Zwangsaktionen, Rift-Siegel.
 // Aufruf: node tests/level-report.mjs
-import { getRows, validateLevel, SECTIONS, sectionAt, FINISH_BEAT, BEAT_SEC, START_LANE, START_DIM, survivesRow } from '../js/level.js';
+// Aufruf mit Level-ID: node tests/level-report.mjs rift-main
+import { validateLevel, survivesRow } from '../js/level.js';
+import { laneRows, buildLevelRuntime } from '../js/level-data.js';
+import { BEAT_SEC, UNITS_PER_BEAT } from '../js/config.js';
+import { loadLevel } from './lib/levels.mjs';
 
-const rows = getRows();
-const v = validateLevel(rows);
+const level = loadLevel(process.argv[2] || 'rift-main');
+const rt = buildLevelRuntime(level);
+const rows = laneRows(level);
+if (!rows) {
+  console.log(`${level.id}: freie Maße – kein Spur-Bericht möglich (Nachweis über aufgezeichneten Lauf, siehe validate-level.mjs)`);
+  process.exit(0);
+}
+const FINISH_BEAT = level.finish.y / UNITS_PER_BEAT;
+const SECTIONS = rt.sections.map((s) => ({ ...s, from: s.y / UNITS_PER_BEAT }));
+const sectionAt = (beat) => {
+  let s = SECTIONS[0];
+  for (const sec of SECTIONS) if (beat >= sec.from) s = sec;
+  return s;
+};
+const START_LANE = rt.start.lane;
+const START_DIM = rt.start.dim;
+const v = validateLevel(rows, rt.start);
 console.log(`Level: ${rows.length} Reihen, Ziel bei Beat ${FINISH_BEAT} = ${(FINISH_BEAT * BEAT_SEC).toFixed(1)} s, lösbar: ${v.ok}`);
 if (!v.ok) {
   console.log(v.errors.join('\n'));

@@ -1,0 +1,9 @@
+{
+  "schema": "rift-climb-level-index",
+  "version": 1,
+  "default": "rift-main",
+  "levels": [
+    { "id": "rift-main", "name": "RIFT CLIMB", "file": "rift-main.json" },
+    { "id": "rift-forge-test", "name": "RIFT FORGE TEST", "file": "rift-forge-test.json" }
+  ]
+}
