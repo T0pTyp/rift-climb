@@ -21,6 +21,7 @@ function el(tag, attrs = {}, ...kids) {
   return e;
 }
 
+let fieldSeq = 0;
 const secs = (y) => `${(y / CLIMB_SPEED).toFixed(2).replace('.', ',')} s`;
 
 /** Spurinfo: welche Spuren ein Objekt sichtbar abdeckt und ob es exakt spurgenau liegt (Spur-Solver). */
@@ -116,7 +117,25 @@ export class PropsPanel {
       this.app.commitEdit();
     });
     this.inputs.push(f);
-    return this.field(label, input, { unit, hint, title });
+    // Touch: −/+ ändern in groben Schritten (ein Tipp = ein Undo-Schritt), ohne Bildschirmtastatur
+    const coarse = unit === 'u' ? 10 : step;
+    const stepBtn = (sign) => el('button', {
+      type: 'button', class: 'step-btn', 'aria-label': `${label} ${sign < 0 ? 'verringern' : 'erhöhen'}`, text: sign < 0 ? '−' : '+',
+      onclick: (e) => {
+        e.preventDefault();
+        const cur = Number(get());
+        const v = Math.min(max, Math.max(min, Math.round((cur + sign * coarse) / coarse) * coarse));
+        if (Number.isFinite(v) && v !== cur) this.app.edit(label, (tx) => set(tx, v));
+      },
+    });
+    const row = this.field(label, input, { unit, hint, title });
+    // Label gehört explizit zum Zahlenfeld, sonst würde ein Tipp auf den Text den ersten Button auslösen
+    input.id = `pf-${++fieldSeq}`;
+    row.htmlFor = input.id;
+    const box = row.querySelector('.field-input');
+    box.prepend(stepBtn(-1));
+    box.insertBefore(stepBtn(1), input.nextSibling);
+    return row;
   }
 
   text(label, { get, set, maxLength, hint, key, validate, multiline, title }) {
