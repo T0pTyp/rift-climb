@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="theme-color" content="#04040c">
   <meta name="description" content="LEVEL FORGE – visueller Level-Editor für RIFT CLIMB: PULSE.">
   <title>LEVEL FORGE · RIFT CLIMB</title>
@@ -63,6 +63,12 @@
       <span id="level-title" class="level-title" title="Aktueller Levelname">–</span>
       <span id="save-status" class="save-status" data-state="idle">Lädt…</span>
     </div>
+    <div class="m-actions m-only" aria-label="Schnellaktionen">
+      <button id="m-undo" class="m-icon" type="button" aria-label="Rückgängig">&#8630;</button>
+      <button id="m-redo" class="m-icon" type="button" aria-label="Wiederherstellen">&#8631;</button>
+      <button id="m-save" class="m-icon" type="button" aria-label="Speichern"><svg viewBox="0 0 24 24"><path d="M5 3h11l5 5v11a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zm2 2v5h9V5zm5 8a3 3 0 100 6 3 3 0 000-6z"/></svg></button>
+      <button id="m-menu" class="m-icon" type="button" aria-label="Menü" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg></button>
+    </div>
   </header>
 
   <aside class="toolbar" aria-label="Werkzeuge">
@@ -97,6 +103,7 @@
         title="Dreieckige Stacheln: im Spiel nicht vorhanden. LEVEL FORGE erfindet keine neue Mechanik – rechteckige Hindernisse und Barrieren decken die vorhandene Kollision ab."><i class="sw sw-spikes"></i><span>Stacheln</span><em>nicht verfügbar</em></button>
     </div>
     <p class="side-note">Palette anklicken und ins Feld klicken – oder direkt ins Feld ziehen.</p>
+    <p class="side-note touch-note">Objekt antippen, dann ins Feld tippen = setzen. Ziehen verschiebt, langes Drücken öffnet das Kontextmenü, zwei Finger zoomen und schieben.</p>
   </aside>
 
   <main class="stage" id="stage">
@@ -113,6 +120,7 @@
       <label class="tg" title="Metronom-Klick auf jedem Beat während der Rhythmus-Vorschau (selbst erzeugte Töne)"><input id="tg-metronome" type="checkbox"> Metronom</label>
     </div>
     <canvas id="view" tabindex="0" aria-label="Levelansicht"></canvas>
+    <button id="m-fit" class="m-float m-only" type="button" aria-label="Spielfeldbreite einpassen" title="Spielfeldbreite einpassen">&#10530;</button>
     <div class="statusbar">
       <span id="cursor-pos">x – · y –</span>
       <span id="sel-info">Keine Auswahl</span>
@@ -120,7 +128,19 @@
     </div>
   </main>
 
+  <nav id="dock" class="dock m-only" aria-label="Editor-Aktionen">
+    <button id="dk-props" type="button"><svg viewBox="0 0 24 24"><path d="M3 5h10v2H3zm14 0h4v2h-4zm-2-2h2v6h-2zM3 11h4v2H3zm8 0h10v2H11zM7 9h2v6H7zm-4 8h10v2H3zm14 0h4v2h-4zm-2-2h2v6h-2z"/></svg><span>Eigenschaften</span></button>
+    <button id="dk-check" type="button"><svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span>Prüfung</span><b id="dk-check-badge" class="badge" hidden></b></button>
+    <button id="dk-dim" type="button" data-dim="both"><i class="dim-dot"></i><span id="dk-dim-label">Beide</span></button>
+    <button id="dk-play" class="accent" type="button"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg><span>Playtest</span></button>
+  </nav>
+
   <aside class="props" aria-label="Eigenschaften">
+    <div class="sheet-head m-only">
+      <span class="grip" aria-hidden="true"></span>
+      <strong id="sheet-title">Eigenschaften</strong>
+      <button id="sheet-close" class="m-icon" type="button" aria-label="Schließen">&#10005;</button>
+    </div>
     <div id="props-body" class="props-body"></div>
     <section class="check">
       <h2 class="panel-title">Prüfung <span id="check-summary" class="check-summary"></span></h2>
@@ -141,6 +161,55 @@
       <button id="pt-exit" class="accent" type="button" title="Zurück zum Editor – nichts geht verloren">Zurück zum Editor</button>
     </div>
     <div class="pt-frame-wrap"><iframe id="pt-frame" title="Playtest" allow="autoplay"></iframe></div>
+  </div>
+
+  <div id="sheet-scrim" class="sheet-scrim" hidden></div>
+  <aside id="menu-sheet" class="menu-sheet" hidden aria-label="Menü" role="dialog">
+    <div class="sheet-head">
+      <span class="grip" aria-hidden="true"></span>
+      <strong>Menü</strong>
+      <button id="menu-close" class="m-icon" type="button" aria-label="Schließen">&#10005;</button>
+    </div>
+    <div class="menu-body">
+      <h3>Datei</h3>
+      <div class="m-grid">
+        <button type="button" data-click="#btn-new">Neu</button>
+        <button type="button" data-click="#btn-open">Öffnen…</button>
+        <button type="button" data-click="#btn-import">Importieren</button>
+        <button type="button" id="m-export">Exportieren / Teilen</button>
+      </div>
+      <p class="m-note" id="m-storage-note">Levels liegen nur lokal in diesem Browser (IndexedDB) – keine Cloud. Website-Daten löschen, privater Modus oder das automatische Aufräumen von iOS können sie entfernen. Wichtige Level als JSON exportieren.</p>
+      <h3>Test</h3>
+      <div class="m-grid">
+        <button type="button" data-click="#btn-playfrom">&#9654; Ab Testmarker</button>
+        <button type="button" data-click="#btn-rhythm">&#9835; Rhythmus-Vorschau</button>
+      </div>
+      <label class="m-row"><span>Playtest-Modus</span><select data-mirror="#pt-mode"></select></label>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#pt-debug"><span>Hitboxen im Playtest</span></label>
+      <h3>Ansicht</h3>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-beats"><span>Beat-Marker</span></label>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-hitboxes"><span>Hitboxen</span></label>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-reach"><span>Pulse-Reichweite</span></label>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-metronome"><span>Metronom (Vorschau)</span></label>
+      <h3>Raster und Snap</h3>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#snap-on"><span>Snap aktiv</span></label>
+      <label class="m-row m-check"><input type="checkbox" data-mirror="#grid-show"><span>Raster anzeigen</span></label>
+      <label class="m-row"><span>Rastergröße</span><select data-mirror="#grid-size"></select></label>
+      <label class="m-row"><span>Snap horizontal</span><select data-mirror="#snap-x"></select></label>
+      <label class="m-row"><span>Snap vertikal</span><select data-mirror="#snap-y"></select></label>
+      <h3>Hilfe</h3>
+      <div class="m-grid">
+        <button type="button" data-click="#btn-publish">Level veröffentlichen</button>
+        <a class="m-link" href="../../">Zum Spiel</a>
+      </div>
+      <p class="m-note">Bedienung: Palette antippen, dann ins Feld tippen = setzen. Objekt ziehen = verschieben (Snap aktiv). Zwei Finger = zoomen und schieben. Langes Drücken = Duplizieren, Löschen, Eigenschaften.</p>
+    </div>
+  </aside>
+
+  <div id="ctx-menu" class="ctx-menu" hidden role="menu">
+    <button type="button" role="menuitem" data-act="duplicate">Duplizieren</button>
+    <button type="button" role="menuitem" data-act="delete" class="danger">Löschen</button>
+    <button type="button" role="menuitem" data-act="props">Eigenschaften</button>
   </div>
 
   <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
