@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#04040c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="RIFT CLIMB: PULSE – rhythmischer Vertical Climber mit Dimensionswechsel.">
+  <title>RIFT CLIMB: PULSE</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-screen="menu" data-dim="B">
+  <div id="app">
+    <canvas id="game" aria-label="Spielfeld"></canvas>
+
+    <div id="hud" hidden>
+      <div class="hud-top">
+        <div class="hud-progress">
+          <div class="hud-bar"><div id="hud-bar-fill"></div></div>
+          <span id="hud-pct">0%</span>
+        </div>
+        <button id="btn-pause" class="icon-btn" type="button" aria-label="Pause">II</button>
+      </div>
+      <div class="hud-row">
+        <span id="hud-dim" class="chip" data-dim="B">BLAU</span>
+        <span id="hud-mode" class="chip practice" hidden>PRACTICE</span>
+        <span id="hud-attempts" class="chip muted">Versuch 1</span>
+      </div>
+      <div id="checkpoint-toast" class="toast"></div>
+    </div>
+
+    <div id="touch-hints" hidden aria-hidden="true">
+      <span class="hint left">&#8599;</span>
+      <span class="hint right">&#8598;</span>
+    </div>
+
+    <section id="menu" class="overlay">
+      <div class="panel">
+        <h1 class="logo">RIFT CLIMB<span>PULSE</span></h1>
+        <p class="tagline">Steig im Takt. Wechsle die Dimension.</p>
+        <button id="btn-start" class="btn primary" type="button">Start</button>
+        <button id="btn-practice" class="btn" type="button">Übungsmodus</button>
+        <div class="stats">
+          <div><span class="label">Bestleistung</span><strong id="menu-best">0%</strong></div>
+          <div><span class="label">Versuche</span><strong id="menu-attempts">0</strong></div>
+        </div>
+        <button id="btn-sound" class="btn small" type="button" aria-pressed="true">Sound: AN</button>
+        <div class="help">
+          <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
+          <p>Jeder Tipp wechselt die Dimension. <span class="c-b">Blau</span> aktiv: blaue Hindernisse töten, rote sind Geister. <span class="c-r">Rot</span> umgekehrt. <span class="c-w">Weiß</span> tötet immer.</p>
+          <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pause" class="overlay" hidden>
+      <div class="panel">
+        <h2>Pause</h2>
+        <button id="btn-resume" class="btn primary" type="button">Weiter</button>
+        <button id="btn-pause-restart" class="btn" type="button">Neustart</button>
+        <button id="btn-pause-menu" class="btn" type="button">Menü</button>
+      </div>
+    </section>
+
+    <section id="death" class="overlay" hidden>
+      <div class="panel">
+        <h2 id="death-title">Rift verloren</h2>
+        <div class="big" id="death-pct">0%</div>
+        <p id="death-new" class="new-best" hidden>Neue Bestleistung!</p>
+        <p class="sub">Bestleistung: <strong id="death-best">0%</strong></p>
+        <button id="btn-death-restart" class="btn primary" type="button">Sofort neu starten</button>
+        <button id="btn-death-menu" class="btn" type="button">Menü</button>
+        <p class="desktop-only hint-key">Enter / Leertaste = Neustart</p>
+      </div>
+    </section>
+
+    <section id="win" class="overlay" hidden>
+      <div class="panel">
+        <h2>RIFT CLEARED</h2>
+        <div class="big">100%</div>
+        <p class="sub" id="win-sub"></p>
+        <button id="btn-win-restart" class="btn primary" type="button">Nochmal</button>
+        <button id="btn-win-menu" class="btn" type="button">Menü</button>
+      </div>
+    </section>
+
+    <div id="rotate-hint" aria-hidden="true">Bitte das Gerät ins Hochformat drehen</div>
+    <noscript><div class="overlay"><div class="panel">Dieses Spiel benötigt JavaScript.</div></div></noscript>
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
