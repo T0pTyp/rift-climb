@@ -22,8 +22,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Level-Lösbarkeit prüfen
-        run: node tests/validate-level.mjs
+      - name: Level, Physik, Rift Pulse und Audio-Timeline prüfen
+        run: npm test
       - name: Statische Seite zusammenstellen
         run: |
           mkdir -p _site

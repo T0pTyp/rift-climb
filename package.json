@@ -10,6 +10,12 @@
     "test:physics": "node tests/physics.mjs",
     "test:rift": "node tests/rift-pulse.mjs",
     "test:e2e": "node tests/e2e.mjs",
-    "test:perf": "node tests/perf.mjs"
+    "test:perf": "node tests/perf.mjs",
+    "test": "node tests/validate-level.mjs && node tests/physics.mjs && node tests/rift-pulse.mjs && node tests/pulse.mjs",
+    "test:audio": "node tests/pulse.mjs",
+    "test:audio:e2e": "node tests/pulse-e2e.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
   }
 }

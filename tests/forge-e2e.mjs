@@ -525,6 +525,7 @@ let exported;
   await page.click('#btn-playtest');
   await page.waitForFunction(() => { const f = document.querySelector('#pt-frame'); return f.contentWindow && f.contentWindow.__RIFT && f.contentWindow.__RIFT.state !== 'menu'; }, null, { timeout: 10000 });
   const frame = page.frames().find((f) => f.url().includes('playtest=1'));
+  await frame.click('#btn-resume');
   await page.waitForTimeout(1200);
   const g = await frame.evaluate(() => ({ st: __RIFT.state, id: __RIFT.level.id, chip: !document.querySelector('#hud-playtest').hidden, obs: __RIFT.obstacles.length }));
   check('[19] PLAYTEST startet das echte Spiel mit dem aktuellen Level (ohne Export)', g.st === 'playing' && g.id === 'rift-forge-test' && g.chip && g.obs === 15, JSON.stringify(g));

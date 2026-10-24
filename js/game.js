@@ -18,6 +18,8 @@ import { drawTrail, drawParticles } from './art/effects.js';
 import { Backdrop } from './art/backdrop.js';
 import { qualityOf } from './art/quality.js';
 
+import { BeatEffects } from './pulse/effects.js';
+
 const K = PARTICLE_KIND;
 
 const REACH_DASH = [4, 7];
@@ -45,6 +47,7 @@ export class Game {
     this.seals = this.level.seals;
     this.collideRange = this.level.maxChh + HIT_RADIUS + 2;
     this.rift = new RiftField(this.seals);
+    this.beatEffects = new BeatEffects(this.level);
     this.onSealOpen = this.onSealOpen.bind(this);
     // Spur-Solver nur für Level im Spurmodell; freie Level werden über einen aufgezeichneten Lauf nachgewiesen.
     this.validation = this.rows
@@ -65,6 +68,7 @@ export class Game {
     this.state = 'menu';
     this.mode = 'normal';
     this.t = 0;
+    this.timelineRevision = 0;
     this.acc = 0;
     this.sessionAttempts = 0;
     this.flash = 0;
@@ -159,6 +163,7 @@ export class Game {
   }
 
   restart() {
+    this.timelineRevision++;
     if (this.mode === 'normal') {
       this.storage.stats.attempts++;
       this.storage.save();
@@ -189,9 +194,12 @@ export class Game {
     this.recording = this.mode === 'normal' && !from ? [] : null;
     this.state = 'playing';
     this.audio.seek(this.t);
+    this.audio.setDimension?.(this.player.dim, true);
+    this.beatEffects.seek(this.t);
     this.ui.show(null);
     this.input.guard();
     this.setupAutoplay();
+    this.audio.update(this.t);
   }
 
   /** Index der letzten Linie, die der Spieler bei Höhe y bereits vollständig passiert hat. */
@@ -238,15 +246,17 @@ export class Game {
   resume() {
     if (this.state !== 'paused') return;
     this.state = this.pausedFrom || 'playing';
+    this.timelineRevision++;
     this.audio.resume();
     this.audio.seek(this.t);
     this.ui.show(null);
     this.input.guard();
+    if (this.state === 'playing') this.audio.update(this.t);
   }
 
   toMenu() {
     this.state = 'menu';
-    this.audio.resume();
+    this.audio.stop?.();
     this.ui.updateMenu(this.storage.stats, this.storage.muted);
     this.ui.show('menu');
   }
@@ -281,7 +291,10 @@ export class Game {
     this.shake = Math.max(this.shake, SWITCH_SHAKE);
     const col = COLORS[p.dim].main;
     this.rift.emit(p.x, this.y, this.t, col);
+    this.audio.setDimension?.(p.dim);
+    this.audio.sfx('flight', p.dim, atWall);
     this.audio.sfx('switch', p.dim, atWall);
+    this.audio.sfx('pulse', p.dim);
     this.anim.onSwitch(dir);
     const y = this.y;
     // Rückstoß nach unten-hinten (Funken) und Energie-Impuls als kleiner Ring in der neuen Dimensionsfarbe
@@ -343,7 +356,11 @@ export class Game {
     this.stats.frameSteps = frameSteps;
     if (dt > 0) this.stats.fps += (1 / Math.max(dt / (this.debug.speed || 1), 1e-3) - this.stats.fps) * 0.05;
 
-    if (this.state === 'playing' || this.state === 'respawn') {
+    if (this.state === 'playing') {
+      this.beatEffects.update(this.t, () => {
+        const col = COLORS[this.player.dim].main;
+        for (const x of [5, WORLD_W - 5]) this.particles.spawn(x, this.y + 100, 0, 20, .18, 1.6, col, .3, K.SPARK);
+      });
       this.audio.update(this.t);
     }
     if (this.state !== 'menu') {
@@ -368,7 +385,9 @@ export class Game {
       this.particles.spawn(p.x + (Math.random() - 0.5) * 6, y - 10, -p.vx * 0.15, -60, 0.3, 2.6, COLORS[p.dim].main, 0.9, K.GLOW);
     }
 
-    this.rift.step(this.t, this.onSealOpen);
+    this.rift.step(this.t, this.onSealOpen, (seal) => {
+      if (Math.abs(seal.y - this.y) < 400) this.audio.sfx('seal-close');
+    });
 
     const obs = this.obstacles;
     const range = this.collideRange;
@@ -474,6 +493,8 @@ export class Game {
     this.anim.onDeath();
     this.shake = DEATH_SHAKE;
     this.flash = 0;
+    this.audio.stop?.();
+    this.audio.sfx('collision');
     this.audio.sfx('death');
     this.autoplayQueue = [];
     if (this.mode === 'practice') this.sessionAttempts++;
@@ -515,6 +536,9 @@ export class Game {
     this.state = 'respawn';
     this.respawnTimer = RESPAWN_SEC;
     this.audio.seek(this.t);
+    this.audio.setDimension?.(cp.dim, true);
+    this.beatEffects.seek(this.t);
+    this.audio.sfx('respawn');
     this.input.guard(0);
   }
 
@@ -526,6 +550,7 @@ export class Game {
       this.storage.stats.clears = (this.storage.stats.clears || 0) + 1;
       this.storage.save();
     }
+    this.audio.stop?.();
     this.audio.sfx('win');
     this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay });
     if (this.events.onWin) {
@@ -582,8 +607,14 @@ export class Game {
 
     const accent = blend < 0.5 ? COLORS.B : COLORS.R;
     const upb = this.level.unitsPerBeat;
-    const beatF = camY / upb;
-    const pulse = this.state === 'menu' ? 0.3 : 1 - (beatF - Math.floor(beatF));
+    const pulse = this.state === 'menu' ? .3 : this.beatEffects.pulse(this.t);
+    const strongPulse = this.beatEffects.accent(this.t);
+    if (inGame && strongPulse > .01) {
+      ctx.globalAlpha = strongPulse * .025;
+      ctx.fillStyle = accent.main;
+      ctx.fillRect(0, 0, WORLD_W, H);
+      ctx.globalAlpha = 1;
+    }
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(255,255,255,0.05)';
@@ -598,7 +629,7 @@ export class Game {
     const lastBeat = Math.ceil((camY + psy) / upb) + 1;
     for (let b = firstBeat; b <= lastBeat; b++) {
       const by = psy - (b * upb - camY);
-      const strong = b % 4 === 0;
+      const strong = b % this.level.beatsPerBar === 0;
       ctx.strokeStyle = strong ? accent.glow : 'rgba(255,255,255,0.04)';
       ctx.globalAlpha = strong ? 0.3 + 0.5 * pulse : 1;
       ctx.beginPath();

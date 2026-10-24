@@ -64,6 +64,10 @@
           <button id="btn-sound" class="btn small stack" type="button" aria-pressed="true"><small>Sound</small>AN</button>
           <button id="btn-gfx" class="btn small stack" type="button" title="Grafikqualität: Hoch / Mittel / Niedrig – nur Darstellung, Gameplay identisch"><small>Grafik</small>HOCH</button>
         </div>
+        <details class="audio-disclosure"><summary>Lautstärke</summary><div class="audio-settings" aria-label="Lautstärke">
+          <label>Musik <input aria-label="Musiklautstärke" data-volume="music" type="range" min="0" max="1" step="0.05"></label>
+          <label>Effekte <input aria-label="Effektlautstärke" data-volume="sfx" type="range" min="0" max="1" step="0.05"></label>
+        </div></details>
         <div class="help">
           <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
           <p>Jeder Tipp wechselt die Dimension. <span class="c-b">Blau</span> aktiv: blaue Hindernisse töten, rote sind Geister. <span class="c-r">Rot</span> umgekehrt. <span class="c-w">Weiß</span> tötet immer.</p>
@@ -78,6 +82,10 @@
     <section id="pause" class="overlay" hidden>
       <div class="panel">
         <h2>Pause</h2>
+        <div class="audio-settings" aria-label="Lautstärke">
+          <label>Musik <input aria-label="Musiklautstärke" data-volume="music" type="range" min="0" max="1" step="0.05"></label>
+          <label>Effekte <input aria-label="Effektlautstärke" data-volume="sfx" type="range" min="0" max="1" step="0.05"></label>
+        </div>
         <button id="btn-resume" class="btn primary" type="button">Weiter</button>
         <button id="btn-pause-restart" class="btn" type="button">Neustart</button>
         <button id="btn-pause-menu" class="btn" type="button">Menü</button>

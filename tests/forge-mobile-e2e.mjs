@@ -23,7 +23,7 @@ const browser = await chromium.launch();
 const context = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, acceptDownloads: true });
 const page = await context.newPage();
 const errors = [];
-page.on('pageerror', (e) => errors.push(e.message));
+page.on('pageerror', (e) => errors.push(e.stack || e.message));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 const cdp = await context.newCDPSession(page);
 const F = (fn, arg) => page.evaluate(fn, arg);
@@ -162,7 +162,7 @@ await ready();
 let blueId;
 // ---------------------------------------------------------------- 3./4. Objekt auswählen und platzieren
 {
-  await centerCamera(560);
+  await centerCamera(500);
   await tapSel('.pal[data-kind="spikes"]');
   const spikes = await docState();
   await tapSel('.pal[data-kind="blue"]');
@@ -424,7 +424,7 @@ let exported;
   await page.waitForFunction(() => !document.querySelector('#playtest').hidden);
   const frame = page.frameLocator('#pt-frame');
   const fr = page.frames().find((f) => f.url().includes('playtest=1')) || (await (await page.$('#pt-frame')).contentFrame());
-  await fr.waitForFunction(() => window.__RIFT && (window.__RIFT.state === 'playing' || window.__RIFT.state === 'respawn'), null, { timeout: 15000 });
+  await fr.waitForFunction(() => window.__RIFT && (window.__RIFT.state === 'paused'), null, { timeout: 15000 });
   const lay = await F(() => {
     const f = document.querySelector('#pt-frame').getBoundingClientRect();
     const b = document.querySelector('#pt-exit').getBoundingClientRect();
@@ -432,7 +432,9 @@ let exported;
   });
   check('[16] Playtest startet im Vollbild mit der echten Simulation (Level aus dem Editor)', lay.fw >= 389 && lay.fh > 700 && (await fr.evaluate(() => window.__RIFT.level.name)) === 'Vom Handy importiert', JSON.stringify(lay));
   check('[16] „Zurück zum Editor“ groß und vollständig sichtbar (≥ 44 px)', lay.bh >= 44 && lay.bw >= 150 && lay.btop >= 0 && lay.bbottom <= lay.ih, JSON.stringify(lay));
+  await fr.tap('#btn-resume');
   await fr.waitForFunction(() => window.__RIFT.state === 'playing', null, { timeout: 5000 });
+  await wait(250); // existing 200ms start-touch guard after the explicit Weiter gesture
   const lane0 = await fr.evaluate(() => window.__RIFT.player.lane);
   const fb = await (await page.$('#pt-frame')).boundingBox();
   await tapAt({ x: fb.x + fb.width * 0.2, y: fb.y + fb.height * 0.6 });
@@ -488,7 +490,7 @@ await browser.close();
   await p.evaluate(() => { const f = window.__FORGE; f.view.cam.y = 560; f.view.cam.x = 180; f.view.cam.z = f.view.fitZoom(); f.actions.requestRender(); });
   const n0 = await p.evaluate(() => window.__FORGE.doc.objects.length);
   await p.tap('.pal[data-kind="red"]');
-  const pt = await p.evaluate(() => { const f = window.__FORGE; const r = f.view.canvas.getBoundingClientRect(); const s = f.view.toScreen(225, 780); return { x: r.left + s.x, y: r.top + s.y }; });
+  const pt = await p.evaluate(() => { const f = window.__FORGE; const r = f.view.canvas.getBoundingClientRect(); const s = f.view.toScreen(225, 650); return { x: r.left + s.x, y: r.top + s.y }; });
   await p.touchscreen.tap(pt.x, pt.y);
   await p.waitForTimeout(150);
   const r = await p.evaluate(() => ({ n: window.__FORGE.doc.objects.length, sel: window.__FORGE.doc.get([...window.__FORGE.S.selection][0]) }));

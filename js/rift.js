@@ -39,6 +39,7 @@ export class RiftField {
       s.openedAt = -Infinity;
       s.pulseId = 0;
       s.timesOpened = 0;
+      s.closePending = false;
     }
     for (const p of this.pulses) { p.live = false; p.growing = false; }
   }
@@ -62,7 +63,10 @@ export class RiftField {
   }
 
   /** Ein Simulationsschritt: wachsende Wellen öffnen jedes Siegel, das sie berühren (ein Treffer pro Welle und Siegel). */
-  step(t, onOpen) {
+  step(t, onOpen, onClose) {
+    for (const s of this.seals) {
+      if (s.closePending && t >= s.openUntil) { s.closePending = false; onClose?.(s); }
+    }
     for (const p of this.pulses) {
       if (!p.live) continue;
       const age = t - p.t0;
@@ -74,6 +78,7 @@ export class RiftField {
           if (s.pulseId === p.id || distToSeal(p.x, p.y, s) > r) continue;
           const wasOpen = this.isOpen(s, t);
           s.pulseId = p.id;
+          s.closePending = true;
           s.openUntil = t + (s.openSec || SEAL_OPEN_SEC);
           if (!wasOpen) s.openedAt = t;
           s.timesOpened++;

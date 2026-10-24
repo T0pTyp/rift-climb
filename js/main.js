@@ -121,8 +121,10 @@ async function boot() {
 
   const canvas = document.getElementById('game');
   const storage = createStorage(level.id, playtest);
-  const audio = new AudioEngine();
-  audio.setMuted(storage.muted);
+  const audio = new AudioEngine({ timers: !debug.manual });
+  audio.simulationOnly = debug.manual;
+  audio.setMuted(audio.settings.muted || storage.muted);
+  storage.muted = audio.muted;
 
   let game;
   const unlockAudio = () => audio.unlock();
@@ -136,6 +138,7 @@ async function boot() {
       audio.setMuted(storage.muted);
       ui.updateSound(storage.muted);
     },
+    onVolume: (bus, value) => { audio.setVolume(bus, value); ui.updateVolumes(audio.settings); },
     onGfxToggle: () => {
       storage.gfx = nextQuality(game.gfx.id);
       storage.gfxManual = true;
@@ -180,6 +183,19 @@ async function boot() {
   } : {};
   game = new Game({ canvas, ui, audio, input, storage, debug, level, events, quality: params.get('gfx') || storage.gfx });
   window.__RIFT = game;
+  audio.onInterrupt = () => game.pause();
+  ui.updateVolumes(audio.settings);
+  window.render_game_to_text = () => JSON.stringify({
+    coordinates: 'x right, y up, world units; y = simulation seconds * 260',
+    state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
+    timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint,
+    obstacles: game.obstacles.filter(o => o.y > game.y - 50 && o.y < game.y + game.lookaheadSec * 260).map(o => ({ x: o.x0, y: o.y, w: o.x1 - o.x0, color: o.color, deadly: game.deadlyNow(o, game.player.dim) })),
+  });
+  window.advanceTime = ms => {
+    for (let remaining = ms / 1000; remaining > 1e-9; remaining -= Math.min(1 / 60, remaining)) game.update(Math.min(1 / 60, remaining));
+    game.render();
+  };
 
   function applyQuality(id) {
     game.setQuality(id);
@@ -230,7 +246,7 @@ async function boot() {
       audio.suspend();
     }
   });
-  window.addEventListener('pagehide', () => game.pause());
+  window.addEventListener('pagehide', () => { game.pause(); audio.stop(); });
 
   // Doppeltipp-Zoom und Pinch auf iOS verhindern (nur außerhalb von Buttons).
   document.addEventListener('gesturestart', (e) => e.preventDefault());
@@ -241,6 +257,8 @@ async function boot() {
   ui.updateGfx(game.gfx.label);
 
   let last = performance.now();
+  let clockRevision = game.timelineRevision;
+  let clockArmed = false;
 
   function eventTime(ts) {
     const now = performance.now();
@@ -249,9 +267,14 @@ async function boot() {
 
   function advanceTo(now) {
     if (debug.manual || now <= last) return;
-    const dt = Math.min(MAX_FRAME_DT, (now - last) / 1000) * debug.speed;
+    if (clockRevision !== game.timelineRevision) { clockRevision = game.timelineRevision; clockArmed = false; last = now; return; }
+    const elapsed = (now - last) / 1000;
+    // Pause when an already running soundtrack could continue across a long render stall.
+    if (elapsed > .25 && clockArmed && audio.active && (game.state === 'playing' || game.state === 'respawn')) game.pause();
+    const dt = Math.min(MAX_FRAME_DT, elapsed) * debug.speed;
     last = now;
     game.update(dt);
+    clockArmed = game.state === 'playing' || game.state === 'respawn';
   }
 
   function frame(now) {
@@ -273,8 +296,8 @@ async function boot() {
     const mode = handoff.mode === 'practice' ? 'practice' : 'normal';
     const from = handoff.from && Number.isFinite(handoff.from.y) ? handoff.from : null;
     game.start(mode, from);
-    game.state = 'respawn';
-    game.respawnTimer = 0.8;
+    // iframe navigation is not a reliable iOS audio gesture: explicit ready/Weiter button.
+    game.pause();
     postToEditor({ type: 'forge:ready', levelId: level.id });
     window.focus();
   } else {

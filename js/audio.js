@@ -1,259 +1,232 @@
-// Prozedurale Musik + Effekte über WebAudio (keine Samples, keine geschützte Musik).
-// Tempo (BPM) und Intensitätsstufen kommen aus dem geladenen Level (setLevel).
-import { BEAT_SEC } from './config.js';
+import { CLIMB_SPEED } from './config.js';
+import { BeatTimeline } from './pulse/timeline.js';
+import { scoreStep } from './pulse/score.js';
 
-const LOOKAHEAD = 0.12;
-const ROOTS = [110, 87.31, 130.81, 98]; // Am, F, C, G (pro Takt)
-const CHORDS = [
-  [220, 261.63, 329.63, 440],
-  [174.61, 220, 261.63, 349.23],
-  [261.63, 329.63, 392, 523.25],
-  [196, 246.94, 293.66, 392],
-];
+export const AUDIO_PREFS = 'riftclimb.audio.v1';
+export const LOOKAHEAD = .12;
+export const START_LEAD = .025;
+const VOLUME = { music: .65, sfx: .7, muted: false };
+const bounded = v => Math.min(1, Math.max(0, Number(v) || 0));
 
 export class AudioEngine {
-  constructor() {
+  constructor({ context = null, timers = true } = {}) {
     this.ctx = null;
-    this.muted = false;
-    this.nextStep = 0;
-    this.noise = null;
+    this.timers = timers;
+    this.voices = new Set();
+    this.timer = null;
+    this.active = false;
+    this.anchor = null;
+    this.songTime = 0;
+    this.dimension = 'B';
+    this.settings = { ...VOLUME };
+    try { const p = JSON.parse(globalThis.localStorage?.getItem(AUDIO_PREFS));
+      if (p) this.settings = { music: bounded(p.music ?? VOLUME.music), sfx: bounded(p.sfx ?? VOLUME.sfx), muted: !!p.muted };
+    } catch { /* Storage optional. */ }
+    this.muted = this.settings.muted;
+    this.metrics = { scheduled: 0, resyncs: 0, drift: 0, maxDrift: 0, sfx: {} };
     this.setLevel(null);
+    if (context) this.attach(context);
   }
-
-  /** Tempo und Intensitätsstufen (Abschnitte B/C) aus den Laufzeitdaten eines Levels; null = 120 BPM, 88 Beats. */
   setLevel(rt) {
-    this.beatSec = rt ? rt.beatSec : BEAT_SEC;
-    this.step = this.beatSec / 4; // 16tel
-    const upb = rt ? rt.unitsPerBeat : 130;
-    const secs = rt ? rt.sections : null;
-    this.finishBeat = rt ? Math.ceil(rt.finishBeat - 1e-6) : 88;
-    this.bFrom = secs && secs[1] ? Math.round(secs[1].y / upb) : 22;
-    this.cFrom = secs && secs[2] ? Math.round(secs[2].y / upb) : 53;
-    this.bMid = Math.round((this.bFrom + this.cFrom) / 2 / 4) * 4;
+    this.stop();
+    this.timeline = new BeatTimeline({ bpm: rt?.bpm || 120, beatsPerBar: rt?.beatsPerBar || 4,
+      duration: rt ? rt.finishY / CLIMB_SPEED : 44 });
+    this.timeline.accents = new Set((rt?.seals || []).map(s => Math.round(s.y / CLIMB_SPEED / this.timeline.stepSec)));
+    this.step = this.timeline.stepSec;
   }
-
-  /** Muss synchron in einem Nutzer-Gesten-Handler aufgerufen werden (iOS Safari). */
+  attach(c) {
+    this.ctx = c;
+    this.master = c.createGain();
+    this.master.gain.value = this.muted ? 0 : .55;
+    this.music = c.createGain(); this.music.gain.value = this.settings.music;
+    this.effects = c.createGain(); this.effects.gain.value = this.settings.sfx;
+    this.base = c.createGain(); this.base.connect(this.music);
+    this.blue = c.createGain(); this.blue.connect(this.music);
+    this.red = c.createGain(); this.red.connect(this.music);
+    this.music.connect(this.master); this.effects.connect(this.master);
+    this.compressor = c.createDynamicsCompressor();
+    this.compressor.threshold.value = -16;
+    this.compressor.knee.value = 12;
+    this.compressor.ratio.value = 8;
+    this.compressor.attack.value = .003;
+    this.compressor.release.value = .15;
+    // Conservative headroom after compression.
+    this.output = c.createGain(); this.output.gain.value = .8;
+    this.master.connect(this.compressor).connect(this.output).connect(c.destination);
+    this.noise = c.createBuffer(1, Math.ceil(c.sampleRate * .5), c.sampleRate);
+    const data = this.noise.getChannelData(0);
+    let seed = 0x52494654;
+    for (let i = 0; i < data.length; i++) { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; data[i] = seed / 2147483648 - 1; }
+    this.setDimension(this.dimension, true);
+    c.onstatechange = () => {
+      if (c.state === 'running' && this.wantsPlayback && !this.active) this.update(this.songTime);
+      if (c.state !== 'running' && this.active) {
+        this.stop();
+        this.onInterrupt?.();
+      }
+    };
+  }
+  // Call ONLY from a real gesture. resume rejection never affects gameplay.
   unlock() {
     try {
       if (!this.ctx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
+        const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
         if (!AC) return;
-        this.ctx = new AC();
-        this.master = this.ctx.createGain();
-        this.master.gain.value = this.muted ? 0 : 0.55;
-        const comp = this.ctx.createDynamicsCompressor();
-        this.master.connect(comp);
-        comp.connect(this.ctx.destination);
-        const len = this.ctx.sampleRate * 0.5;
-        this.noise = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
-        const d = this.noise.getChannelData(0);
-        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+        this.attach(new AC({ latencyHint: 'interactive' }));
       }
-      if (this.ctx.state !== 'running') this.ctx.resume();
-      const src = this.ctx.createBufferSource();
-      src.buffer = this.ctx.createBuffer(1, 1, 22050);
-      src.connect(this.ctx.destination);
-      src.start(0);
-    } catch (err) {
-      console.warn('Audio nicht verfügbar:', err);
-      this.ctx = null;
-    }
+      if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {});
+    } catch { /* Game remains fully playable without audio. */ }
   }
-
-  get ready() {
-    return !!this.ctx && this.ctx.state === 'running';
+  get ready() { return this.ctx?.state === 'running'; }
+  persist() { try { globalThis.localStorage?.setItem(AUDIO_PREFS, JSON.stringify(this.settings)); } catch { /* optional */ } }
+  setMuted(value) {
+    this.muted = this.settings.muted = !!value;
+    if (this.master) this.master.gain.setTargetAtTime(value ? 0 : .55, this.ctx.currentTime, .015);
+    this.persist();
   }
-
-  setMuted(m) {
-    this.muted = m;
-    if (this.master) this.master.gain.setTargetAtTime(m ? 0 : 0.55, this.ctx.currentTime, 0.02);
+  setVolume(bus, value) {
+    if (!['music', 'sfx'].includes(bus)) return;
+    this.settings[bus] = bounded(value);
+    const node = bus === 'music' ? this.music : this.effects;
+    if (node) node.gain.setTargetAtTime(this.settings[bus], this.ctx.currentTime, .02);
+    this.persist();
   }
-
-  suspend() {
-    if (this.ctx && this.ctx.state === 'running') this.ctx.suspend();
-  }
-
-  resume() {
-    if (this.ctx && this.ctx.state !== 'running') this.ctx.resume();
-  }
-
-  seek(gameTime) {
-    this.nextStep = Math.max(0, Math.ceil(gameTime / this.step - 1e-6));
-  }
-
-  /** Plant alle 16tel, die im Lookahead-Fenster liegen, relativ zur Spielzeit. */
-  update(gameTime) {
-    if (!this.ready || this.muted) {
-      this.seek(gameTime);
-      return;
-    }
-    const now = this.ctx.currentTime;
-    while (this.nextStep * this.step < gameTime + LOOKAHEAD) {
-      const stepTime = this.nextStep * this.step;
-      const when = now + Math.max(0, stepTime - gameTime);
-      this.playStep(this.nextStep, when);
-      this.nextStep++;
-    }
-  }
-
-  playStep(step, t) {
-    const beat = Math.floor(step / 4);
-    const sub = step % 4;
-    const bar = Math.floor(beat / 4);
-    const chord = bar % 4;
-    const intensity = beat < this.bFrom ? 0 : beat < this.bMid ? 1 : beat < this.cFrom ? 2 : 3;
-    if (beat >= this.finishBeat) {
-      if (sub === 0 && beat < this.finishBeat + 4) this.kick(t);
-      return;
-    }
-
-    if (sub === 0) this.kick(t);
-    if (sub === 2) this.hat(t, 0.05);
-    if (intensity >= 2 && (sub === 1 || sub === 3)) this.hat(t, 0.025);
-    if (intensity >= 1 && sub === 0 && beat % 2 === 1) this.snare(t);
-    if (sub === 0 || sub === 2 || (intensity >= 2 && sub === 3)) {
-      this.bass(t, ROOTS[chord] * (sub === 2 && intensity >= 1 ? 2 : 1));
-    }
-    if (intensity >= 2) {
-      const notes = CHORDS[chord];
-      const idx = (step * (intensity >= 3 ? 3 : 1)) % notes.length;
-      if (intensity >= 3 || sub % 2 === 0) this.lead(t, notes[idx] * 2, 0.045);
-    } else if (sub === 0 && beat % 4 === 0) {
-      this.pad(t, CHORDS[chord]);
-    }
-  }
-
-  env(gainNode, t, peak, decay) {
-    gainNode.gain.setValueAtTime(0.0001, t);
-    gainNode.gain.exponentialRampToValueAtTime(peak, t + 0.005);
-    gainNode.gain.exponentialRampToValueAtTime(0.0001, t + decay);
-  }
-
-  kick(t) {
-    const c = this.ctx;
-    const o = c.createOscillator();
-    const g = c.createGain();
-    o.frequency.setValueAtTime(150, t);
-    o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
-    this.env(g, t, 0.9, 0.22);
-    o.connect(g).connect(this.master);
-    o.start(t);
-    o.stop(t + 0.25);
-  }
-
-  noiseHit(t, gain, decay, type, freq) {
-    const c = this.ctx;
-    const s = c.createBufferSource();
-    s.buffer = this.noise;
-    const f = c.createBiquadFilter();
-    f.type = type;
-    f.frequency.value = freq;
-    const g = c.createGain();
-    this.env(g, t, gain, decay);
-    s.connect(f).connect(g).connect(this.master);
-    s.start(t);
-    s.stop(t + decay + 0.02);
-  }
-
-  hat(t, gain) {
-    this.noiseHit(t, gain, 0.04, 'highpass', 7000);
-  }
-
-  snare(t) {
-    this.noiseHit(t, 0.18, 0.14, 'bandpass', 1800);
-  }
-
-  bass(t, freq) {
-    const c = this.ctx;
-    const o = c.createOscillator();
-    o.type = 'sawtooth';
-    o.frequency.value = freq;
-    const f = c.createBiquadFilter();
-    f.type = 'lowpass';
-    f.frequency.setValueAtTime(900, t);
-    f.frequency.exponentialRampToValueAtTime(180, t + 0.2);
-    const g = c.createGain();
-    this.env(g, t, 0.22, 0.22);
-    o.connect(f).connect(g).connect(this.master);
-    o.start(t);
-    o.stop(t + 0.25);
-  }
-
-  lead(t, freq, gain) {
-    const c = this.ctx;
-    const o = c.createOscillator();
-    o.type = 'square';
-    o.frequency.value = freq;
-    const g = c.createGain();
-    this.env(g, t, gain, 0.11);
-    o.connect(g).connect(this.master);
-    o.start(t);
-    o.stop(t + 0.13);
-  }
-
-  pad(t, notes) {
-    const c = this.ctx;
-    for (const n of notes.slice(0, 3)) {
-      const o = c.createOscillator();
-      o.type = 'triangle';
-      o.frequency.value = n;
-      const g = c.createGain();
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.05, t + 0.3);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + this.beatSec * 4);
-      o.connect(g).connect(this.master);
-      o.start(t);
-      o.stop(t + this.beatSec * 4 + 0.05);
-    }
-  }
-
-  sfx(name, dim, atWall) {
-    if (!this.ready || this.muted) return;
+  setDimension(dim, immediate = false) {
+    this.dimension = dim;
+    if (!this.ctx) return;
     const t = this.ctx.currentTime;
-    if (name === 'switch') {
-      const c = this.ctx;
-      const o = c.createOscillator();
-      o.type = 'triangle';
-      // Blau höher, Rot tiefer: die aktive Dimension ist auch hörbar
-      const base = dim === 'B' ? 740 : 494;
-      o.frequency.setValueAtTime(base, t);
-      o.frequency.exponentialRampToValueAtTime(base * 1.5, t + 0.06);
-      const g = c.createGain();
-      this.env(g, t, 0.15, 0.09);
-      o.connect(g).connect(this.master);
-      o.start(t);
-      o.stop(t + 0.11);
-      this.noiseHit(t, 0.06, 0.05, 'highpass', 3500);
-      if (atWall) this.noiseHit(t, 0.12, 0.06, 'bandpass', 600);
-    } else if (name === 'death') {
-      this.noiseHit(t, 0.45, 0.25, 'lowpass', 1400);
-      const o = this.ctx.createOscillator();
-      o.type = 'square';
-      o.frequency.setValueAtTime(220, t);
-      o.frequency.exponentialRampToValueAtTime(55, t + 0.22);
-      const g = this.ctx.createGain();
-      this.env(g, t, 0.18, 0.24);
-      o.connect(g).connect(this.master);
-      o.start(t);
-      o.stop(t + 0.26);
-    } else if (name === 'seal') {
-      // Siegel öffnet: heller, metallischer Doppelton
-      const c = this.ctx;
-      [1567.98, 2349.32].forEach((f, i) => {
-        const o = c.createOscillator();
-        o.type = 'triangle';
-        o.frequency.setValueAtTime(f, t + i * 0.035);
-        const g = c.createGain();
-        this.env(g, t + i * 0.035, 0.11, 0.16);
-        o.connect(g).connect(this.master);
-        o.start(t + i * 0.035);
-        o.stop(t + i * 0.035 + 0.18);
-      });
-      this.noiseHit(t, 0.07, 0.12, 'highpass', 6000);
-    } else if (name === 'checkpoint') {
-      [880, 1318.5].forEach((f, i) => this.lead(t + i * 0.07, f, 0.06));
-    } else if (name === 'win') {
-      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.lead(t + i * 0.1, f, 0.08));
+    for (const [node, value] of [[this.blue, dim === 'B' ? 1 : .08], [this.red, dim === 'R' ? 1 : .08]]) {
+      node.gain.cancelScheduledValues(t);
+      if (immediate) node.gain.setValueAtTime(value, t);
+      else node.gain.setTargetAtTime(value, t, .025);
     }
+  }
+  cancel(kind) {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    for (const voice of this.voices) {
+      if (kind && voice.kind !== kind) continue;
+      // Cancel future starts too. A short release avoids clicks on active envelopes.
+      voice.gain.gain.cancelScheduledValues(now);
+      voice.gain.gain.setTargetAtTime(.0001, now, .002);
+      try { voice.source.stop(now + .012); } catch { /* already ended */ }
+    }
+  }
+  stop() {
+    this.wantsPlayback = false;
+    this.active = false;
+    if (this.timer !== null) clearInterval(this.timer);
+    this.timer = null;
+    this.anchor = null;
+    this.cancel();
+  }
+  suspend() { this.stop(); } // Context is reused; do not race suspend/resume promises.
+  resume() { this.unlock(); }
+  seek(time) {
+    this.stop();
+    this.seekTime = Math.max(0, time);
+    this.songTime = this.seekTime;
+    this.nextStep = Math.max(0, Math.ceil(this.songTime / this.step - 1e-8));
+  }
+  update(time) {
+    this.songTime = time;
+    if (this.simulationOnly) return;
+    this.wantsPlayback = true;
+    if (!this.ready) return;
+    if (time >= this.timeline.duration) { this.stop(); return; }
+    const now = this.ctx.currentTime;
+    this.lastSync = now;
+    if (!this.active) {
+      this.active = true;
+      this.anchor = now + START_LEAD - time;
+      // A gesture may resume the context one frame after seek; keep the opening note.
+      const start = time - this.seekTime < .04 ? this.seekTime : time;
+      this.nextStep = Math.max(0, Math.ceil(start / this.step - 1e-8));
+      // Resume sustaining harmony at an arbitrary checkpoint (no earlier drums retriggered).
+      if (this.nextStep % (4 * this.timeline.beatsPerBar)) {
+        const barStep = Math.floor(this.nextStep / (4 * this.timeline.beatsPerBar)) * 4 * this.timeline.beatsPerBar;
+        scoreStep(barStep, this.timeline, (type, f, g, dur, layer) => {
+          const remaining = dur - (time - barStep * this.step);
+          if (type === 'pad' && remaining > .02) this.voice(type, now + START_LEAD, f, g, remaining, layer);
+        });
+      }
+      if (this.timers) this.timer = setInterval(() => this.schedule(), 25);
+    }
+    const drift = time - (now - this.anchor + START_LEAD);
+    this.metrics.drift = drift;
+    this.metrics.maxDrift = Math.max(this.metrics.maxDrift, Math.abs(drift));
+    // Only the AUDIO moves when the clocks diverge (stalls, debug speed, clock rate).
+    if (Math.abs(drift) > .055) {
+      this.cancel('music');
+      this.anchor = now + START_LEAD - time;
+      this.nextStep = Math.max(0, Math.ceil(time / this.step - 1e-8));
+      this.metrics.resyncs++;
+    }
+    this.schedule();
+  }
+  schedule() {
+    if (!this.active || !this.ready) return;
+    const now = this.ctx.currentTime;
+    if (now - this.lastSync > .25) { this.stop(); this.onInterrupt?.(); return; }
+    while (this.anchor + this.nextStep * this.step < now + LOOKAHEAD) {
+      const step = this.nextStep++;
+      const t = this.anchor + step * this.step;
+      if (step * this.step >= this.timeline.duration - 1e-8) break;
+      if (t < now - .008) continue; // missed notes are skipped, never burst together
+      scoreStep(step, this.timeline, (type, f, gain, dur, layer) => this.voice(type, Math.max(now, t), f, gain, dur, layer));
+      if (this.metronome && step % 4 === 0) this.voice('air', Math.max(now, t), step % (4 * this.timeline.beatsPerBar) ? 1046 : 1568, .045, .04, 'base');
+      this.metrics.scheduled++;
+    }
+  }
+  voice(type, t, frequency, peak, duration, layer = 'sfx') {
+    if (!this.ctx) return;
+    const c = this.ctx, noise = type === 'hat' || type === 'snare' || type === 'noise';
+    const source = noise ? c.createBufferSource() : c.createOscillator();
+    const gain = c.createGain();
+    const nodes = [source, gain];
+    if (noise) source.buffer = this.noise;
+    else {
+      source.type = type === 'bass' || type === 'warm' ? 'sawtooth' : type === 'lead' ? 'triangle' : 'sine';
+      source.frequency.setValueAtTime(type === 'kick' ? 155 : frequency, t);
+      if (type === 'kick') source.frequency.exponentialRampToValueAtTime(43, t + .13);
+      if (type === 'fall') source.frequency.exponentialRampToValueAtTime(55, t + duration * .9);
+    }
+    let tail = source;
+    if (noise || type === 'bass' || type === 'warm') {
+      const filter = c.createBiquadFilter(); nodes.push(filter);
+      filter.type = type === 'hat' ? 'highpass' : type === 'snare' ? 'bandpass' : 'lowpass';
+      filter.frequency.value = type === 'hat' ? 7000 : type === 'snare' ? 1800 : type === 'warm' ? 650 : 950;
+      source.connect(filter); tail = filter;
+    }
+    const attack = type === 'pad' ? Math.min(.12, duration * .2) : .004;
+    gain.gain.setValueAtTime(.0001, t);
+    gain.gain.exponentialRampToValueAtTime(Math.max(.0002, peak), t + attack);
+    gain.gain.exponentialRampToValueAtTime(.0001, t + Math.max(attack + .01, duration));
+    tail.connect(gain).connect(layer === 'sfx' ? this.effects : this[layer]);
+    const voice = { source, gain, kind: layer === 'sfx' ? 'sfx' : 'music' };
+    this.voices.add(voice);
+    source.onended = () => { for (const n of nodes) n.disconnect(); this.voices.delete(voice); };
+    source.start(t); source.stop(t + duration + .025);
+  }
+  sfx(name, dim, atWall) {
+    if (!this.ready || this.muted || this.settings.sfx === 0) return;
+    this.metrics.sfx[name] = (this.metrics.sfx[name] || 0) + 1;
+    const t = this.ctx.currentTime;
+    const note = (f, gain = .09, length = .1, offset = 0, type = 'air') => this.voice(type, t + offset, f, gain, length);
+    if (name === 'flight') note(atWall ? 150 : 240, .045, .065, 0, 'fall');
+    if (name === 'switch') note(dim === 'B' ? 988 : 494, .08, .1);
+    if (name === 'pulse') { note(110, .12, .16, 0, 'fall'); note(880, .025, .09, .015); }
+    if (name === 'seal') { note(1568, .065, .13); note(2349, .04, .12, .035); }
+    if (name === 'seal-close') note(196, .035, .08, 0, 'warm');
+    if (name === 'collision') this.voice('noise', t, 0, .13, .075);
+    if (name === 'death') note(220, .12, .24, .035, 'fall');
+    if (name === 'respawn') { note(440, .055, .12); note(880, .05, .16, .07); }
+    if (name === 'checkpoint') { note(880, .06, .12); note(1318.5, .05, .15, .07); }
+    if (name === 'win') [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => note(f, .07, .28, i * .1));
+  }
+  status() {
+    return { state: this.ctx?.state || 'locked', active: this.active, songTime: this.songTime,
+      nextStep: this.nextStep, sources: this.voices.size, dimension: this.dimension,
+      settings: { ...this.settings }, ...this.metrics };
   }
 }

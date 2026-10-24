@@ -1,10 +1,46 @@
 # RIFT CLIMB: PULSE
 
 Rhythmischer Vertical Climber für Smartphones (HTML5 Canvas, reines JavaScript, keine Abhängigkeiten zur Laufzeit).
-Die Figur steigt automatisch im 120-BPM-Takt nach oben. Mit kurzen Flugimpulsen weichst du Hindernissen aus –
+Die Figur steigt automatisch mit 260 u/s nach oben; die PULSE ENGINE synchronisiert die Musik dazu. Mit kurzen Flugimpulsen weichst du Hindernissen aus –
 jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der goldene Rift-Siegel kurz öffnet.
 
-**Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop):** https://t0ptyp.github.io/rift-climb/assets/forge/
+**Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
+
+
+## PULSE ENGINE (M6)
+
+**„Neon Ascent“** ist eine eigene, offline erzeugte elektronische Komposition: 44 Sekunden, 120 BPM,
+4/4, Am–F–C–G, Kick/Snare/Hi-Hat, Bass, Pad und wiederkehrendes Synth-Motiv. INTRO (0–11 s),
+BUILD (11–22 s), DROP (22–33 s), FINALE (33–44 s) steigern die Instrumentierung. Siegeltore
+haben bewusst gesetzte musikalische Akzente. Der letzte Beat löst die Musik auf, der Abschluss spielt eine kurze Fanfare.
+
+- **Simulation:** unverändert 240 Hz, konstante 260 u/s, direkte Eingaben. Kein Beat steuert Kollisionen oder korrigiert Tipps.
+- **Zeitbasis:** `BeatTimeline` berechnet Beats, Takte, Achtelnoten, Viertelbeats und Abschnitt aus Simulationssekunden.
+  Feste Zuordnung zu `AudioContext.currentTime`, 25-ms-Scheduler / 120-ms-Lookahead; Abweichungen korrigieren nur Audio.
+- **Dimensionen:** gemeinsame Melodie und Drums; Blau mischt luftige Höhen und hohe Sinus-Synths dazu,
+  Rot warme gefilterte Synths und Subbass. 25-ms-Zeitkonstante beim Überblenden, identische Notentermine.
+- **Effekte:** Flug, Wechsel, Pulse, Siegel auf/zu, Kollision, Tod, Respawn, Checkpoint und Abschluss.
+  Dezente Beat-/Akzentlichter und Randfunken liegen unter den Hindernissen, auch bei stummem Audio.
+- **Lautstärke:** Musik und Effekte getrennt im Menü unter „Lautstärke“ und in der Pause; lokal gespeichert.
+  „Sound AUS“ schaltet beide stumm. Keine Samples, externen Dienste oder Laufzeitpakete.
+- **Mobile:** AudioContext erst nach einer Benutzeraktion. Hintergrundwechsel, unterbrochener Context oder lange
+  Browser-Stalls pausieren den Lauf; „Weiter“ ordnet Audio erneut zu. Playtests warten ebenfalls auf „Weiter“.
+- **Practice:** Checkpoints speichern die vorhandene Spielzeit und Dimension. Respawn stoppt alte Quellen,
+  wartet die vorhandene Wiederaufbauanimation ab und rekonstruiert die Partitur an genau dieser Position.
+- **LEVEL FORGE:** BPM und Beats/Takt in Eigenschaften, normale/Beat/kombinierte Raster, Snap bis Viertelbeat
+  oder ganzer Takt, Objektposition über Beat/Takt/Abschnitt. Kompakte Timeline mit Musikvorschau, Pause und
+  Positionsregler; dieselben Daten und Funktionen auf dem Smartphone. Änderungen während der Vorschau stoppen sie.
+
+Technik, Datenmodell, Clock-Grenzen und Tests: [docs/PULSE-ENGINE.md](docs/PULSE-ENGINE.md).
+Testprotokoll: [docs/M6-TEST-REPORT.md](docs/M6-TEST-REPORT.md).
+
+```sh
+npm ci
+npm test
+npx playwright install chromium webkit
+# Separat einen lokalen HTTP-Server auf Port 8080 starten, z. B. python -m http.server 8080
+npm run test:audio:e2e
+```
 
 ## Steuerung
 
@@ -91,21 +127,21 @@ kompakter Todesscreen oben – die Unfallstelle bleibt sichtbar – mit Prozent,
 
 Das Hauptlevel liegt seit M4 als JSON in `assets/levels/rift-main.json` (verlustfrei aus dem alten Reihenformat migriert,
 spielt sich identisch). Jede Hindernisreihe liegt exakt auf einem Beat (120 BPM) und belegt die vier Spuren als
-Muster aus Blau/Rot/Weiß/Siegel/leer. Die Abschnitte folgen dem Fortschritt (A 0–25 %, B 25–60 %, C 60–85 %, D 85–100 %).
+Muster aus Blau/Rot/Weiß/Siegel/leer. Die musikalischen Abschnitte folgen seit M6 jeweils 25 % des Fortschritts: INTRO, BUILD, DROP, FINALE. Die bewährten Hindernisphrasen unten behalten ihre Positionen.
 Im Menü wählt man zwischen allen Leveln aus `assets/levels/index.json` (direkt: `?level=<id>`); Bestleistung,
 Versuche und Abschlüsse werden pro Level gespeichert.
 
-- **A – Einführung (2–10 s, alle 1,5 s):** Jede Reihe lehrt eine Regel mit kurzem Hinweis im Level (Tipp rechts = ↖,
+- **Lernphrase (2–10 s, alle 1,5 s):** Jede Reihe lehrt eine Regel mit kurzem Hinweis im Level (Tipp rechts = ↖,
   Tipp links = ↗, Geister harmlos, Tipp wechselt die Farbe, Weiß tötet immer). Zum Schluss **ein einzelnes Siegeltor**
   über die ganze Breite, ohne weitere Hindernisse, mit sichtbarem Reichweitenkreis und Hinweis „Jeder Tipp sendet einen
   Pulse / Pulse öffnet Gold-Siegel“ – großzügiges Fenster von ~420 ms.
-- **B – Kombination (12–26 s):** die Farb-Herausforderungen aus M2 plus vier Siegel-Reihen (`WSSW`, `RSSB`, `SSRR`, `BSSR`).
+- **Kombinationsphrase (12–26 s):** die Farb-Herausforderungen aus M2 plus vier Siegel-Reihen (`WSSW`, `RSSB`, `SSRR`, `BSSR`).
   Direkt nach einem Siegel folgt oft eine Farbreihe: Der Öffnungs-Tipp wechselt die Dimension, also muss man vorher in
   der „falschen“ Dimension ankommen. Enthält den Doppel-Tipp aus M2.
-- **C – Präzision (27–37 s, jeder Beat):** Wand-Kette mit Siegeln (`SWWW`/`RWWW`/`SWWW` – Wand-Tipps öffnen Siegel ohne
+- **Präzisionsphrase (27–37 s, jeder Beat):** Wand-Kette mit Siegeln (`SWWW`/`RWWW`/`SWWW` – Wand-Tipps öffnen Siegel ohne
   Spurwechsel), Diagonale durch drei Siegel quer über das Feld (`WSBW` → `WWSR` → `WWWS`), Rückweg mit Richtungswechseln
   und zwei weitere Siegelsegmente. Ein eindeutiger, lesbarer Weg statt verschachtelter Ketten.
-- **D – Abschluss (38–42,5 s, jeder Beat):** dichter Höhepunkt nur aus Bekanntem: drei Siegel im 1,5-s-Rhythmus
+- **Schlussphrase (38–42,5 s, jeder Beat):** dichter Höhepunkt nur aus Bekanntem: drei Siegel im 1,5-s-Rhythmus
   (`SSSS`, `WSSW`, `SSSS`), jeweils eingerahmt von Farbreihen. Keine neue Mechanik. Danach „RIFT CLEARED · 100 %“.
 
 Der Solver (`validateLevel`) beweist mit höchstens einem Tipp pro Beat, dass jede Reihe erreichbar ist und an jeder
@@ -114,7 +150,7 @@ Spur vor dem Tipp) es mit seiner Welle erreicht. `node tests/level-report.mjs` z
 Zustände, die Musterlösung und die Siegel-Durchflüge. Zusätzlich spielt der Autopilot das Level mit echter Physik
 (Tipps 70/300 ms nach der vorigen Reihe, Siegel-Tipps 160/250/400 ms vor dem Siegel) bis 100 %.
 
-Musik und Effekte werden prozedural per WebAudio erzeugt; die Intensität steigt mit den Abschnitten A–D.
+M6 verbindet diese bereits auf Beats gesetzten Hindernisphrasen mit der neuen Komposition: Jedes Siegeltor erhält einen vorbereitenden Drum-Pickup und einen harmonischen Akzent bei der Durchquerungshöhe. Die Musikabschnitte beginnen exakt bei 0, 11, 22 und 33 s.
 
 ## Grafik und Riftling (M5)
 
@@ -184,7 +220,7 @@ abschaltbar bis pixelgenau (0,5 u). Nicht vorhandene Spielelemente erfindet der 
 
 In Eingabefeldern lösen Editor-Kürzel nicht aus. Die Dimensionsansicht (Beide/Blau/Rot) zeigt wie im Spiel, was in der
 gewählten Dimension tödlich ist (massiv) und was ein Geist ist (blass, gestrichelt); sie verändert keine Leveldaten.
-Optional: Hitboxen, Pulse-Reichweite, Rhythmus-**Vorschau** (Kamera steigt mit 260 u/s) und Metronom.
+Optional: Hitboxen, Pulse-Reichweite und die gemeinsame **Musikvorschau** mit zuschaltbarem Metronom. Die Kamera steigt wie die echte vertikale Simulation mit 260 u/s. Seitliche Manöver prüft der echte Playtest.
 
 ### Bedienung auf dem Smartphone
 

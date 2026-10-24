@@ -226,6 +226,7 @@ export class ForgeView {
 
     // Beat-Marker (ganze, halbe, Viertelbeats) – Abstand aus BPM und echter Steiggeschwindigkeit
     const upb = unitsPerBeat(lvl.bpm);
+    const meter = lvl.beatsPerBar || 4;
     const beatLabels = [];
     if (s.beats) {
       const divs = [[1, 'rgba(47,214,255,0.22)'], [2, 'rgba(47,214,255,0.10)'], [4, 'rgba(255,255,255,0.05)']];
@@ -246,9 +247,9 @@ export class ForgeView {
       }
       ctx.strokeStyle = 'rgba(47,214,255,0.45)';
       ctx.beginPath();
-      for (let k = Math.ceil(Math.max(0, bottom) / (upb * 4)); k * upb * 4 <= top; k++) {
-        ctx.moveTo(0, -k * upb * 4);
-        ctx.lineTo(WORLD_W, -k * upb * 4);
+      for (let k = Math.ceil(Math.max(0, bottom) / (upb * meter)); k * upb * meter <= top; k++) {
+        ctx.moveTo(0, -k * upb * meter);
+        ctx.lineTo(WORLD_W, -k * upb * meter);
       }
       ctx.stroke();
     }
@@ -448,9 +449,9 @@ export class ForgeView {
       if (inside) { ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; }
       for (const k of beatLabels) {
         const sy = this.toScreen(0, k * upb).y;
-        ctx.fillStyle = k % 4 === 0 ? 'rgba(47,214,255,0.85)' : 'rgba(160,200,255,0.45)';
+        ctx.fillStyle = k % meter === 0 ? 'rgba(47,214,255,0.85)' : 'rgba(160,200,255,0.45)';
         const t = (k * upb / CLIMB_SPEED).toFixed(2);
-        if (inside) ctx.fillText(k % 4 === 0 ? `${k} · ${t} s` : String(k), Math.max(2, fieldLeft) + 3, sy - 1);
+        if (inside) ctx.fillText(k % meter === 0 ? `${k} · ${t} s` : String(k), Math.max(2, fieldLeft) + 3, sy - 1);
         else ctx.fillText(`${k} · ${t} s`, fieldLeft - 8, sy);
       }
       ctx.textBaseline = 'middle';

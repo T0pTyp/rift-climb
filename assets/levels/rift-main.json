@@ -3,8 +3,9 @@
   "version": 1,
   "id": "rift-main",
   "name": "RIFT CLIMB",
-  "description": "Das handgebaute Hauptlevel: vier Abschnitte, 44 s, mit Rift-Siegeln.",
+  "description": "Neon Ascent: 44 s, 120 BPM. INTRO, BUILD, DROP und FINALE mit bewusst auf Beats gesetzten Farb- und Siegel-Phrasen.",
   "bpm": 120,
+  "beatsPerBar": 4,
   "height": 11440,
   "start": {
     "lane": 1,
@@ -16,27 +17,27 @@
   "sections": [
     {
       "id": "A",
-      "name": "Einführung",
+      "name": "INTRO",
       "y": 0,
       "labelY": 0
     },
     {
       "id": "B",
-      "name": "Kombination",
+      "name": "BUILD",
       "y": 2860,
       "labelY": 2860
     },
     {
       "id": "C",
-      "name": "Präzision",
-      "y": 6890,
-      "labelY": 6838
+      "name": "DROP",
+      "y": 5720,
+      "labelY": 5720
     },
     {
       "id": "D",
-      "name": "Abschluss",
-      "y": 9750,
-      "labelY": 9750
+      "name": "FINALE",
+      "y": 8580,
+      "labelY": 8580
     }
   ],
   "objects": [

@@ -12,6 +12,9 @@ import { ForgeStore } from './store.js';
 import { PropsPanel, renderIssues } from './panels.js';
 import { riftlingArt } from '../art/riftling.js';
 import { TouchGestures } from './touch.js';
+import { AudioEngine } from '../audio.js';
+import { buildLevelRuntime } from '../level-data.js';
+import { BeatTimeline } from '../pulse/timeline.js';
 
 const $ = (s) => document.querySelector(s);
 const PLAYTEST_KEY = 'riftforge.playtest';
@@ -154,14 +157,14 @@ function snapRight(x) {
 function snapY(y) {
   if (!snapOn() || S.grid.snapY === 'off') return Math.round(y * 2) / 2;
   if (S.grid.snapY === 'grid') return Math.round(y / S.grid.size) * S.grid.size;
-  const step = upb() / ({ beat: 1, half: 2, quarter: 4 }[S.grid.snapY] || 1);
+  const step = S.grid.snapY === 'bar' ? upb() * (doc.level.beatsPerBar || 4) : upb() / ({ beat: 1, half: 2, quarter: 4 }[S.grid.snapY] || 1);
   return round2(Math.round(y / step) * step);
 }
 
 function snapStepY() {
   if (!snapOn() || S.grid.snapY === 'off') return 1;
   if (S.grid.snapY === 'grid') return S.grid.size;
-  return upb() / ({ beat: 1, half: 2, quarter: 4 }[S.grid.snapY] || 1);
+  return S.grid.snapY === 'bar' ? upb() * (doc.level.beatsPerBar || 4) : upb() / ({ beat: 1, half: 2, quarter: 4 }[S.grid.snapY] || 1);
 }
 
 function snapStepX() {
@@ -192,6 +195,7 @@ function render() {
     hitboxes: S.hitboxes, showReach: S.showReach, sealOpen: S.sealOpen, testMarker: S.testMarker,
     ghost: S.ghost, marquee: S.marquee, playhead: S.playhead, issuesById: S.issuesById, stats: S.stats,
   });
+  renderTimeline();
   $('#zoom-label').textContent = `${Math.round(view.cam.z / view.fitZoom() * 100)}%`;
   $('#draw-info').textContent = `${S.stats.drawn} von ${doc.objects.length} Objekten gezeichnet`;
 }
@@ -199,6 +203,7 @@ function render() {
 // ------------------------------------------------------------------ Dokument
 
 function onDocChange(info) {
+  if (S.rhythm) stopRhythm();
   for (const id of [...S.selection]) if (!PSEUDO.has(id) && !doc.get(id)) S.selection.delete(id);
   requestRender();
   scheduleValidation();
@@ -215,6 +220,8 @@ function onDocChange(info) {
 }
 
 function loadDocument(level, { sourceId = null, clean = true, message } = {}) {
+  stopRhythm();
+  S.previewTime = 0;
   if (S.editTx) S.editTx = null;
   if (!doc) doc = new LevelDoc(level, onDocChange);
   else doc.load(level);
@@ -775,6 +782,7 @@ function setKind(kind) {
 }
 
 function setDimMode(m) {
+  previewAudio.setDimension(m === 'R' ? 'R' : 'B');
   S.dimMode = m;
   for (const b of document.querySelectorAll('.seg [data-dim]')) b.classList.toggle('active', b.dataset.dim === m);
   $('#dk-dim').dataset.dim = m;
@@ -785,6 +793,8 @@ function setDimMode(m) {
 
 function setToggle(key, v) {
   S[key] = v;
+  if (key === 'metronome') previewAudio.metronome = v;
+  if (key === 'beats') $('#grid-mode').value = S.grid.show && S.beats ? 'combined' : S.beats ? 'beat' : 'normal';
   const map = { beats: '#tg-beats', hitboxes: '#tg-hitboxes', showReach: '#tg-reach', metronome: '#tg-metronome' };
   if (map[key]) $(map[key]).checked = v;
   syncMirrors();
@@ -798,6 +808,7 @@ function setGrid(patch) {
   $('#grid-size').value = String(S.grid.size);
   $('#snap-x').value = S.grid.snapX;
   $('#snap-y').value = S.grid.snapY;
+  $('#grid-mode').value = S.grid.show && S.beats ? 'combined' : S.beats ? 'beat' : 'normal';
   $('#grid-show').checked = S.grid.show;
   $('#snap-on').checked = S.grid.enabled;
   const tg = $('#btn-grid-toggle');
@@ -1292,57 +1303,68 @@ function onMessage(e) {
 
 // ------------------------------------------------------------------ Rhythmus-Vorschau
 
-let audioCtx = null;
-function click(accent) {
-  try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state !== 'running') audioCtx.resume();
-    const t = audioCtx.currentTime;
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = 'square';
-    o.frequency.value = accent ? 1568 : 1046.5;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(accent ? 0.16 : 0.09, t + 0.003);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-    o.connect(g).connect(audioCtx.destination);
-    o.start(t);
-    o.stop(t + 0.06);
-  } catch { /* ohne Audio weiter */ }
+const previewAudio = new AudioEngine();
+previewAudio.onInterrupt = () => stopRhythm();
+S.previewTime = 0;
+function renderTimeline() {
+  if (!doc) return;
+  if (!doc.level.finish) return;
+  const timeline = new BeatTimeline({ bpm: doc.level.bpm, beatsPerBar: doc.level.beatsPerBar || 4, duration: doc.level.finish.y / CLIMB_SPEED });
+  const at = timeline.at(S.previewTime);
+  $('#pulse-position').textContent = `${at.sectionName} · T${at.bar} / ${at.beatInBar} · ${at.time.toFixed(1)} s`;
+  const range = $('#pulse-seek');
+  range.max = timeline.duration;
+  range.value = S.previewTime;
+  range.setAttribute('aria-valuetext', `Takt ${at.bar}, Beat ${at.beatInBar}, ${at.sectionName}`);
+  const rail = $('#pulse-rail');
+  rail.style.setProperty('--beat-size', `${100 / (timeline.duration / timeline.beatSec)}%`);
+  rail.style.setProperty('--bar-size', `${100 * timeline.beatsPerBar / (timeline.duration / timeline.beatSec)}%`);
+  rail.style.setProperty('--position', `${Math.min(100, at.time / timeline.duration * 100)}%`);
 }
-
 function startRhythm() {
   if (S.rhythm) { stopRhythm(); return; }
-  if (S.metronome && !audioCtx) click(false);
-  const y = Math.max(0, view.cam.y - view.H * 0.25 / view.cam.z);
-  S.rhythm = { y, last: performance.now(), beat: Math.floor(y / upb()) };
+  previewAudio.unlock(); // synchronous gesture; same engine as playtest
+  const res = validateLevelData(doc.level);
+  if (!res.ok) { toast('Musikvorschau: zuerst Level-Fehler korrigieren.', 'warn'); return; }
+  previewAudio.setLevel(buildLevelRuntime(res.level));
+  previewAudio.setDimension(S.dimMode === 'R' ? 'R' : 'B', true);
+  previewAudio.metronome = S.metronome;
+  const duration = doc.level.finish.y / CLIMB_SPEED;
+  if (S.previewTime >= duration) S.previewTime = 0;
+  previewAudio.seek(S.previewTime);
+  previewAudio.update(S.previewTime);
+  S.rhythm = { t: S.previewTime, last: performance.now() };
   $('#btn-rhythm').classList.add('active');
-  const step = (now) => {
+  $('#pulse-preview').textContent = 'Ⅱ';
+  $('#pulse-preview').setAttribute('aria-label', 'Musikvorschau pausieren');
+  const step = now => {
     const r = S.rhythm;
     if (!r) return;
-    const dt = Math.min(0.1, (now - r.last) / 1000);
+    const dt = (now - r.last) / 1000;
     r.last = now;
-    r.y += CLIMB_SPEED * dt;
-    const b = Math.floor(r.y / upb() + 1e-9);
-    if (b > r.beat) {
-      r.beat = b;
-      if (S.metronome) click(b % 4 === 0);
-    }
-    S.playhead = r.y;
-    view.cam.y = r.y + view.H * 0.25 / view.cam.z;
+    if (dt > .25) { stopRhythm(); return; }
+    r.t = Math.min(duration, r.t + dt);
+    S.previewTime = r.t;
+    previewAudio.update(r.t);
+    S.playhead = r.t * CLIMB_SPEED;
+    view.cam.y = S.playhead + view.H * .25 / view.cam.z;
     requestRender();
-    if (r.y > doc.level.finish.y + upb()) { stopRhythm(); return; }
+    if (r.t >= duration) { stopRhythm(); return; }
     requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
 }
-
 function stopRhythm() {
+  previewAudio.stop();
   S.rhythm = null;
   S.playhead = null;
   $('#btn-rhythm').classList.remove('active');
+  $('#pulse-preview').textContent = '▶';
+  $('#pulse-preview').setAttribute('aria-label', 'Musikvorschau starten');
   requestRender();
 }
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopRhythm(); });
+window.addEventListener('pagehide', () => previewAudio.stop());
 
 // ------------------------------------------------------------------ Palette-Drag (aus der Palette ins Feld ziehen)
 
@@ -1728,7 +1750,7 @@ function bindUi() {
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
   window.addEventListener('message', onMessage);
-  window.addEventListener('resize', () => { view.resize(); view.clampCamera(doc.level.height); requestRender(); });
+  window.addEventListener('resize', () => { view.resize(); if (doc) view.clampCamera(doc.level.height); requestRender(); });
   window.addEventListener('beforeunload', () => { clearTimeout(autosaveTimer); if (doc && store.available) store.saveDraft({ level: doc.level, sourceId: S.sourceId, cleanJson: S.cleanJson, testMarker: S.testMarker, savedAt: new Date().toISOString() }); });
 
   for (const b of document.querySelectorAll('.tool[data-tool]')) b.addEventListener('click', () => setTool(b.dataset.tool));
@@ -1738,7 +1760,20 @@ function bindUi() {
   $('#tg-beats').addEventListener('change', (e) => setToggle('beats', e.target.checked));
   $('#tg-hitboxes').addEventListener('change', (e) => setToggle('hitboxes', e.target.checked));
   $('#tg-reach').addEventListener('change', (e) => setToggle('showReach', e.target.checked));
-  $('#tg-metronome').addEventListener('change', (e) => { setToggle('metronome', e.target.checked); if (e.target.checked) click(true); });
+  $('#tg-metronome').addEventListener('change', (e) => { setToggle('metronome', e.target.checked); });
+  $('#pulse-preview').addEventListener('click', startRhythm);
+  $('#pulse-seek').addEventListener('input', e => {
+    stopRhythm();
+    S.previewTime = Number(e.target.value);
+    S.playhead = S.previewTime * CLIMB_SPEED;
+    view.cam.y = S.playhead + view.H * .25 / view.cam.z;
+    requestRender();
+  });
+  $('#grid-mode').addEventListener('change', e => {
+    const mode = e.target.value;
+    setToggle('beats', mode !== 'normal');
+    setGrid({ show: mode !== 'beat' });
+  });
   $('#btn-rhythm').addEventListener('click', startRhythm);
 
   $('#btn-new').addEventListener('click', newLevel);
@@ -1831,7 +1866,7 @@ async function boot() {
 }
 
 window.__FORGE = {
-  S, view, store, app,
+  S, view, store, app, previewAudio,
   get doc() { return doc; },
   actions: { requestRender, loadDocument, setSelection, placeAt, exportText, importText, playtest, closePlaytest, saveLocal, newLevel, duplicate, copy, paste, deleteSelection, runValidation, setTool, setKind, setDimMode, setGrid, startRhythm, stopRhythm, openGameLevel, gameLevels },
   ready: boot(),

@@ -311,3 +311,12 @@ body[data-playtest="1"] .forge-link, body[data-playtest="1"] .level-pick { displ
 @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
   #rotate-hint { display: flex; }
 }
+
+/* M6: separate buses, reachable in menu and pause on touch. */
+.audio-settings { display:flex; gap:16px; margin:12px 0; }
+.audio-settings label { flex:1; min-width:0; font-size:12px; color:#afbddb; }
+.audio-settings input { display:block; width:100%; min-height:44px; accent-color:#2fd6ff; touch-action:pan-x; }
+
+.audio-disclosure { font-size:12px; color:#afbddb; }
+.audio-disclosure summary { cursor:pointer; min-height:28px; display:grid; place-items:center; }
+#menu .panel { margin:auto; }

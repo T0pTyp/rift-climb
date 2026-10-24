@@ -63,6 +63,7 @@ export function createEmptyLevel({ id = 'neues-level', name = 'Neues Level' } = 
     name,
     description: '',
     bpm: BPM,
+    beatsPerBar: 4,
     height: finishY + UNITS_PER_BEAT * 2,
     start: { lane: START_LANE, dimension: START_DIM === 'B' ? 'blue' : 'red' },
     finish: { y: finishY },
@@ -97,6 +98,7 @@ export function levelFromRows(rows, { id = 'migriert', name = 'Migriertes Level'
     name,
     description,
     bpm: BPM,
+    beatsPerBar: 4,
     height: finishBeat * UNITS_PER_BEAT,
     start: { lane: START_LANE, dimension: START_DIM === 'B' ? 'blue' : 'red' },
     finish: { y: finishBeat * UNITS_PER_BEAT },
@@ -143,6 +145,7 @@ export function validateLevelData(raw) {
     name: typeof raw.name === 'string' ? raw.name : '',
     description: typeof raw.description === 'string' ? raw.description : '',
     bpm: isNum(raw.bpm) ? raw.bpm : BPM,
+    beatsPerBar: raw.beatsPerBar ?? 4,
     height: isNum(raw.height) ? raw.height : NaN,
     start: null,
     finish: null,
@@ -153,6 +156,8 @@ export function validateLevelData(raw) {
   if (level.description.length > LIMITS.descLen) warn('desc', `Beschreibung ist länger als ${LIMITS.descLen} Zeichen.`, { field: 'description' });
   if (!isNum(raw.bpm)) warn('bpm', `BPM fehlt – ${BPM} wird verwendet.`, { field: 'bpm' });
   else if (raw.bpm < LIMITS.bpm[0] || raw.bpm > LIMITS.bpm[1]) err('bpm', `BPM ${raw.bpm} liegt außerhalb ${LIMITS.bpm[0]}–${LIMITS.bpm[1]}.`, { field: 'bpm' });
+
+  if (!Number.isInteger(level.beatsPerBar) || level.beatsPerBar < 2 || level.beatsPerBar > 7) err('meter', 'Beats pro Takt muss eine ganze Zahl von 2 bis 7 sein.', { field: 'beatsPerBar' });
 
   const s = raw.start;
   if (!s || typeof s !== 'object') {
@@ -329,6 +334,7 @@ export function serializeLevel(level) {
     name: level.name,
     description: level.description || '',
     bpm: level.bpm,
+    beatsPerBar: level.beatsPerBar || 4,
     height: level.height,
     start: level.start,
     finish: level.finish,
@@ -417,6 +423,7 @@ export function buildLevelRuntime(level) {
     name: level.name,
     bpm,
     beatSec: 60 / bpm,
+    beatsPerBar: level.beatsPerBar || 4,
     unitsPerBeat: upb,
     finishY,
     finishBeat: finishY / upb,

@@ -80,6 +80,7 @@ export class UI {
       checkpoint: $('#checkpoint-toast'),
     };
     const g = h.onGesture;
+    for (const summary of document.querySelectorAll('summary')) summary.addEventListener('keydown', e => e.stopPropagation());
     bindTap($('#btn-start'), () => h.onStart('normal'), g);
     bindTap($('#btn-practice'), () => h.onStart('practice'), g);
     bindTap(this.el.soundBtn, () => h.onSoundToggle(), g);
@@ -91,6 +92,11 @@ export class UI {
     // Tipp irgendwo auf den Todesscreen = sofortiger Neustart (Buttons stoppen die Weitergabe selbst)
     bindTap(this.screens.death, () => h.onDeathTap(), g);
     this.el.levelSelect.addEventListener('change', () => h.onLevelChange(this.el.levelSelect.value));
+    for (const slider of document.querySelectorAll('[data-volume]')) {
+      slider.addEventListener('pointerdown', e => { e.stopPropagation(); g?.(); });
+      slider.addEventListener('input', e => { e.stopPropagation(); h.onVolume(slider.dataset.volume, Number(slider.value)); });
+      slider.addEventListener('keydown', e => e.stopPropagation());
+    }
     this.lastHud = '';
   }
 
@@ -133,6 +139,10 @@ export class UI {
   updateSound(muted) {
     this.el.soundBtn.innerHTML = `<small>Sound</small>${muted ? 'AUS' : 'AN'}`;
     this.el.soundBtn.setAttribute('aria-pressed', String(!muted));
+  }
+
+  updateVolumes(settings) {
+    for (const slider of document.querySelectorAll('[data-volume]')) slider.value = settings[slider.dataset.volume];
   }
 
   updateGfx(label) {

@@ -35,6 +35,7 @@
       <div class="popover-wrap">
         <button id="btn-grid-settings" type="button" title="Raster- und Snap-Einstellungen" aria-haspopup="true" aria-expanded="false">Raster &#9662;</button>
         <div id="grid-pop" class="popover" hidden>
+          <label class="pop-row"><span>Rasteransicht</span><select id="grid-mode"><option value="combined">Kombiniert</option><option value="normal">Normal</option><option value="beat">Beat Grid</option></select></label>
           <label class="pop-row"><span>Rastergröße</span>
             <select id="grid-size">
               <option value="5">5 u</option><option value="10">10 u</option><option value="15">15 u</option>
@@ -48,7 +49,7 @@
           </label>
           <label class="pop-row"><span>Snap vertikal</span>
             <select id="snap-y">
-              <option value="beat">ganzer Beat</option><option value="half">halber Beat</option><option value="quarter">Viertelbeat</option>
+              <option value="bar">ganzer Takt</option><option value="beat">ganzer Beat</option><option value="half">halber Beat</option><option value="quarter">Viertelbeat</option>
               <option value="grid">Raster</option><option value="off">aus (pixelgenau)</option>
             </select>
           </label>
@@ -116,8 +117,16 @@
       <label class="tg" title="Beat-Marker (ganze, halbe, Viertelbeats) aus BPM und Steiggeschwindigkeit"><input id="tg-beats" type="checkbox"> Beats</label>
       <label class="tg" title="Kollisionsflächen aller Objekte anzeigen"><input id="tg-hitboxes" type="checkbox"> Hitboxen</label>
       <label class="tg" title="Pulse-Reichweite ausgewählter Rift-Siegel anzeigen"><input id="tg-reach" type="checkbox"> Reichweite</label>
-      <button id="btn-rhythm" type="button" title="Rhythmus-Vorschau: Kamera steigt mit Spielgeschwindigkeit (260 u/s) ab Bildmitte">&#9835; Vorschau</button>
+      <button id="btn-rhythm" type="button" title="Musikvorschau: Kamera steigt mit Spielgeschwindigkeit (260 u/s) ab Bildmitte">&#9835; Vorschau</button>
       <label class="tg" title="Metronom-Klick auf jedem Beat während der Rhythmus-Vorschau (selbst erzeugte Töne)"><input id="tg-metronome" type="checkbox"> Metronom</label>
+    </div>
+    <div class="pulse-timeline" aria-label="Musikalische Timeline">
+      <button id="pulse-preview" type="button" aria-label="Musikvorschau starten" title="Neon Ascent – Musik starten / pausieren">▶</button>
+      <div class="pulse-track">
+        <output id="pulse-position">INTRO · T1 / 1 · 0.0 s</output>
+        <div id="pulse-rail"><span>INTRO</span><span>BUILD</span><span>DROP</span><span>FINALE</span><i></i></div>
+        <input id="pulse-seek" aria-label="Musikposition" type="range" min="0" max="44" step="0.01" value="0">
+      </div>
     </div>
     <canvas id="view" tabindex="0" aria-label="Levelansicht"></canvas>
     <button id="m-fit" class="m-float m-only" type="button" aria-label="Spielfeldbreite einpassen" title="Spielfeldbreite einpassen">&#10530;</button>
@@ -192,6 +201,7 @@
       <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-reach"><span>Pulse-Reichweite</span></label>
       <label class="m-row m-check"><input type="checkbox" data-mirror="#tg-metronome"><span>Metronom (Vorschau)</span></label>
       <h3>Raster und Snap</h3>
+      <label class="m-row"><span>Rasteransicht</span><select data-mirror="#grid-mode"></select></label>
       <label class="m-row m-check"><input type="checkbox" data-mirror="#snap-on"><span>Snap aktiv</span></label>
       <label class="m-row m-check"><input type="checkbox" data-mirror="#grid-show"><span>Raster anzeigen</span></label>
       <label class="m-row"><span>Rastergröße</span><select data-mirror="#grid-size"></select></label>

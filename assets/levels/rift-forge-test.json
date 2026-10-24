@@ -5,6 +5,7 @@
   "name": "RIFT FORGE TEST",
   "description": "Kurzes Beispiel aus LEVEL FORGE: freie Breiten, eine hohe Barriere und zwei Rift-Siegel mit eigener Öffnungsdauer.",
   "bpm": 120,
+  "beatsPerBar": 4,
   "height": 4290,
   "start": {
     "lane": 1,
