@@ -230,7 +230,27 @@ h2 { margin: 0; font-size: 26px; letter-spacing: 0.08em; text-shadow: 0 0 14px v
 
 .menu-row { display: flex; gap: 10px; }
 .menu-row .btn { flex: 1; }
-.level-pick { flex: 1.3; display: flex; }
+.btn.stack { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 2px 4px; font-size: 14px; line-height: 1.1; white-space: nowrap; }
+.btn.stack small { font-size: 9.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.65; }
+.brand-row { display: flex; align-items: center; justify-content: center; gap: 4px; margin: 0 0 2px; }
+.brand-row .logo { margin: 0; }
+
+/* Riftling im Menü: dieselben SVG-Ebenen wie im Spiel, Farbe folgt der aktiven Dimension */
+.riftling-badge { position: relative; flex: none; width: 54px; height: 61px; margin-left: -10px; animation: rb-float 2.4s ease-in-out infinite; }
+.riftling-badge img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.riftling-badge::before {
+  content: ''; position: absolute; inset: -14px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 214, 255, 0.45), rgba(47, 214, 255, 0) 65%);
+  transition: background 0.2s;
+}
+body[data-dim="R"] .riftling-badge::before { background: radial-gradient(circle, rgba(255, 45, 138, 0.45), rgba(255, 45, 138, 0) 65%); }
+.riftling-badge .rb-r { opacity: 0; transition: opacity 0.15s; }
+body[data-dim="R"] .riftling-badge .rb-r { opacity: 1; }
+.riftling-badge .rb-eye { animation: rb-blink 4.2s infinite; transform-origin: 51.5% 48%; }
+@keyframes rb-float { 50% { transform: translateY(-5px) rotate(-3deg); } }
+@keyframes rb-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+@media (prefers-reduced-motion: reduce) { .riftling-badge, .riftling-badge .rb-eye { animation: none; } }
+.level-pick { flex: 1.25; display: flex; min-width: 0; }
 .level-pick select {
   width: 100%; min-height: 44px; padding: 0 12px;
   border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.28);
@@ -259,11 +279,26 @@ body[data-playtest="1"] .forge-link, body[data-playtest="1"] .level-pick { displ
   .desktop-only { display: none; }
 }
 
+@media (max-width: 370px) {
+  .logo { font-size: 34px; }
+  .riftling-badge { width: 44px; height: 50px; }
+}
+@media (max-height: 700px) {
+  .panel { gap: 10px; }
+  .help { font-size: 12px; line-height: 1.38; }
+}
 @media (max-height: 620px) {
+  .riftling-badge { width: 40px; height: 45px; }
   .panel { gap: 8px; padding: 16px; }
   .logo { font-size: 32px; }
-  .help { font-size: 11.5px; line-height: 1.35; }
-  .help p { margin: 3px 0; }
+  .logo span { margin-top: 4px; font-size: 19px; }
+  .tagline { margin: 0 0 2px; font-size: 13px; }
+  .btn { min-height: 46px; padding: 10px 14px; }
+  .btn.small, .level-pick select { min-height: 44px; }
+  .stats > div { padding: 6px 10px; }
+  .stats strong { font-size: 19px; }
+  .help { font-size: 11px; line-height: 1.3; }
+  .help p { margin: 2px 0; }
 }
 
 #rotate-hint {
