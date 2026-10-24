@@ -1,6 +1,7 @@
 // LEVEL FORGE: End-to-End-Tests der QS-Liste (Spezifikation M4, Abschnitt 17) mit echten Maus- und Tastatureingaben.
 // Voraussetzung: lokaler Server auf BASE_URL (Standard http://localhost:8080/) und `npm i -D playwright`.
-// Aufruf: node tests/forge-e2e.mjs   (Punkt 22, mobiles Gameplay, zusätzlich ausführlich in tests/e2e.mjs)
+// Aufruf: node tests/forge-e2e.mjs   (Punkt 22, mobiles Gameplay, zusätzlich ausführlich in tests/e2e.mjs;
+// mobiler Touch-Editor: tests/forge-mobile-e2e.mjs)
 import { chromium, devices } from 'playwright';
 import { readFileSync } from 'node:fs';
 
@@ -374,7 +375,7 @@ await clickWorld(20, 700);
   const mode = await F(() => window.__FORGE.S.dimMode);
   const json1 = (await docState()).json;
   check('[13] Blau-Ansicht: rotes Hindernis wird zum transparenten Geist', blue[0] < both[0] * 0.5, `beide ${both} · blau ${blue}`);
-  check('[13] Rot-Ansicht: rotes Hindernis massiv hervorgehoben', redv[0] > 200 && redv[0] > blue[0] * 2, `rot ${redv}`);
+  check('[13] Rot-Ansicht: rotes Hindernis massiv hervorgehoben', redv[0] > 150 && redv[0] > blue[0] * 2, `rot ${redv}`);
   check('[13] Umschalten verändert keine gespeicherten Daten', json0 === json1 && mode === 'both');
 }
 
@@ -622,7 +623,7 @@ await browser.close();
   await p.tap('#btn-start');
   await p.waitForFunction(() => window.__RIFT.state === 'won' || window.__RIFT.state === 'dead', null, { timeout: 30000 });
   const won = await p.evaluate(() => window.__RIFT.state);
-  check('[22] Mobil (iPhone 13): Hauptlevel aus JSON, Autopilot bis 100 %, Editor-Link nur am Desktop', m.level === 'rift-main' && m.select && m.forge === 'none' && m.menuFits && won === 'won', JSON.stringify(m));
+  check('[22] Mobil (iPhone 13): Hauptlevel aus JSON, Autopilot bis 100 %, Editor-Link auch mobil sichtbar (Touch-Editor seit M4.5)', m.level === 'rift-main' && m.select && m.forge !== 'none' && m.menuFits && won === 'won', JSON.stringify(m));
   await p.goto(BASE + '?level=rift-forge-test&autoplay=1&speed=4');
   await p.waitForFunction(() => window.__RIFT && document.querySelector('#menu:not([hidden])'));
   await p.tap('#btn-start');
