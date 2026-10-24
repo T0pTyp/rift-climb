@@ -4,7 +4,7 @@ Rhythmischer Vertical Climber für Smartphones (HTML5 Canvas, reines JavaScript,
 Die Figur steigt automatisch im 120-BPM-Takt nach oben. Mit kurzen Flugimpulsen weichst du Hindernissen aus –
 jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der goldene Rift-Siegel kurz öffnet.
 
-**Spielen:** https://t0ptyp.github.io/rift-climb/
+**Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
 ## Steuerung
 
@@ -15,7 +15,7 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 | `D` / `→` (Desktop) | Impuls rechts oben + Dimensionswechsel |
 | `A` / `←` (Desktop) | Impuls links oben + Dimensionswechsel |
 | Tipp / `A` / `D` / `Enter` nach dem Tod | sofortiger Neustart (Practice: Respawn am Checkpoint) |
-| `Esc` / `P` | Pause / Weiter |
+| `Esc` / `P` | Pause / Weiter (im Editor-Playtest: `Esc` = zurück zum Editor, `P` = Pause) |
 | `Enter` / `Leertaste` / `R` | Start im Menü, Neustart, Weiter in der Pause |
 
 Das Spielfeld hat vier Spuren. Ein Impuls gegen die Wand bewegt die Figur nicht, wechselt aber trotzdem die Dimension.
@@ -89,8 +89,11 @@ kompakter Todesscreen oben – die Unfallstelle bleibt sichtbar – mit Prozent,
 
 ## Level (44 s, 55 Reihen, Ziel bei Beat 88)
 
-Jede Hindernisreihe liegt exakt auf einem Beat (120 BPM), notiert als 4-Zeichen-Muster (`B`/`R`/`W`/`S`/`.`).
-Die Abschnitte folgen dem Fortschritt (A 0–25 %, B 25–60 %, C 60–85 %, D 85–100 %).
+Das Hauptlevel liegt seit M4 als JSON in `assets/levels/rift-main.json` (verlustfrei aus dem alten Reihenformat migriert,
+spielt sich identisch). Jede Hindernisreihe liegt exakt auf einem Beat (120 BPM) und belegt die vier Spuren als
+Muster aus Blau/Rot/Weiß/Siegel/leer. Die Abschnitte folgen dem Fortschritt (A 0–25 %, B 25–60 %, C 60–85 %, D 85–100 %).
+Im Menü wählt man zwischen allen Leveln aus `assets/levels/index.json` (direkt: `?level=<id>`); Bestleistung,
+Versuche und Abschlüsse werden pro Level gespeichert.
 
 - **A – Einführung (2–10 s, alle 1,5 s):** Jede Reihe lehrt eine Regel mit kurzem Hinweis im Level (Tipp rechts = ↖,
   Tipp links = ↗, Geister harmlos, Tipp wechselt die Farbe, Weiß tötet immer). Zum Schluss **ein einzelnes Siegeltor**
@@ -112,6 +115,118 @@ Zustände, die Musterlösung und die Siegel-Durchflüge. Zusätzlich spielt der 
 (Tipps 70/300 ms nach der vorigen Reihe, Siegel-Tipps 160/250/400 ms vor dem Siegel) bis 100 %.
 
 Musik und Effekte werden prozedural per WebAudio erzeugt; die Intensität steigt mit den Abschnitten A–D.
+
+## LEVEL FORGE – visueller Level-Editor (M4)
+
+**Öffnen:** https://t0ptyp.github.io/rift-climb/assets/forge/ (lokal: `http://localhost:8080/assets/forge/`), oder im
+Spielmenü am Desktop über „Level-Editor“. Ausgelegt für Maus und Tastatur ab 1024 px Breite.
+
+Aufbau: oben Datei-Aktionen, Undo/Redo, **PLAYTEST** / **AB HIER**, Raster und Zoom · links Werkzeuge und Objektpalette ·
+Mitte das Spielfeld (360 u breit, 4 Spuren, Beat-Linien mit Zeitangabe) · rechts Eigenschaften und die Live-Prüfung.
+
+### Positionsmodell
+
+Freie Rechtecke (`x` = linke Kante, `y` = Mitte, `w`, `h` in Spieleinheiten u). Das verallgemeinert das Spielformat
+ohne neue Mechanik: Spiel und Editor nutzen dieselbe Kollision (Kreis gegen Rechteck), dieselben Zeichenfunktionen
+(`js/shapes.js`) und dieselbe Physik. Standard-Snap ist **Spur + ganzer Beat** – genau das Raster des Hauptlevels –,
+abschaltbar bis pixelgenau (0,5 u). Nicht vorhandene Spielelemente erfindet der Editor nicht:
+**Stacheln** sind in der Palette als „nicht verfügbar“ markiert, **Rotation** ist ein gesperrtes Feld
+(das Spiel kennt nur achsenparallele Hindernisse); Importe mit solchen Elementen werden abgelehnt bzw. bereinigt.
+
+### Objekte
+
+| Palette | Typ im JSON | Wirkung im Spiel |
+| --- | --- | --- |
+| Neutral / Blau / Rot | `obstacle` mit `dimension` `both`/`blue`/`red` | tödlich in beiden / nur der blauen / nur der roten Dimension |
+| Barriere | `obstacle` (hoch, z. B. 84 × 130 u) | wie ein Hindernis, nur größer |
+| Rift-Siegel | `seal` mit `openSec` (0,3–1,5 s, Standard 0,5) | geschlossen in beiden Dimensionen tödlich, ein Rift Pulse (120 u) öffnet es |
+| Hinweis | `hint` mit `text` (≤ 40 Zeichen) | nur Anzeige, keine Kollision |
+| Start / Ziel | `start.lane` + `start.dimension`, `finish.y` | Startspur und -dimension auf der Startlinie, Ziellinie (Pflicht) |
+| Testmarker | – (nur Editor) | Starthöhe und -spur für **AB HIER** (Play from here) |
+
+### Bedienung
+
+| Eingabe | Wirkung |
+| --- | --- |
+| Palette anklicken, dann ins Feld klicken – oder direkt aus der Palette ziehen | Objekt setzen (mit Vorschau am Mauszeiger) |
+| Klick / Shift-Klick / Rahmen ins Leere ziehen | auswählen / zur Auswahl hinzufügen bzw. entfernen / Mehrfachauswahl |
+| Ziehen | verschieben (ein Drag = ein Undo-Schritt); Griffe an den Kanten ändern die Größe |
+| Pfeiltasten (Alt = 1 u) | Auswahl um einen Snap-Schritt verschieben |
+| `Strg/Cmd+Z`, `Strg/Cmd+Y` bzw. `Strg/Cmd+Shift+Z` | Rückgängig / Wiederholen (bis 300 Schritte) |
+| `Strg/Cmd+C`, `Strg/Cmd+V`, `Strg/Cmd+D`, `Strg/Cmd+A` | kopieren, an der Mausposition einfügen, duplizieren (einen Beat höher), alles wählen |
+| `Entf` / `Rücktaste` | Auswahl löschen |
+| `Strg/Cmd+S` | lokal speichern |
+| `V` `M` `P` `R` `X` `H` | Werkzeuge Auswahl, Bewegen, Setzen, Rahmen, Löschen, Hand |
+| `G`, Alt halten | Snap an/aus, Snap kurz aus |
+| Mausrad, Shift+Mausrad, Strg/Cmd+Mausrad | vertikal scrollen, horizontal scrollen, um den Mauszeiger zoomen |
+| Leertaste + Ziehen, mittlere Maustaste | Kamera schieben |
+| `1` `2` `3`, `0`, `+` `-` | Ansicht Beide/Blau/Rot, Zoom zurücksetzen, Zoom |
+| `Esc` | Platzieren abbrechen bzw. Auswahl aufheben; im Playtest: zurück zum Editor |
+
+In Eingabefeldern lösen Editor-Kürzel nicht aus. Die Dimensionsansicht (Beide/Blau/Rot) zeigt wie im Spiel, was in der
+gewählten Dimension tödlich ist (massiv) und was ein Geist ist (blass, gestrichelt); sie verändert keine Leveldaten.
+Optional: Hitboxen, Pulse-Reichweite, Rhythmus-**Vorschau** (Kamera steigt mit 260 u/s) und Metronom.
+
+### Prüfung, Playtest und Nachweis
+
+Die Prüfung läuft live: **Fehler** (z. B. außerhalb der Feldbreite, ungültige Maße, fehlender Start/Ziel) sperren
+Playtest und Export, **Warnungen** (z. B. überlappende Objekte, Siegel außerhalb jeder Pulse-Reichweite) weisen auf
+problematisches Design hin. Ein Klick auf einen Eintrag springt zum Objekt.
+
+**PLAYTEST** startet das echte Spiel (gleiche Dateien, gleiche Physik) in einem Overlay mit dem aktuellen Stand –
+ohne Export. Der Testzustand ist isoliert: keine Bestleistung, kein Fortschritt im Spielspeicher. **AB HIER** startet
+an der Höhe und Spur des Testmarkers. `Esc`, „Zurück zum Editor“ oder der Editor-Button im Spiel beenden den Test;
+ungespeicherte Änderungen und die Undo-History bleiben erhalten.
+
+Spielbarkeits-Nachweis (Pflicht für die Veröffentlichung):
+1. **Spur-Solver** – liegen alle Objekte spurgenau auf ganzen Beats (120 BPM), beweist derselbe Solver wie in M3 die Lösbarkeit;
+2. **Aufzeichnung** – sonst einmal im Playtest (Modus Normal, ab Start) bis zum Ziel spielen. Der Lauf (`replay.taps`)
+   wird im Level gespeichert und in CI mit der echten 240-Hz-Simulation nachgespielt. Jede spätere Änderung an
+   Objekten macht die Aufzeichnung ungültig.
+
+### Speichern und Veröffentlichen
+
+GitHub Pages ist statisch – der Editor schreibt **nie** direkt ins Repository.
+- **Autospeicherung:** der aktuelle Entwurf liegt in IndexedDB und wird beim nächsten Öffnen wiederhergestellt.
+- **Speichern** (`Strg/Cmd+S`): benannte Level lokal im Browser; **Öffnen** listet lokale Level und alle Spiel-Level.
+- **Exportieren:** lädt `<level-id>.json` herunter. **Importieren:** JSON-Datei (auch das alte Reihenformat aus M1–M3)
+  laden; fehlerhafte Dateien werden mit verständlicher Meldung abgelehnt, nicht unterstützte Objekte nur nach Bestätigung verworfen.
+
+Ein Level ins Spiel bringen:
+1. Im Editor **Exportieren**.
+2. Datei nach `assets/levels/` legen und in `assets/levels/index.json` unter `levels` eintragen: `{ "id": "…", "name": "…", "file": "….json" }`.
+3. `node tests/validate-level.mjs` lokal ausführen (optional), committen und auf `main` pushen.
+4. Der Pages-Workflow prüft alle Level und veröffentlicht sie; das Level erscheint in der Levelauswahl.
+
+### JSON-Format (Version 1)
+
+```json
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "rift-forge-test",
+  "name": "RIFT FORGE TEST",
+  "description": "…",
+  "bpm": 120,
+  "height": 4290,
+  "start": { "lane": 1, "dimension": "blue" },
+  "finish": { "y": 4160 },
+  "objects": [
+    { "id": "blue-a", "type": "obstacle", "x": 3, "y": 910, "w": 150, "h": 14, "dimension": "blue" },
+    { "id": "seal-a", "type": "seal", "x": 93, "y": 1690, "w": 174, "h": 14, "openSec": 0.5 },
+    { "id": "hint-intro", "type": "hint", "y": 130, "text": "RIFT FORGE TEST" }
+  ],
+  "replay": { "taps": [{ "t": 1, "dir": 1 }, { "t": 4.3, "dir": -1 }] }
+}
+```
+
+- Einheiten: u (Spielfeld 360 u breit, Spur 90 u, Steiggeschwindigkeit 260 u/s, bei 120 BPM 130 u pro Beat).
+  `y` wächst nach oben, die Startlinie liegt bei 0. `bpm` (60–200) bestimmt Musik und Beat-Raster, nicht das Tempo der Figur.
+- Grenzen: Breite/Höhe ≥ 8 × 6 u, Höhe ≤ 520 u, Objekte vollständig im Feld, Ziellinie ab 520 u (4 Beats) bis 600 s Spielzeit, höchstens 5000 Objekte,
+  IDs `a-z0-9-` (Level) bzw. `A-Za-z0-9_-` (Objekte), eindeutig.
+- `replay` ist optional (Nachweis per Aufzeichnung, `dir` −1 = links, 1 = rechts); `sections` optional (Abschnitte für Musik-Intensität).
+- Die Schlüsselreihenfolge ist fest (`serializeLevel`), ein unverändert exportiertes Level ist byte-gleich mit der Repo-Datei.
+- `js/level-data.js` validiert, normalisiert, migriert und serialisiert – dieselbe Funktion nutzen Spiel, Editor und CI.
 
 ## Debug-Modus
 
@@ -139,13 +254,13 @@ Weitere Parameter: `?autoplay=1` (Solver-Lösung), `&offset=0.3` (Tipp-Zeitpunkt
 
 ```bash
 python3 -m http.server 8080
-# dann http://localhost:8080 öffnen
+# Spiel: http://localhost:8080 · Editor: http://localhost:8080/assets/forge/
 ```
 
 ### Tests
 
 ```bash
-node tests/validate-level.mjs        # Level-Lösbarkeit + Dauer 30–45 s (läuft auch im Deploy-Workflow)
+node tests/validate-level.mjs        # alle Level aus assets/levels/: Schema, Nachweis (Solver/Aufzeichnung), Hauptlevel 30–45 s (läuft im Deploy-Workflow)
 node tests/level-report.mjs          # Reihe-für-Reihe-Analyse der Abschnitte A–D
 node tests/physics.mjs               # Flugphysik, Bildratenunabhängigkeit, Tunneln, Hitboxen, Partikel-Pool
 node tests/rift-pulse.mjs            # Rift Pulse/Siegel: Reichweite, Öffnen/Schließen, Grenzfälle, Practice, Bildraten
@@ -155,29 +270,40 @@ python3 -m http.server 8080 &
 node tests/e2e.mjs                   # 96 Browser-Checks (Szenarien inkl. Siegel, Bildraten, Desktop, Practice, 100 %, iPhone/Pixel)
 node tests/perf.mjs                  # Frame-Zeiten im echten rAF-Loop (Pixel 7, 4× CPU-Drosselung)
 node tests/screenshots.mjs           # Portrait-Screenshots (Menü, Pulse öffnet Siegel, Reichweite, Debug, Tod)
+node tests/forge-e2e.mjs             # 70 LEVEL-FORGE-Checks mit echten Maus-/Tastatureingaben (QS-Liste M4 inkl. Playtest, Import/Export, Mobil)
+node tests/forge-screenshots.mjs     # Editor-Screenshots (Editor, Playtest, Prüfung)
 ```
 
 ## Projektstruktur
 
 ```
 rift-climb/
-├── index.html                 # Einstieg, Overlays (Menü, Pause, Tod, Ziel), HUD
+├── index.html                 # Einstieg, Overlays (Menü mit Levelauswahl, Pause, Tod, Ziel), HUD
 ├── css/style.css              # Neon-Stil, Hintergrund-Ebenen, Safe Areas, Touch-Optimierung
+├── css/forge.css              # LEVEL FORGE
 ├── js/
 │   ├── config.js              # Zentrale Spiel- und Physikparameter
-│   ├── main.js                # Bootstrap, Uhr/Game-Loop, Eingabe-Zeitstempel, Resize/DPR, Visibility, Speicher
+│   ├── main.js                # Bootstrap (Level laden), Uhr/Game-Loop, Eingabe-Zeitstempel, Resize/DPR, Speicher, Playtest-Modus
 │   ├── game.js                # Zustände, feste Simulationsschritte, Kollision, Checkpoints, Effekte, Rendering, Debug
 │   │                          #   (bindet Rift Pulse ein: Wellen, Siegel-Kollision, Siegel-Darstellung)
 │   ├── player.js              # Spur, Feder-Flugimpuls, Dimension, Schweif
 │   ├── physics.js             # Kollision Kreis/Rechteck, exakte Feder-Integration
 │   ├── particles.js           # Partikel-Pool
 │   ├── rift.js                # Rift Pulse (Wellen) und Rift-Siegel-Zustände
-│   ├── level.js               # Handgebautes Level (A/B/C/D), Hinweise, Solver inkl. Siegel
+│   ├── level-data.js          # JSON-Levelformat: Validierung, Normalisierung, Migration, Serialisierung, Laufzeitdaten
+│   ├── level.js               # Spur-Solver inkl. Siegel
+│   ├── playcheck.js           # Nachweis: Aufzeichnung mit echter Simulation nachspielen
+│   ├── shapes.js              # Gemeinsame Zeichenfunktionen (Spiel + Editor)
 │   ├── dimensions.js          # Farben + Tödlichkeitsregel
 │   ├── input.js               # Pointer/Touch/Tastatur, Doppel-Filter
 │   ├── audio.js               # Prozedurale WebAudio-Musik + SFX
-│   └── ui.js                  # DOM-Overlays, HUD, robuster Tap-Handler, Klick-Schutz
-├── assets/icon.svg
+│   ├── ui.js                  # DOM-Overlays, HUD, robuster Tap-Handler, Klick-Schutz
+│   └── forge/                 # LEVEL FORGE: main (Steuerung), view (Kamera/Rendering), history (Undo/Redo),
+│                              #   panels (Eigenschaften/Prüfung), store (IndexedDB)
+├── assets/
+│   ├── icon.svg
+│   ├── forge/index.html       # Editor-Seite
+│   └── levels/                # index.json + Level-Dateien (rift-main, rift-forge-test)
 ├── tests/                     # Solver, Physik, Playwright-E2E, Performance, Screenshots
 ├── .github/workflows/deploy.yml
 └── README.md
@@ -185,7 +311,7 @@ rift-climb/
 
 ## Deployment
 
-Jeder Push auf `main` startet `.github/workflows/deploy.yml`: Level-Check → statische Seite zusammenstellen →
+Jeder Push auf `main` startet `.github/workflows/deploy.yml`: Level-Check (alle Level) → statische Seite zusammenstellen →
 Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft daher unter `/rift-climb/`.
 
 ## Bekannte Probleme / Einschränkungen
@@ -194,6 +320,10 @@ Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft d
 - Audio-Latenz kann je nach Gerät variieren; das Gameplay folgt der Spielzeit, nicht der Audio-Uhr.
 - Ein Tipp wird mit dem Zeitstempel des Browser-Events verarbeitet; auf Geräten mit hoher Touch-Latenz
   (Hardware/Compositor) bleibt diese Latenz natürlich bestehen.
-- Nur ein Level; kein Kalibrierungsmenü für Audio-Latenz.
+- Kein Kalibrierungsmenü für Audio-Latenz.
+- LEVEL FORGE ist für Desktop (Maus + Tastatur) gebaut; auf Touch-Geräten wird der Editor-Link im Menü ausgeblendet.
+- Veröffentlichen geht bewusst nur über Export + Commit (statisches Hosting, keine Schreibrechte im Browser).
+- Level mit freien Maßen beweist kein Solver; ihr Nachweis ist ein aufgezeichneter Lauf. Er belegt Lösbarkeit,
+  nicht Fairness – Warnungen der Prüfung ersetzen kein Playtesting mit Menschen.
 - Schwierigkeit der Siegel-Passagen (v. a. Abschnitt C) ist per Solver/Autopilot abgesichert, aber noch nicht mit
   echten Spielern getestet.
