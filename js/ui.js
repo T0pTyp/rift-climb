@@ -1,3 +1,5 @@
+import { AscensionPanels } from './ascension-ui.js';
+import { medal } from './art/ui-assets.js';
 import { COLORS } from './dimensions.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -92,34 +94,16 @@ export class UI {
       slider.addEventListener('keydown', e => e.stopPropagation());
     }
     this.lastHud = '';
+    this.panels = new AscensionPanels(this,h,bindTap);
+    this.panels.open('home');
   }
 
   /** Levelauswahl im Menü (nur bei mehreren Leveln); im Playtest führen „Menü“-Buttons zurück in den Editor. */
   setLevels(levels, current, playtest, catalog = new Map()) {
-    this.current = current;
-    this.levels = levels || [];
-    this.el.levelPick.replaceChildren();
-    this.el.levelPick.hidden = !!playtest;
-    document.body.dataset.theme = current.theme || 'spire';
-    this.cards = new Map();
-    for (const [i,l] of this.levels.entries()) {
-      const data=catalog.get(l.id), button=document.createElement('button');
-      button.type='button';button.className='level-card';button.dataset.level=l.id;
-      button.dataset.theme=data?.theme || 'spire';button.setAttribute('aria-pressed',String(l.id===current.id));
-      const number=document.createElement('span');number.className='level-number';number.textContent=String(i+1).padStart(2,'0');
-      const copy=document.createElement('span');copy.className='level-copy';
-      const name=document.createElement('strong');name.textContent=l.name;
-      const meta=document.createElement('span');meta.className='level-meta';
-      const difficulty={easy:'EINFACH',medium:'MITTEL',hard:'SCHWER'}[data?.difficulty] || 'ARCHIV';
-      meta.textContent=difficulty+(data ? ` · ${(data.finish.y/260).toFixed(1)} s` : '');
-      const stats=document.createElement('span');stats.className='level-result';
-      const best=document.createElement('b'),attempts=document.createElement('small');stats.append(best,attempts);
-      const progress=document.createElement('i');progress.className='level-best-bar';
-      copy.append(name,meta);button.append(number,copy,stats,progress);
-      bindTap(button,()=>this.h.onLevelChange(l.id),this.h.onGesture);
-      this.el.levelPick.append(button);this.cards.set(l.id,{button,best,attempts,progress});
-    }
-    this.refreshCards();
+    this.current=current;this.levels=levels||[];this.playtest=playtest;
+    this.panels.buildCards(this.levels,current,catalog);
+    this.el.levelPick.hidden=!!playtest;
+    document.body.dataset.theme=current.theme||'spire';
     if (playtest) {
       document.body.dataset.playtest = '1';
       this.el.playtest.hidden = false;
@@ -134,6 +118,7 @@ export class UI {
     this.hud.hidden = !inGame;
     this.hints.hidden = name !== null;
     document.body.dataset.screen = name || 'play';
+    if(name==='menu')this.panels?.open(this.panels.page);
   }
 
   updateMenu(stats, muted) {
@@ -145,6 +130,8 @@ export class UI {
     for (const [id,c] of this.cards || []) {
       const stats=this.h.getStats?.(id) || {best:0,attempts:0,clears:0};
       c.best.textContent=`${stats.clears ? '✓ ' : ''}${stats.best}%`;
+      if(c.medal)c.medal.innerHTML=medal(stats.medal || 'none');
+      if(c.status)c.status.textContent=stats.completed||stats.clears?'COMPLETE':'BESTLEISTUNG';
       c.attempts.textContent=`${stats.attempts} Versuche`;
       c.progress.style.transform=`scaleX(${stats.best/100})`;
       c.button.dataset.complete=stats.clears>0?'1':'0';
@@ -174,7 +161,9 @@ export class UI {
     document.body.dataset.dim = dim;
   }
 
-  showDeath({ pct, best, isNewBest, reason }) {
+  showDeath(options) {
+    const {pct,best,isNewBest,reason}=options;
+    this.panels.result('death',options);
     this.el.deathPct.textContent = `${pct}%`;
     this.el.deathReason.textContent = reason || '';
     this.el.deathBest.textContent = `${best}%`;
@@ -182,13 +171,23 @@ export class UI {
     this.show('death');
   }
 
-  showWin({ mode, attempts }) {
+  showWin(options) {
+    const {mode,attempts}=options;
+    this.panels.result('win',options);
     $('#win-level').textContent = this.current?.name || 'RIFT CLEARED';
     this.el.winSub.textContent = mode === 'practice'
       ? `Übungsmodus geschafft – jetzt im Normalmodus! (${attempts} Versuche)`
       : `Normalmodus geschafft nach ${attempts} Versuchen.`;
     this.show('win');
   }
+
+  openPage(page) { this.panels.open(page); }
+  setSkin(id) {
+    const prefix=id==='original'?'body-':id+'-';
+    document.querySelector('.rb-b').src=`assets/riftling/${prefix}${id==='original'?'blue':'B'}.svg`;
+    document.querySelector('.rb-r').src=`assets/riftling/${prefix}${id==='original'?'red':'R'}.svg`;
+  }
+  animate(now,state) { this.panels.animate(now,state); }
 
   toast(text) {
     const el = this.el.checkpoint;

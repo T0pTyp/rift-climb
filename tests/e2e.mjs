@@ -30,7 +30,7 @@ const state = (page) => page.evaluate(() => {
   return { state: g.state, mode: g.mode, lane: g.player.lane, dim: g.player.dim, t: g.t, pct: g.progress,
     sessionAttempts: g.sessionAttempts, cp: g.checkpoint, reason: g.killer && g.killer.reason,
     killerColor: g.killer && g.killer.o.color, killerBeat: g.killer && g.killer.o.beat, deathAge: g.deathAge,
-    stored: JSON.parse(localStorage.getItem('riftclimb.pulse.v1') || 'null') };
+    stored: {stats:JSON.parse(localStorage.getItem('riftclimb.ascension.v2')||'{}').levels?.['rift-main']||{best:0,attempts:0,clears:0},muted:JSON.parse(localStorage.getItem('riftclimb.audio.v1')||'{}').muted} };
 });
 
 const waitState = (page, states, timeout = 10000) =>
@@ -195,7 +195,7 @@ async function desktopTests(type, label) {
   check(`[${label}] Enter = Neustart`, (await state(page)).state === 'playing');
   await page.keyboard.press('Escape');
   await page.click('#btn-pause-menu');
-  check(`[${label}] Zurück ins Menü`, await page.isVisible('#menu') && (await page.textContent('[data-level=rift-main] .level-result')).includes('%'));
+  check(`[${label}] Zurück ins Menü`, await page.isVisible('#menu') && (await page.textContent('.level-card:has([data-level=rift-main]) .level-result')).includes('%'));
 
   await page.click('#btn-start');
   await page.evaluate(() => {
@@ -319,13 +319,13 @@ async function mobileTests(type, deviceName, label) {
   await page.waitForTimeout(250);
   await page.tap('#btn-pause');
   await page.tap('#btn-pause-menu');
-  await page.tap('#btn-sound');
+  await page.tap('#page-levels [data-home]');await page.tap('#nav-settings');await page.tap('#btn-sound');
   const muted = (await state(page)).stored.muted;
   check(`[${label}] Sound-Toggle per Touch + gespeichert`, muted === true && (await page.textContent('#btn-sound')).includes('AUS'));
   const fit = await page.evaluate(() => { const r = document.querySelector('#menu .panel').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, ih: innerHeight }; });
   check(`[${label}] Menü passt komplett in den Viewport`, fit.top >= 0 && fit.bottom <= fit.ih, JSON.stringify(fit));
   check(`[${label}] Eine feste hochwertige Darstellung ohne Grafikmenü`, await page.locator('#btn-gfx').count() === 0 && await page.evaluate(() => !('gfx' in __RIFT)));
-  await page.tap('#btn-practice');
+  await page.tap('#page-settings [data-home]');await page.tap('#nav-play');await page.tap('#btn-practice');
   check(`[${label}] Übungsmodus-Button per Touch`, (await state(page)).mode === 'practice');
 
   check(`[${label}] Konsole fehlerfrei`, errors.length === 0, errors.join(' | '));

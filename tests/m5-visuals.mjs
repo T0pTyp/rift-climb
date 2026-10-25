@@ -21,7 +21,7 @@ async function open(query, device = 'iPhone 13', extra = {}) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
-  await page.goto(`${BASE}?manual=1${query}`);
+  await page.goto(`${BASE}?manual=1&level=rift-main${query}`);
   await page.waitForFunction(() => window.__RIFT && window.__RIFT.art.promise);
   await page.evaluate(() => window.__RIFT.art.promise);
   return { ctx, page, errors };

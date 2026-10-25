@@ -5,7 +5,9 @@ import { AudioEngine } from './audio.js';
 import { MAX_FRAME_DT } from './config.js';
 import { validateLevelData, validateIndex } from './level-data.js';
 
-import { createStorage, readJson, migrateVisualPreferences } from './storage.js';
+import { readJson, migrateVisualPreferences } from './storage.js';
+import { Progression } from './progression.js';
+import { riftlingArt } from './art/riftling.js';
 
 const LEVEL_DIR = 'assets/levels/';
 export const PLAYTEST_KEY = 'riftforge.playtest';
@@ -92,20 +94,26 @@ async function boot() {
   if (handoff && handoff.debug) debug.hitboxes = true;
 
   const canvas = document.getElementById('game');
-  const stores = new Map();
-  const storageFor = id => { if(!stores.has(id))stores.set(id,createStorage(id,playtest));return stores.get(id); };
+  const progression = new Progression({isolated:playtest});
+  const storageFor = id => progression.storageFor(id);
   let storage = storageFor(level.id);
   const audio = new AudioEngine({ timers: !debug.manual });
   audio.simulationOnly = debug.manual;
-  audio.setMuted(audio.settings.muted || storage.muted);
+  audio.setMuted(readJson('riftclimb.audio.v1')?audio.settings.muted:storage.muted);
   storage.muted = audio.muted;
 
   let game;
   const unlockAudio = () => audio.unlock();
 
   const ui = new UI({
+    progression,
     onGesture: unlockAudio,
     onStart: (mode) => game.start(mode),
+    onEquip: id => {game.skinId=id;riftlingArt.loadSkin(id);ui.setSkin(id);},
+    onRewardSound: name => audio.sfx(name),
+    hasNext: () => !!menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],
+    onNext: () => {const next=menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],mode=game.mode;if(next){ui.h.onLevelChange(next.id);ui.openPage('levels');game.start(mode);}},
+    onHome: () => {if(playtest)postToEditor({type:'forge:exit'});else{game.toMenu();ui.openPage('home');}},
     getStats: id => storageFor(id).stats,
     onSoundToggle: () => {
       storage.muted = !storage.muted;
@@ -146,6 +154,7 @@ async function boot() {
     onConfirm: () => {
       unlockAudio();
       if (game.state === 'menu') {
+        if(ui.panels.page!=='levels'){ui.openPage('levels');return true;}
         game.start('normal');
         return true;
       }
@@ -158,11 +167,16 @@ async function boot() {
   } : {};
   game = new Game({ canvas, ui, audio, input, storage, debug, level, events });
   window.__RIFT = game;
+  window.__ASCENSION = progression;
+  game.skinId=progression.data.cosmetics.selectedSkinId;
+  ui.setSkin(game.skinId);
+  riftlingArt.loadSkin(game.skinId);
   audio.onInterrupt = () => game.pause();
   ui.updateVolumes(audio.settings);
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
     player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
     timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint ? { t:game.checkpoint.t, lane:game.checkpoint.lane, dim:game.checkpoint.dim, beat:game.checkpoint.beat } : null,
     obstacles: game.obstacles.filter(o => o.y > game.y - 50 && o.y < game.y + game.lookaheadSec * 260).map(o => ({ x: o.x0, y: o.y, w: o.x1 - o.x0, color: o.color, deadly: game.deadlyNow(o, game.player.dim) })),
@@ -228,6 +242,7 @@ async function boot() {
   function frame(now) {
     advanceTo(now);
     game.render();
+    ui.animate(now,game.state);
     requestAnimationFrame(frame);
   }
 
@@ -249,6 +264,7 @@ async function boot() {
     window.focus();
   } else {
     ui.show('menu');
+    if(params.has('level'))ui.openPage('levels');
   }
   requestAnimationFrame(frame);
 }

@@ -49,8 +49,9 @@ const r = await page.evaluate(() => {
 console.log(`Level: ${level}, feste hochwertige Darstellung`);
 console.log(`Frames ${r.frames}, Ø-FPS ${r.fps.toFixed(1)}, Frame-Intervall p95 ${r.gapP95.toFixed(1)} ms, Frames > 25 ms: ${r.longFrames}`);
 console.log(`JS pro Frame (update+render): Ø ${r.jsAvg.toFixed(2)} ms, p95 ${r.jsP95.toFixed(2)} ms, p99 ${r.jsP99.toFixed(2)} ms; Heap-Δ ${r.heapKB.toFixed(0)} KB`);
-mkdirSync('test-results/m7', { recursive: true });
-writeFileSync('test-results/m7/performance.json', JSON.stringify(r, null, 2));
+const out = process.env.PERF_DIR || 'test-results/m7';
+mkdirSync(out, { recursive: true });
+writeFileSync(`${out}/performance.json`, JSON.stringify(r, null, 2));
 console.log(`Audio drift p95 ${(r.driftP95 * 1000).toFixed(2)} ms; peak live sources ${r.sourcesMax}; resyncs ${r.audio.resyncs}`);
 await browser.close();
 process.exit(r.jsP95 < 8 ? 0 : 1);

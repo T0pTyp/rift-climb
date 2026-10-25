@@ -77,3 +77,25 @@ THE FIRST ASCENT: drei handgefertigte Premium-Level (First Pulse, Fractured Rhyt
 - Keine tatsächlichen iOS-/Android-Geräte verfügbar. Windows-WebKit besitzt hier kein Web Audio; stummer Betrieb geprüft, keine native iOS-Audio- oder Smartphone-FPS-Zusage. Menschliche Fairness-/Spaßabnahme bleibt offen.
 - README, docs/FIRST-ASCENT.md, docs/M7-TEST-REPORT.md und PULSE-ENGINE-Dokumentation aktualisiert.
 - Finaler Echtzeit-Overload mit Musik: 15.912 Frames, p95 JS 0,30 ms / Frameabstand 4,4 ms, Ø239,1 rAF-FPS auf Desktop, 30 Live-Stimmen Spitze, Audio-Drift p95 17,8 ms und 4 Neuzuordnungen. Kein Smartphone-Benchmark.
+## M8 — Originalauftrag
+ASCENSION SYSTEM: zentrales versioniertes Fortschrittssystem, Migration M7, Bronze/Silber/Gold, acht Achievements, fünf rein kosmetische Riftling-Designs, Hauptmenü/Levelauswahl/Collection/Profile/Settings, schnelle Ergebnisnavigation, isolierte Practice-/Forge-Läufe; Tests, Dokumentation, Commit und Pages auf main.
+
+### Analyse und erster Systemschritt
+- M7 main ist sauber, Physik/Audio/Editor vollständig vorhanden; Statistik bisher best/attempts/clears pro Level, keine Todesfälle/Spielzeit/Zeitpunkte.
+- Progression v2 als zentrale Autorität mit M7-Adapter, Backup, Monotonie, Catch-up aus belegten Altleistungen, isolierten Runs und lokalem Warnhinweis. Historische Lücken werden ausdrücklich markiert.
+- 18 erste Progressions-Unitchecks bestanden (Medaillen, Idempotenz, Migration, Skins, Fehler, Forge-Isolation).
+- Medaillen als neue gezeichnete SVGs; vier neue Farbsätze mit identischen Riftling-Pfaden plus Innen-Gravuren. Gemeinsame Animation und Rastercache bleiben erhalten.
+
+### M8 fertig implementiert und geprüft
+- Zentrale v2-Speicherung mit Sicherung, monotoner M7-Migration, einmaligen Run-Ereignissen, präziser Normal-Spielzeit, acht Achievements, fünf Skins und Bronze/Silber/Gold.
+- Hauptmenü, echte Levelmotive/Medaille/PLAY+PRACTICE je Karte, animierte Collection, Achievement-Liste, Profil und Settings. Ergebnisnavigation mit sofortigem RETRY; NEXT erhält Normal/Practice und endet nach Overload.
+- Benachrichtigungen nur in sicheren Menüzuständen, keine Pointer-Blockierung, je Level nur höchste ausstehende Medaille; kompakte Ergebnis-Chips und freier Bereich für Toasts.
+- Final: npm test mit 24 Progressionschecks plus 50 Kampagnen-, 20 Pulse-, 33 Rift- und 17 Physikchecks sowie fünf gültigen Leveln. 15 vollständige Skin×Level-Läufe haben identische Traces bis 100 %.
+- 121 M8-Browserchecks in Chromium Desktop, Pixel-7-Touch und Windows-WebKit: vollständige Kampagne, Rewards, Reload, Skin-Ausrüstung, fünf gemeinsame Animationszustände je Design, Practice-NEXT, unmittelbarer Retry, Migration/defekter/blockierter Speicher und bytegleiche Forge-Isolation.
+- Regressionen erfolgreich: 100 Gameplay, 141 M7 (186 echte Touch-Eingaben), 70 Forge Desktop, 50 Forge Mobile, 51 M6-Pulse, 25 M5-Grafik. Sechs komplette Audio-Renderings und kombinierte neue Reward-SFX ohne Clipping.
+- Zwischenfehler korrigiert: CRLF beim HTML-Umbau, alte Menü-/Speicherselektoren in Tests, M5-Lade-Timeout (anschließend 25/25), Practice→Normal im Headless-Adapter; alle betroffenen Prüfungen bestanden.
+- Overload Echtzeit mit Fortschrittsspeicherung: p95 Game-Update+Render 0,40 ms, p95 Frameabstand 4,5 ms, Desktop Ø239,1 rAF-FPS, Heap-Differenz etwa 2,3 MB, 30 aktive Stimmen maximal. Kein echter Telefon-Benchmark.
+- M7-Leveldaten, player.js, physics.js und config.js unverändert. Feste hochwertige Darstellung bleibt aktiv; keine Grafikoptionen.
+- Skill-Client für Gameplay und Collection-State ausgeführt; Game-Canvas geprüft. Vollständige DOM-Screenshots von Menüs, Sammlung, Profil, Achievements und Ergebnissen separat geprüft.
+- Dokumentiert: README, docs/ASCENSION-SYSTEM.md und docs/M8-TEST-REPORT.md. Bekannte Grenzen: keine echte iOS-/Android-Hardware, Windows-WebKit ohne Web Audio, kein Cloudspeicher, historische Todesfälle/Spielzeit unbekannt, menschliche Langzeitabnahme offen.
+- Nächster Schritt: M8 auf main committen/pushen, Pages-Workflow und veröffentlichte Spiel-/Forge-Version prüfen. Keine Force-Pushes.

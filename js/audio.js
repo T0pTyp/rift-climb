@@ -224,6 +224,8 @@ export class AudioEngine {
     if (name === 'death') note(220, .12, .24, .035, 'fall');
     if (name === 'respawn') { note(440, .055, .12); note(880, .05, .16, .07); }
     if (name === 'checkpoint') { note(880, .06, .12); note(1318.5, .05, .15, .07); }
+    if (name === 'reward') { note(1046.5,.04,.12);note(1568,.035,.15,.065);note(2093,.025,.18,.12); }
+    if (name === 'record') { note(783.99,.035,.10);note(1174.66,.03,.14,.06); }
     if (name === 'win') {
       const chord=ARRANGEMENTS[this.timeline.music]?.chords[0];
       const fanfare=chord?[...chord,chord[0]+12].map(frequency):[523.25,659.25,783.99,1046.5];

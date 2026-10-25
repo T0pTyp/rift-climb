@@ -7,6 +7,36 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
 
+## ASCENSION SYSTEM (M8)
+
+Das Hauptmenü bietet **PLAY · RIFTLING COLLECTION · ACHIEVEMENTS · ASCENSION PROFILE · SETTINGS**.
+Alle drei M7-Levels bleiben sofort verfügbar. Ihre Karten zeigen echte Levelmotive, Rekord, höchste Medaille,
+Versuche und Abschlussstatus sowie eigene PLAY-/PRACTICE-Aktionen. Die Parcours und Flugphysik sind unverändert.
+
+- **Medaillen:** Bronze ab 50 %, Silber ab 75 %, Gold beim tatsächlichen Abschluss. Höchste Auszeichnung bleibt erhalten.
+- **Acht Achievements:** First Flight, Halfway There, First Victory, Pulse Master, Rhythm Breaker, Overloaded,
+  Golden Ascent und Persistent Climber. Benachrichtigungen warten bis zum Menü, Tod oder Abschluss.
+- **Fünf Riftling-Designs:** Original sofort; Azure für Gold in First Pulse; Crimson für Gold in Fractured Rhythm;
+  Void für Overload; Golden für Gold in allen drei Levels. Gleiche Kontur, Größe, Animationen und Hitboxen.
+- **Profil:** Normalversuche, Todesfälle, Abschlüsse, unterschiedliche abgeschlossene Levels, Rekorde,
+  Goldmedaillen, Erfolge, Designs und aktive Normal-Spielzeit. Pausen/Practice/Forge zählen nicht mit.
+- **Schneller Loop:** sofort sichtbarer RETRY-Button nach einem Treffer, Ergebnis mit Medaille und Freischaltungen,
+  NEXT LEVEL mit erhaltenem Modus und Rückkehr zur Auswahl. Belohnungen sind vor dem Weiterklicken gespeichert.
+- **Versionierter lokaler Spielstand:** `riftclimb.ascension.v2` mit Sicherung und Übernahme belegter M7-Leistungen.
+  Frühere unbekannte Todeszahlen, Spielzeit und Zeitpunkte werden nicht erfunden. Bei Schreibfehlern gibt es einen
+  Hinweis und weiterhin spielbare Sitzungsdaten. Keine Cloud-Synchronisierung.
+
+Es gibt weiterhin **genau eine hochwertige Grafikdarstellung** und keine Grafikoption oder automatische Herabstufung.
+
+Architektur, Freischaltungen, Datenmodell und Migration: [docs/ASCENSION-SYSTEM.md](docs/ASCENSION-SYSTEM.md).
+Ausgeführte Prüfungen und Grenzen: [docs/M8-TEST-REPORT.md](docs/M8-TEST-REPORT.md).
+
+```sh
+npm test                         # inklusive Progression/Migration und 15 vollständiger Skin-Replays
+# HTTP-Server separat starten; Browser wie unten installieren
+npm run test:ascension:e2e        # Menüs, Rewards, Persistenz, Touch, WebKit, Forge-Isolation
+```
+
 ## THE FIRST ASCENT (M7)
 
 Drei handgefertigte, sofort auswählbare Levels mit eigener Musik, Architektur und lokal gespeicherter
@@ -60,7 +90,7 @@ haben bewusst gesetzte musikalische Akzente. Der letzte Beat löst die Musik auf
   Rot warme gefilterte Synths und Subbass. 25-ms-Zeitkonstante beim Überblenden, identische Notentermine.
 - **Effekte:** Flug, Wechsel, Pulse, Siegel auf/zu, Kollision, Tod, Respawn, Checkpoint und Abschluss.
   Dezente Beat-/Akzentlichter und Randfunken liegen unter den Hindernissen, auch bei stummem Audio.
-- **Lautstärke:** Musik und Effekte getrennt im Menü unter „Lautstärke“ und in der Pause; lokal gespeichert.
+- **Lautstärke:** Musik und Effekte getrennt unter SETTINGS → „Lautstärke“ und in der Pause; lokal gespeichert.
   „Sound AUS“ schaltet beide stumm. Keine Samples, externen Dienste oder Laufzeitpakete.
 - **Mobile:** AudioContext erst nach einer Benutzeraktion. Hintergrundwechsel, unterbrochener Context oder lange
   Browser-Stalls pausieren den Lauf; „Weiter“ ordnet Audio erneut zu. Playtests warten ebenfalls auf „Weiter“.
@@ -91,7 +121,7 @@ npm run test:audio:e2e
 | `A` / `←` (Desktop) | Impuls links oben + Dimensionswechsel |
 | Tipp / `A` / `D` / `Enter` nach dem Tod | sofortiger Neustart (Practice: Respawn am Checkpoint) |
 | `Esc` / `P` | Pause / Weiter (im Editor-Playtest: `Esc` = zurück zum Editor, `P` = Pause) |
-| `Enter` / `Leertaste` / `R` | Start im Menü, Neustart, Weiter in der Pause |
+| `Enter` / `Leertaste` / `R` | Levelauswahl öffnen, dort Start; Neustart, Weiter in der Pause |
 
 Das Spielfeld hat vier Spuren. Ein Impuls gegen die Wand bewegt die Figur nicht, wechselt aber trotzdem die Dimension.
 Das ist eine zentrale Technik: Weil jeder normale Impuls Spur **und** Farbe gleichzeitig ändert, bleibt die
@@ -136,10 +166,11 @@ aktuellen Spielerposition aus. Keine Zusatztaste, kein Zufall, keine Wirkung auf
 
 ## Tod und Neustart
 
-Treffer-Moment 0,28 s (Explosion, Treffer-Ton, getroffenes Hindernis blinkt, ✕ an der Kollisionsstelle), danach ein
-kompakter Todesscreen oben – die Unfallstelle bleibt sichtbar – mit Prozent, Bestleistung und **Todesgrund**
+Trefferanimation 0,28 s (Explosion, Treffer-Ton, getroffenes Hindernis blinkt, ✕ an der Kollisionsstelle), parallel sofort ein
+kompakter Todesscreen oben – die Unfallstelle bleibt sichtbar – mit Prozent, Bestleistung, Medaille, Versuchen und **Todesgrund**
 (z. B. „BLAU ist in der blauen Dimension aktiv“). Ab 0,22 s nach dem Tod startet **jeder Tipp** sofort neu
-(kein Menü, kein Neuladen). iOS-Geister-Klicks nach dem Neustart werden abgefangen.
+(kein Menü, kein Neuladen). Der RETRY-Button startet sofort ohne diesen Schutz für beliebige Tipps.
+iOS-Geister-Klicks nach dem Neustart werden abgefangen.
 
 ## Physikparameter (zentral in `js/config.js`)
 
@@ -433,7 +464,8 @@ rift-climb/
 ## Deployment
 
 Jeder Push auf `main` startet `.github/workflows/deploy.yml`: npm test (Level, Physik, Rift, Timeline, Kampagnen-Replays) → statische Seite zusammenstellen →
-Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft daher unter `/rift-climb/`.
+Deployment auf GitHub Pages (HTTPS). `npm test` enthält seit M8 zusätzlich die Fortschritts-/Migrationsprüfungen.
+Alle Pfade sind relativ, die Seite läuft daher unter `/rift-climb/`.
 
 ## Bekannte Probleme / Einschränkungen
 

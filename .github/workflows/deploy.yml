@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Kampagnen-Replays, Physik, Rift Pulse und Audio-Timeline prüfen
+      - name: Kampagne, Physik, Audio und Ascension-Fortschritt prüfen
         run: npm test
       - name: Statische Seite zusammenstellen
         run: |

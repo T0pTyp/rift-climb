@@ -12,6 +12,7 @@
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icon.svg">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/ascension.css">
 </head>
 <body data-screen="menu" data-dim="B">
   <div id="app">
@@ -49,11 +50,17 @@
           </div>
           <h1 class="logo">RIFT CLIMB<span>PULSE</span></h1>
         </div>
-        <p class="tagline">THE FIRST ASCENT</p>
-        <div id="level-pick" class="campaign" aria-label="THE FIRST ASCENT · Level wählen"></div>
-        <button id="btn-start" class="btn primary" type="button">Start</button>
-        <button id="btn-practice" class="btn" type="button">Übungsmodus</button>
-        <div class="menu-row">
+        <p class="tagline">ASCENSION SYSTEM</p>
+        <div id="page-home" class="menu-page">
+          <p class="home-copy">Jeder Aufstieg zählt.</p><nav class="main-nav" aria-label="Hauptmenü">
+          <button id="nav-play" class="nav-tile" type="button"><span>PLAY</span><small>THE FIRST ASCENT · 3 LEVELS</small><b aria-hidden="true">↗</b></button><button id="nav-collection" class="nav-tile" type="button"><span>RIFTLING COLLECTION</span><small>DEINE ENERGIE. DEIN DESIGN.</small><b aria-hidden="true">↗</b></button><button id="nav-achievements" class="nav-tile" type="button"><span>ACHIEVEMENTS</span><small>8 ZIELE FÜR DEINEN AUFSTIEG</small><b aria-hidden="true">↗</b></button><button id="nav-profile" class="nav-tile" type="button"><span>ASCENSION PROFILE</span><small>REKORDE & STATISTIKEN</small><b aria-hidden="true">↗</b></button><button id="nav-settings" class="nav-tile" type="button"><span>SETTINGS</span><small>MUSIK & BEDIENUNG</small><b aria-hidden="true">↗</b></button></nav>
+          <a id="forge-link" class="forge-link" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
+        </div>
+        <div id="page-levels" class="menu-page" hidden><header class="page-head"><button class="back-btn" type="button" data-home aria-label="Hauptmenü">‹</button><div><p class="eyebrow">ASCENSION SYSTEM</p><h2>THE FIRST ASCENT</h2></div></header><p class="page-intro">BRONZE 50 % · SILBER 75 % · GOLD 100 %</p><div id="level-pick" class="campaign" aria-label="Level wählen"></div><div id="start-stash" hidden><button id="btn-start" class="btn primary" type="button">PLAY</button><button id="btn-practice" class="btn" type="button">PRACTICE</button></div></div>
+        <div id="page-collection" class="menu-page" hidden><header class="page-head"><button class="back-btn" type="button" data-home aria-label="Hauptmenü">‹</button><div><p class="eyebrow">ASCENSION SYSTEM</p><h2>RIFTLING COLLECTION</h2></div></header><div class="skin-stage"><canvas id="skin-preview" width="640" height="460" aria-label="Animierte Riftling-Vorschau"></canvas><span id="preview-dimension" class="chip">BLAU</span></div><div class="skin-description"><h3 id="skin-name"></h3><p id="skin-description"></p><p id="skin-condition"></p></div><button id="btn-equip" class="btn primary" type="button">ANLEGEN</button><div id="skin-cards" class="skin-cards"></div></div>
+        <div id="page-achievements" class="menu-page" hidden><header class="page-head"><button class="back-btn" type="button" data-home aria-label="Hauptmenü">‹</button><div><p class="eyebrow">ASCENSION SYSTEM</p><h2>ACHIEVEMENTS</h2></div></header><p id="achievement-count" class="page-intro"></p><div id="achievement-list" class="achievement-list"></div></div>
+        <div id="page-profile" class="menu-page" hidden><header class="page-head"><button class="back-btn" type="button" data-home aria-label="Hauptmenü">‹</button><div><p class="eyebrow">ASCENSION SYSTEM</p><h2>ASCENSION PROFILE</h2></div></header><div id="profile-stats" class="profile-stats"></div><div id="profile-levels"></div><p id="history-note" class="page-intro"></p></div>
+        <div id="page-settings" class="menu-page" hidden><header class="page-head"><button class="back-btn" type="button" data-home aria-label="Hauptmenü">‹</button><div><p class="eyebrow">ASCENSION SYSTEM</p><h2>SETTINGS</h2></div></header>        <div class="menu-row">
           <button id="btn-sound" class="btn small stack" type="button" aria-pressed="true"><small>Sound</small>AN</button>
         </div>
         <details class="audio-disclosure"><summary>Lautstärke</summary><div class="audio-settings" aria-label="Lautstärke">
@@ -67,7 +74,8 @@
           <p>Jeder Tipp sendet einen <b>Rift Pulse</b>: er öffnet nahe <span class="c-s">Gold-Siegel</span> kurz. Leuchtet ein Siegel, ist es in Reichweite.</p>
           <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
         </details>
-        <a id="forge-link" class="forge-link" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
+<p class="page-intro">Fortschritt liegt lokal in diesem Browser auf diesem Gerät. Keine Cloud-Synchronisierung.</p></div>
+        <p id="save-notice" role="status" hidden></p>
       </div>
     </section>
 
@@ -95,10 +103,11 @@
         </div>
         <p id="death-new" class="new-best" hidden>Neue Bestleistung!</p>
         <p id="death-reason" class="reason"></p>
+        <div class="result-reward"><div id="death-medal"></div><p id="death-attempts"></p></div>
         <p class="tap-hint">Tippen = sofort neu starten</p>
         <div class="btn-row">
-          <button id="btn-death-restart" class="btn primary" type="button">Neustart</button>
-          <button id="btn-death-menu" class="btn" type="button">Levelauswahl</button>
+          <button id="btn-death-restart" class="btn primary" type="button">RETRY</button>
+          <button id="btn-death-menu" class="btn" type="button">LEVEL SELECT</button><button id="btn-death-home" class="btn" type="button">MAIN MENU</button>
         </div>
         <p class="desktop-only hint-key">Enter / Leertaste / A / D = Neustart</p>
       </div>
@@ -107,13 +116,14 @@
     <section id="win" class="overlay" hidden>
       <div class="panel">
         <p class="clear-eyebrow">ASCENT COMPLETE</p><h2 id="win-level">RIFT CLEARED</h2>
-        <div class="big">100%</div>
+        <div class="big complete-pct">100%</div><div id="win-medal" class="win-medal"></div><p id="win-record" class="new-best" hidden>NEUER REKORD</p><div id="win-rewards" class="win-rewards"></div>
         <p class="sub" id="win-sub"></p>
-        <button id="btn-win-restart" class="btn primary" type="button">Nochmal</button>
-        <button id="btn-win-menu" class="btn" type="button">Levelauswahl</button>
+        <button id="btn-win-restart" class="btn primary" type="button">RETRY</button>
+        <button id="btn-next-level" class="btn primary" type="button" hidden>NEXT LEVEL</button><button id="btn-win-menu" class="btn" type="button">LEVEL SELECT</button>
       </div>
     </section>
 
+    <aside id="reward-notice" class="reward-notice" aria-live="polite" hidden></aside>
     <div id="rotate-hint" aria-hidden="true">Bitte das Gerät ins Hochformat drehen</div>
     <noscript><div class="overlay"><div class="panel">Dieses Spiel benötigt JavaScript.</div></div></noscript>
   </div>

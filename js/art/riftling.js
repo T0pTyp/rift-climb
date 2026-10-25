@@ -17,7 +17,7 @@ export const RIFTLING_SPRITE = Object.freeze({
   unitsPerPx: 0.56, // 1 Asset-Einheit = 0,56 u: Rahmen 36 × 40 u, sichtbarer Körper ~21 × 32 u (Hitbox Ø 16 u)
 });
 
-const MAX_CACHE = 4;
+const MAX_CACHE = 12;
 
 class RiftlingArt {
   constructor() {
@@ -27,6 +27,7 @@ class RiftlingArt {
     this.cache = new Map();
     this.glow = null;
     this.promise = null;
+    this.skinPromises = new Map();
   }
 
   /** Lädt die Ebenen (nur im Browser). Bis dahin zeichnet drawRiftling die einfache Ersatzfigur. */
@@ -51,13 +52,25 @@ class RiftlingArt {
   }
 
   /** Rasterisierte Ebenen für eine Auflösung (Pixel pro Asset-Einheit, auf 0,5 gerundet). */
-  layers(pxPerAsset) {
-    const key = Math.max(1, Math.ceil(pxPerAsset * 2) / 2);
+  loadSkin(id) {
+    if(!['azure','crimson','golden','void'].includes(id))return this.load();
+    if(this.skinPromises.has(id))return this.skinPromises.get(id);
+    const promise=this.load().then(()=>Promise.all(['B','R'].map(dim=>new Promise(resolve=>{
+      const img=new Image();img.onload=()=>{this.images[id+'-'+dim]=img;resolve(true);};img.onerror=()=>resolve(false);
+      img.src=new URL(`../../assets/riftling/${id}-${dim}.svg`,import.meta.url).href;
+    }))));
+    this.skinPromises.set(id,promise);return promise;
+  }
+
+  layers(pxPerAsset, skin='original') {
+    const resolution = Math.max(1, Math.ceil(pxPerAsset * 2) / 2);
+    if(skin!=='original'&&(!this.images[skin+'-B']||!this.images[skin+'-R'])){this.loadSkin(skin);skin='original';}
+    const key = skin+':'+resolution;
     let set = this.cache.get(key);
     if (set) return set;
     const { w, h } = RIFTLING_SPRITE.frame;
-    const cw = Math.ceil(w * key);
-    const ch = Math.ceil(h * key);
+    const cw = Math.ceil(w * resolution);
+    const ch = Math.ceil(h * resolution);
     const make = (img) => {
       const c = document.createElement('canvas');
       c.width = cw;
@@ -70,7 +83,7 @@ class RiftlingArt {
     wctx.globalCompositeOperation = 'source-in';
     wctx.fillStyle = '#ffffff';
     wctx.fillRect(0, 0, cw, ch);
-    set = { B: make(this.images.B), R: make(this.images.R), eye: make(this.images.eye), white };
+    set = { B: make(this.images[skin+'-B'] || this.images.B), R: make(this.images[skin+'-R'] || this.images.R), eye: make(this.images.eye), white };
     this.cache.set(key, set);
     if (this.cache.size > MAX_CACHE) this.cache.delete(this.cache.keys().next().value);
     return set;
@@ -91,7 +104,7 @@ class RiftlingArt {
       g.fillRect(0, 0, 64, 64);
       return c;
     };
-    this.glow = { B: mk('47,214,255'), R: mk('255,45,138'), W: mk('255,255,255') };
+    this.glow = { B: mk('47,214,255'), R: mk('255,45,138'), W: mk('255,255,255'), G:mk('255,195,67') };
     return this.glow;
   }
 }
@@ -106,7 +119,7 @@ export const IDLE_POSE = Object.freeze({ blend: 0, tilt: 0, sx: 1, sy: 1, bob: 0
  * ppu = Gerätepixel pro Welteinheit (für die Rasterauflösung).
  * pose: blend 0 = Blau … 1 = Rot, tilt (rad), sx/sy (Squash & Stretch), bob (u), eye 0–1, flash 0–1 (weiß), glow, alpha.
  */
-export function drawRiftling(ctx, x, y, pose, ppu) {
+export function drawRiftling(ctx, x, y, pose, ppu, skin='original') {
   const p = pose || IDLE_POSE;
   const alpha = p.alpha === undefined ? 1 : p.alpha;
   if (alpha <= 0.002) return;
@@ -118,7 +131,7 @@ export function drawRiftling(ctx, x, y, pose, ppu) {
   const S = RIFTLING_SPRITE;
   const u = S.unitsPerPx;
   const stretch = Math.max(p.sx || 1, p.sy || 1);
-  const L = riftlingArt.layers(ppu * u * stretch);
+  const L = riftlingArt.layers(ppu * u * stretch, skin);
   const fw = S.frame.w * u;
   const fh = S.frame.h * u;
   const ox = -S.anchor.x * u;
@@ -132,6 +145,7 @@ export function drawRiftling(ctx, x, y, pose, ppu) {
     const gs = riftlingArt.glowSprites();
     const r = 30 * (0.9 + 0.1 * (p.glow || 1));
     const ga = alpha * Math.min(1.6, p.glow || 1) * 0.95;
+    if(skin==='golden'){ctx.globalAlpha=ga*.55;ctx.drawImage(gs.G,-r,-r-2,r*2,r*2);}
     if (blend < 0.999) { ctx.globalAlpha = ga * (1 - blend); ctx.drawImage(gs.B, -r, -r - 2, r * 2, r * 2); }
     if (blend > 0.001) { ctx.globalAlpha = ga * blend; ctx.drawImage(gs.R, -r, -r - 2, r * 2, r * 2); }
   }

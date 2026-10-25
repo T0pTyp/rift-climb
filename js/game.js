@@ -77,6 +77,7 @@ export class Game {
     this.deathTimer = 0;
     this.deathAge = 0;
     this.killer = null;
+    this.deathShown = false;
     this.checkpoint = null;
     this.lastRowPassed = -1; // Index in this.lines (= Reihe im Spurmodell)
     this.obsLo = 0;
@@ -123,6 +124,7 @@ export class Game {
   }
 
   get attemptsDisplay() {
+    if(this.storage.progression?.isolated)return this.sessionAttempts;
     return this.mode === 'normal' ? this.storage.stats.attempts : this.sessionAttempts;
   }
 
@@ -160,6 +162,10 @@ export class Game {
 
   /** from: { y, lane, dim } = ab dieser Höhe starten (PLAY FROM HERE im Editor), sonst Levelstart. */
   start(mode, from = null) {
+    this.saveProgress(true);
+    this.storage.finish?.(this.run,this.t,this.progress,'quit');
+    // Flush the old mode before restart can observe the new one (also for replay adapters).
+    this.state='menu';
     this.mode = mode;
     this.startFrom = from;
     this.sessionAttempts = 0;
@@ -168,8 +174,13 @@ export class Game {
 
   restart() {
     if (['playing','paused','dying','dead'].includes(this.state)) this.saveProgress();
+    this.storage.finish?.(this.run,this.t,this.progress,'retry');
     this.timelineRevision++;
-    if (this.mode === 'normal') {
+    this.runStartBest=this.storage.stats.best;
+    if (this.storage.beginRun) {
+      this.run=this.storage.beginRun(this.mode==='normal'&&!this.startFrom);
+      if(this.mode!=='normal'||this.storage.progression.isolated)this.sessionAttempts++;
+    } else if (this.mode === 'normal') {
       this.storage.stats.attempts++;
       this.storage.save();
     } else {
@@ -242,6 +253,7 @@ export class Game {
 
   pause() {
     if (this.state !== 'playing' && this.state !== 'respawn') return;
+    this.saveProgress(true);
     this.pausedFrom = this.state;
     this.state = 'paused';
     this.audio.suspend();
@@ -261,6 +273,7 @@ export class Game {
 
   toMenu() {
     this.saveProgress();
+    this.storage.finish?.(this.run,this.t,this.progress,'quit');
     this.state = 'menu';
     this.audio.stop?.();
     this.ui.updateMenu(this.storage.stats, this.storage.muted);
@@ -369,6 +382,7 @@ export class Game {
         for (const x of [5, WORLD_W - 5]) this.particles.spawn(x, this.y + 100, 0, 20, .18, 1.6, col, .3, K.SPARK);
       });
       this.audio.update(this.t);
+      this.saveProgress();
     }
     if (this.state !== 'menu') {
       this.ui.updateHud(this.progress, this.player.dim, this.attemptsDisplay, this.mode);
@@ -489,7 +503,10 @@ export class Game {
   }
 
   die(o) {
-    this.deathNewBest = this.saveProgress();
+    if(this.state!=='playing')return;
+    this.saveProgress();
+    this.deathNewBest=this.progress>this.runStartBest;
+    this.storage.finish?.(this.run,this.t,this.progress,'death');
     const p = this.player;
     const y = this.y;
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
@@ -517,6 +534,8 @@ export class Game {
     this.state = 'dying';
     this.deathAge = 0;
     this.deathTimer = this.mode === 'practice' ? DEATH_FREEZE_SEC * 0.8 : DEATH_FREEZE_SEC;
+    // Retry is available at once; the existing impact animation continues behind it.
+    if(this.mode==='normal'){this.deathShown=true;this.showDeathResult();}
   }
 
   finishDeath() {
@@ -524,14 +543,17 @@ export class Game {
       this.respawn();
       return;
     }
-    const pct = this.progress;
-    const stats = this.storage.stats;
-    const isNewBest = this.deathNewBest;
     this.state = 'dead';
-    this.ui.showDeath({ pct, best: stats.best, isNewBest, reason: this.killer ? this.killer.reason : '' });
+    if(!this.deathShown)this.showDeathResult();
   }
 
-  saveProgress() {
+  showDeathResult() {
+    const pct=this.progress,stats=this.storage.stats,isNewBest=this.deathNewBest;
+    this.ui.showDeath({ pct, best: stats.best, isNewBest, reason: this.killer ? this.killer.reason : '', attempts:this.attemptsDisplay, medal:stats.medal, rewards:this.run?.rewards || [] });
+  }
+
+  saveProgress(force=false) {
+    if(this.storage.report)return this.mode==='normal'?this.storage.report(this.run,this.t,this.progress,force):false;
     if (this.mode !== 'normal' || this.progress <= (this.storage.stats.best || 0)) return false;
     this.storage.stats.best = this.progress;
     this.storage.save();
@@ -566,6 +588,7 @@ export class Game {
   }
 
   win() {
+    if(this.state!=='playing')return;
     this.state = 'won';
     this.clearAge = 0;
     this.anim.onPrecise();
@@ -574,14 +597,16 @@ export class Game {
       this.particles.spawn(this.player.x,this.y,Math.cos(a)*speed,Math.sin(a)*speed,1.1+(i%3)*.15,2+(i%3),i%3===0?'#ffc23d':i%2?'#2fd6ff':'#ff2d8a',1,K.SPARK);
     }
     this.autoplayQueue = [];
-    if (this.mode === 'normal') {
+    if (this.storage.finish) {
+      this.storage.finish(this.run,this.t,100,'win');
+    } else if (this.mode === 'normal') {
       this.storage.stats.best = 100;
       this.storage.stats.clears = (this.storage.stats.clears || 0) + 1;
       this.storage.save();
     }
     this.audio.stop?.();
     this.audio.sfx('win');
-    this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay });
+    this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay, isNewBest:this.runStartBest<100, medal:this.storage.stats.medal, rewards:this.run?.rewards || [] });
     if (this.events.onWin) {
       const replay = this.recording ? { taps: this.recording.slice() } : null;
       this.events.onWin({ mode: this.mode, attempts: this.attemptsDisplay, replay, from: this.startFrom });
@@ -858,7 +883,7 @@ export class Game {
       drawTrail(ctx, p, p.x, sy, this.y, col.main, 4.5 + this.anim.speed * 4);
     }
     if (dead && this.state === 'dead' && pose.alpha <= 0.01) return;
-    drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale);
+    drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale, this.skinId || 'original');
   }
 
   renderDeath(ctx, camY, psy) {

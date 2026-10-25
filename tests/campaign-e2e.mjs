@@ -13,7 +13,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
  await context.addInitScript(()=>{
    localStorage.setItem('riftclimb.pulse.v1',JSON.stringify({stats:{best:87,attempts:19,clears:0},gfx:'low',gfxManual:true}));
  });
- await page.goto(BASE+'?manual=1');await page.waitForFunction(()=>window.__RIFT);
+ await page.goto(BASE+'?manual=1');await page.waitForFunction(()=>window.__RIFT);await page.click('#nav-play');
  const session=await page.evaluate(()=>{window.__APP_TOKEN=Math.random();return __APP_TOKEN;});
  check(label+' three immediate level cards and no visual settings',await page.evaluate(()=>document.querySelectorAll('.level-card').length===3&&!document.querySelector('#btn-gfx')&&!('gfx' in __RIFT)));
  check(label+' old visual prefs removed without losing legacy stats',await page.evaluate(()=>{const p=JSON.parse(localStorage.getItem('riftclimb.pulse.v1'));return p.stats.best===87&&p.stats.attempts===19&&!('gfx' in p)&&!('gfxManual' in p);}));
@@ -53,7 +53,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
    check(label+' '+id+' reuses same AudioContext',await page.evaluate(()=>__AUDIO_CONTEXT===__RIFT.audio.ctx));
  }
  // A second selection proves earlier per-level results are not copied into another key.
- check(label+' isolated per-level local stats',await page.evaluate(ids=>ids.every(id=>{const s=JSON.parse(localStorage.getItem('riftclimb.pulse.v1.'+id)).stats;return s.best===100&&s.clears===1&&s.attempts===2;}),ids));
+ check(label+' isolated per-level local stats',await page.evaluate(ids=>ids.every(id=>{const s=JSON.parse(localStorage.getItem('riftclimb.ascension.v2')).levels[id];return s.best===100&&s.clears===1&&s.attempts===2;}),ids));
  await page.goto(BASE+'assets/forge/');await page.waitForFunction(()=>document.body.dataset.ready==='1');
  for(const id of ids) {
    await page.evaluate(async id=>{const f=__FORGE;const idx=await f.actions.gameLevels();await f.actions.openGameLevel(idx.levels.find(e=>e.id===id));},id);
@@ -89,7 +89,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
 // Live Web Audio transport for each M7 score (separate from accelerated replay tests).
 {
  const b=await chromium.launch(),c=await b.newContext(devices['Pixel 7']),p=await c.newPage();
- await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);
+ await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);await p.tap('#nav-play');
  for(const id of ids) {
   await p.tap(`[data-level="${id}"]`);await p.waitForTimeout(200);await p.tap('#btn-start');
   await p.waitForFunction(()=>__RIFT.t>.3&&__RIFT.audio.active);
@@ -111,7 +111,7 @@ for(const [width,height] of [[320,568],[360,640],[390,844],[430,932],[768,1024]]
  await c.addInitScript(()=>{window.__FRAME_CLOCK=1000;performance.now=()=>__FRAME_CLOCK;window.requestAnimationFrame=callback=>{window.__FRAME_CB=callback;return 1;};});
  await p.goto(BASE+'?autoplay=1');await p.waitForFunction(()=>window.__RIFT,null,{polling:50});
  await p.evaluate(()=>{__RIFT.audio.unlock=()=>{};__RIFT.audio.simulationOnly=true;});
- await p.keyboard.press('Enter');
+ await p.keyboard.press('Enter');await p.keyboard.press('Enter');
  const clock=await p.evaluate(()=>{__FRAME_CLOCK+=1;__FRAME_CB(__FRAME_CLOCK);for(let i=0;i<10;i++){__FRAME_CLOCK+=200;__FRAME_CB(__FRAME_CLOCK);}const before=__RIFT.t;__FRAME_CLOCK+=300;__FRAME_CB(__FRAME_CLOCK);return {before,after:__RIFT.t,state:__RIFT.state};});
  check('Actual main loop consumes full 200ms frames; silent 300ms blind stall pauses safely',Math.abs(clock.before-2)<.005&&clock.before===clock.after&&clock.state==='paused',JSON.stringify(clock));await c.close();
 }

@@ -419,7 +419,7 @@ let exported;
 // ---------------------------------------------------------------- 16./17. Playtest und zurück
 {
   const json0 = (await docState()).json;
-  const store0 = await F(() => Object.keys(localStorage).filter((k) => k.startsWith('riftclimb.pulse')).sort().join(','));
+  const store0 = await F(() => Object.keys(localStorage).filter((k) => k.startsWith('riftclimb.pulse') || k.startsWith('riftclimb.ascension')).sort().join(','));
   await tapSel('#dk-play');
   await page.waitForFunction(() => !document.querySelector('#playtest').hidden);
   const frame = page.frameLocator('#pt-frame');
@@ -446,7 +446,7 @@ let exported;
   await wait(200);
   const s = await F(() => ({ hidden: document.querySelector('#playtest').hidden, src: document.querySelector('#pt-frame').getAttribute('src') }));
   const json1 = (await docState()).json;
-  const store1 = await F(() => Object.keys(localStorage).filter((k) => k.startsWith('riftclimb.pulse')).sort().join(','));
+  const store1 = await F(() => Object.keys(localStorage).filter((k) => k.startsWith('riftclimb.pulse') || k.startsWith('riftclimb.ascension')).sort().join(','));
   check('[17] „Zurück zum Editor“ schließt den Playtest zuverlässig', s.hidden && s.src === 'about:blank');
   check('[17] Ungespeicherte Bearbeitungen bleiben erhalten, keine regulären Spielstände verändert', json1 === json0 && store1 === store0, `${store0} | ${store1}`);
 }
