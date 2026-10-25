@@ -103,3 +103,14 @@ Driftmessungen aus beschleunigten Tests dürfen nicht als Hörlatenz ausgegeben 
 Playwright (nur devDependency), einen HTTP-Server und installierte Chromium-/WebKit-Browser. `npm run test:audio:e2e`
 prüft Desktop/Touch, Editor und Audio-Graph und rendert den kompletten Soundtrack als WAV unter
 `test-results/m6/neon-ascent.wav` mit Peak-/RMS-Messung. Ergebnisse und Hardwaregrenzen stehen im Testbericht.
+
+
+## Ergänzungen M7
+
+- Drei neue Partituren in `ARRANGEMENTS`/`campaignStep` verwenden denselben Synthesizer, dieselben Busse und denselben Scheduler.
+- `music`, `theme`, `difficulty` sind optionale Levelmetadaten; alte Dateien behalten „Neon Ascent“ und ihre Exportstruktur.
+- Explizite `sections` geben die musikalischen Phasengrenzen in Welt-y an. Audio, Beat-Lichter und Forge teilen deren Zeitkoordinaten `y / 260`.
+- Die Siegfanfare löst bei den neuen Kompositionen in deren Tonart auf.
+- Practice stellt exaktes x/v sowie offene Siegel und aktive Wellen wieder her; alte Quellen werden weiterhin vollständig gestoppt.
+- Frame-Abstände bis 250 ms werden vollständig simuliert. Längere Blind-Stalls pausieren unabhängig von vorhandener Audio-Unterstützung.
+- Entwurf/Design und gemessene M7-Prüfungen: `FIRST-ASCENT.md`, `M7-TEST-REPORT.md`.

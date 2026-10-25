@@ -1,7 +1,7 @@
 // LEVEL FORGE: Eigenschaftenleiste und Prüfliste.
 // Eingaben wirken sofort (live), ein abgeschlossenes Feld ergibt genau einen Undo-Schritt.
 import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
-import { LIMITS, unitsPerBeat, DIMENSION_COLOR } from '../level-data.js';
+import { LIMITS, unitsPerBeat, DIMENSION_COLOR, THEMES, TRACKS, DIFFICULTIES } from '../level-data.js';
 import { fmt } from './view.js';
 
 const DIM_OPTIONS = [['both', 'Neutral (beide Dimensionen)'], ['blue', 'Blau'], ['red', 'Rot']];
@@ -341,6 +341,11 @@ export class PropsPanel {
         this.text('ID', { key: 'id', get: () => L().id, maxLength: 40, validate: (v) => /^[a-z0-9][a-z0-9-]{0,39}$/.test(v), hint: 'a–z, 0–9, Bindestrich – Dateiname beim Export', set: meta((l, v) => { l.id = v; }) }),
         this.text('Beschreibung', { key: 'description', get: () => L().description, maxLength: LIMITS.descLen, multiline: true, set: meta((l, v) => { l.description = v; }) }),
       ),
+      this.group('Identität',
+        this.select('Architektur', { key: 'theme', get: () => L().theme || 'spire', options: THEMES, set: meta((l, v) => { l.theme = v; }) }),
+        this.select('Komposition', { key: 'music', get: () => L().music || 'neon-ascent', options: TRACKS, set: meta((l, v) => { l.music = v; }) }),
+        this.select('Schwierigkeit', { key: 'difficulty', get: () => L().difficulty || 'easy', options: DIFFICULTIES, set: meta((l, v) => { l.difficulty = v; }) }),
+      ),
       this.group('Rhythmus und Länge',
         this.num('Beats pro Takt', { key: 'beatsPerBar', get: () => L().beatsPerBar || 4, min: 2, max: 7, step: 1, set: meta((l, v) => { l.beatsPerBar = Math.round(v); }) }),
         this.num('BPM', { key: 'bpm', get: () => L().bpm, min: LIMITS.bpm[0], max: LIMITS.bpm[1], step: 1, hint: 'Tempo der Musik und der Beat-Marker. Die Steiggeschwindigkeit bleibt 260 u/s.', set: meta((l, v) => { l.bpm = v; }) }),
@@ -353,6 +358,15 @@ export class PropsPanel {
         this.select('Startspur', { key: 'start-lane', get: () => String(L().start.lane), options: LANE_OPTIONS, set: meta((l, v) => { l.start.lane = Number(v); }) }),
         this.select('Startdimension', { key: 'start-dim', get: () => L().start.dimension, options: START_DIM_OPTIONS, set: meta((l, v) => { l.start.dimension = v; }) }),
       ),
+      ...(L().sections || []).map((section,i) => this.group(`Abschnitt ${section.id}`,
+        this.text('Name', { key:`section-${i}-name`, get:()=>L().sections[i].name, maxLength:24,
+          validate:v=>v.trim().length>0, set:meta((l,v)=>{l.sections[i].name=v;}) }),
+        i === 0 ? this.info('Beginn',()=>secs(L().sections[0].y)) :
+          this.num('Beginn (y)', { key:`section-${i}-y`, get:()=>L().sections[i].y,
+            min:(L().sections[i-1]?.y || 0)+1, max:(L().sections[i+1]?.y || L().finish.y)-1, unit:'u',
+            hint:'Verschiebt Musikabschnitt und Titel, keine Hindernisse.',
+            set:meta((l,v)=>{const s=l.sections[i],dy=v-s.y;s.y=v;s.labelY+=dy;}) }),
+      )),
       this.group('Inhalt',
         this.info('Objekte', () => {
           const o = L().objects;

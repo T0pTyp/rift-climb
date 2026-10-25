@@ -86,7 +86,7 @@ check('Kein Überschwingen über die Zielspur', over.maxX <= LANE_W + 1e-9, `max
   const extentY = 2 * (HIT_HALF_H + HIT_RADIUS);
   check('Vertikalschritt kleiner als halbe Kollisionsausdehnung', dy < extentY / 2, `${dy.toFixed(2)} u pro Schritt vs. ${extentY} u`);
   check('Seitenschritt kleiner als Spieler-Radius', dx < HIT_RADIUS, `${dx.toFixed(2)} u pro Schritt (vPeak ${vPeak.toFixed(0)} u/s)`);
-  check('Längster Frame (100 ms) wird in feste Schritte zerlegt', Math.ceil(MAX_FRAME_DT / SIM_DT) <= 30);
+  check('Bis 250 ms: vollständige Frame-Zeit in höchstens 60 feste Schritte zerlegt', Math.ceil(MAX_FRAME_DT / SIM_DT) <= 60);
 }
 
 // 5. Hitboxen nie größer als die sichtbaren Formen

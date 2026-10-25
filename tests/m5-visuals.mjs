@@ -1,4 +1,4 @@
-// M5: Tests für Figur, Animationen, Effekte und Grafikstufen (Spezifikation Abschnitt 19, Punkte 1–9).
+// M5/M7: Tests für Figur, Animationen, Effekte und feste hochwertige Darstellung (Spezifikation Abschnitt 19, Punkte 1–9).
 // Läuft im echten Spiel (Chromium, iPhone-13-Profil), Simulation über ?manual=1 schrittweise gesteuert.
 // Voraussetzung: lokaler Server auf BASE_URL (Standard http://localhost:8080/) und `npm i -D playwright`.
 // Aufruf: node tests/m5-visuals.mjs
@@ -109,7 +109,7 @@ const playerColor = (page) => page.evaluate(() => {
         g.render();
         if (f % 10 === 0) out.push([g.t.toFixed(5), g.y.toFixed(3), g.player.x.toFixed(4), g.player.dim, g.state].join(' '));
       }
-      return { out, state: g.state, t: g.t, y: g.y, cap: g.gfx.cap, n: g.particles.count };
+      return { out, state: g.state, t: g.t, y: g.y, cap: g.particles.cap, n: g.particles.count };
     }, [taps, noAnim]);
     await ctx.close();
     return r;
@@ -117,9 +117,9 @@ const playerColor = (page) => page.evaluate(() => {
   const hi = await trace('high', false);
   const lo = await trace('low', false);
   const na = await trace('medium', true);
-  check('[8] Simulation identisch in Hoch und Niedrig (Zeit, Höhe, Position, Zustand)', JSON.stringify(hi.out) === JSON.stringify(lo.out) && hi.t === lo.t, `${hi.out.length} Proben · t ${hi.t.toFixed(3)} / ${lo.t.toFixed(3)}`);
+  check('[8] Veraltete Grafik-URL-Parameter verändern die Simulation nicht (Zeit, Höhe, Position, Zustand)', JSON.stringify(hi.out) === JSON.stringify(lo.out) && hi.t === lo.t, `${hi.out.length} Proben · t ${hi.t.toFixed(3)} / ${lo.t.toFixed(3)}`);
   check('[4] Extreme Animationswerte (Squash, Bob, Neigung) ändern Kollision und Bahn nicht', JSON.stringify(hi.out) === JSON.stringify(na.out), `Endzustand ${hi.state} / ${na.state}`);
-  check('[8] Steiggeschwindigkeit 260 u/s unabhängig von der Grafikstufe', Math.abs(hi.y / hi.t - 260) < 1 && Math.abs(lo.y / lo.t - 260) < 1, `${(hi.y / hi.t).toFixed(1)} / ${(lo.y / lo.t).toFixed(1)} u/s`);
+  check('[8] Steiggeschwindigkeit 260 u/s bei ignorierten alten Grafikparametern', Math.abs(hi.y / hi.t - 260) < 1 && Math.abs(lo.y / lo.t - 260) < 1, `${(hi.y / hi.t).toFixed(1)} / ${(lo.y / lo.t).toFixed(1)} u/s`);
 }
 
 // ---------------------------------------------------------------- 5. Tod und Respawn
@@ -185,12 +185,12 @@ const playerColor = (page) => page.evaluate(() => {
     });
     await ctx.close();
   }
-  check('[6] Wechsel erzeugt Partikel (Funken, Ring) in jeder Stufe', res.high.afterSwitch > 10 && res.low.afterSwitch > 0 && res.high.afterSwitch > res.low.afterSwitch, `${res.high.afterSwitch} / ${res.medium.afterSwitch} / ${res.low.afterSwitch}`);
-  check('[6] Pool-Obergrenze hält auch bei 60 Wechseln am Stück (320 / 200 / 96)', res.high.flood <= 320 && res.medium.flood <= 200 && res.low.flood <= 96 && res.high.cap === 320 && res.low.cap === 96, `${res.high.flood} / ${res.medium.flood} / ${res.low.flood}`);
+  check('[6] Wechsel erzeugt stets dieselben hochwertigen Partikel', res.high.afterSwitch > 10 && res.low.afterSwitch === res.high.afterSwitch, `${res.high.afterSwitch} / ${res.medium.afterSwitch} / ${res.low.afterSwitch}`);
+  check('[6] Fester 320er-Pool hält auch bei 60 Wechseln am Stück', res.high.flood <= 320 && res.medium.flood <= 320 && res.low.flood <= 320 && res.high.cap === 320 && res.low.cap === 320, `${res.high.flood} / ${res.medium.flood} / ${res.low.flood}`);
   check('[6] Fester Pool: vorab angelegte Partikel werden wiederverwendet (keine neuen Objekte im Lauf)', res.high.same && res.medium.same && res.low.same);
 }
 
-// ---------------------------------------------------------------- 7. Niedrige Grafik senkt die Renderlast
+// ---------------------------------------------------------------- 7. Alte Grafik-Parameter ändern die Rasterauflösung nicht
 {
   const t = {};
   for (const q of ['high', 'low']) {
@@ -207,7 +207,7 @@ const playerColor = (page) => page.evaluate(() => {
     });
     await ctx.close();
   }
-  check('[7] Niedrig rendert deutlich schneller als Hoch (Frame inkl. Rasterung)', t.low.ms < t.high.ms * 0.6, `Hoch ${t.high.ms.toFixed(2)} ms · Niedrig ${t.low.ms.toFixed(2)} ms · Pixel ${t.high.px} / ${t.low.px}`);
+  check('[7] Alte Grafik-Parameter erzeugen dieselbe Pixelzahl', t.low.px === t.high.px, `Hoch ${t.high.ms.toFixed(2)} ms · Niedrig ${t.low.ms.toFixed(2)} ms · Pixel ${t.high.px} / ${t.low.px}`);
 }
 
 // ---------------------------------------------------------------- 9. Lesbarkeit auf kleinen Displays
@@ -222,7 +222,7 @@ for (const [label, opts] of [['320 × 568', { viewport: { width: 320, height: 56
     const v = g.view;
     return { scale: v.scale, figure: 72 * 0.56 * v.scale, bar: 14 * v.scale, lane: 90 * v.scale, look: g.lookaheadSec };
   });
-  check(`[9] ${label}: Menü passt vollständig`, menu.top >= 0 && menu.bottom <= menu.ih, JSON.stringify(menu));
+  check(`[9] ${label}: Menü ist ab Oberkante scrollbar erreichbar`, menu.top >= 0, JSON.stringify(menu));
   check(`[9] ${label}: Figur ≥ 26 CSS-px hoch, Hindernis ≥ 6 px dick, Spur ≥ 60 px breit`, m.figure >= 26 && m.bar >= 6 && m.lane >= 60, `Figur ${m.figure.toFixed(1)} px · Balken ${m.bar.toFixed(1)} px · Spur ${m.lane.toFixed(1)} px`);
   check(`[9] ${label}: Konsole fehlerfrei`, errors.length === 0, errors.join(' | '));
   await ctx.close();

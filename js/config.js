@@ -20,7 +20,8 @@ export const TILT_MAX = 0.55;
 // Simulation: fester Zeitschritt, unabhängig von der Bildrate.
 export const SIM_HZ = 240;
 export const SIM_DT = 1 / SIM_HZ;
-export const MAX_FRAME_DT = 0.1;
+// Longer gaps pause the run; shorter frames consume ALL elapsed time at 240 Hz.
+export const MAX_FRAME_DT = 0.25;
 
 // Kollision: Hitboxen sind nie größer als die sichtbaren Formen.
 export const BAR_THICKNESS = 14; // sichtbare Balkenhöhe

@@ -9,15 +9,8 @@ export const SEAL_DASH = [3, 4];
 export const NO_DASH = [];
 const HIT_INSET_Y = 2; // wie level-data.js: Kollisionshöhe je Seite 2 u kleiner als sichtbar
 
-let GLOW = 2;
-/** Glow-Stufe der Grafikoptionen: 0 = aus, 1 = einfach, 2 = doppelt. */
-export function setGlowLevel(level) {
-  GLOW = level;
-}
-
 function glowRect(ctx, color, x, y, w, h, g) {
-  if (GLOW <= 0) return;
-  if (GLOW > 1) {
+  {
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = color;
     ctx.fillRect(x - g * 2, y - g * 2, w + g * 4, h + g * 4);
@@ -36,7 +29,7 @@ export function drawBar(ctx, color, x, cy, w, hh, active, pop = 0) {
   const h = hh * 2;
   const top = cy - hh;
   if (active) {
-    glowRect(ctx, col.glow, x, top, w, h, (GLOW > 1 ? 4.5 : 3.5) + (color === 'W' ? 0 : pop * 5));
+    glowRect(ctx, col.glow, x, top, w, h, 4.5 + (color === 'W' ? 0 : pop * 5));
     ctx.fillStyle = col.main;
     ctx.fillRect(x, top, w, h);
     const ins = Math.min(2.2, hh * 0.35, w * 0.2);
@@ -205,7 +198,7 @@ export function drawShip(ctx, x, y, dim, tilt = 0, pop = 0, alpha = 1) {
 
 /** Zielstreifen (Schachbrett) über die Spielfeldbreite; y = Ziellinie auf dem Bildschirm. */
 export function drawFinish(ctx, width, fy, label = 'RIFT CLEARED · 100 %') {
-  if (GLOW > 0) {
+  {
     ctx.fillStyle = 'rgba(26,255,178,0.16)';
     ctx.fillRect(0, fy - 14, width, 14);
   }

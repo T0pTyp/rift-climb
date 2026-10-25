@@ -1,6 +1,6 @@
 import { CLIMB_SPEED } from './config.js';
 import { BeatTimeline } from './pulse/timeline.js';
-import { scoreStep } from './pulse/score.js';
+import { scoreStep, ARRANGEMENTS, frequency } from './pulse/score.js';
 
 export const AUDIO_PREFS = 'riftclimb.audio.v1';
 export const LOOKAHEAD = .12;
@@ -30,7 +30,9 @@ export class AudioEngine {
   setLevel(rt) {
     this.stop();
     this.timeline = new BeatTimeline({ bpm: rt?.bpm || 120, beatsPerBar: rt?.beatsPerBar || 4,
-      duration: rt ? rt.finishY / CLIMB_SPEED : 44 });
+      duration: rt ? rt.finishY / CLIMB_SPEED : 44,
+      sections: rt?.sections?.filter(s => !s.auto).map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
+    this.timeline.music = rt?.music || 'neon-ascent';
     this.timeline.accents = new Set((rt?.seals || []).map(s => Math.round(s.y / CLIMB_SPEED / this.timeline.stepSec)));
     this.step = this.timeline.stepSec;
   }
@@ -222,7 +224,11 @@ export class AudioEngine {
     if (name === 'death') note(220, .12, .24, .035, 'fall');
     if (name === 'respawn') { note(440, .055, .12); note(880, .05, .16, .07); }
     if (name === 'checkpoint') { note(880, .06, .12); note(1318.5, .05, .15, .07); }
-    if (name === 'win') [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => note(f, .07, .28, i * .1));
+    if (name === 'win') {
+      const chord=ARRANGEMENTS[this.timeline.music]?.chords[0];
+      const fanfare=chord?[...chord,chord[0]+12].map(frequency):[523.25,659.25,783.99,1046.5];
+      fanfare.forEach((f,i)=>note(f,.07,.28,i*.1));
+    }
   }
   status() {
     return { state: this.ctx?.state || 'locked', active: this.active, songTime: this.songTime,

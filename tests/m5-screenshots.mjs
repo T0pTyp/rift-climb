@@ -81,7 +81,7 @@ const browser = await chromium.launch();
 {
   const ctx = await browser.newContext({ ...devices['iPhone 13'] });
   const page = await ctx.newPage();
-  await page.goto(`${BASE}?manual=1&autoplay=1&gfx=high`);
+  await page.goto(`${BASE}?manual=1&autoplay=1`);
   await page.waitForFunction(() => window.__RIFT && window.__RIFT.art.ready);
   await page.tap('#btn-start');
   await page.evaluate(() => {

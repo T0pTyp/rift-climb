@@ -7,7 +7,7 @@ let passed=0;
 function check(name,condition,detail=''){assert.ok(condition,name+' '+detail);passed++;console.log('PASS '+name+(detail?' '+detail:''));}
 for(const [type,profile,label] of [[chromium,{},'Chromium desktop'],[chromium,devices['Pixel 7'],'Chromium Android emulation'],[webkit,devices['iPhone 13'],'WebKit iPhone emulation']]){
  const browser=await type.launch();const context=await browser.newContext(profile);const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(BASE+'?autoplay=1');await page.waitForFunction(()=>window.__RIFT);
+ await page.goto(BASE+'?level=rift-main&autoplay=1');await page.waitForFunction(()=>window.__RIFT);
  const hasAudio=await page.evaluate(()=>!!(globalThis.AudioContext||globalThis.webkitAudioContext));
  if(!hasAudio) console.log('SKIP '+label+' native audio assertions: this WebKit build has no Web Audio API; verifying silent fallback instead.');
  check(label+' audio locked before gesture',await page.evaluate(()=>__RIFT.audio.ctx===null));
@@ -29,7 +29,7 @@ for(const [type,profile,label] of [[chromium,{},'Chromium desktop'],[chromium,de
  await page.screenshot({path:`test-results/m6/${label.split(' ')[0]}-${profile.isMobile?'mobile':'desktop'}.png`});
  await page.reload();await page.waitForFunction(()=>window.__RIFT);
  check(label+' separate volumes saved',await page.evaluate(()=>__RIFT.audio.settings.music===.35&&__RIFT.audio.settings.sfx===.4));
- await page.goto(BASE+'?manual=1&autoplay=1');await page.waitForFunction(()=>window.__RIFT);await page.click('#btn-practice');
+ await page.goto(BASE+'?level=rift-main&manual=1&autoplay=1');await page.waitForFunction(()=>window.__RIFT);await page.click('#btn-practice');
  const practice=await page.evaluate(()=>{const g=__RIFT;while(g.t<15&&g.state==='playing')g.update(1/60);const cp={...g.checkpoint};g.respawn();const frozen=!g.audio.active;g.update(.61);return {cp,t:g.t,dim:g.player.dim,a:g.audio.status(),frozen};});
  check(label+' checkpoint restores song time/dimension',practice.cp.t>0&&practice.frozen&&Math.abs(practice.t-practice.cp.t)<.005&&practice.dim===practice.cp.dim);
  const won=await page.evaluate(()=>{const g=__RIFT;g.start('normal');while(g.state==='playing'&&g.t<45)g.update(1/60);return g.state==='won'&&g.progress===100&&!g.audio.active;});check(label+' sound-off 100% completion, no scheduler at win',won);

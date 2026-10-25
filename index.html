@@ -49,32 +49,24 @@
           </div>
           <h1 class="logo">RIFT CLIMB<span>PULSE</span></h1>
         </div>
-        <p class="tagline">Steig im Takt. Wechsle die Dimension.</p>
+        <p class="tagline">THE FIRST ASCENT</p>
+        <div id="level-pick" class="campaign" aria-label="THE FIRST ASCENT · Level wählen"></div>
         <button id="btn-start" class="btn primary" type="button">Start</button>
         <button id="btn-practice" class="btn" type="button">Übungsmodus</button>
-        <div class="stats">
-          <div><span class="label">Bestleistung</span><strong id="menu-best">0%</strong></div>
-          <div><span class="label">Versuche</span><strong id="menu-attempts">0</strong></div>
-        </div>
         <div class="menu-row">
-          <label class="level-pick" id="level-pick" hidden>
-            <span class="sr-only">Level</span>
-            <select id="level-select" aria-label="Level wählen"></select>
-          </label>
           <button id="btn-sound" class="btn small stack" type="button" aria-pressed="true"><small>Sound</small>AN</button>
-          <button id="btn-gfx" class="btn small stack" type="button" title="Grafikqualität: Hoch / Mittel / Niedrig – nur Darstellung, Gameplay identisch"><small>Grafik</small>HOCH</button>
         </div>
         <details class="audio-disclosure"><summary>Lautstärke</summary><div class="audio-settings" aria-label="Lautstärke">
           <label>Musik <input aria-label="Musiklautstärke" data-volume="music" type="range" min="0" max="1" step="0.05"></label>
           <label>Effekte <input aria-label="Effektlautstärke" data-volume="sfx" type="range" min="0" max="1" step="0.05"></label>
         </div></details>
-        <div class="help">
+        <details class="help"><summary>So spielst du</summary>
           <p><b>Tipp links</b> = schräg rechts hoch · <b>Tipp rechts</b> = schräg links hoch</p>
           <p>Jeder Tipp wechselt die Dimension. <span class="c-b">Blau</span> aktiv: blaue Hindernisse töten, rote sind Geister. <span class="c-r">Rot</span> umgekehrt. <span class="c-w">Weiß</span> tötet immer.</p>
           <p>Tipp Richtung Wand = nur Farbwechsel, ohne Spurwechsel.</p>
           <p>Jeder Tipp sendet einen <b>Rift Pulse</b>: er öffnet nahe <span class="c-s">Gold-Siegel</span> kurz. Leuchtet ein Siegel, ist es in Reichweite.</p>
           <p class="desktop-only">Tastatur: A / ← links hoch · D / → rechts hoch · Esc Pause</p>
-        </div>
+        </details>
         <a id="forge-link" class="forge-link" href="assets/forge/">LEVEL FORGE · Level-Editor öffnen</a>
       </div>
     </section>
@@ -88,7 +80,7 @@
         </div>
         <button id="btn-resume" class="btn primary" type="button">Weiter</button>
         <button id="btn-pause-restart" class="btn" type="button">Neustart</button>
-        <button id="btn-pause-menu" class="btn" type="button">Menü</button>
+        <button id="btn-pause-menu" class="btn" type="button">Levelauswahl</button>
       </div>
     </section>
 
@@ -106,7 +98,7 @@
         <p class="tap-hint">Tippen = sofort neu starten</p>
         <div class="btn-row">
           <button id="btn-death-restart" class="btn primary" type="button">Neustart</button>
-          <button id="btn-death-menu" class="btn" type="button">Menü</button>
+          <button id="btn-death-menu" class="btn" type="button">Levelauswahl</button>
         </div>
         <p class="desktop-only hint-key">Enter / Leertaste / A / D = Neustart</p>
       </div>
@@ -114,11 +106,11 @@
 
     <section id="win" class="overlay" hidden>
       <div class="panel">
-        <h2>RIFT CLEARED</h2>
+        <p class="clear-eyebrow">ASCENT COMPLETE</p><h2 id="win-level">RIFT CLEARED</h2>
         <div class="big">100%</div>
         <p class="sub" id="win-sub"></p>
         <button id="btn-win-restart" class="btn primary" type="button">Nochmal</button>
-        <button id="btn-win-menu" class="btn" type="button">Menü</button>
+        <button id="btn-win-menu" class="btn" type="button">Levelauswahl</button>
       </div>
     </section>
 

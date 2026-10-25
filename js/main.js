@@ -4,51 +4,11 @@ import { Input } from './input.js';
 import { AudioEngine } from './audio.js';
 import { MAX_FRAME_DT } from './config.js';
 import { validateLevelData, validateIndex } from './level-data.js';
-import { QUALITY, defaultQuality, nextQuality } from './art/quality.js';
 
-const STORAGE_KEY = 'riftclimb.pulse.v1';
+import { createStorage, readJson, migrateVisualPreferences } from './storage.js';
+
 const LEVEL_DIR = 'assets/levels/';
-// Übergabe aus LEVEL FORGE (gleicher Origin): { level, from, mode, debug }
 export const PLAYTEST_KEY = 'riftforge.playtest';
-
-function readJson(key) {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    // localStorage kann (z. B. im privaten Modus) blockiert sein – dann nur Session-Werte.
-    return null;
-  }
-}
-
-/** Fortschritt pro Level (Hauptlevel unter dem bisherigen Schlüssel); Sound-Einstellung global. */
-function createStorage(levelId, memoryOnly) {
-  const key = levelId === 'rift-main' ? STORAGE_KEY : `${STORAGE_KEY}.${levelId}`;
-  const stats = { best: 0, attempts: 0, clears: 0 };
-  const main = readJson(STORAGE_KEY);
-  const own = memoryOnly ? null : readJson(key);
-  if (own && own.stats) Object.assign(stats, own.stats);
-  return {
-    stats,
-    muted: !!(main && main.muted),
-    gfx: main && QUALITY[main.gfx] ? main.gfx : defaultQuality(),
-    gfxManual: !!(main && main.gfxManual),
-    save() {
-      // Playtest aus dem Editor: nichts dauerhaft speichern (keine Bestleistung, keine Versuche)
-      if (memoryOnly) return;
-      try {
-        localStorage.setItem(key, JSON.stringify({ stats: this.stats, muted: this.muted, gfx: this.gfx, gfxManual: this.gfxManual }));
-        if (key !== STORAGE_KEY) {
-          const m = readJson(STORAGE_KEY) || {};
-          m.muted = this.muted;
-          m.gfx = this.gfx;
-          m.gfxManual = this.gfxManual;
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(m));
-        }
-      } catch { /* ignorieren */ }
-    },
-  };
-}
 
 const params = new URLSearchParams(location.search);
 const playtest = params.has('playtest');
@@ -116,11 +76,25 @@ async function boot() {
     if (playtest) postToEditor({ type: 'forge:error', message: err.message });
     return;
   }
-  const { level, index, handoff } = loaded;
+  let { level } = loaded;
+  const { index, handoff } = loaded;
+  migrateVisualPreferences();
+  const catalog = new Map([[level.id, level]]);
+  try {
+    await Promise.all((index?.levels || []).filter(e => e.campaign && e.id !== level.id).map(async entry => {
+      const res = validateLevelData(await fetchJson(LEVEL_DIR + entry.file));
+      if (!res.ok) throw new Error(entry.name + ' ist ungültig.');
+      catalog.set(entry.id, res.level);
+    }));
+  } catch (err) { showBootError(err.message); return; }
+  const menuLevels = index?.levels.filter(e => e.campaign || e.id === level.id && !e.campaign) || null;
+
   if (handoff && handoff.debug) debug.hitboxes = true;
 
   const canvas = document.getElementById('game');
-  const storage = createStorage(level.id, playtest);
+  const stores = new Map();
+  const storageFor = id => { if(!stores.has(id))stores.set(id,createStorage(id,playtest));return stores.get(id); };
+  let storage = storageFor(level.id);
   const audio = new AudioEngine({ timers: !debug.manual });
   audio.simulationOnly = debug.manual;
   audio.setMuted(audio.settings.muted || storage.muted);
@@ -132,6 +106,7 @@ async function boot() {
   const ui = new UI({
     onGesture: unlockAudio,
     onStart: (mode) => game.start(mode),
+    getStats: id => storageFor(id).stats,
     onSoundToggle: () => {
       storage.muted = !storage.muted;
       storage.save();
@@ -139,23 +114,23 @@ async function boot() {
       ui.updateSound(storage.muted);
     },
     onVolume: (bus, value) => { audio.setVolume(bus, value); ui.updateVolumes(audio.settings); },
-    onGfxToggle: () => {
-      storage.gfx = nextQuality(game.gfx.id);
-      storage.gfxManual = true;
-      storage.save();
-      applyQuality(storage.gfx);
-    },
     onPause: () => game.pause(),
     onResume: () => game.resume(),
     onRestart: () => game.restart(),
     onDeathTap: () => game.confirm(),
     onMenu: () => (playtest ? postToEditor({ type: 'forge:exit' }) : game.toMenu()),
     onLevelChange: (id) => {
+      if (!catalog.has(id) || id === level.id || playtest) return;
+      level = catalog.get(id);
+      storage = storageFor(id);
+      storage.muted = audio.muted;
+      game.setLevelData(level, storage);
+      ui.setLevels(menuLevels, level, false, catalog);
+      ui.updateMenu(storage.stats, audio.muted);
       const q = new URLSearchParams(location.search);
-      if (id === (index && index.default)) q.delete('level');
-      else q.set('level', id);
-      const s = q.toString();
-      location.search = s ? `?${s}` : '';
+      if (id === index.default) q.delete('level'); else q.set('level', id);
+      history.replaceState(null, '', location.pathname + (q.size ? '?' + q : ''));
+
     },
   });
 
@@ -181,15 +156,15 @@ async function boot() {
   const events = playtest ? {
     onWin: (r) => postToEditor({ type: 'forge:result', won: true, mode: r.mode, attempts: r.attempts, replay: r.replay, from: r.from }),
   } : {};
-  game = new Game({ canvas, ui, audio, input, storage, debug, level, events, quality: params.get('gfx') || storage.gfx });
+  game = new Game({ canvas, ui, audio, input, storage, debug, level, events });
   window.__RIFT = game;
   audio.onInterrupt = () => game.pause();
   ui.updateVolumes(audio.settings);
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
-    state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
-    timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint,
+    timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint ? { t:game.checkpoint.t, lane:game.checkpoint.lane, dim:game.checkpoint.dim, beat:game.checkpoint.beat } : null,
     obstacles: game.obstacles.filter(o => o.y > game.y - 50 && o.y < game.y + game.lookaheadSec * 260).map(o => ({ x: o.x0, y: o.y, w: o.x1 - o.x0, color: o.color, deadly: game.deadlyNow(o, game.player.dim) })),
   });
   window.advanceTime = ms => {
@@ -197,38 +172,11 @@ async function boot() {
     game.render();
   };
 
-  function applyQuality(id) {
-    game.setQuality(id);
-    resize();
-    ui.updateGfx(game.gfx.label);
-  }
-
-  // Automatische Stufe nur ohne eigene Wahl: ruckelt es im Lauf deutlich, eine Stufe tiefer (nur Darstellung).
-  const autoGfx = !storage.gfxManual && !params.get('gfx') && !debug.manual;
-  const perf = { sum: 0, n: 0, last: 0 };
-  function watchFrameRate(now) {
-    if (!autoGfx || game.state !== 'playing' || document.hidden) { perf.last = 0; return; }
-    if (perf.last) {
-      const gap = now - perf.last;
-      if (gap < 250) { perf.sum += gap; perf.n++; }
-    }
-    perf.last = now;
-    if (perf.n < 180) return;
-    const avg = perf.sum / perf.n;
-    perf.sum = 0;
-    perf.n = 0;
-    if (avg > 24 && game.gfx.id !== 'low') {
-      storage.gfx = game.gfx.id === 'high' ? 'medium' : 'low';
-      storage.save();
-      applyQuality(storage.gfx);
-    }
-  }
-
   function resize() {
     const vv = window.visualViewport;
     const w = Math.round(vv ? vv.width : window.innerWidth);
     const h = Math.round(vv ? vv.height : window.innerHeight);
-    const dpr = Math.min(window.devicePixelRatio || 1, game.gfx.dprCap);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
     canvas.style.width = `${w}px`;
     canvas.style.height = `${h}px`;
     game.resize(w, h, dpr);
@@ -252,9 +200,8 @@ async function boot() {
   document.addEventListener('gesturestart', (e) => e.preventDefault());
   document.addEventListener('dblclick', (e) => e.preventDefault());
 
-  ui.setLevels(index ? index.levels : null, level, playtest);
+  ui.setLevels(menuLevels, level, playtest, catalog);
   ui.updateMenu(storage.stats, storage.muted);
-  ui.updateGfx(game.gfx.label);
 
   let last = performance.now();
   let clockRevision = game.timelineRevision;
@@ -269,8 +216,9 @@ async function boot() {
     if (debug.manual || now <= last) return;
     if (clockRevision !== game.timelineRevision) { clockRevision = game.timelineRevision; clockArmed = false; last = now; return; }
     const elapsed = (now - last) / 1000;
-    // Pause when an already running soundtrack could continue across a long render stall.
-    if (elapsed > .25 && clockArmed && audio.active && (game.state === 'playing' || game.state === 'respawn')) game.pause();
+    // Pause a blind stall even without audio. At 5 FPS, all 200 ms still simulate:
+    // frame rate must never slow down the ascent or change collision behavior.
+    if (elapsed > MAX_FRAME_DT && clockArmed && (game.state === 'playing' || game.state === 'respawn')) game.pause();
     const dt = Math.min(MAX_FRAME_DT, elapsed) * debug.speed;
     last = now;
     game.update(dt);
@@ -279,7 +227,6 @@ async function boot() {
 
   function frame(now) {
     advanceTo(now);
-    watchFrameRate(now);
     game.render();
     requestAnimationFrame(frame);
   }

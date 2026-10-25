@@ -1,0 +1,2727 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "overload",
+  "name": "Overload",
+  "description": "THE FIRST ASCENT · Overload. Handgefertigter Parcours mit regulärem 240-Hz-Replay.",
+  "bpm": 144,
+  "beatsPerBar": 4,
+  "height": 17593.333333,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 17333.333333
+  },
+  "theme": "core",
+  "music": "overload",
+  "difficulty": "hard",
+  "sections": [
+    {
+      "id": "A",
+      "name": "IGNITION",
+      "y": 0,
+      "labelY": -35
+    },
+    {
+      "id": "B",
+      "name": "POLARITY",
+      "y": 3466.666667,
+      "labelY": 3431.666667
+    },
+    {
+      "id": "C",
+      "name": "GOLD CIRCUIT",
+      "y": 7800,
+      "labelY": 7765
+    },
+    {
+      "id": "D",
+      "name": "OVERLOAD SEQUENCE",
+      "y": 12133.333333,
+      "labelY": 12098.333333
+    },
+    {
+      "id": "E",
+      "name": "CORE RELEASE",
+      "y": 15600,
+      "labelY": 15565
+    }
+  ],
+  "objects": [
+    {
+      "id": "gate-2-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 216.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-2-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 216.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-4-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 433.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-6-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 650,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-6-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 650,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-6-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 650,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-8-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 866.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-8-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 866.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-10-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1083.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-10-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 1083.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-12-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1300,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-12-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 1300,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-12-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 1300,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-14-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1516.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-14-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1516.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-16-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1733.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-16-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1733.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-18-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1950,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-18-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 1950,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-18-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1950,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-20-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2166.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-20-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 2166.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-20-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2166.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-22-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 2383.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-24-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2600,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-24-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 2600,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-24-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2600,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-26-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2816.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-26-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2816.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-26-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 2816.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-28-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3033.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-28-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3033.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-30-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3250,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-30-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3250,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-32-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3466.666667,
+      "w": 272,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-34-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3683.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-34-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3683.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-34-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3683.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-35_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3845.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-35_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 3845.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-35_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3845.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-37-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4008.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-37-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4008.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-38_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4170.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-38_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4170.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-40-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4333.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-40-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4333.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-40-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 4333.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-42-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4550,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-42-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 4550,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-42-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4550,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-43_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4712.5,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-43_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4712.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-45-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4875,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-45-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 4875,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-46_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5037.5,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-46_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5037.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-46_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 5037.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-48-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5200,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-48-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5200,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-48-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5200,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-50-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5416.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-50-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5416.666667,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-51_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5579.166667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-51_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5579.166667,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-51_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5579.166667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-53-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5741.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-53-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 5741.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-53-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 5741.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-54_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5904.166667,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-54_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 5904.166667,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-56-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6066.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-56-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6066.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-56-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 6066.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-58-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6283.333333,
+      "w": 92,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-58-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 6283.333333,
+      "w": 182,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-59_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6445.833333,
+      "w": 182,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-59_5-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 6445.833333,
+      "w": 92,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-61-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6608.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-61-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 6608.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-61-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6608.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-62_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6770.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-62_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 6770.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-64-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6933.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-64-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 6933.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-64-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6933.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-66-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7150,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-66-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7150,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-66-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7150,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-67_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7312.5,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-67_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7312.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-69-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7475,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-69-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7475,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-69-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7475,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-70_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7637.5,
+      "w": 92,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-70_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 7637.5,
+      "w": 182,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-72-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7800,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-72-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7800,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-72-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7800,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-74-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8016.666667,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-74-3",
+      "type": "seal",
+      "x": 273,
+      "y": 8016.666667,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-76-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8233.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-76-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8233.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-76-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8233.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-77_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8395.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-77_5-1",
+      "type": "seal",
+      "x": 93,
+      "y": 8395.833333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-77_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8395.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-79-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8558.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-79-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8558.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-80_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8720.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-80_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8720.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-80_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8720.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-82-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8883.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-82-2",
+      "type": "seal",
+      "x": 183,
+      "y": 8883.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-82-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8883.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-83_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9045.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-83_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9045.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-85-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9208.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-85-2",
+      "type": "seal",
+      "x": 183,
+      "y": 9208.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-85-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9208.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-86_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9370.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-86_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9370.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-86_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9370.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-88-0",
+      "type": "seal",
+      "x": 3,
+      "y": 9533.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-88-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9533.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-89_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9695.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-89_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 9695.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-89_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9695.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-91-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9858.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-91-2",
+      "type": "seal",
+      "x": 183,
+      "y": 9858.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-91-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9858.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-92_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10020.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-92_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10020.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-94-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10183.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-94-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10183.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-94-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10183.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-95_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10345.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-95_5-1",
+      "type": "seal",
+      "x": 93,
+      "y": 10345.833333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-95_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10345.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-97-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10508.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-97-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 10508.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-98_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10670.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-98_5-1",
+      "type": "seal",
+      "x": 93,
+      "y": 10670.833333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-98_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10670.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-100-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10833.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-100-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10833.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-100-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10833.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-101_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10995.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-101_5-3",
+      "type": "seal",
+      "x": 273,
+      "y": 10995.833333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-103-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11158.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-103-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 11158.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-103-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 11158.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-104_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11320.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-104_5-1",
+      "type": "seal",
+      "x": 93,
+      "y": 11320.833333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-104_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 11320.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-106-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11483.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-106-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 11483.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-107_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11645.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-107_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 11645.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-107_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 11645.833333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-109-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11808.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-109-2",
+      "type": "seal",
+      "x": 183,
+      "y": 11808.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-109-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 11808.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-110_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 11970.833333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-110_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 11970.833333,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-112-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12133.333333,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-112-2",
+      "type": "seal",
+      "x": 183,
+      "y": 12133.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-112-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 12133.333333,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-114-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12350,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-114-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 12350,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-114_75-1",
+      "type": "obstacle",
+      "x": 85,
+      "y": 12431.25,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-115_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12512.5,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-115_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 12512.5,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-116_25-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12593.75,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-116_25-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 12593.75,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-118-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12783.333333,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-118-3",
+      "type": "seal",
+      "x": 273,
+      "y": 12783.333333,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-118_75-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12864.583333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-118_75-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 12864.583333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-119_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 12945.833333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-119_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 12945.833333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-120_25-1",
+      "type": "obstacle",
+      "x": 85,
+      "y": 13027.083333,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-122-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13216.666667,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-122-1",
+      "type": "seal",
+      "x": 93,
+      "y": 13216.666667,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-122-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 13216.666667,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-122_75-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13297.916667,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-122_75-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 13297.916667,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-123_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13379.166667,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-124_25-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13460.416667,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-124_25-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 13460.416667,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-126-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13650,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-126-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 13650,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-126_75-1",
+      "type": "obstacle",
+      "x": 85,
+      "y": 13731.25,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-127_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13812.5,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-127_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 13812.5,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-128_25-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 13893.75,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-128_25-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 13893.75,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-130-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14083.333333,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-130-3",
+      "type": "seal",
+      "x": 273,
+      "y": 14083.333333,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-130_75-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14164.583333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-130_75-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 14164.583333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-131_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14245.833333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-131_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 14245.833333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-132_25-1",
+      "type": "obstacle",
+      "x": 85,
+      "y": 14327.083333,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-134-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14516.666667,
+      "w": 84,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-134-1",
+      "type": "seal",
+      "x": 93,
+      "y": 14516.666667,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-134-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 14516.666667,
+      "w": 174,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-134_75-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14597.916667,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-134_75-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 14597.916667,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-135_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14679.166667,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-136_25-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14760.416667,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-136_25-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 14760.416667,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-138-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 14950,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-138-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 14950,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-138_75-1",
+      "type": "obstacle",
+      "x": 85,
+      "y": 15031.25,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-139_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15112.5,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-139_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 15112.5,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-140_25-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15193.75,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-140_25-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 15193.75,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-142-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15383.333333,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-142-3",
+      "type": "seal",
+      "x": 273,
+      "y": 15383.333333,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-142_75-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15464.583333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-142_75-3",
+      "type": "obstacle",
+      "x": 265,
+      "y": 15464.583333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-143_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15545.833333,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-143_5-2",
+      "type": "obstacle",
+      "x": 175,
+      "y": 15545.833333,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-145-0",
+      "type": "seal",
+      "x": 3,
+      "y": 15708.333333,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-145-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 15708.333333,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-147-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 15925,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-147-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 15925,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-147-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 15925,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-148_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 16087.5,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-148_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 16087.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-148_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 16087.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-150-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 16250,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-150-3",
+      "type": "seal",
+      "x": 273,
+      "y": 16250,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-151_5-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 16412.5,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-151_5-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 16412.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-151_5-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 16412.5,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-153-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 16575,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-153-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 16575,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-153-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 16575,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-154_5-0",
+      "type": "seal",
+      "x": 3,
+      "y": 16737.5,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-154_5-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 16737.5,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-156-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 16900,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-156-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 16900,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-156-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 16900,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-158-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 17116.666667,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-158-2",
+      "type": "seal",
+      "x": 183,
+      "y": 17116.666667,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.5
+    },
+    {
+      "id": "gate-158-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 17116.666667,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 0.625,
+        "dir": 1
+      },
+      {
+        "t": 1.458333,
+        "dir": 1
+      },
+      {
+        "t": 2.291667,
+        "dir": -1
+      },
+      {
+        "t": 3.125,
+        "dir": -1
+      },
+      {
+        "t": 3.958333,
+        "dir": -1
+      },
+      {
+        "t": 4.791667,
+        "dir": 1
+      },
+      {
+        "t": 5.625,
+        "dir": 1
+      },
+      {
+        "t": 6.458333,
+        "dir": 1
+      },
+      {
+        "t": 7.291667,
+        "dir": -1
+      },
+      {
+        "t": 8.125,
+        "dir": -1
+      },
+      {
+        "t": 8.958333,
+        "dir": -1
+      },
+      {
+        "t": 9.791667,
+        "dir": 1
+      },
+      {
+        "t": 10.625,
+        "dir": 1
+      },
+      {
+        "t": 11.458333,
+        "dir": -1
+      },
+      {
+        "t": 12.291667,
+        "dir": 1
+      },
+      {
+        "t": 13.125,
+        "dir": 1
+      },
+      {
+        "t": 13.958333,
+        "dir": -1
+      },
+      {
+        "t": 14.583333,
+        "dir": -1
+      },
+      {
+        "t": 15.208333,
+        "dir": -1
+      },
+      {
+        "t": 15.833333,
+        "dir": -1
+      },
+      {
+        "t": 16.458333,
+        "dir": 1
+      },
+      {
+        "t": 17.291667,
+        "dir": 1
+      },
+      {
+        "t": 17.916667,
+        "dir": 1
+      },
+      {
+        "t": 18.541667,
+        "dir": 1
+      },
+      {
+        "t": 19.166667,
+        "dir": -1
+      },
+      {
+        "t": 19.791667,
+        "dir": -1
+      },
+      {
+        "t": 20.625,
+        "dir": -1
+      },
+      {
+        "t": 21.25,
+        "dir": 1
+      },
+      {
+        "t": 21.875,
+        "dir": 1
+      },
+      {
+        "t": 22.5,
+        "dir": 1
+      },
+      {
+        "t": 23.125,
+        "dir": -1
+      },
+      {
+        "t": 23.958333,
+        "dir": -1
+      },
+      {
+        "t": 24.583333,
+        "dir": 1
+      },
+      {
+        "t": 25.208333,
+        "dir": -1
+      },
+      {
+        "t": 25.833333,
+        "dir": -1
+      },
+      {
+        "t": 26.458333,
+        "dir": 1
+      },
+      {
+        "t": 27.291667,
+        "dir": 1
+      },
+      {
+        "t": 27.916667,
+        "dir": 1
+      },
+      {
+        "t": 28.541667,
+        "dir": -1
+      },
+      {
+        "t": 29.166667,
+        "dir": -1
+      },
+      {
+        "t": 29.791667,
+        "dir": 1
+      },
+      {
+        "t": 30.625,
+        "dir": 1
+      },
+      {
+        "t": 31.458333,
+        "dir": -1
+      },
+      {
+        "t": 32.083333,
+        "dir": -1
+      },
+      {
+        "t": 32.708333,
+        "dir": -1
+      },
+      {
+        "t": 33.333333,
+        "dir": 1
+      },
+      {
+        "t": 33.958333,
+        "dir": 1
+      },
+      {
+        "t": 34.583333,
+        "dir": 1
+      },
+      {
+        "t": 35.208333,
+        "dir": -1
+      },
+      {
+        "t": 35.833333,
+        "dir": -1
+      },
+      {
+        "t": 36.458333,
+        "dir": -1
+      },
+      {
+        "t": 37.083333,
+        "dir": 1
+      },
+      {
+        "t": 37.708333,
+        "dir": 1
+      },
+      {
+        "t": 38.333333,
+        "dir": 1
+      },
+      {
+        "t": 38.958333,
+        "dir": -1
+      },
+      {
+        "t": 39.583333,
+        "dir": -1
+      },
+      {
+        "t": 40.208333,
+        "dir": -1
+      },
+      {
+        "t": 40.833333,
+        "dir": 1
+      },
+      {
+        "t": 41.458333,
+        "dir": 1
+      },
+      {
+        "t": 42.083333,
+        "dir": 1
+      },
+      {
+        "t": 42.708333,
+        "dir": -1
+      },
+      {
+        "t": 43.333333,
+        "dir": -1
+      },
+      {
+        "t": 43.958333,
+        "dir": -1
+      },
+      {
+        "t": 44.583333,
+        "dir": 1
+      },
+      {
+        "t": 45.208333,
+        "dir": 1
+      },
+      {
+        "t": 45.833333,
+        "dir": 1
+      },
+      {
+        "t": 46.458333,
+        "dir": -1
+      },
+      {
+        "t": 47.291667,
+        "dir": -1
+      },
+      {
+        "t": 47.604167,
+        "dir": -1
+      },
+      {
+        "t": 47.916667,
+        "dir": 1
+      },
+      {
+        "t": 48.229167,
+        "dir": 1
+      },
+      {
+        "t": 48.958333,
+        "dir": 1
+      },
+      {
+        "t": 49.270833,
+        "dir": -1
+      },
+      {
+        "t": 49.583333,
+        "dir": -1
+      },
+      {
+        "t": 49.895833,
+        "dir": -1
+      },
+      {
+        "t": 50.625,
+        "dir": 1
+      },
+      {
+        "t": 50.9375,
+        "dir": 1
+      },
+      {
+        "t": 51.25,
+        "dir": 1
+      },
+      {
+        "t": 51.5625,
+        "dir": -1
+      },
+      {
+        "t": 52.291667,
+        "dir": -1
+      },
+      {
+        "t": 52.604167,
+        "dir": -1
+      },
+      {
+        "t": 52.916667,
+        "dir": 1
+      },
+      {
+        "t": 53.229167,
+        "dir": 1
+      },
+      {
+        "t": 53.958333,
+        "dir": 1
+      },
+      {
+        "t": 54.270833,
+        "dir": -1
+      },
+      {
+        "t": 54.583333,
+        "dir": -1
+      },
+      {
+        "t": 54.895833,
+        "dir": -1
+      },
+      {
+        "t": 55.625,
+        "dir": 1
+      },
+      {
+        "t": 55.9375,
+        "dir": 1
+      },
+      {
+        "t": 56.25,
+        "dir": 1
+      },
+      {
+        "t": 56.5625,
+        "dir": -1
+      },
+      {
+        "t": 57.291667,
+        "dir": -1
+      },
+      {
+        "t": 57.604167,
+        "dir": -1
+      },
+      {
+        "t": 57.916667,
+        "dir": 1
+      },
+      {
+        "t": 58.229167,
+        "dir": 1
+      },
+      {
+        "t": 58.958333,
+        "dir": 1
+      },
+      {
+        "t": 59.270833,
+        "dir": -1
+      },
+      {
+        "t": 59.583333,
+        "dir": -1
+      },
+      {
+        "t": 60.208333,
+        "dir": -1
+      },
+      {
+        "t": 61.041667,
+        "dir": 1
+      },
+      {
+        "t": 61.666667,
+        "dir": 1
+      },
+      {
+        "t": 62.291667,
+        "dir": 1
+      },
+      {
+        "t": 62.916667,
+        "dir": -1
+      },
+      {
+        "t": 63.541667,
+        "dir": -1
+      },
+      {
+        "t": 64.166667,
+        "dir": -1
+      },
+      {
+        "t": 64.791667,
+        "dir": 1
+      },
+      {
+        "t": 65.625,
+        "dir": 1
+      }
+    ]
+  }
+}

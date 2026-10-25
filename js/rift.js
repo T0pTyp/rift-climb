@@ -44,6 +44,21 @@ export class RiftField {
     for (const p of this.pulses) { p.live = false; p.growing = false; }
   }
 
+  /** Checkpoints preserve the exact open windows AND waves already in flight. */
+  snapshot() {
+    return { nextId: this.nextId,
+      seals: this.seals.map(s => ({ openUntil:s.openUntil, openedAt:s.openedAt, pulseId:s.pulseId, timesOpened:s.timesOpened, closePending:s.closePending })),
+      pulses: this.pulses.map(p => ({ ...p })) };
+  }
+
+  restore(snapshot) {
+    this.reset();
+    if (!snapshot) return;
+    this.nextId = snapshot.nextId;
+    this.seals.forEach((s,i) => Object.assign(s,snapshot.seals[i]));
+    this.pulses.forEach((p,i) => Object.assign(p,snapshot.pulses[i]));
+  }
+
   /** Genau eine Welle pro gültigem Impuls; Ursprung = Spielerposition zum Tippzeitpunkt. */
   emit(x, y, t, color) {
     let slot = this.pulses[0];

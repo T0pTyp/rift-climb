@@ -1,5 +1,5 @@
-// Performance-Messung im echten requestAnimationFrame-Loop über das ganze Level (Autopilot, Echtzeit ~42 s):
-// JS-Zeit pro Frame (update + render) und Frame-Intervalle. Chromium, Pixel-7-Emulation, 4× CPU-Drosselung.
+// Performance-Messung im echten requestAnimationFrame-Loop über das ganze Level (Overload ~67 s):
+// JS-Zeit pro Frame (update + render) und Frame-Intervalle. Chromium, Pixel-7-Emulation, standardmäßig 4× CPU-Drosselung.
 // Aufruf: node tests/perf.mjs   (Headless ohne GPU: Werte sind ein grober Anhaltspunkt, kein Geräte-Ersatz)
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { chromium, devices } from 'playwright';
@@ -10,8 +10,8 @@ const ctx = await browser.newContext({ ...devices['Pixel 7'] });
 const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.THROTTLE || 4) });
-const GFX = process.env.GFX ? `&gfx=${process.env.GFX}` : '';
-await page.goto(`${BASE}?autoplay=1${GFX}`);
+const level = process.env.LEVEL || 'overload';
+await page.goto(`${BASE}?level=${level}&autoplay=1`);
 await page.waitForFunction(() => window.__RIFT);
 await page.evaluate(() => {
   const g = window.__RIFT;
@@ -46,12 +46,11 @@ const r = await page.evaluate(() => {
     heapKB: (heap1 - m.heap0) / 1024,
   };
 });
-const gfxId = await page.evaluate(() => (window.__RIFT.gfx ? window.__RIFT.gfx.id : '-'));
-console.log(`Grafik: ${gfxId}`);
+console.log(`Level: ${level}, feste hochwertige Darstellung`);
 console.log(`Frames ${r.frames}, Ø-FPS ${r.fps.toFixed(1)}, Frame-Intervall p95 ${r.gapP95.toFixed(1)} ms, Frames > 25 ms: ${r.longFrames}`);
 console.log(`JS pro Frame (update+render): Ø ${r.jsAvg.toFixed(2)} ms, p95 ${r.jsP95.toFixed(2)} ms, p99 ${r.jsP99.toFixed(2)} ms; Heap-Δ ${r.heapKB.toFixed(0)} KB`);
-mkdirSync('test-results/m6', { recursive: true });
-writeFileSync('test-results/m6/performance.json', JSON.stringify(r, null, 2));
+mkdirSync('test-results/m7', { recursive: true });
+writeFileSync('test-results/m7/performance.json', JSON.stringify(r, null, 2));
 console.log(`Audio drift p95 ${(r.driftP95 * 1000).toFixed(2)} ms; peak live sources ${r.sourcesMax}; resyncs ${r.audio.resyncs}`);
 await browser.close();
 process.exit(r.jsP95 < 8 ? 0 : 1);

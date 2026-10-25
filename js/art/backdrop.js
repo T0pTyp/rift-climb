@@ -1,11 +1,66 @@
 // Parallax-Hintergrund: dezente Neon-Architektur (zwei vorgerenderte Ebenen) und schwebende Energiesplitter.
-// Liegt über dem CSS-Farbverlauf und unter dem Spielfeld; Deckkraft gering, damit Hindernisse immer klar bleiben.
+// Farbverlauf/Vignette sind ebenfalls gecacht; Architektur bleibt dunkel unter den klaren Hindernissen.
 // Ebenen werden je Größe einmal gerastert (seeded, also bei jedem Start identisch) und nur per drawImage verschoben.
 
 const LAYERS = [
   { speed: 0.12, alpha: 0.55, seed: 7, towers: 7, scale: 0.75 },
   { speed: 0.32, alpha: 0.7, seed: 19, towers: 5, scale: 1 },
 ];
+const PALETTES = {
+  spire: { top:'#061829', bottom:'#02050e', a:'#35d9ed', b:'#865cff', seed:0 },
+  fracture: { top:'#160c2d', bottom:'#040711', a:'#699aff', b:'#ff3b97', seed:113 },
+  core: { top:'#20091e', bottom:'#050612', a:'#fc43a8', b:'#35dcf4', seed:271 },
+};
+
+function background(w,h,dpr,palette,red) {
+  const c=document.createElement('canvas'); c.width=Math.round(w*dpr); c.height=Math.round(h*dpr);
+  const g=c.getContext('2d'); g.scale(dpr,dpr);
+  const gradient=g.createLinearGradient(0,0,0,h);
+  gradient.addColorStop(0,red?'#240b24':palette.top); gradient.addColorStop(1,palette.bottom);
+  g.fillStyle=gradient;g.fillRect(0,0,w,h);
+  const halo=g.createRadialGradient(w*.5,h*.35,0,w*.5,h*.35,h*.72);
+  halo.addColorStop(0,red?'rgba(222,40,129,.12)':'rgba(20,166,202,.10)');halo.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=halo;g.fillRect(0,0,w,h);
+  const vignette=g.createLinearGradient(0,0,w,0);
+  vignette.addColorStop(0,'rgba(0,0,0,.55)');vignette.addColorStop(.28,'rgba(0,0,0,0)');
+  vignette.addColorStop(.72,'rgba(0,0,0,0)');vignette.addColorStop(1,'rgba(0,0,0,.55)');
+  g.fillStyle=vignette;g.fillRect(0,0,w,h);return c;
+}
+
+// Detailed architecture is painted once into the existing parallax tiles.
+// Neutral, low-luminance colors keep decorative structures distinct from hazards.
+function architecture(g,w,h,theme,near,r) {
+  const pal=PALETTES[theme]||PALETTES.spire;
+  g.lineWidth=near?1.2:.8;
+  for(let i=0;i<7;i++) {
+    const y=i*h/6, side=i%2?1:-1, edge=side>0?w*.97:w*.03;
+    g.strokeStyle=i%2?pal.a:pal.b;g.globalAlpha=near?.18:.10;
+    if(theme==='spire') {
+      // Buttresses, inset panels, stepped cantilevers and engraved light slots.
+      const reach=w*(.14+r()*.08);
+      g.beginPath();g.moveTo(edge,y-80);g.lineTo(edge-side*reach,y-42);
+      g.lineTo(edge-side*reach,y+42);g.lineTo(edge,y+80);g.stroke();
+      for(let j=0;j<3;j++)g.strokeRect(edge-side*(reach-8-j*5),y-28,side*(reach-18-j*5),56);
+      g.globalAlpha=.27;g.fillStyle=pal.a;g.fillRect(edge-side*reach,y-12,2,24);
+    } else if(theme==='fracture') {
+      const x=edge-side*w*(.06+r()*.2),s=22+r()*42;
+      g.fillStyle='#383452';g.beginPath();g.moveTo(x,y-s);g.lineTo(x+side*s*.6,y-s*.6);
+      g.lineTo(x+side*s*.9,y+s*.4);g.lineTo(x-side*s*.2,y+s);g.closePath();g.fill();g.stroke();
+      g.beginPath();g.moveTo(x,y-s);g.lineTo(x+side*6,y);g.lineTo(x+side*s*.9,y+s*.4);g.stroke();
+      g.globalAlpha=.2;g.setLineDash([3,8]);g.beginPath();g.moveTo(edge,y-70);g.lineTo(x,y);g.stroke();g.setLineDash([]);
+    } else {
+      // Reactor sockets and sixfold containment chambers.
+      const x=edge-side*w*.08, radius=32+r()*24;
+      for(let ring=0;ring<3;ring++) {
+        const rad=radius+ring*7;g.beginPath();
+        for(let j=0;j<=6;j++){const a=j*Math.PI/3;const px=x+Math.cos(a)*rad,py=y+Math.sin(a)*rad;j?g.lineTo(px,py):g.moveTo(px,py);}g.stroke();
+      }
+      g.fillStyle=pal.a;g.globalAlpha=.18;g.fillRect(x-3,y-16,6,32);
+      g.strokeStyle='#ad9363';g.beginPath();g.moveTo(x-12,y-24);g.lineTo(x+12,y-24);g.stroke();
+    }
+  }
+  g.globalAlpha=1;
+}
 
 function rng(seed) {
   let a = seed >>> 0;
@@ -19,14 +74,14 @@ function rng(seed) {
 }
 
 /** Vertikal kachelbare Ebene aus Türmen mit Rippen, Kanten-Licht und Fensterpunkten. */
-function paintLayer(w, h, dpr, def) {
+function paintLayer(w, h, dpr, def, theme) {
   const c = document.createElement('canvas');
   const k = Math.min(dpr, 1.5) * def.scale;
   c.width = Math.max(1, Math.round(w * k));
   c.height = Math.max(1, Math.round(h * k));
   const g = c.getContext('2d');
   g.scale(k, k);
-  const r = rng(def.seed);
+  const r = rng(def.seed + (PALETTES[theme]?.seed || 0));
   const near = def.speed > 0.2;
   const spans = [];
   for (let i = 0; i < def.towers; i++) {
@@ -55,6 +110,9 @@ function paintLayer(w, h, dpr, def) {
     g.fillStyle = near ? 'rgba(220,230,255,0.22)' : 'rgba(200,210,255,0.13)';
     g.fillRect(r() < 0.5 ? tx : tx + tw - 1.5, 0, 1.5, h);
   }
+  architecture(g,w,h,theme,near,r);
+  // Include architectural wings while keeping the gameplay center calm.
+  spans.push([0,w*.32],[w*.68,w]);
   // Nur die Turm-Streifen werden pro Frame kopiert: der leere Rest kostet sonst volle Bildschirm-Füllrate.
   spans.sort((a, b) => a[0] - b[0]);
   const strips = [];
@@ -70,27 +128,28 @@ export class Backdrop {
   constructor() {
     this.layers = [];
     this.shards = [];
-    this.level = -1;
+    this.theme = 'spire';
     this.key = '';
   }
 
-  /** level: 0 = aus, 1 = eine Ebene + Splitter, 2 = beide Ebenen + Splitter. */
-  configure(cssW, cssH, dpr, level, shardCount) {
+  /** Eine feste Darstellung: beide Architektur-Ebenen und 26 Energiefragmente. */
+  configure(cssW, cssH, dpr, theme = 'spire') {
     if (typeof document === 'undefined') return;
-    const key = `${Math.round(cssW)}x${Math.round(cssH)}@${dpr}:${level}:${shardCount}`;
+    const key = `${Math.round(cssW)}x${Math.round(cssH)}@${dpr}:${theme}`;
     if (key === this.key) return;
     this.key = key;
-    this.level = level;
+    this.theme = theme;
     this.w = cssW;
     this.h = Math.max(cssH, 640);
     this.viewH = cssH;
+    const palette=PALETTES[theme]||PALETTES.spire;
+    this.backgrounds=[background(cssW,cssH,dpr,palette,false),background(cssW,cssH,dpr,palette,true)];
     this.layers = [];
-    if (level > 0) {
-      const defs = level > 1 ? LAYERS : [LAYERS[1]];
-      for (const def of defs) this.layers.push({ def, ...paintLayer(cssW, this.h, dpr, def) });
+    {
+      for (const def of LAYERS) this.layers.push({ def, ...paintLayer(cssW, this.h, dpr, def, theme) });
     }
     const r = rng(97);
-    this.shards = Array.from({ length: shardCount }, () => ({
+    this.shards = Array.from({ length: 26 }, () => ({
       x: r(), y: r(), z: 0.45 + r() * 0.5, size: 1.6 + r() * 3.2, rot: r() * 6.28, spin: (r() - 0.5) * 1.2, a: 0.22 + r() * 0.35, drift: (r() - 0.5) * 6,
     }));
   }
@@ -100,7 +159,9 @@ export class Backdrop {
    * progress 0–1 (leichte Farbverschiebung mit der Höhe), time für Splitter-Drift.
    */
   render(ctx, scroll, blend, progress, time) {
-    if (this.level <= 0) return;
+    ctx.globalAlpha=1;ctx.drawImage(this.backgrounds[0],0,0,this.w,this.viewH);
+    if(blend>.001){ctx.globalAlpha=blend;ctx.drawImage(this.backgrounds[1],0,0,this.w,this.viewH);}
+    ctx.globalAlpha=1;
     const H = this.h;
     const vh = Math.min(this.viewH, H);
     for (const { def, canvas, k, strips } of this.layers) {

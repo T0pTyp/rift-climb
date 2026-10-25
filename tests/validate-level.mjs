@@ -36,7 +36,7 @@ for (const entry of levels) {
   const play = checkPlayability(level);
   if (play.ok !== true) fail(`${entry.file}: ${play.message}`);
 
-  if (entry.id === idx.index.default) {
+  if (entry.id === 'rift-main') {
     // Hauptlevel: strenger Spur-Nachweis wie bisher (Dauer, Reihenfolge, lebendige Zustände)
     const rows = laneRows(level);
     if (!rows) fail(`${entry.file}: Hauptlevel muss im Spurmodell liegen (Spur-Solver-Nachweis)`);
@@ -48,6 +48,7 @@ for (const entry of levels) {
       if (play.solver && play.solver.alive.some((s) => s.size === 0)) fail(`${entry.file}: Reihe ohne lebendigen Zustand`);
     }
   }
+  if (entry.campaign && (!level.replay || play.method !== 'replay')) fail(`${entry.file}: Kampagne braucht regulären 100-%-Replay-Nachweis`);
   const solids = level.objects.filter((o) => o.type !== 'hint').length;
   console.log(`${entry.id}: ${solids} Objekte, Ziel bei y ${level.finish.y} (${duration.toFixed(1)} s, ${level.bpm} BPM) – ${play.ok ? 'durchspielbar' : 'FEHLER'} [${play.method}] ${play.message}`);
 }

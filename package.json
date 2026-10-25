@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "RIFT CLIMB: PULSE – Rhythm-based vertical climber (HTML5 Canvas)",
+  "description": "RIFT CLIMB: PULSE \u2013 Rhythm-based vertical climber (HTML5 Canvas)",
   "scripts": {
     "start": "python3 -m http.server 8080",
     "test:level": "node tests/validate-level.mjs",
@@ -11,9 +11,12 @@
     "test:rift": "node tests/rift-pulse.mjs",
     "test:e2e": "node tests/e2e.mjs",
     "test:perf": "node tests/perf.mjs",
-    "test": "node tests/validate-level.mjs && node tests/physics.mjs && node tests/rift-pulse.mjs && node tests/pulse.mjs",
+    "test": "node tests/validate-level.mjs && node tests/physics.mjs && node tests/rift-pulse.mjs && node tests/pulse.mjs && node tests/campaign.mjs",
     "test:audio": "node tests/pulse.mjs",
-    "test:audio:e2e": "node tests/pulse-e2e.mjs"
+    "test:audio:e2e": "node tests/pulse-e2e.mjs",
+    "test:campaign": "node tests/campaign.mjs",
+    "test:campaign:e2e": "node tests/campaign-e2e.mjs",
+    "test:campaign:audio": "node tests/campaign-audio.mjs"
   },
   "devDependencies": {
     "playwright": "^1.64.1"

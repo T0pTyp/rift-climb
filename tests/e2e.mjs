@@ -19,7 +19,8 @@ async function open(browserType, ctxOpts, query = '') {
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(String(e)));
-  await page.goto(BASE + query);
+  const url = new URL(query, BASE);url.searchParams.set('level','rift-main');
+  await page.goto(url.href);
   await page.waitForFunction(() => window.__RIFT && document.querySelector('#menu:not([hidden])'));
   return { browser, context, page, errors };
 }
@@ -194,7 +195,7 @@ async function desktopTests(type, label) {
   check(`[${label}] Enter = Neustart`, (await state(page)).state === 'playing');
   await page.keyboard.press('Escape');
   await page.click('#btn-pause-menu');
-  check(`[${label}] Zurück ins Menü`, await page.isVisible('#menu') && (await page.textContent('#menu-best')).includes('%'));
+  check(`[${label}] Zurück ins Menü`, await page.isVisible('#menu') && (await page.textContent('[data-level=rift-main] .level-result')).includes('%'));
 
   await page.click('#btn-start');
   await page.evaluate(() => {
@@ -292,7 +293,7 @@ async function mobileTests(type, deviceName, label) {
       dpr: devicePixelRatio, cw: c.width, ch: c.height, cssW: c.clientWidth, cssH: c.clientHeight,
       iw: innerWidth, ih: innerHeight, look: window.__RIFT.lookaheadSec,
       scrollH: document.scrollingElement.scrollHeight, scrollW: document.scrollingElement.scrollWidth,
-      cap: window.__RIFT.gfx.dprCap, gfx: window.__RIFT.gfx.id,
+      cap: 2.5,
     };
   });
   const expDpr = Math.min(layout.dpr, layout.cap);
@@ -323,10 +324,7 @@ async function mobileTests(type, deviceName, label) {
   check(`[${label}] Sound-Toggle per Touch + gespeichert`, muted === true && (await page.textContent('#btn-sound')).includes('AUS'));
   const fit = await page.evaluate(() => { const r = document.querySelector('#menu .panel').getBoundingClientRect(); return { top: r.top, bottom: r.bottom, ih: innerHeight }; });
   check(`[${label}] Menü passt komplett in den Viewport`, fit.top >= 0 && fit.bottom <= fit.ih, JSON.stringify(fit));
-  const g0 = await page.evaluate(() => window.__RIFT.gfx.id);
-  await page.tap('#btn-gfx');
-  const g1 = await page.evaluate(() => ({ id: window.__RIFT.gfx.id, stored: JSON.parse(localStorage.getItem('riftclimb.pulse.v1') || '{}').gfx, cw: document.getElementById('game').width, css: document.getElementById('game').clientWidth, cap: window.__RIFT.gfx.dprCap }));
-  check(`[${label}] Grafik-Toggle per Touch: wechselt, speichert, DPR-Cap greift`, g1.id !== g0 && g1.stored === g1.id && Math.abs(g1.cw - g1.css * Math.min(layout.dpr, g1.cap)) <= 1, `${g0} -> ${JSON.stringify(g1)}`);
+  check(`[${label}] Eine feste hochwertige Darstellung ohne Grafikmenü`, await page.locator('#btn-gfx').count() === 0 && await page.evaluate(() => !('gfx' in __RIFT)));
   await page.tap('#btn-practice');
   check(`[${label}] Übungsmodus-Button per Touch`, (await state(page)).mode === 'practice');
 

@@ -2,7 +2,7 @@ import {
   BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, LANES, LANE_W, CHECKPOINT_EVERY_BEATS,
   SIM_DT, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
   CAMERA_PLAYER_Y, CAMERA_MIN_BOTTOM, SWITCH_SHAKE, DEATH_SHAKE, SHAKE_PX,
-  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE,
+  PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE, PARTICLE_CAP,
 } from './config.js';
 import { validateLevel } from './level.js';
 import { buildLevelRuntime, levelFromRows } from './level-data.js';
@@ -11,12 +11,11 @@ import { Player } from './player.js';
 import { ParticlePool, PARTICLE_KIND } from './particles.js';
 import { COLORS, isDeadly } from './dimensions.js';
 import { circleRectOverlap, clamp } from './physics.js';
-import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawFinish, setGlowLevel } from './shapes.js';
+import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawFinish } from './shapes.js';
 import { RiftlingAnimator } from './art/riftling-anim.js';
 import { drawRiftling, riftlingArt } from './art/riftling.js';
 import { drawTrail, drawParticles } from './art/effects.js';
 import { Backdrop } from './art/backdrop.js';
-import { qualityOf } from './art/quality.js';
 
 import { BeatEffects } from './pulse/effects.js';
 
@@ -30,7 +29,7 @@ export class Game {
    * level: geprüftes JSON-Level (validateLevelData(...).level). rows: Reihenliste (nur für Tests, wird migriert).
    * events: { onWin({ mode, attempts, replay, from }) } – z. B. für den Playtest aus LEVEL FORGE.
    */
-  constructor({ canvas, ui, audio, input, storage, debug, level, rows, events, quality }) {
+  constructor({ canvas, ui, audio, input, storage, debug, level, rows, events }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.ui = ui;
@@ -57,9 +56,7 @@ export class Game {
     this.startFrom = null;
     this.recording = null;
     this.player = new Player();
-    this.gfx = qualityOf(quality);
-    setGlowLevel(this.gfx.glow);
-    this.particles = new ParticlePool(this.gfx.cap);
+    this.particles = new ParticlePool(PARTICLE_CAP);
     this.anim = new RiftlingAnimator();
     this.backdrop = new Backdrop();
     this.art = riftlingArt;
@@ -86,6 +83,7 @@ export class Game {
     this.emitDist = 0;
     this.view = { cssW: 1, cssH: 1, dpr: 1, scale: 1, offsetX: 0, viewH: 600, playerSY: 468 };
     this.menuT = 0;
+    this.clearAge = 0;
     this.autoplayQueue = [];
     this.trace = [];
     this.stats = { fps: 60, steps: 0, frameSteps: 0, impulses: 0 };
@@ -93,6 +91,26 @@ export class Game {
 
   get y() {
     return this.t * CLIMB_SPEED;
+  }
+
+  /** Reuse the running app, input handlers and AudioContext for a menu selection. */
+  setLevelData(data, storage) {
+    this.audio.stop?.();
+    this.levelData=data;this.level=buildLevelRuntime(data);this.storage=storage;
+    this.rows=this.level.rows;this.lines=this.level.lines;
+    this.obstacles=this.level.obstacles;this.seals=this.level.seals;
+    this.collideRange=this.level.maxChh+HIT_RADIUS+2;
+    this.rift=new RiftField(this.seals);this.beatEffects=new BeatEffects(this.level);
+    this.validation=this.rows?validateLevel(this.rows,this.level.start):{ok:null,errors:[],alive:null,solution:null,reachable:[]};
+    this.audio.setLevel?.(this.level);
+    this.t=0;this.acc=0;this.sessionAttempts=0;this.obsLo=0;this.lastRowPassed=-1;
+    this.startFrom=null;this.killer=null;this.checkpoint=null;this.autoplayQueue=[];this.recording=null;
+    this.particles.clear();this.player.reset(this.level.start.lane,this.level.start.dim,0);
+    this.dimBlend=this.level.start.dim==='R'?1:0;this.anim.reset(this.dimBlend);
+    this.flash=this.shake=this.switchPulse=this.clearAge=0;
+    this.timelineRevision++;
+    const v=this.view;this.backdrop.configure(v.cssW,v.cssH,v.dpr,this.level.theme);
+    this.toMenu();
   }
 
   /** Musikalischer Beat (Level-BPM). */
@@ -124,21 +142,7 @@ export class Game {
     };
     this.canvas.width = Math.round(cssW * dpr);
     this.canvas.height = Math.round(cssH * dpr);
-    this.backdrop.configure(cssW, cssH, dpr, this.gfx.backdrop, this.gfx.shards);
-  }
-
-  /** Grafikstufe wechseln (nur Darstellung): Partikel-Pool, Glow, Hintergrund. Auflösung setzt main.js. */
-  setQuality(id) {
-    this.gfx = qualityOf(id);
-    setGlowLevel(this.gfx.glow);
-    this.particles = new ParticlePool(this.gfx.cap);
-    const v = this.view;
-    this.backdrop.configure(v.cssW, v.cssH, v.dpr, this.gfx.backdrop, this.gfx.shards);
-  }
-
-  /** Partikelanzahl nach Grafikstufe (mindestens eines, damit jedes Ereignis sichtbar bleibt). */
-  burst(n) {
-    return Math.max(1, Math.round(n * this.gfx.particles));
+    this.backdrop.configure(cssW, cssH, dpr, this.level.theme);
   }
 
   /** Energie sammelt sich zur Figur (Respawn/Neustart): Partikel fliegen von einem Ring zur Mitte. */
@@ -163,6 +167,7 @@ export class Game {
   }
 
   restart() {
+    if (['playing','paused','dying','dead'].includes(this.state)) this.saveProgress();
     this.timelineRevision++;
     if (this.mode === 'normal') {
       this.storage.stats.attempts++;
@@ -178,18 +183,19 @@ export class Game {
     this.dimBlend = st.dim === 'R' ? 1 : 0;
     this.particles.clear();
     this.anim.reset(this.dimBlend, { rebuild: true, duration: 0.28 });
-    this.converge(this.burst(12), 30, 0.26, true);
+    this.converge(12, 30, 0.26, true);
     this.flash = 0;
     this.shake = 0;
     this.switchPulse = 0;
     this.rift.reset();
+    this.clearAge = 0;
     this.sealStreak = 0;
     this.killer = null;
     this.lastRowPassed = this.linesBelow(this.y);
     this.rowSolvable = true;
     this.obsLo = 0;
     this.trace.length = 0;
-    this.checkpoint = { t: this.t, lane: st.lane, dim: st.dim, beat: this.y / UNITS_PER_BEAT, row: this.lastRowPassed };
+    this.checkpoint = this.captureCheckpoint(this.y / UNITS_PER_BEAT, this.lastRowPassed);
     // Aufzeichnung (Nachweis der Durchspielbarkeit) nur für vollständige Läufe im Normalmodus
     this.recording = this.mode === 'normal' && !from ? [] : null;
     this.state = 'playing';
@@ -212,12 +218,11 @@ export class Game {
   setupAutoplay() {
     this.autoplayQueue = [];
     if (!this.debug.autoplay) return;
-    if (!this.validation.solution) {
-      // Ohne Spur-Lösung: aufgezeichneten Lauf abspielen (nur sinnvoll ab Levelstart)
-      const rep = this.level.replay;
-      if (rep && !this.startFrom) for (const tap of rep.taps) if (tap.t > this.t + 1e-9) this.autoplayQueue.push({ t: tap.t, dir: tap.dir });
+    if (this.level.replay && !this.startFrom) {
+      this.autoplayQueue = this.level.replay.taps.filter(tap => tap.t >= this.t - SIM_DT / 2).map(tap => ({ ...tap }));
       return;
     }
+    if (!this.validation.solution) return;
     const startIdx = this.lastRowPassed + 1;
     const offset = this.debug.autoplayOffset;
     const lead = this.debug.sealLead;
@@ -255,6 +260,7 @@ export class Game {
   }
 
   toMenu() {
+    this.saveProgress();
     this.state = 'menu';
     this.audio.stop?.();
     this.ui.updateMenu(this.storage.stats, this.storage.muted);
@@ -298,18 +304,18 @@ export class Game {
     this.anim.onSwitch(dir);
     const y = this.y;
     // Rückstoß nach unten-hinten (Funken) und Energie-Impuls als kleiner Ring in der neuen Dimensionsfarbe
-    for (let i = 0, n = this.burst(10); i < n; i++) {
+    for (let i = 0, n = 10; i < n; i++) {
       const a = Math.PI * (1.15 + Math.random() * 0.7);
       const s = 70 + Math.random() * 130;
       this.particles.spawn(p.x, y - 6, Math.cos(a) * s - dir * 70, Math.sin(a) * s, 0.32 + Math.random() * 0.12, 2 + Math.random() * 1.5, col, 0.9, i % 2 ? K.SPARK : K.SQUARE);
     }
-    for (let i = 0, n = this.burst(10); i < n; i++) {
+    for (let i = 0, n = 10; i < n; i++) {
       const a = (i / n) * Math.PI * 2;
       this.particles.spawn(p.x + Math.cos(a) * 10, y + Math.sin(a) * 10, Math.cos(a) * 150, Math.sin(a) * 150 + CLIMB_SPEED, 0.2, 1.8, i % 2 ? col : '#ffffff', 0.86, K.GLOW);
     }
     if (atWall) {
       const wx = dir > 0 ? WORLD_W - 2 : 2;
-      for (let i = 0, n = this.burst(8); i < n; i++) {
+      for (let i = 0, n = 8; i < n; i++) {
         this.particles.spawn(wx, y + (Math.random() - 0.5) * 24, -dir * (60 + Math.random() * 120), (Math.random() - 0.5) * 120, 0.28, 2, '#ffffff', 0.88, K.SPARK);
       }
     }
@@ -329,6 +335,7 @@ export class Game {
     const targetBlend = this.player.dim === 'R' ? 1 : 0;
     this.dimBlend += (targetBlend - this.dimBlend) * Math.min(1, dt * 16);
     this.particles.update(dt);
+    if (this.state === 'won') this.clearAge += dt;
 
     let frameSteps = 0;
     if (this.state === 'playing') {
@@ -369,18 +376,19 @@ export class Game {
   }
 
   step(h) {
+    // Same before-step convention as runReplay and ordinary input -> simulation.
+    while (this.autoplayQueue.length && this.autoplayQueue[0].t <= this.t + h / 2) {
+      this.press(this.autoplayQueue.shift().dir);
+    }
     this.t += h;
     this.stats.steps++;
-    while (this.autoplayQueue.length && this.autoplayQueue[0].t <= this.t) {
-      this.impulse(this.autoplayQueue.shift().dir);
-    }
     const p = this.player;
     const y = this.y;
     p.update(h, y);
 
     // Schweif-Partikel proportional zur zurückgelegten Seitenstrecke (bildratenunabhängig)
     this.emitDist += Math.abs(p.vx) * h;
-    if (this.emitDist > 9 / this.gfx.particles) {
+    if (this.emitDist > 9) {
       this.emitDist = 0;
       this.particles.spawn(p.x + (Math.random() - 0.5) * 6, y - 10, -p.vx * 0.15, -60, 0.3, 2.6, COLORS[p.dim].main, 0.9, K.GLOW);
     }
@@ -439,23 +447,30 @@ export class Game {
       if (this.sealStreak % 3 === 0) this.shake = Math.max(this.shake, SEAL_STREAK_SHAKE);
       // Präzise Aktion: durch ein geöffnetes Siegel – kurzer goldener Lichtimpuls an der Figur
       this.anim.onPrecise();
-      for (let i = 0, n = this.burst(10); i < n; i++) {
+      for (let i = 0, n = 10; i < n; i++) {
         const a = Math.random() * Math.PI * 2;
         const s = 60 + Math.random() * 90;
         this.particles.spawn(p.x, this.y, Math.cos(a) * s, Math.sin(a) * s + CLIMB_SPEED * 0.8, 0.3, 1.8, i % 2 ? COLORS.S.main : '#ffffff', 0.9, K.GLOW);
       }
     }
-    // Mit Spur-Solver: nur Zustände, von denen das Ziel erreichbar ist; sonst nur "nicht mitten im Spurwechsel"
+    // Legacy solver requires a settled lane. Free-form replays preserve x/v exactly,
+    // so a checkpoint during a finishing turn is safe and doesn't erase momentum.
     const alive = this.validation.alive ? this.validation.alive[k] : null;
-    const safe = !p.dashing && (!this.validation.alive || (!!alive && alive.has(p.lane + p.dim)));
+    const safe = !this.validation.alive || (!p.dashing && !!alive && alive.has(p.lane + p.dim));
     this.rowSolvable = safe;
     if (this.mode !== 'practice') return;
     const beat = line.y / UNITS_PER_BEAT;
     if (line.y - this.checkpoint.beat * UNITS_PER_BEAT < CHECKPOINT_SPACING) return;
     if (!safe) return;
-    this.checkpoint = { t: this.t, lane: p.lane, dim: p.dim, beat, row: k };
+    this.checkpoint = this.captureCheckpoint(beat, k);
     this.audio.sfx('checkpoint');
     this.ui.toast('CHECKPOINT');
+  }
+
+  captureCheckpoint(beat, row) {
+    const p = this.player;
+    return { t:this.t, lane:p.lane, dim:p.dim, beat, row,
+      x:p.x, vx:p.vx, lastDir:p.lastDir, rift:this.rift.snapshot() };
   }
 
   sectionAt(y) {
@@ -474,18 +489,19 @@ export class Game {
   }
 
   die(o) {
+    this.deathNewBest = this.saveProgress();
     const p = this.player;
     const y = this.y;
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
     this.sealStreak = 0;
     const colors = [COLORS[o.color].main, '#ffffff', COLORS[p.dim].main];
     // Trefferimpuls (Funken) und Energiefragmente des Körpers (Splitter in der Dimensionsfarbe)
-    for (let i = 0, n = this.burst(18); i < n; i++) {
+    for (let i = 0, n = 18; i < n; i++) {
       const a = Math.random() * Math.PI * 2;
       const s = 120 + Math.random() * 280;
       this.particles.spawn(p.x, y, Math.cos(a) * s, Math.sin(a) * s, 0.35 + Math.random() * 0.2, 2 + Math.random() * 1.5, colors[i % 3], 0.88, K.SPARK);
     }
-    for (let i = 0, n = this.burst(16); i < n; i++) {
+    for (let i = 0, n = 16; i < n; i++) {
       const a = Math.random() * Math.PI * 2;
       const s = 50 + Math.random() * 150;
       this.particles.spawn(p.x + Math.cos(a) * 6, y + Math.sin(a) * 8, Math.cos(a) * s, Math.sin(a) * s + 40, 0.55 + Math.random() * 0.3, 2.8 + Math.random() * 2.6, i % 4 ? COLORS[p.dim].main : COLORS[p.dim].light, 0.93, K.SHARD, 260);
@@ -510,13 +526,16 @@ export class Game {
     }
     const pct = this.progress;
     const stats = this.storage.stats;
-    const isNewBest = pct > stats.best;
-    if (isNewBest) {
-      stats.best = pct;
-      this.storage.save();
-    }
+    const isNewBest = this.deathNewBest;
     this.state = 'dead';
     this.ui.showDeath({ pct, best: stats.best, isNewBest, reason: this.killer ? this.killer.reason : '' });
+  }
+
+  saveProgress() {
+    if (this.mode !== 'normal' || this.progress <= (this.storage.stats.best || 0)) return false;
+    this.storage.stats.best = this.progress;
+    this.storage.save();
+    return true;
   }
 
   respawn() {
@@ -528,11 +547,15 @@ export class Game {
     this.lastRowPassed = cp.row;
     this.obsLo = 0;
     this.killer = null;
-    this.rift.reset();
+    this.rift.restore(cp.rift);
     this.sealStreak = 0;
     this.player.reset(cp.lane, cp.dim, this.y);
+    this.player.body.x = cp.x ?? this.player.x;
+    this.player.body.v = cp.vx || 0;
+    this.player.lastDir = cp.lastDir || 0;
+    this.dimBlend = cp.dim === 'R' ? 1 : 0;
     this.anim.reset(cp.dim === 'R' ? 1 : 0, { rebuild: true, duration: RESPAWN_SEC * 0.6 });
-    this.converge(this.burst(16), 40, RESPAWN_SEC * 0.5, false);
+    this.converge(16, 40, RESPAWN_SEC * 0.5, false);
     this.state = 'respawn';
     this.respawnTimer = RESPAWN_SEC;
     this.audio.seek(this.t);
@@ -544,6 +567,12 @@ export class Game {
 
   win() {
     this.state = 'won';
+    this.clearAge = 0;
+    this.anim.onPrecise();
+    for (let i=0;i<72;i++) {
+      const a=i/72*Math.PI*2, speed=70+(i%4)*40;
+      this.particles.spawn(this.player.x,this.y,Math.cos(a)*speed,Math.sin(a)*speed,1.1+(i%3)*.15,2+(i%3),i%3===0?'#ffc23d':i%2?'#2fd6ff':'#ff2d8a',1,K.SPARK);
+    }
     this.autoplayQueue = [];
     if (this.mode === 'normal') {
       this.storage.stats.best = 100;
@@ -583,10 +612,10 @@ export class Game {
     const dim = this.player.dim;
     const inGame = this.state !== 'menu';
 
-    // Farbverlauf und Vignette liegen als CSS-Ebenen unter dem (transparenten) Canvas, darüber die Parallax-Ebenen.
+    // Opaque, cached background gradients and architecture; no full-screen gradients per frame.
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    if (this.gfx.backdrop > 0) {
+    {
       ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0);
       this.backdrop.render(ctx, camY * v.scale, blend, inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
     }
@@ -663,8 +692,22 @@ export class Game {
 
     this.renderObstacles(ctx, camY, psy, H, dim);
     this.renderPlayer(ctx, psy);
+    if (this.state === 'won') this.renderClear(ctx, psy);
     this.renderDeath(ctx, camY, psy);
     if (this.debug.hitboxes) this.renderDebug(ctx, camY, psy, H);
+  }
+
+  renderClear(ctx, sy) {
+    const age=this.clearAge;
+    ctx.save();ctx.translate(this.player.x,sy);
+    for(let ring=0;ring<3;ring++) {
+      const t=age-ring*.16;if(t<0)continue;
+      const r=22+Math.min(t,1.5)*110;
+      ctx.globalAlpha=Math.max(0,1-t/1.7)*.65;
+      ctx.strokeStyle=ring===1?'#ffc23d':ring===0?'#2fd6ff':'#ff2d8a';ctx.lineWidth=2;
+      ctx.beginPath();for(let j=0;j<=8;j++){const a=j*Math.PI/4+age*.3;j?ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r):ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r);}ctx.stroke();
+    }
+    ctx.restore();
   }
 
   renderMarkers(ctx, camY, psy, H) {
@@ -713,7 +756,11 @@ export class Game {
     const bottom = camY - (H - psy) - 40;
     const pop = this.switchPulse;
     const killerO = this.killer && (this.state === 'dying' || this.state === 'dead') ? this.killer.o : null;
-    for (const o of this.obstacles) {
+    // Binary-search the first possibly visible row, including tall obstacles.
+    let lo=0, hi=this.obstacles.length;
+    while(lo<hi){const mid=(lo+hi)>>>1;if(this.obstacles[mid].y<bottom-this.level.maxHh)lo=mid+1;else hi=mid;}
+    for (let i=lo;i<this.obstacles.length;i++) {
+      const o=this.obstacles[i];
       if (o.y + o.hh < bottom) continue;
       if (o.y > top) break;
       const oy = psy - (o.y - camY);
@@ -808,10 +855,10 @@ export class Game {
     const dead = this.state === 'dying' || this.state === 'dead';
     if (!dead) {
       const col = COLORS[p.dim];
-      drawTrail(ctx, p, p.x, sy, this.y, col.main, 4.5 + this.anim.speed * 4, this.gfx.ribbonCore);
+      drawTrail(ctx, p, p.x, sy, this.y, col.main, 4.5 + this.anim.speed * 4);
     }
     if (dead && this.state === 'dead' && pose.alpha <= 0.01) return;
-    drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale, this.gfx.glow);
+    drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale);
   }
 
   renderDeath(ctx, camY, psy) {
@@ -908,7 +955,7 @@ export class Game {
       `x ${p.x.toFixed(1)}  y ${this.y.toFixed(0)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
       `vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,
-      `Grafik ${this.gfx.label}  Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
+      `Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];
     ctx.font = '600 10px ui-monospace, monospace';
     ctx.textAlign = 'left';

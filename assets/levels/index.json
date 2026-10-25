@@ -1,8 +1,11 @@
 {
   "schema": "rift-climb-level-index",
   "version": 1,
-  "default": "rift-main",
+  "default": "first-pulse",
   "levels": [
+    { "id": "first-pulse", "name": "First Pulse", "file": "first-pulse.json", "campaign": true },
+    { "id": "fractured-rhythm", "name": "Fractured Rhythm", "file": "fractured-rhythm.json", "campaign": true },
+    { "id": "overload", "name": "Overload", "file": "overload.json", "campaign": true },
     { "id": "rift-main", "name": "RIFT CLIMB", "file": "rift-main.json" },
     { "id": "rift-forge-test", "name": "RIFT FORGE TEST", "file": "rift-forge-test.json" }
   ]

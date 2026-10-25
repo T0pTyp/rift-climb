@@ -19,6 +19,10 @@ export const DIMENSION_COLOR = Object.freeze({ both: 'W', blue: 'B', red: 'R' })
 export const COLOR_DIMENSION = Object.freeze({ W: 'both', B: 'blue', R: 'red' });
 export const START_DIMENSIONS = Object.freeze({ blue: 'B', red: 'R' });
 export const OBJECT_TYPES = Object.freeze(['obstacle', 'seal', 'hint']);
+// Optional M7 identities. Legacy JSON remains byte-compatible on export.
+export const THEMES = Object.freeze([['spire', 'Cyan Spire'], ['fracture', 'Fractured Architecture'], ['core', 'Overload Core']]);
+export const TRACKS = Object.freeze([['neon-ascent', 'Neon Ascent (M6)'], ['first-pulse', 'First Pulse'], ['fractured-rhythm', 'Fractured Rhythm'], ['overload', 'Overload']]);
+export const DIFFICULTIES = Object.freeze([['easy', 'Einfach'], ['medium', 'Mittel'], ['hard', 'Schwer']]);
 
 export const LIMITS = Object.freeze({
   minW: 8,
@@ -151,6 +155,11 @@ export function validateLevelData(raw) {
     finish: null,
     objects: [],
   };
+  for (const [key, options] of [['theme', THEMES], ['music', TRACKS], ['difficulty', DIFFICULTIES]]) {
+    if (raw[key] === undefined) continue;
+    if (options.some(([id]) => id === raw[key])) level[key] = raw[key];
+    else err('identity', `Unbekannter Wert für ${key}.`, { field: key });
+  }
   if (!ID_RE.test(level.id)) err('id', 'Level-ID fehlt oder ist ungültig (a–z, 0–9, Bindestrich, max. 40 Zeichen).', { field: 'id' });
   if (!level.name.trim() || level.name.length > LIMITS.nameLen) err('name', `Levelname fehlt oder ist länger als ${LIMITS.nameLen} Zeichen.`, { field: 'name' });
   if (level.description.length > LIMITS.descLen) warn('desc', `Beschreibung ist länger als ${LIMITS.descLen} Zeichen.`, { field: 'description' });
@@ -339,6 +348,7 @@ export function serializeLevel(level) {
     start: level.start,
     finish: level.finish,
   };
+  for (const key of ['theme', 'music', 'difficulty']) if (level[key]) out[key] = level[key];
   if (level.sections) out.sections = level.sections;
   out.objects = level.objects.map((o) => {
     if (o.type === 'hint') return { id: o.id, type: o.type, y: o.y, text: o.text };
@@ -421,6 +431,9 @@ export function buildLevelRuntime(level) {
   return {
     id: level.id,
     name: level.name,
+    theme: level.theme || 'spire',
+    music: level.music || 'neon-ascent',
+    difficulty: level.difficulty || null,
     bpm,
     beatSec: 60 / bpm,
     beatsPerBar: level.beatsPerBar || 4,
@@ -451,5 +464,5 @@ export function validateIndex(raw) {
   const levels = raw.levels.filter((l) => l && ID_RE.test(l.id) && typeof l.file === 'string' && /^[a-z0-9-]+\.json$/.test(l.file));
   if (levels.length !== raw.levels.length) errors.push('Levelindex enthält ungültige Einträge');
   const def = levels.find((l) => l.id === raw.default) ? raw.default : levels[0] && levels[0].id;
-  return { ok: errors.length === 0, errors, index: { default: def, levels: levels.map((l) => ({ id: l.id, name: typeof l.name === 'string' ? l.name : l.id, file: l.file })) } };
+  return { ok: errors.length === 0, errors, index: { default: def, levels: levels.map((l) => ({ id: l.id, name: typeof l.name === 'string' ? l.name : l.id, file: l.file, ...(l.campaign ? { campaign: true } : {}) })) } };
 }

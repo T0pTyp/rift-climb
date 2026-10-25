@@ -47,3 +47,33 @@ Original prompt: RIFT CLIMB: PULSE – M6: PULSE ENGINE. Bestehendes Repository 
 - Zwischenfehler (Metronom-Altaufruf, Meter-Export, Startup-Frame-Pause, frühes Resize, mobile Testkoordinaten) korrigiert und nachgeprüft.
 - Keine offenen Implementierungs-TODOs. Hardware-Abnahme (echtes iOS/Android, Anruf/Bluetooth/Hardware-Mute) bleibt dokumentierte Testgrenze.
 - M6 normal auf main committen/pushen; keine Force-Pushes, keine neuen Repositories.
+
+## M7 — Original prompt / Auftrag
+THE FIRST ASCENT: drei handgefertigte Premium-Level (First Pulse, Fractured Rhythm, Overload), ausschließlich hochwertige Grafik ohne Profile/Automatik, Levelauswahl und lokale Einzelstatistiken, normale Replay-Nachweise bis 100 %, Forge-Integration, Musikidentitäten, Mobile-/Regressionstests, Dokumentation, Commit und Pages-Veröffentlichung. Erst First Pulse vollständig entwickeln und prüfen, dann die beiden Folgelevel.
+
+### Analyse und feste Grafik
+- M1–M6 sind im main vorhanden. Physik bleibt 260 u/s, 240 Hz, gleiche Feder und Kollision.
+- Grafikprofil-Datei, UI, gespeicherte Auswahl und Auto-Downgrade entfernt; Darstellung vereinheitlicht. Alte gfx-Werte werden ignoriert und beim Speichern entfernt.
+- Bestehende Legacy-Level bleiben als Editor-/Regression-Referenzen erhalten; Kampagne bekommt eigene JSON-Dateien und reguläre Replays.
+
+### M7 Parcours einzeln verifiziert
+- First Pulse zuerst: regulärer Replay erreicht 40,00 s / 100 %, 23 Impulse. Vollständiger Pixel-7-Browserlauf, keine Fehler, Screenshots geprüft. Gemeinsame Zeitverschiebung ±100 ms erfolgreich.
+- Danach Fractured Rhythm: 56,25 s / 56 Impulse / 100 %. Synthwave, gebrochene Architektur, Dreierläufe und Pulse-Antworten.
+- Danach Overload: 66,67 s / 107 Impulse / 100 %. Kernarchitektur, Polarity-Wandtaps, Siegelketten, 312,5-ms-Cluster.
+- 44 Kampagnenchecks: reguläre vollständige Replays, 10/30/60/144 FPS und Jitter, identische Audio-on/off-Traces, Practice mit wiederholten Restarts, Schema-/Musiktests und Einzelinput-Timing-Sweep bestanden.
+- Timing-Sweep (5-ms-Auflösung, je ein Input): First ≥−200/+115 ms, Fractured −180/+95 ms, Overload −115/+60 ms; kein menschlicher Schwierigkeits-Playtest.
+- Fehler behoben: übrig gebliebener GLOW-Verweis an Ziellinie; Practice speichert jetzt exaktes x/v und Rift-Zustände, damit auch schnelle freie Level sinnvolle Checkpoints haben.
+- Drei sofort verfügbare Levelkarten, getrennte Statistiken, Wechsel ohne Reload/zweiten AudioContext; alte Level weiter in Forge und per URL zugänglich.
+
+### M7 abschließende Verifikation
+- Abschließend 50 Kampagnenchecks inklusive 5 FPS, Audio-on/off-Traces und sofortigem Retry bestanden; vorherige Angabe 44 war ein Zwischenstand.
+- 141 M7-Browserchecks bestanden: Desktop Chromium, Pixel-7-Touch und Windows-WebKit; vollständige echte Touch-Eingabesequenzen mit normalem Input-System, alle drei Ziele 100 %.
+- Alle drei Forge-Level pro Profil verlustfrei geöffnet/exportiert, echte Geometrie-/Siegel-/BPM-Änderungen, Vorschau, vollständiger Playtest und Rückkehr mit History erfolgreich. Abschnittsnamen auch über echte Eigenschaftenfelder geprüft.
+- Regressionen: 100 Gameplay-, 70 Desktop-Forge-, 50 Mobile-Forge-, 51 M6-Pulse- und 25 Riftling-/Grafikchecks bestanden.
+- Sechs komplette finale Web-Audio-Renderings (drei Scores × Blau/Rot) inklusive Schlussfanfare, ohne Clipping, alle Abschnitte hörbar und sauberer Ausklang. Melodien folgen der tatsächlichen Dur-/Moll-Harmonie.
+- Sofortiger Retry speichert den Bestwert schon bei Kollision; kein verlorener Rekord im 220–280-ms-Fenster mehr. Practice stellt exaktes x/v und RiftField wieder her.
+- Echter Hauptloop konsumiert 200-ms-Frames vollständig; >250-ms-Blind-Stalls pausieren auch ohne Audio. Der Fake-rAF-Test musste vor der Messung den vorgesehenen Start-Epoch-Wechsel initialisieren; danach bestanden.
+- Skill-Client nach den finalen Änderungen ausgeführt; Fractured Rhythm bei 15 s spielend, Screenshot und render_game_to_text geprüft. Kampagnenmenü, alle Architekturvarianten und mobiler Forge visuell geprüft.
+- Keine tatsächlichen iOS-/Android-Geräte verfügbar. Windows-WebKit besitzt hier kein Web Audio; stummer Betrieb geprüft, keine native iOS-Audio- oder Smartphone-FPS-Zusage. Menschliche Fairness-/Spaßabnahme bleibt offen.
+- README, docs/FIRST-ASCENT.md, docs/M7-TEST-REPORT.md und PULSE-ENGINE-Dokumentation aktualisiert.
+- Finaler Echtzeit-Overload mit Musik: 15.912 Frames, p95 JS 0,30 ms / Frameabstand 4,4 ms, Ø239,1 rAF-FPS auf Desktop, 30 Live-Stimmen Spitze, Audio-Drift p95 17,8 ms und 4 Neuzuordnungen. Kein Smartphone-Benchmark.

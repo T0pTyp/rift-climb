@@ -7,6 +7,45 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
 
+## THE FIRST ASCENT (M7)
+
+Drei handgefertigte, sofort auswählbare Levels mit eigener Musik, Architektur und lokal gespeicherter
+Bestleistung, Versuchszahl und Abschlussmarkierung. Wechsel und Wiederholung benötigen keinen Seiten-Reload.
+
+| Level | Schwierigkeit | Dauer | Tempo | Regulärer Nachweis |
+| --- | --- | --- | --- | --- |
+| **First Pulse** | Einfach | 40,00 s | 120 BPM | 23 Impulse → 100 % |
+| **Fractured Rhythm** | Mittel | 56,25 s | 128 BPM | 56 Impulse → 100 % |
+| **Overload** | Schwer | 66,67 s | 144 BPM | 107 Impulse → 100 % |
+
+First Pulse führt von breiten Flugwegen über Farbhindernisse zu großzügigen Goldpassagen. Fractured Rhythm
+verbindet seitliche Bögen, Farbwechsel und Siegel mit schnellen Dreierfolgen. Overload fordert Wand-Wechsel,
+Siegelketten und wiederkehrende 312,5-ms-Cluster vor einem Finale aus bekannten Regeln.
+Die Replays verwenden reguläre Eingaben, unveränderte Physik und aktive Kollisionen. Sie sind technische
+Lösbarkeitsnachweise; menschliche Spielspaß- und Schwierigkeitstests stehen noch aus.
+
+**Eine feste hochwertige Darstellung:** sämtliche Grafikstufen, Auswahlknöpfe, Geräteprofile und automatische
+Herabstufungen sind entfernt. Alte gespeicherte Grafikwerte werden bereinigt, Fortschritt bleibt erhalten.
+Immer aktiv: beide Parallax-Ebenen, 26 Hintergrundfragmente, Riftling-SVG/Animationen, Doppel-Glow,
+Schweif-Kern und der 320er-Partikelpool. Fester DPR-Grenzwert 2,5 auf allen Geräten; keine Leistungsautomatik.
+Canvas-Hintergründe werden vorgerastert, Hindernisse ausgeschnitten und Partikel wiederverwendet.
+
+Die drei JSON-Dateien sind vollständig in LEVEL FORGE bearbeitbar. Eigenschaften enthalten zusätzlich
+Architektur, Komposition, Schwierigkeit und Abschnittsnamen/-grenzen. Die kompakte Timeline verwendet die
+wirklichen vier bzw. fünf Levelabschnitte. Im Öffnen-Dialog bleiben die beiden früheren Testlevel erhalten.
+
+Leveldesign und Datenstruktur: [docs/FIRST-ASCENT.md](docs/FIRST-ASCENT.md).
+Tatsächlich ausgeführte Prüfungen und Grenzen: [docs/M7-TEST-REPORT.md](docs/M7-TEST-REPORT.md).
+
+```sh
+npm ci
+npm test                          # inklusive aller Kampagnen-Replays und Timing-Sweeps
+# Lokalen HTTP-Server separat starten; dann:
+npx playwright install chromium webkit
+npm run test:campaign:e2e          # echte Touch-Eingaben, Levelwechsel, Forge, Browser-Lifecycle
+npm run test:campaign:audio        # sechs vollständige Audio-Renderings (drei Songs × zwei Dimensionen)
+```
+
 ## PULSE ENGINE (M6)
 
 **„Neon Ascent“** ist eine eigene, offline erzeugte elektronische Komposition: 44 Sekunden, 120 BPM,
@@ -25,7 +64,7 @@ haben bewusst gesetzte musikalische Akzente. Der letzte Beat löst die Musik auf
   „Sound AUS“ schaltet beide stumm. Keine Samples, externen Dienste oder Laufzeitpakete.
 - **Mobile:** AudioContext erst nach einer Benutzeraktion. Hintergrundwechsel, unterbrochener Context oder lange
   Browser-Stalls pausieren den Lauf; „Weiter“ ordnet Audio erneut zu. Playtests warten ebenfalls auf „Weiter“.
-- **Practice:** Checkpoints speichern die vorhandene Spielzeit und Dimension. Respawn stoppt alte Quellen,
+- **Practice:** Checkpoints speichern Spielzeit, Dimension, exakte Seitenposition/-geschwindigkeit und Rift-Zustände. Respawn stoppt alte Quellen,
   wartet die vorhandene Wiederaufbauanimation ab und rekonstruiert die Partitur an genau dieser Position.
 - **LEVEL FORGE:** BPM und Beats/Takt in Eigenschaften, normale/Beat/kombinierte Raster, Snap bis Viertelbeat
   oder ganzer Takt, Objektposition über Beat/Takt/Abschnitt. Kompakte Timeline mit Musikvorschau, Pause und
@@ -56,7 +95,7 @@ npm run test:audio:e2e
 
 Das Spielfeld hat vier Spuren. Ein Impuls gegen die Wand bewegt die Figur nicht, wechselt aber trotzdem die Dimension.
 Das ist eine zentrale Technik: Weil jeder normale Impuls Spur **und** Farbe gleichzeitig ändert, bleibt die
-Kombination „Spur-Parität + Farbe“ erhalten – nur ein Wand-Tipp kippt sie. Abschnitt C nutzt das gezielt.
+Kombination „Spur-Parität + Farbe“ erhalten – nur ein Wand-Tipp kippt sie. Overloads Abschnitt B nutzt das gezielt.
 
 ## Dimensionssystem
 
@@ -73,7 +112,7 @@ Jeder gültige Impuls (auch ein Wand-Tipp) sendet automatisch genau **eine** kre
 aktuellen Spielerposition aus. Keine Zusatztaste, kein Zufall, keine Wirkung auf die Flugrichtung.
 
 - **Rift-Siegel (Gold):** geschlossen in **beiden** Dimensionen tödlich – massives Gold mit Rautenmuster und heller Kontur.
-  Erreicht eine Welle das Siegel, öffnet es sich für 0,5 s: Auflösungsblitz, Partikel, heller Doppelton, danach nur noch
+  Erreicht eine Welle das Siegel, öffnet es sich für seine konfigurierte Dauer (Standard 0,5 s): Auflösungsblitz, Partikel, heller Doppelton, danach nur noch
   ein gestrichelter Rahmen mit schrumpfendem Countdown-Balken (flackert kurz vor dem Schließen). Offen = keine Kollision.
 - **Typen:** *Siegeltor* (volle Breite, `SSSS` – nur mit Pulse passierbar) und *Siegelsegment* (Teil einer Reihe,
   kombiniert mit blauen/roten/weißen Hindernissen, z. B. `RSSB`, `SWWW`).
@@ -87,14 +126,13 @@ aktuellen Spielerposition aus. Keine Zusatztaste, kein Zufall, keine Wirkung auf
 - **Kombination:** Der Öffnungs-Tipp wechselt immer auch Dimension und Spur – wer durch ein Siegel fliegt, muss vorher
   planen, in welcher Dimension die nächste Reihe wartet. Ein Wand-Tipp öffnet ein Siegel ohne Spurwechsel.
 - Drei Siegel in Folge: sehr dezenter Screen-Shake. Todesgrund am Siegel: „GOLD-SIEGEL war zu – tippe, wenn es aufleuchtet“.
-- Neustart, Respawn und Practice-Checkpoints schließen alle Siegel und löschen alle Wellen (konsistenter Zustand).
+- Neustart schließt alle Siegel und löscht alle Wellen. Practice stellt die gespeicherten Öffnungszeiten und laufenden Wellen exakt wieder her.
 
 ## Spielmodi
 
 - **Normal:** Start bei 0 %, keine Checkpoints, ein Fehler beendet den Versuch. Bestleistung (%), Versuche und
   Abschlüsse liegen in `localStorage`.
-- **Übungsmodus (Practice):** automatische Checkpoints (frühestens alle 8 Beats, nur an Stellen, von denen das Ziel
-  nachweislich erreichbar ist), nach einem Fehler Respawn am letzten Checkpoint. Zählt nicht in die Normal-Statistik.
+- **Übungsmodus (Practice):** automatische Checkpoints (frühestens alle 1040 u = 4 s, nach einer passierten Reihe), nach einem Fehler Respawn am letzten Checkpoint. Zählt nicht in die Normal-Statistik.
 
 ## Tod und Neustart
 
@@ -123,12 +161,12 @@ kompakter Todesscreen oben – die Unfallstelle bleibt sichtbar – mit Prozent,
 
 `node tests/tune-impulse.mjs` vergleicht die Modelle und Dauern (easeOutCubic 200–340 ms, Feder 180–340 ms).
 
-## Level (44 s, 55 Reihen, Ziel bei Beat 88)
+## Früheres Testlevel (Archiv: rift-main, 44 s)
 
 Das Hauptlevel liegt seit M4 als JSON in `assets/levels/rift-main.json` (verlustfrei aus dem alten Reihenformat migriert,
 spielt sich identisch). Jede Hindernisreihe liegt exakt auf einem Beat (120 BPM) und belegt die vier Spuren als
 Muster aus Blau/Rot/Weiß/Siegel/leer. Die musikalischen Abschnitte folgen seit M6 jeweils 25 % des Fortschritts: INTRO, BUILD, DROP, FINALE. Die bewährten Hindernisphrasen unten behalten ihre Positionen.
-Im Menü wählt man zwischen allen Leveln aus `assets/levels/index.json` (direkt: `?level=<id>`); Bestleistung,
+Das Kampagnenmenü zeigt die mit `campaign: true` markierten Level aus `assets/levels/index.json` (direkt: `?level=<id>`); Bestleistung,
 Versuche und Abschlüsse werden pro Level gespeichert.
 
 - **Lernphrase (2–10 s, alle 1,5 s):** Jede Reihe lehrt eine Regel mit kurzem Hinweis im Level (Tipp rechts = ↖,
@@ -152,7 +190,7 @@ Zustände, die Musterlösung und die Siegel-Durchflüge. Zusätzlich spielt der 
 
 M6 verbindet diese bereits auf Beats gesetzten Hindernisphrasen mit der neuen Komposition: Jedes Siegeltor erhält einen vorbereitenden Drum-Pickup und einen harmonischen Akzent bei der Durchquerungshöhe. Die Musikabschnitte beginnen exakt bei 0, 11, 22 und 33 s.
 
-## Grafik und Riftling (M5)
+## Grafik und Riftling (M5/M7)
 
 - **Riftling:** die Spielfigur ist ein Tropfenwesen aus echten SVG-Ebenen (`assets/riftling/body-blue.svg`,
   `body-red.svg`, `eye.svg`), die einmal je Zoomstufe gerastert und dann als Bild gezeichnet werden (`js/art/riftling.js`).
@@ -164,11 +202,8 @@ M6 verbindet diese bereits auf Beats gesetzten Hindernisphrasen mit der neuen Ko
   Hindernisse als Neonröhren mit Kern und Glow (`js/shapes.js`, gemeinsam mit dem Editor).
 - **Hintergrund** (`js/art/backdrop.js`): mehrlagige Parallax-Türme je Dimension, vorgerastert; gezeichnet werden nur
   die belegten Streifen und nur der sichtbare Teil jeder Kachel.
-- **Grafikstufen** HOCH / MITTEL / NIEDRIG (Menü-Button „Grafik“, `js/art/quality.js`): steuern Partikelmenge,
-  Glow, Hintergrundlagen und die maximale Pixeldichte (2,5 / 2 / 1,5). Gameplay, Timing und Kollision sind in allen
-  Stufen identisch. Ohne gespeicherte Wahl starten schwächere Geräte mit MITTEL; fällt die Bildrate im Spiel dauerhaft
-  unter ca. 42 FPS (Mittel über 180 Frames), schaltet das Spiel automatisch eine Stufe herunter – nur solange die Stufe
-  nicht von Hand gewählt wurde. `?gfx=high|medium|low` erzwingt eine Stufe (Tests).
+- Seit M7 gibt es genau eine hochwertige Darstellung. Alte `gfx`-URL-/Speicherwerte haben keine Wirkung.
+  Die Auflösung ist für alle Geräte einheitlich auf DPR 2,5 begrenzt; kein visuelles Detail wird nach Bildrate abgeschaltet.
 
 ## LEVEL FORGE – visueller Level-Editor (M4, mobil seit M4.5)
 
@@ -262,9 +297,8 @@ ungespeicherte Änderungen und die Undo-History bleiben erhalten.
 
 Spielbarkeits-Nachweis (Pflicht für die Veröffentlichung):
 1. **Spur-Solver** – liegen alle Objekte spurgenau auf ganzen Beats (120 BPM), beweist derselbe Solver wie in M3 die Lösbarkeit;
-2. **Aufzeichnung** – sonst einmal im Playtest (Modus Normal, ab Start) bis zum Ziel spielen. Der Lauf (`replay.taps`)
-   wird im Level gespeichert und in CI mit der echten 240-Hz-Simulation nachgespielt. Jede spätere Änderung an
-   Objekten macht die Aufzeichnung ungültig.
+2. **Aufzeichnung** – bevorzugter Nachweis, sobald vorhanden; sonst einmal im Playtest (Modus Normal, ab Start) bis zum Ziel spielen. Der Lauf (`replay.taps`)
+   wird im Level gespeichert und in CI mit der echten 240-Hz-Simulation nachgespielt. Jede spätere Änderung wird erneut mit dieser Aufzeichnung simuliert; ein fehlgeschlagener Lauf muss neu aufgenommen werden.
 
 ### Speichern und Veröffentlichen
 
@@ -276,7 +310,7 @@ GitHub Pages ist statisch – der Editor schreibt **nie** direkt ins Repository.
 
 Ein Level ins Spiel bringen:
 1. Im Editor **Exportieren**.
-2. Datei nach `assets/levels/` legen und in `assets/levels/index.json` unter `levels` eintragen: `{ "id": "…", "name": "…", "file": "….json" }`.
+2. Datei nach `assets/levels/` legen und in `assets/levels/index.json` unter `levels` eintragen: `{ "id": "…", "name": "…", "file": "….json", "campaign": true }` (ohne `campaign` nur Archiv/Forge/URL).
 3. `node tests/validate-level.mjs` lokal ausführen (optional), committen und auf `main` pushen.
 4. Der Pages-Workflow prüft alle Level und veröffentlicht sie; das Level erscheint in der Levelauswahl.
 
@@ -318,7 +352,7 @@ Rift Pulse: gestrichelter Kreis = Pulse-Radius, magenta = aktuell wachsende Well
 grau = offen) mit Status „ZU“ / „OFFEN 0,32 s“ und Abstand zum Spieler; im Panel Radius, Öffnungsdauer, aktive und
 gesendete Wellen sowie Zustand, Restzeit und Reichweite des nächsten Siegels. Im regulären Spiel unsichtbar.
 Alle Werte stehen zentral in `js/config.js`.
-Weitere Parameter: `?autoplay=1` (Solver-Lösung), `&offset=0.3` (Tipp-Zeitpunkt des Autopiloten nach der vorigen Reihe),
+Weitere Parameter: `?autoplay=1` (regulärer JSON-Replay, sonst Legacy-Solver-Lösung), `&offset=0.3` (Tipp-Zeitpunkt des Autopiloten nach der vorigen Reihe),
 `&lead=0.25` (Öffnungs-Tipp des Autopiloten vor einem Siegel), `?speed=2` (Zeitraffer),
 `?manual=1` (Zeit nur per `window.__RIFT.update(dt)`), `?trace=1` (Flugbahn-Protokoll für Tests).
 
@@ -328,8 +362,8 @@ Weitere Parameter: `?autoplay=1` (Solver-Lösung), `&offset=0.3` (Tipp-Zeitpunkt
   Hover nur auf echten Hover-Geräten; `touch-action: manipulation`; Klick-Schutz gegen Geister-Klicks nach Overlay-Wechsel.
   AudioContext wird synchron in der Geste entsperrt.
 - Spiel-Eingabe nur über Pointer Events (Touch-Events nur als Fallback), 200 ms Sperre nach Start, 45-ms-Doppel-Filter.
-- Canvas mit Device Pixel Ratio (max. 2,5 / 2 / 1,5 je Grafikstufe); Hintergrund und Vignette als CSS-Ebenen (spart Vollbild-Gradients im Canvas).
-- Partikel-Pool fester Größe, Schweif als Ringpuffer – keine Allokationen im Game Loop.
+- Canvas mit festem DPR-Limit 2,5; Farbverlauf, Vignette und beide Parallax-Ebenen im Canvas vorgerastert.
+- Partikel-Pool fester Größe, Schweif als Ringpuffer – keine neuen Partikelobjekte pro Frame.
 - Kein Scrollen/Zoomen, Safe Areas, Portrait-Layout, Querformat-Hinweis, Auto-Pause bei `visibilitychange`/`pagehide`.
 
 ## Lokal starten
@@ -342,16 +376,16 @@ python3 -m http.server 8080
 ### Tests
 
 ```bash
-node tests/validate-level.mjs        # alle Level aus assets/levels/: Schema, Nachweis (Solver/Aufzeichnung), Hauptlevel 30–45 s (läuft im Deploy-Workflow)
+node tests/validate-level.mjs        # alle Level aus assets/levels/: Schema, Nachweis (Solver/Aufzeichnung), Legacy-Level 30–45 s (läuft im Deploy-Workflow)
 node tests/level-report.mjs          # Reihe-für-Reihe-Analyse der Abschnitte A–D
 node tests/physics.mjs               # Flugphysik, Bildratenunabhängigkeit, Tunneln, Hitboxen, Partikel-Pool
 node tests/rift-pulse.mjs            # Rift Pulse/Siegel: Reichweite, Öffnen/Schließen, Grenzfälle, Practice, Bildraten
 node tests/tune-impulse.mjs          # Vergleich der Impulsmodelle
-npm i --no-save playwright && npx playwright install chromium webkit
+npm ci && npx playwright install chromium webkit
 python3 -m http.server 8080 &
-node tests/e2e.mjs                   # 100 Browser-Checks (Szenarien inkl. Siegel, Bildraten, Desktop, Practice, 100 %, iPhone/Pixel, Grafikstufen)
-node tests/perf.mjs                  # Frame-Zeiten im echten rAF-Loop (Pixel 7, 4× CPU-Drosselung); GFX=high|medium|low wählt die Stufe
-node tests/m5-visuals.mjs            # 25 Checks Grafik/Riftling: Animationen, Stufen, Lesbarkeit auf 320 px, Gameplay unverändert
+node tests/e2e.mjs                   # 100 Browser-Checks (Szenarien inkl. Siegel, Bildraten, Desktop, Practice, 100 %, iPhone/Pixel, feste Grafik)
+node tests/perf.mjs                  # Frame-Zeiten im echten rAF-Loop (Pixel 7, 4× CPU-Drosselung); LEVEL=overload, THROTTLE=1 optional
+node tests/m5-visuals.mjs            # 25 Checks Grafik/Riftling: Animationen, feste Darstellung, Lesbarkeit auf 320 px, Gameplay unverändert
 node tests/screenshots.mjs           # Portrait-Screenshots (Menü, Pulse öffnet Siegel, Reichweite, Debug, Tod)
 node tests/m5-screenshots.mjs        # Riftling-Übersicht, Gameplay, mobiler Editor (SHOT_DIR=… setzt den Zielordner)
 node tests/forge-e2e.mjs             # 70 LEVEL-FORGE-Checks mit echten Maus-/Tastatureingaben (QS-Liste M4 inkl. Playtest, Import/Export)
@@ -364,7 +398,7 @@ node tests/forge-screenshots.mjs     # Editor-Screenshots (Editor, Playtest, Pr�
 ```
 rift-climb/
 ├── index.html                 # Einstieg, Overlays (Menü mit Levelauswahl, Pause, Tod, Ziel), HUD
-├── css/style.css              # Neon-Stil, Hintergrund-Ebenen, Safe Areas, Touch-Optimierung
+├── css/style.css              # Neon-Stil, Kampagnenmenü, Safe Areas, Touch-Optimierung
 ├── css/forge.css              # LEVEL FORGE
 ├── js/
 │   ├── config.js              # Zentrale Spiel- und Physikparameter
@@ -383,14 +417,14 @@ rift-climb/
 │   ├── input.js               # Pointer/Touch/Tastatur, Doppel-Filter
 │   ├── audio.js               # Prozedurale WebAudio-Musik + SFX
 │   ├── ui.js                  # DOM-Overlays, HUD, robuster Tap-Handler, Klick-Schutz
-│   ├── art/                   # Grafik: quality (Stufen), riftling (SVG-Figur), riftling-anim, effects, backdrop
+│   ├── art/                   # Grafik: riftling (SVG-Figur), riftling-anim, effects, backdrop
 │   └── forge/                 # LEVEL FORGE: main (Steuerung), view (Kamera/Rendering), history (Undo/Redo),
 │                              #   panels (Eigenschaften/Prüfung), store (IndexedDB), touch (Gesten)
 ├── assets/
 │   ├── icon.svg
 │   ├── riftling/              # SVG-Ebenen der Spielfigur
 │   ├── forge/index.html       # Editor-Seite
-│   └── levels/                # index.json + Level-Dateien (rift-main, rift-forge-test)
+│   └── levels/                # index.json + drei Kampagnen- und zwei Archiv-Level
 ├── tests/                     # Solver, Physik, Playwright-E2E, Performance, Screenshots
 ├── .github/workflows/deploy.yml
 └── README.md
@@ -398,7 +432,7 @@ rift-climb/
 
 ## Deployment
 
-Jeder Push auf `main` startet `.github/workflows/deploy.yml`: Level-Check (alle Level) → statische Seite zusammenstellen →
+Jeder Push auf `main` startet `.github/workflows/deploy.yml`: npm test (Level, Physik, Rift, Timeline, Kampagnen-Replays) → statische Seite zusammenstellen →
 Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft daher unter `/rift-climb/`.
 
 ## Bekannte Probleme / Einschränkungen
@@ -410,8 +444,8 @@ Deployment auf GitHub Pages (HTTPS). Alle Pfade sind relativ, die Seite läuft d
 - Kein Kalibrierungsmenü für Audio-Latenz.
 - Der mobile Editor ist nur in Emulation getestet (Chromium mit echten CDP-Touch-Events, WebKit-Smoke-Test);
   Bildschirmtastatur und Web Share sind in den Tests simuliert. Ein echtes iOS Safari stand nicht zur Verfügung.
-- Grafikstufe HOCH ist in headless Chromium (Software-Rasterung) langsam; auf echten GPUs nicht gemessen.
-  Die automatische Herabstufung fängt zu langsame Geräte ab.
+- Bildrate auf echten Smartphone-GPUs noch nicht gemessen. Es gibt keine automatische Grafikreduktion.
+  Die Simulation verarbeitet bis 250 ms Frame-Abstand vollständig in 240-Hz-Schritten; längere Blind-Stalls pausieren auch ohne Audio.
 - Veröffentlichen geht bewusst nur über Export + Commit (statisches Hosting, keine Schreibrechte im Browser).
 - Level mit freien Maßen beweist kein Solver; ihr Nachweis ist ein aufgezeichneter Lauf. Er belegt Lösbarkeit,
   nicht Fairness – Warnungen der Prüfung ersetzen kein Playtesting mit Menschen.

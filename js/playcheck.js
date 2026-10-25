@@ -2,7 +2,7 @@
 // mit der echten Game-Klasse (gleiche Physik, gleiche Kollision, fester 240-Hz-Schritt).
 // Genutzt von LEVEL FORGE (Validierung) und tests/validate-level.mjs (Deploy-Prüfung).
 import { Game } from './game.js';
-import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT } from './config.js';
+import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS } from './config.js';
 import { laneRows, START_DIMENSIONS } from './level-data.js';
 import { validateLevel } from './level.js';
 
@@ -25,6 +25,10 @@ function headlessGame(level) {
  * Ein Tipp wirkt vor dem Simulationsschritt, in dem er aufgezeichnet wurde (wie im Spiel: Eingabe -> Schritt).
  */
 export function runReplay(level, taps) {
+  const legal = Array.isArray(taps) && taps.every((tap, i) =>
+    Number.isFinite(tap.t) && (tap.dir === 1 || tap.dir === -1) &&
+    tap.t >= START_GRACE_MS / 1000 && (!i || tap.t - taps[i - 1].t >= MIN_PRESS_INTERVAL_MS / 1000 - 1e-8));
+  if (!legal) return { won: false, progress: 0, tapsUsed: 0, killer: null, error: 'Ungültige Eingabefolge (Startschutz / Mindestabstand / Richtung).' };
   const g = headlessGame(level);
   g.start('normal');
   const limit = level.finish.y / CLIMB_SPEED + 1;
@@ -51,25 +55,19 @@ export function runReplay(level, taps) {
  *  - method 'none': weder Spurmodell noch Aufzeichnung -> nicht nachgewiesen
  */
 export function checkPlayability(level) {
+  // Prefer an actual simulation proof over the coarse lane abstraction.
+  if (level.replay) {
+    const replay = runReplay(level, level.replay.taps);
+    if (replay.won) return { method: 'replay', ok: true, message: `Regulärer Lauf (${level.replay.taps.length} Tipps) erreicht 100 % mit echter Physik.`, replay };
+    return { method: 'replay', ok: false, message: replay.error || `Aufgezeichneter Lauf scheitert bei ${replay.progress} %${replay.killer ? ` an „${replay.killer.id}“` : ''}. Bitte neu durchspielen.`, replay };
+  }
   const rows = laneRows(level);
   if (rows) {
     const start = { lane: level.start ? level.start.lane : START_LANE, dim: START_DIMENSIONS[level.start && level.start.dimension] || 'B' };
     const v = validateLevel(rows, start);
     const tooLate = rows.length && rows[rows.length - 1][0] * UNITS_PER_BEAT >= level.finish.y;
     if (v.ok && !tooLate) return { method: 'solver', ok: true, message: `Spur-Solver: lösbar (${rows.length} Reihen, Musterlösung mit ${v.solution.flat().length} Tipps).`, solver: v };
-    if (!level.replay) {
-      return { method: 'solver', ok: false, message: `Spur-Solver: ${v.errors[0] || 'keine Lösung'}.`, solver: v, row: v.errors.length ? firstBadRow(v, rows) : null };
-    }
-  }
-  if (level.replay) {
-    const r = runReplay(level, level.replay.taps);
-    if (r.won) return { method: 'replay', ok: true, message: `Aufgezeichneter Lauf (${level.replay.taps.length} Tipps) erreicht das Ziel mit echter Physik.`, replay: r };
-    return {
-      method: 'replay',
-      ok: false,
-      message: `Aufgezeichneter Lauf scheitert bei ${r.progress} %${r.killer ? ` an „${r.killer.id}“` : ''} – das Level wurde seit der Aufnahme verändert. Bitte neu durchspielen.`,
-      replay: r,
-    };
+    return { method: 'solver', ok: false, message: `Spur-Solver: ${v.errors[0] || 'keine Lösung'}.`, solver: v, row: v.errors.length ? firstBadRow(v, rows) : null };
   }
   return { method: 'none', ok: null, message: 'Nicht nachgewiesen: freie Maße ohne aufgezeichneten Lauf. Im Playtest einmal komplett durchspielen, um den Lauf zu speichern.' };
 }

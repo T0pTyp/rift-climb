@@ -618,7 +618,7 @@ await browser.close();
   const errs = [];
   p.on('pageerror', (e) => errs.push(e.message));
   p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()); });
-  await p.goto(BASE + '?autoplay=1&speed=6');
+  await p.goto(BASE + '?level=rift-main&autoplay=1&speed=6');
   await p.waitForFunction(() => window.__RIFT && document.querySelector('#menu:not([hidden])'));
   const m = await p.evaluate(() => ({ level: window.__RIFT.level.id, select: !document.querySelector('#level-pick').hidden, forge: getComputedStyle(document.querySelector('#forge-link')).display, menuFits: document.querySelector('#menu .panel').getBoundingClientRect().bottom <= innerHeight + 1 }));
   await p.tap('#btn-start');

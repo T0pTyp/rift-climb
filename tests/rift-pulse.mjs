@@ -215,13 +215,13 @@ for (const startDimTap of [false, true]) {
       while (g.state !== 'playing' && g.state !== 'won') {
         g.update(1 / 60);
         if (g.state === 'respawn') {
-          const bad = g.seals.some((s) => g.rift.isOpen(s, g.t) || s.timesOpened) || g.rift.pulses.some((p) => p.live);
+          const bad = JSON.stringify(g.rift.snapshot()) !== JSON.stringify(g.checkpoint.rift);
           if (bad || Math.abs(g.t - g.checkpoint.t) > 1e-9) inconsistent++;
         }
       }
     }
   }
-  check('[9] Practice: mehrere Respawns an Checkpoints, Siegel konsistent zurückgesetzt', kills >= 4 && inconsistent === 0, `${kills} Respawns, Checkpoint zuletzt Beat ${lastCp}`);
+  check('[9] Practice: mehrere Respawns an Checkpoints, Siegel und Wellen exakt wiederhergestellt', kills >= 4 && inconsistent === 0, `${kills} Respawns, Checkpoint zuletzt Beat ${lastCp}`);
   check('[9] Practice: nach Respawns weiter bis 100 %', g.state === 'won' && g.progress === 100);
 }
 

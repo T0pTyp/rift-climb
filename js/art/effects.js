@@ -11,7 +11,7 @@ const ny = new Float32Array(MAX_PTS);
  * Dynamischer Energie-Schweif aus dem Ringpuffer des Spielers (älteste Punkte zuerst).
  * sy/y: Bildschirm- und Welthöhe des Spielers. width: Breite am Kopf (u), wächst mit der Geschwindigkeit.
  */
-export function drawTrail(ctx, player, px, sy, y, color, width, core) {
+export function drawTrail(ctx, player, px, sy, y, color, width) {
   const n = Math.min(player.trailCount, MAX_PTS - 1);
   if (n < 2) return;
   const len = player.trailX.length;
@@ -55,7 +55,7 @@ export function drawTrail(ctx, player, px, sy, y, color, width, core) {
     ctx.fill();
   };
   ribbon(width, 0.38, color);
-  if (core) ribbon(width * 0.42, 0.55, '#ffffff');
+  ribbon(width * 0.42, 0.55, '#ffffff');
   ctx.globalAlpha = 1;
 }
 

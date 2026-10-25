@@ -66,11 +66,7 @@ export class UI {
       mode: $('#hud-mode'),
       playtest: $('#hud-playtest'),
       levelPick: $('#level-pick'),
-      levelSelect: $('#level-select'),
-      menuBest: $('#menu-best'),
-      menuAttempts: $('#menu-attempts'),
       soundBtn: $('#btn-sound'),
-      gfxBtn: $('#btn-gfx'),
       deathPct: $('#death-pct'),
       deathBest: $('#death-best'),
       deathNew: $('#death-new'),
@@ -84,14 +80,12 @@ export class UI {
     bindTap($('#btn-start'), () => h.onStart('normal'), g);
     bindTap($('#btn-practice'), () => h.onStart('practice'), g);
     bindTap(this.el.soundBtn, () => h.onSoundToggle(), g);
-    bindTap(this.el.gfxBtn, () => h.onGfxToggle(), g);
     bindTap($('#btn-pause'), () => h.onPause(), g);
     bindTap($('#btn-resume'), () => h.onResume(), g);
     for (const id of ['#btn-pause-restart', '#btn-death-restart', '#btn-win-restart']) bindTap($(id), () => h.onRestart(), g);
     for (const id of ['#btn-pause-menu', '#btn-death-menu', '#btn-win-menu']) bindTap($(id), () => h.onMenu(), g);
     // Tipp irgendwo auf den Todesscreen = sofortiger Neustart (Buttons stoppen die Weitergabe selbst)
     bindTap(this.screens.death, () => h.onDeathTap(), g);
-    this.el.levelSelect.addEventListener('change', () => h.onLevelChange(this.el.levelSelect.value));
     for (const slider of document.querySelectorAll('[data-volume]')) {
       slider.addEventListener('pointerdown', e => { e.stopPropagation(); g?.(); });
       slider.addEventListener('input', e => { e.stopPropagation(); h.onVolume(slider.dataset.volume, Number(slider.value)); });
@@ -101,19 +95,31 @@ export class UI {
   }
 
   /** Levelauswahl im Menü (nur bei mehreren Leveln); im Playtest führen „Menü“-Buttons zurück in den Editor. */
-  setLevels(levels, current, playtest) {
-    const sel = this.el.levelSelect;
-    sel.textContent = '';
-    if (levels && levels.length > 1) {
-      for (const l of levels) {
-        const opt = document.createElement('option');
-        opt.value = l.id;
-        opt.textContent = l.name;
-        sel.appendChild(opt);
-      }
-      sel.value = current.id;
-      this.el.levelPick.hidden = false;
+  setLevels(levels, current, playtest, catalog = new Map()) {
+    this.current = current;
+    this.levels = levels || [];
+    this.el.levelPick.replaceChildren();
+    this.el.levelPick.hidden = !!playtest;
+    document.body.dataset.theme = current.theme || 'spire';
+    this.cards = new Map();
+    for (const [i,l] of this.levels.entries()) {
+      const data=catalog.get(l.id), button=document.createElement('button');
+      button.type='button';button.className='level-card';button.dataset.level=l.id;
+      button.dataset.theme=data?.theme || 'spire';button.setAttribute('aria-pressed',String(l.id===current.id));
+      const number=document.createElement('span');number.className='level-number';number.textContent=String(i+1).padStart(2,'0');
+      const copy=document.createElement('span');copy.className='level-copy';
+      const name=document.createElement('strong');name.textContent=l.name;
+      const meta=document.createElement('span');meta.className='level-meta';
+      const difficulty={easy:'EINFACH',medium:'MITTEL',hard:'SCHWER'}[data?.difficulty] || 'ARCHIV';
+      meta.textContent=difficulty+(data ? ` · ${(data.finish.y/260).toFixed(1)} s` : '');
+      const stats=document.createElement('span');stats.className='level-result';
+      const best=document.createElement('b'),attempts=document.createElement('small');stats.append(best,attempts);
+      const progress=document.createElement('i');progress.className='level-best-bar';
+      copy.append(name,meta);button.append(number,copy,stats,progress);
+      bindTap(button,()=>this.h.onLevelChange(l.id),this.h.onGesture);
+      this.el.levelPick.append(button);this.cards.set(l.id,{button,best,attempts,progress});
     }
+    this.refreshCards();
     if (playtest) {
       document.body.dataset.playtest = '1';
       this.el.playtest.hidden = false;
@@ -131,9 +137,19 @@ export class UI {
   }
 
   updateMenu(stats, muted) {
-    this.el.menuBest.textContent = `${stats.best}%`;
-    this.el.menuAttempts.textContent = String(stats.attempts);
+    this.refreshCards();
     this.updateSound(muted);
+  }
+
+  refreshCards() {
+    for (const [id,c] of this.cards || []) {
+      const stats=this.h.getStats?.(id) || {best:0,attempts:0,clears:0};
+      c.best.textContent=`${stats.clears ? '✓ ' : ''}${stats.best}%`;
+      c.attempts.textContent=`${stats.attempts} Versuche`;
+      c.progress.style.transform=`scaleX(${stats.best/100})`;
+      c.button.dataset.complete=stats.clears>0?'1':'0';
+      c.button.setAttribute('aria-label',`${c.button.querySelector('strong').textContent}, ${stats.best} Prozent, ${stats.attempts} Versuche, ${stats.clears ? 'abgeschlossen' : 'offen'}`);
+    }
   }
 
   updateSound(muted) {
@@ -143,10 +159,6 @@ export class UI {
 
   updateVolumes(settings) {
     for (const slider of document.querySelectorAll('[data-volume]')) slider.value = settings[slider.dataset.volume];
-  }
-
-  updateGfx(label) {
-    this.el.gfxBtn.innerHTML = `<small>Grafik</small>${label}`;
   }
 
   updateHud(pct, dim, attempts, mode) {
@@ -171,6 +183,7 @@ export class UI {
   }
 
   showWin({ mode, attempts }) {
+    $('#win-level').textContent = this.current?.name || 'RIFT CLEARED';
     this.el.winSub.textContent = mode === 'practice'
       ? `Übungsmodus geschafft – jetzt im Normalmodus! (${attempts} Versuche)`
       : `Normalmodus geschafft nach ${attempts} Versuchen.`;

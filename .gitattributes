@@ -1,0 +1,2 @@
+# Level Forge's canonical JSON export uses LF, including on Windows checkouts.
+assets/levels/*.json text eol=lf

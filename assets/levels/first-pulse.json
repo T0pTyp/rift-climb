@@ -1,0 +1,663 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "first-pulse",
+  "name": "First Pulse",
+  "description": "THE FIRST ASCENT · First Pulse. Handgefertigter Parcours mit regulärem 240-Hz-Replay.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 10660,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 10400
+  },
+  "theme": "spire",
+  "music": "first-pulse",
+  "difficulty": "easy",
+  "sections": [
+    {
+      "id": "A",
+      "name": "AWAKENING",
+      "y": 0,
+      "labelY": -35
+    },
+    {
+      "id": "B",
+      "name": "COLORWAYS",
+      "y": 2080,
+      "labelY": 2045
+    },
+    {
+      "id": "C",
+      "name": "GOLDEN ECHO",
+      "y": 4680,
+      "labelY": 4645
+    },
+    {
+      "id": "D",
+      "name": "FIRST ASCENT",
+      "y": 7280,
+      "labelY": 7245
+    }
+  ],
+  "objects": [
+    {
+      "id": "gate-4-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 520,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-8-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1040,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-8-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1040,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-12-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 1560,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-16-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2080,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-16-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 2080,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-20-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2600,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-20-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 2600,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-20-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 2600,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-24-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3120,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-24-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 3120,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-24-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3120,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-28-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 3640,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-28-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3640,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-28-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3640,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-32-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4160,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-32-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4160,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-32-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 4160,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-40-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5200,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-40-2",
+      "type": "seal",
+      "x": 183,
+      "y": 5200,
+      "w": 174,
+      "h": 18,
+      "openSec": 0.8
+    },
+    {
+      "id": "gate-44-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 5720,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-44-1",
+      "type": "seal",
+      "x": 93,
+      "y": 5720,
+      "w": 174,
+      "h": 18,
+      "openSec": 0.8
+    },
+    {
+      "id": "gate-44-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 5720,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-48-0",
+      "type": "seal",
+      "x": 3,
+      "y": 6240,
+      "w": 174,
+      "h": 18,
+      "openSec": 0.8
+    },
+    {
+      "id": "gate-48-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 6240,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-52-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 6760,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-52-1",
+      "type": "seal",
+      "x": 93,
+      "y": 6760,
+      "w": 174,
+      "h": 18,
+      "openSec": 0.8
+    },
+    {
+      "id": "gate-52-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 6760,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-58-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7540,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-58-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 7540,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-58-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7540,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-60-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 7800,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-60-3",
+      "type": "seal",
+      "x": 273,
+      "y": 7800,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.75
+    },
+    {
+      "id": "gate-62-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8060,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-62-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 8060,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-64-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8320,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-64-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8320,
+      "w": 84,
+      "h": 18,
+      "dimension": "red"
+    },
+    {
+      "id": "gate-64-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8320,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-66-0",
+      "type": "seal",
+      "x": 3,
+      "y": 8580,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.75
+    },
+    {
+      "id": "gate-66-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 8580,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-68-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 8840,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-68-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 8840,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-70-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9100,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-70-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9100,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-70-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9100,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-72-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9360,
+      "w": 264,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-72-3",
+      "type": "seal",
+      "x": 273,
+      "y": 9360,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.75
+    },
+    {
+      "id": "gate-74-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9620,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-74-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 9620,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-76-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 9880,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-76-1",
+      "type": "seal",
+      "x": 93,
+      "y": 9880,
+      "w": 84,
+      "h": 18,
+      "openSec": 0.75
+    },
+    {
+      "id": "gate-76-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 9880,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-78-0",
+      "type": "obstacle",
+      "x": 3,
+      "y": 10140,
+      "w": 174,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "gate-78-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 10140,
+      "w": 84,
+      "h": 18,
+      "dimension": "blue"
+    },
+    {
+      "id": "gate-78-3",
+      "type": "obstacle",
+      "x": 273,
+      "y": 10140,
+      "w": 84,
+      "h": 18,
+      "dimension": "both"
+    },
+    {
+      "id": "hint-0",
+      "type": "hint",
+      "y": 130,
+      "text": "LINKS TIPPEN ↗"
+    },
+    {
+      "id": "hint-1",
+      "type": "hint",
+      "y": 1170,
+      "text": "RECHTS TIPPEN ↖"
+    },
+    {
+      "id": "hint-2",
+      "type": "hint",
+      "y": 2340,
+      "text": "JEDER TIPP WECHSELT DIE FARBE"
+    },
+    {
+      "id": "hint-3",
+      "type": "hint",
+      "y": 4810,
+      "text": "GOLD LEUCHTET? TIPP = PULSE"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 1.75,
+        "dir": 1
+      },
+      {
+        "t": 3.75,
+        "dir": -1
+      },
+      {
+        "t": 5.75,
+        "dir": -1
+      },
+      {
+        "t": 7.75,
+        "dir": 1
+      },
+      {
+        "t": 9.75,
+        "dir": 1
+      },
+      {
+        "t": 11.75,
+        "dir": -1
+      },
+      {
+        "t": 13.75,
+        "dir": 1
+      },
+      {
+        "t": 15.75,
+        "dir": -1
+      },
+      {
+        "t": 19.75,
+        "dir": 1
+      },
+      {
+        "t": 21.75,
+        "dir": -1
+      },
+      {
+        "t": 23.75,
+        "dir": -1
+      },
+      {
+        "t": 25.75,
+        "dir": 1
+      },
+      {
+        "t": 28.75,
+        "dir": 1
+      },
+      {
+        "t": 29.75,
+        "dir": 1
+      },
+      {
+        "t": 30.75,
+        "dir": -1
+      },
+      {
+        "t": 31.75,
+        "dir": -1
+      },
+      {
+        "t": 32.75,
+        "dir": -1
+      },
+      {
+        "t": 33.75,
+        "dir": 1
+      },
+      {
+        "t": 34.75,
+        "dir": 1
+      },
+      {
+        "t": 35.75,
+        "dir": 1
+      },
+      {
+        "t": 36.75,
+        "dir": -1
+      },
+      {
+        "t": 37.75,
+        "dir": -1
+      },
+      {
+        "t": 38.75,
+        "dir": 1
+      }
+    ]
+  }
+}

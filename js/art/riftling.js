@@ -103,10 +103,10 @@ export const IDLE_POSE = Object.freeze({ blend: 0, tilt: 0, sx: 1, sy: 1, bob: 0
 
 /**
  * Zeichnet den Riftling mit Mittelpunkt (x, y) im aktuellen Welt-Transform.
- * ppu = Gerätepixel pro Welteinheit (für die Rasterauflösung), glowLevel 0–2 (Grafikstufe).
+ * ppu = Gerätepixel pro Welteinheit (für die Rasterauflösung).
  * pose: blend 0 = Blau … 1 = Rot, tilt (rad), sx/sy (Squash & Stretch), bob (u), eye 0–1, flash 0–1 (weiß), glow, alpha.
  */
-export function drawRiftling(ctx, x, y, pose, ppu, glowLevel = 2) {
+export function drawRiftling(ctx, x, y, pose, ppu) {
   const p = pose || IDLE_POSE;
   const alpha = p.alpha === undefined ? 1 : p.alpha;
   if (alpha <= 0.002) return;
@@ -128,10 +128,10 @@ export function drawRiftling(ctx, x, y, pose, ppu, glowLevel = 2) {
   ctx.save();
   ctx.translate(x, y + (p.bob || 0));
 
-  if (glowLevel > 0 && (p.glow || 0) > 0) {
+  if ((p.glow || 0) > 0) {
     const gs = riftlingArt.glowSprites();
-    const r = (glowLevel > 1 ? 30 : 24) * (0.9 + 0.1 * (p.glow || 1));
-    const ga = alpha * Math.min(1.6, p.glow || 1) * (glowLevel > 1 ? 0.95 : 0.7);
+    const r = 30 * (0.9 + 0.1 * (p.glow || 1));
+    const ga = alpha * Math.min(1.6, p.glow || 1) * 0.95;
     if (blend < 0.999) { ctx.globalAlpha = ga * (1 - blend); ctx.drawImage(gs.B, -r, -r - 2, r * 2, r * 2); }
     if (blend > 0.001) { ctx.globalAlpha = ga * blend; ctx.drawImage(gs.R, -r, -r - 2, r * 2, r * 2); }
   }

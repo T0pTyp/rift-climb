@@ -450,3 +450,6 @@ button:disabled { opacity: 0.4; cursor: default; }
   .stage .statusbar { top:78px; }
   .stage .m-float { top:78px; }
 }
+
+#pulse-rail span { min-width:0; overflow:hidden; white-space:nowrap; }
+#pulse-rail span:nth-child(5) { background:#ffd16622; }

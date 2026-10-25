@@ -1306,10 +1306,23 @@ function onMessage(e) {
 const previewAudio = new AudioEngine();
 previewAudio.onInterrupt = () => stopRhythm();
 S.previewTime = 0;
+let timelineCache = null;
 function renderTimeline() {
   if (!doc) return;
   if (!doc.level.finish) return;
-  const timeline = new BeatTimeline({ bpm: doc.level.bpm, beatsPerBar: doc.level.beatsPerBar || 4, duration: doc.level.finish.y / CLIMB_SPEED });
+  const key = `${doc.level.bpm}|${doc.level.beatsPerBar}|${doc.level.finish.y}|${JSON.stringify(doc.level.sections)}`;
+  if (timelineCache?.key !== key) {
+    const timeline = new BeatTimeline({ bpm: doc.level.bpm, beatsPerBar: doc.level.beatsPerBar || 4, duration: doc.level.finish.y / CLIMB_SPEED,
+      sections: doc.level.sections?.map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
+    timelineCache = { key, timeline };
+    const rail = $('#pulse-rail'); rail.replaceChildren();
+    timeline.sections.forEach((section,i) => {
+      const span=document.createElement('span');span.textContent=section.name;span.title=section.name;
+      span.style.flex=`${((timeline.sections[i+1]?.time ?? timeline.duration)-section.time)/timeline.duration} 1 0`;
+      rail.append(span);
+    });rail.append(document.createElement('i'));
+  }
+  const timeline=timelineCache.timeline;
   const at = timeline.at(S.previewTime);
   $('#pulse-position').textContent = `${at.sectionName} · T${at.bar} / ${at.beatInBar} · ${at.time.toFixed(1)} s`;
   const range = $('#pulse-seek');
@@ -1845,7 +1858,7 @@ async function boot() {
   if (!restored) {
     try {
       const idx = await gameLevels();
-      const entry = idx.levels.find((l) => l.id === 'rift-forge-test') || idx.levels[0];
+      const entry = idx.levels.find((l) => l.id === idx.default) || idx.levels[0];
       await openGameLevel(entry);
     } catch (err) {
       loadDocument(createEmptyLevel({ id: 'neues-level', name: 'Neues Level' }), { clean: false, message: `Spiel-Level nicht erreichbar (${err.message}) – leeres Level angelegt.` });

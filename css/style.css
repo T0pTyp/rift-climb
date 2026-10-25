@@ -35,24 +35,6 @@ html, body {
 
 #app { position: fixed; inset: 0; }
 
-/* Hintergrund + Vignette je Dimension als Compositor-Ebenen (spart Vollbild-Gradients im Canvas) */
-#app::before, #app::after {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  transition: opacity 0.12s linear;
-}
-#app::before {
-  background:
-    radial-gradient(ellipse 75% 60% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(47, 214, 255, 0.22) 100%),
-    linear-gradient(180deg, #04102a, #02040c);
-}
-#app::after {
-  opacity: 0;
-  background:
-    radial-gradient(ellipse 75% 60% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(255, 45, 138, 0.22) 100%),
-    linear-gradient(180deg, #2a0420, #0c0208);
-}
-body[data-dim="R"] #app::after { opacity: 1; }
-
 #game {
   position: absolute;
   inset: 0;
@@ -320,3 +302,33 @@ body[data-playtest="1"] .forge-link, body[data-playtest="1"] .level-pick { displ
 .audio-disclosure { font-size:12px; color:#afbddb; }
 .audio-disclosure summary { cursor:pointer; min-height:28px; display:grid; place-items:center; }
 #menu .panel { margin:auto; }
+
+/* M7: one campaign, immediate access to all three ascents. */
+#menu .panel { max-width:400px; gap:10px; padding:20px; }
+#menu .logo { font-size:34px; } #menu .logo span { font-size:18px; }
+#menu .tagline { font-size:10px; letter-spacing:.35em; color:#b7ccdd; margin:1px 0 6px; }
+.campaign { display:grid; gap:8px; }
+.level-card { --accent:#2fd6ff; position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:70px; overflow:hidden;
+  padding:12px; border:1px solid #294057; border-radius:12px; background:linear-gradient(110deg,#0c2636d9,#0a0c20ef); color:#eefaff; font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; }
+.level-card[data-theme=fracture] { --accent:#af7cff; background:linear-gradient(110deg,#251a39da,#0a0c20ef); }
+.level-card[data-theme=core] { --accent:#ff4caa; background:linear-gradient(110deg,#361126da,#0a0c20ef); }
+.level-card[aria-pressed=true] { border-color:var(--accent); box-shadow:inset 3px 0 var(--accent),0 0 16px color-mix(in srgb,var(--accent) 16%,transparent); }
+.level-card:focus-visible { outline:2px solid white;outline-offset:2px; }
+.level-number { flex:none; font:800 22px ui-monospace,monospace;color:var(--accent);opacity:.85; }
+.level-copy { flex:1;min-width:0;display:grid;gap:5px; }
+.level-copy strong { font-size:15px;letter-spacing:.015em;white-space:nowrap; }
+.level-meta { font-size:9px;letter-spacing:.12em;color:#9db6ce; }
+.level-result { display:grid;gap:4px;text-align:right;white-space:nowrap; }
+.level-result b { font-size:17px;color:var(--accent);font-variant-numeric:tabular-nums; }
+.level-result small { color:#8fa9c0;font-size:9px; }
+.level-best-bar { position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--accent);transform-origin:left;opacity:.55; }
+#menu .help { margin:0;text-align:left; } #menu .help summary { text-align:center;min-height:28px;cursor:pointer;color:#b0c8df; }
+#menu .menu-row .btn { min-height:36px; }
+#menu .menu-row { align-items:center; }
+#menu .audio-disclosure { flex:1; }
+.clear-eyebrow { font:700 10px ui-monospace,monospace;letter-spacing:.32em;color:#ffc23d;margin:0; }
+#win .panel { border-color:#ffc23d60;animation:clear-arrive .45s ease-out; }
+#win h2 { font-size:25px; }
+@keyframes clear-arrive { from {opacity:0;transform:translateY(15px) scale(.97)} to {opacity:1;transform:none} }
+@media(max-width:370px) { #menu .panel { padding:14px;gap:8px; } .level-card {gap:8px;padding:10px;min-height:66px} .level-copy strong {font-size:13px} .level-number {font-size:18px} }
+@media(max-height:700px) { #menu .panel {padding:14px;gap:7px} #menu .logo {font-size:28px} #menu .logo span {font-size:15px} .level-card {min-height:61px;padding:9px 12px} #menu .btn {min-height:44px;padding:9px 12px} }
