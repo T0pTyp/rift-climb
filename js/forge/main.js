@@ -1,7 +1,8 @@
+import {arenaFor,arenaLane} from '../arena.js';
 // LEVEL FORGE – visueller Level-Editor für RIFT CLIMB: PULSE.
 // Nutzt dieselben Leveldaten (js/level-data.js), Formen (js/shapes.js) und für den Playtest
 // das unveränderte Spiel (index.html?playtest=1) – keine zweite Spiellogik im Editor.
-import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, SEAL_OPEN_SEC, BAR_THICKNESS } from '../config.js';
+import { CLIMB_SPEED, SEAL_OPEN_SEC, BAR_THICKNESS } from '../config.js';
 import {
   validateLevelData, parseLevelText, serializeLevel, createEmptyLevel, unitsPerBeat, validateIndex, LIMITS,
 } from '../level-data.js';
@@ -144,16 +145,16 @@ function snapOn() {
   return S.grid.enabled && !S.altDown;
 }
 
-/** Horizontal: linke Kante auf Spurkante (90k + 3), Raster oder pixelgenau (0,5 u). */
+/** Horizontal: linke Kante auf die Spurkante der Arena, Raster oder pixelgenau (0,5 u). */
 function snapLeft(x) {
   if (!snapOn() || S.grid.snapX === 'off') return Math.round(x * 2) / 2;
-  if (S.grid.snapX === 'lane') return Math.round((x - 3) / LANE_W) * LANE_W + 3;
+  if (S.grid.snapX === 'lane') {const a=arenaFor(doc?.level),b=a.inset-a.step/2+3;return Math.round((x-b)/a.step)*a.step+b;}
   return Math.round(x / S.grid.size) * S.grid.size;
 }
 
 function snapRight(x) {
   if (!snapOn() || S.grid.snapX === 'off') return Math.round(x * 2) / 2;
-  if (S.grid.snapX === 'lane') return Math.round((x + 3) / LANE_W) * LANE_W - 3;
+  if (S.grid.snapX === 'lane') {const a=arenaFor(doc?.level),b=a.inset-a.step/2-3;return Math.round((x-b)/a.step)*a.step+b;}
   return Math.round(x / S.grid.size) * S.grid.size;
 }
 
@@ -173,11 +174,11 @@ function snapStepY() {
 
 function snapStepX() {
   if (!snapOn() || S.grid.snapX === 'off') return 1;
-  return S.grid.snapX === 'lane' ? LANE_W : S.grid.size;
+  return S.grid.snapX === 'lane' ? arenaFor(doc?.level).step : S.grid.size;
 }
 
 function laneAt(x) {
-  return clamp(Math.floor(x / LANE_W), 0, LANES - 1);
+  return arenaLane(x,arenaFor(doc?.level));
 }
 
 const requestRender = (() => {
@@ -206,7 +207,15 @@ function render() {
 
 // ------------------------------------------------------------------ Dokument
 
+function setArenaStyle(tx,style) {
+  const a=arenaFor(style),candidate={...doc.level,arenaStyle:style,start:{...doc.level.start,lane:doc.objects.length?Math.min(doc.level.start.lane,a.lanes-1):a.startLane}};
+  const invalid=validateLevelData(candidate).issues.filter(i=>i.severity==='error'&&['bounds','trap','start'].includes(i.code));
+  if(invalid.length){toast('Arena nicht geändert: Objekte zuerst in die neuen Grenzen verschieben. Keine automatische Skalierung.','warn');return;}
+  const l=tx.touchMeta();l.arenaStyle=style;l.start=candidate.start;delete l.replay;
+}
+
 function onDocChange(info) {
+  const arenaChanged=view.arena.id!==arenaFor(doc.level).id;view.arena=arenaFor(doc.level);if(arenaChanged){view.resetZoom();if(S.testMarker)S.testMarker.lane=Math.min(S.testMarker.lane,view.arena.lanes-1);props.render();}
   if (S.rhythm) stopRhythm();
   for (const id of [...S.selection]) if (!PSEUDO.has(id) && !doc.get(id)) S.selection.delete(id);
   requestRender();
@@ -225,6 +234,7 @@ function onDocChange(info) {
 
 function loadDocument(level, { sourceId = null, clean = true, message } = {}) {
   stopRhythm();
+  view.arena=arenaFor(level);
   S.previewTime = 0;
   if (S.editTx) S.editTx = null;
   if (!doc) doc = new LevelDoc(level, onDocChange);
@@ -748,7 +758,7 @@ function nudge(dx, dy) {
   edit('Verschieben', (tx) => {
     for (const o of objs) {
       const x = tx.touch(o.id);
-      if (x.type !== 'hint') x.x = clamp(round2(x.x + dx), 0, WORLD_W - x.w);
+      if (x.type !== 'hint') {const a=x.axis==='x'?x.amplitude:0;x.x = clamp(round2(x.x + dx), a, arenaFor(doc?.level).width - x.w-a);}
       x.y = Math.max(0, round2(x.y + dy));
     }
   });
@@ -841,11 +851,12 @@ function loadPrefs() {
 // ------------------------------------------------------------------ Platzieren und Ziehen
 
 function ghostFor(kind, wx, wy) {
+  if(arenaFor(doc?.level).id==='compact'&&(wx<0||wx>arenaFor(doc.level).width))return null;
   const k = KINDS[kind];
   if (!k) return null;
-  if(isTrap(k)){const a=k.axis==='x'?k.amplitude:0;return {...k,x:clamp(snapLeft(wx-k.w/2),a,WORLD_W-k.w-a),y:Math.max(k.h/2+(k.axis==='y'?k.amplitude:0),snapY(wy))};}
+  if(isTrap(k)){const a=k.axis==='x'?k.amplitude:0;return {...k,x:clamp(snapLeft(wx-k.w/2),a,arenaFor(doc?.level).width-k.w-a),y:Math.max(k.h/2+(k.axis==='y'?k.amplitude:0),snapY(wy))};}
   if (k.type === 'obstacle' || k.type === 'seal') {
-    const x = clamp(snapLeft(wx - k.w / 2), 0, WORLD_W - k.w);
+    const x = clamp(snapLeft(wx - k.w / 2), 0, arenaFor(doc?.level).width - k.w);
     return { ...k, x, y: Math.max(k.h / 2, snapY(wy)) };
   }
   if (k.type === 'hint') return { ...k, y: Math.max(0, snapY(wy)) };
@@ -876,7 +887,7 @@ function placeAt(kind, wx, wy) {
     return null;
   }
   const tx = doc.begin(`${KINDS[kind].label} platzieren`);
-  const obj = isTrap(g)?{...normalizeTrap({...g,id:doc.newId(g.type)}).clean}:g.type === 'hint'
+  const obj = isTrap(g)?{...normalizeTrap({...g,id:doc.newId(g.type)},arenaFor(doc.level).width).clean}:g.type === 'hint'
     ? { id: doc.newId('hint'), type: 'hint', y: g.y, text: g.text }
     : g.type === 'seal'
       ? { id: doc.newId('seal'), type: 'seal', x: g.x, y: g.y, w: g.w, h: g.h, openSec: g.openSec }
@@ -914,7 +925,7 @@ function updateMove(d, wx, wy, sx, sy) {
     maxX = Math.max(maxX, o.x + o.w+(o.axis==='x'?o.amplitude:0));
     minY = Math.min(minY, o.y - o.h / 2-(o.axis==='y'?o.amplitude:0));
   }
-  if (minX !== Infinity) dx = clamp(dx, -minX, WORLD_W - maxX);
+  if (minX !== Infinity) dx = clamp(dx, -minX, arenaFor(doc?.level).width - maxX);
   dy = Math.max(dy, -minY);
   for (const [id, o] of d.orig) {
     const x = doc.get(id);
@@ -939,7 +950,7 @@ function updateResize(d, wx, wy) {
   const bottom = g.y - g.h / 2;
   const snapH = (v) => (!snapOn() || S.grid.snapY !== 'grid' ? Math.round(v) : Math.round(v / S.grid.size) * S.grid.size);
   if (d.handle === 'r') {
-    const edge = clamp(snapRight(wx), g.x + LIMITS.minW, WORLD_W);
+    const edge = clamp(snapRight(wx), g.x + LIMITS.minW, arenaFor(doc?.level).width);
     o.w = round2(edge - g.x);
   } else if (d.handle === 'l') {
     const edge = clamp(snapLeft(wx), 0, right - LIMITS.minW);
@@ -954,7 +965,7 @@ function updateResize(d, wx, wy) {
     o.h = h;
     o.y = round2(top - h / 2);
   }
-  if(isTrap(o)){const size=clamp(d.handle==='l'||d.handle==='r'?o.w:o.h,16,80);o.w=o.h=size;const a=o.axis==='x'?o.amplitude:0;o.x=clamp(o.x,a,WORLD_W-size-a);}
+  if(isTrap(o)){const size=clamp(d.handle==='l'||d.handle==='r'?o.w:o.h,16,80);o.w=o.h=size;const a=o.axis==='x'?o.amplitude:0;o.x=clamp(o.x,a,arenaFor(doc?.level).width-size-a);}
   doc.touched();
 }
 
@@ -963,7 +974,7 @@ function marqueeSelect(m, add) {
   const b = view.toWorld(Math.max(m.x0, m.x1), Math.min(m.y0, m.y1));
   const ids = [];
   for (const o of doc.objects) {
-    const r = objRect(o);
+    const r = objRect(o,arenaFor(doc.level));
     if (r.x1 >= a.x && r.x0 <= b.x && r.y1 >= a.y && r.y0 <= b.y) ids.push(o.id);
   }
   setSelection(ids, { add });
@@ -1756,7 +1767,7 @@ function bindMobile() {
 
 const app = {
   S, get doc() { return doc; }, liveEdit, commitEdit, edit, toast, duplicate, deleteSelection, setToggle, playtest,
-  removeTestMarker, clearReplay, markEditorState,
+  removeTestMarker, clearReplay, markEditorState, setArenaStyle,
 };
 
 function bindUi() {

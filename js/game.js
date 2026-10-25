@@ -1,5 +1,5 @@
 import {
-  BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, LANES, LANE_W, CHECKPOINT_EVERY_BEATS,
+  BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, CHECKPOINT_EVERY_BEATS,
   SIM_DT, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
   CAMERA_PLAYER_Y, CAMERA_MIN_BOTTOM, SWITCH_SHAKE, DEATH_SHAKE, SHAKE_PX,
   PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE, PARTICLE_CAP,
@@ -43,6 +43,7 @@ export class Game {
     this.events = events || {};
     this.levelData = level || levelFromRows(rows || [], { id: 'test', name: 'Test' });
     this.level = buildLevelRuntime(this.levelData);
+    this.arena=this.level.arena;
     this.rows = this.level.rows;
     this.lines = this.level.lines;
     this.obstacles = this.level.obstacles;
@@ -61,7 +62,7 @@ export class Game {
     if (this.audio.setLevel) this.audio.setLevel(this.level);
     this.startFrom = null;
     this.recording = null;
-    this.player = new Player();
+    this.player = new Player(this.arena.id);
     this.particles = new ParticlePool(PARTICLE_CAP);
     this.anim = new RiftlingAnimator();
     this.backdrop = new Backdrop();
@@ -105,6 +106,7 @@ export class Game {
     this.endless=null;
     this.audio.stop?.();
     this.levelData=data;this.level=buildLevelRuntime(data);this.storage=storage;
+    this.arena=this.level.arena;this.player.arena=this.arena;
     this.rows=this.level.rows;this.lines=this.level.lines;
     this.obstacles=this.level.obstacles;this.seals=this.level.seals;
     this.collideRange=this.level.maxChh+HIT_RADIUS+2;
@@ -118,7 +120,7 @@ export class Game {
     this.dimBlend=this.level.start.dim==='R'?1:0;this.anim.reset(this.dimBlend);
     this.flash=this.shake=this.switchPulse=this.clearAge=0;
     this.timelineRevision++;
-    const v=this.view;this.backdrop.configure(v.cssW,v.cssH,v.dpr,this.level.theme);
+    const v=this.view;this.resize(v.cssW,v.cssH,v.dpr);
     this.toMenu();
   }
 
@@ -133,7 +135,7 @@ export class Game {
   }
 
   get attemptsDisplay() {
-    if(this.mode==='endless')return this.storage.stats.attempts;
+    if(this.mode==='endless'||this.mode==='lab')return this.storage.stats.attempts;
     if(this.storage.progression?.isolated)return this.sessionAttempts;
     return this.mode === 'normal' ? this.storage.stats.attempts : this.sessionAttempts;
   }
@@ -148,7 +150,7 @@ export class Game {
     const viewH = cssH / scale;
     this.view = {
       cssW, cssH, dpr, scale,
-      offsetX: (cssW - WORLD_W * scale) / 2,
+      offsetX: (cssW - this.arena.width * scale) / 2,
       viewH,
       playerSY: Math.min(viewH * CAMERA_PLAYER_Y, viewH - CAMERA_MIN_BOTTOM),
     };
@@ -197,7 +199,7 @@ export class Game {
     this.timelineRevision++;
     this.runStartBest=this.storage.stats.best;
     if (this.storage.beginRun) {
-      this.run=this.storage.beginRun((this.mode==='normal'||this.mode==='endless')&&!this.startFrom);
+      this.run=this.storage.beginRun((this.mode==='normal'||this.mode==='endless'||this.mode==='lab')&&!this.startFrom,this.mode);
       if(this.mode==='practice'||this.storage.progression.isolated)this.sessionAttempts++;
     } else if (this.mode === 'normal') {
       this.storage.stats.attempts++;
@@ -235,6 +237,7 @@ export class Game {
     this.audio.seek(this.t);
     this.audio.setDimension?.(this.player.dim, true);
     this.beatEffects.seek(this.t);
+    this.ui.setArena?.(this.arena.id,this.mode);
     this.ui.show(null);
     this.input.guard();
     this.setupAutoplay();
@@ -350,7 +353,7 @@ export class Game {
       this.particles.spawn(p.x + Math.cos(a) * 10, y + Math.sin(a) * 10, Math.cos(a) * 150, Math.sin(a) * 150 + CLIMB_SPEED, 0.2, 1.8, i % 2 ? col : '#ffffff', 0.86, K.GLOW);
     }
     if (atWall) {
-      const wx = dir > 0 ? WORLD_W - 2 : 2;
+      const wx = dir > 0 ? this.arena.width - 2 : 2;
       for (let i = 0, n = 8; i < n; i++) {
         this.particles.spawn(wx, y + (Math.random() - 0.5) * 24, -dir * (60 + Math.random() * 120), (Math.random() - 0.5) * 120, 0.28, 2, '#ffffff', 0.88, K.SPARK);
       }
@@ -403,7 +406,7 @@ export class Game {
     if (this.state === 'playing') {
       this.beatEffects.update(this.t, () => {
         const col = COLORS[this.player.dim].main;
-        for (const x of [5, WORLD_W - 5]) this.particles.spawn(x, this.y + 100, 0, 20, .18, 1.6, col, .3, K.SPARK);
+        for (const x of [5, this.arena.width - 5]) this.particles.spawn(x, this.y + 100, 0, 20, .18, 1.6, col, .3, K.SPARK);
       });
       this.audio.update(this.t);
       this.saveProgress();
@@ -573,7 +576,7 @@ export class Game {
     this.deathAge = 0;
     this.deathTimer = this.mode === 'practice' ? DEATH_FREEZE_SEC * 0.8 : DEATH_FREEZE_SEC;
     // Retry is available at once; the existing impact animation continues behind it.
-    if(this.mode==='normal'||this.mode==='endless'){this.deathShown=true;this.showDeathResult();}
+    if(this.mode==='normal'||this.mode==='endless'||this.mode==='lab'){this.deathShown=true;this.showDeathResult();}
   }
 
   finishDeath() {
@@ -591,7 +594,7 @@ export class Game {
   }
 
   saveProgress(force=false) {
-    if(this.storage.report)return this.mode==='normal'||this.mode==='endless'?this.storage.report(this.run,this.t,this.progress,force):false;
+    if(this.storage.report)return this.mode==='normal'||this.mode==='endless'||this.mode==='lab'?this.storage.report(this.run,this.t,this.progress,force):false;
     if (this.mode !== 'normal' || this.progress <= (this.storage.stats.best || 0)) return false;
     this.storage.stats.best = this.progress;
     this.storage.save();
@@ -645,7 +648,7 @@ export class Game {
     }
     this.audio.stop?.();
     this.audio.sfx('win');
-    this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay, isNewBest:this.runStartBest<100, medal:this.storage.stats.medal, rewards:this.run?.rewards || [] });
+    this.ui.showWin({ mode: this.mode, attempts: this.attemptsDisplay, isNewBest:this.runStartBest<100, medal:this.storage.stats.medal, rewards:this.run?.rewards || [],levelName:this.level.name });
     if (this.events.onWin) {
       const replay = this.recording ? { taps: this.recording.slice() } : null;
       this.events.onWin({ mode: this.mode, attempts: this.attemptsDisplay, replay, from: this.startFrom });
@@ -682,6 +685,13 @@ export class Game {
     {
       ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0);
       this.backdrop.render(ctx, camY * v.scale, blend, this.endless?this.t:inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
+      if(this.arena.id==='compact'){
+        // Retain Classic pixel scale/lookahead; dark outer architecture is not playable.
+        const edge=v.offsetX,right=edge+this.arena.width*v.scale;
+        ctx.fillStyle='rgba(2,5,14,.57)';ctx.fillRect(0,0,edge,v.cssH);ctx.fillRect(right,0,v.cssW-right,v.cssH);
+        ctx.strokeStyle='rgba(111,132,187,.19)';ctx.lineWidth=1;
+        for(const x of [edge-14,right+14]){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,v.cssH);ctx.stroke();}
+      }
     }
 
     const amp = this.shake * this.shake * SHAKE_PX;
@@ -689,12 +699,13 @@ export class Game {
     const sy = amp ? (Math.random() - 0.5) * amp : 0;
     const k = v.dpr * v.scale;
     ctx.setTransform(k, 0, 0, k, v.dpr * v.offsetX + sx * k, sy * k);
+    if(this.arena.id==='compact'){ctx.save();ctx.beginPath();ctx.rect(0,0,this.arena.width,H);ctx.clip();}
 
     // --- Effekt-Ebene (liegt UNTER den Hindernissen)
     if (this.flash > 0) {
       ctx.globalAlpha = this.flash * 0.08;
       ctx.fillStyle = COLORS[dim].main;
-      ctx.fillRect(0, 0, WORLD_W, H);
+      ctx.fillRect(0, 0, this.arena.width, H);
       ctx.globalAlpha = 1;
     }
 
@@ -705,16 +716,16 @@ export class Game {
     if (inGame && strongPulse > .01) {
       ctx.globalAlpha = strongPulse * .025;
       ctx.fillStyle = accent.main;
-      ctx.fillRect(0, 0, WORLD_W, H);
+      ctx.fillRect(0, 0, this.arena.width, H);
       ctx.globalAlpha = 1;
     }
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'rgba(255,255,255,0.05)';
     ctx.beginPath();
-    for (let i = 1; i < LANES; i++) {
-      ctx.moveTo(i * LANE_W, 0);
-      ctx.lineTo(i * LANE_W, H);
+    for (let i = 1; i < this.arena.lanes; i++) {
+      ctx.moveTo(this.arena.inset+(i-.5)*this.arena.step, 0);
+      ctx.lineTo(this.arena.inset+(i-.5)*this.arena.step, H);
     }
     ctx.stroke();
 
@@ -727,7 +738,7 @@ export class Game {
       ctx.globalAlpha = strong ? 0.3 + 0.5 * pulse : 1;
       ctx.beginPath();
       ctx.moveTo(0, by);
-      ctx.lineTo(WORLD_W, by);
+      ctx.lineTo(this.arena.width, by);
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
@@ -735,16 +746,16 @@ export class Game {
     ctx.fillStyle = accent.main;
     ctx.globalAlpha = 0.25 + 0.35 * pulse;
     ctx.fillRect(0, 0, 2, H);
-    ctx.fillRect(WORLD_W - 2, 0, 2, H);
+    ctx.fillRect(this.arena.width - 2, 0, 2, H);
     const bump = this.player.wallBump;
     if (inGame && bump) {
       ctx.globalAlpha = Math.abs(bump) * 0.9;
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(bump > 0 ? WORLD_W - 4 : 0, psy - 40, 4, 80);
+      ctx.fillRect(bump > 0 ? this.arena.width - 4 : 0, psy - 40, 4, 80);
     }
     ctx.globalAlpha = 1;
 
-    if (!inGame) return;
+    if (!inGame) {if(this.arena.id==='compact')ctx.restore();return;}
 
     // Rift Pulse (Energiewelle) und Reichweiten-Hinweis – unter den Hindernissen
     this.renderPulses(ctx, camY, psy);
@@ -760,6 +771,7 @@ export class Game {
     if (this.state === 'won') this.renderClear(ctx, psy);
     this.renderDeath(ctx, camY, psy);
     if (this.debug.hitboxes) this.renderDebug(ctx, camY, psy, H);
+    if(this.arena.id==='compact')ctx.restore();
   }
 
   renderClear(ctx, sy) {
@@ -776,7 +788,7 @@ export class Game {
   }
 
   renderMarkers(ctx, camY, psy, H) {
-    if(this.endless){ctx.font='700 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#b6d4e1';for(const [y,text]of this.level.hints){const sy=psy-(y-camY);if(sy>-20&&sy<H)ctx.fillText(text,WORLD_W/2,sy);}return;}
+    if(this.endless){ctx.font='700 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#b6d4e1';for(const [y,text]of this.level.hints){const sy=psy-(y-camY);if(sy>-20&&sy<H)ctx.fillText(text,this.arena.width/2,sy);}return;}
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -787,7 +799,7 @@ export class Game {
       const by = psy - (sec.labelY - camY);
       if (by < -20 || by > H + 20) continue;
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.fillText(`${sec.id} · ${sec.name.toUpperCase()}`, WORLD_W / 2, by);
+      ctx.fillText(`${sec.id} · ${sec.name.toUpperCase()}`, this.arena.width / 2, by);
     }
     ctx.font = '800 14px system-ui, sans-serif';
     for (const [hy, text] of this.level.hints) {
@@ -795,12 +807,12 @@ export class Game {
       if (by < -20 || by > H + 20) continue;
       ctx.globalAlpha = clamp((H - by) / 120, 0, 1) * 0.85;
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(text, WORLD_W / 2, by);
+      ctx.fillText(text, this.arena.width / 2, by);
     }
     ctx.globalAlpha = 1;
 
     const fy = psy - (this.level.finishY - camY);
-    if (fy > -40 && fy < H + 40) drawFinish(ctx, WORLD_W, fy);
+    if (fy > -40 && fy < H + 40) drawFinish(ctx, this.arena.width, fy);
 
     if (this.mode === 'practice' && this.checkpoint && this.checkpoint.t > 0) {
       const cy = psy - (this.checkpoint.t * CLIMB_SPEED - camY);
@@ -809,7 +821,7 @@ export class Game {
         ctx.setLineDash(DASH);
         ctx.beginPath();
         ctx.moveTo(0, cy);
-        ctx.lineTo(WORLD_W, cy);
+        ctx.lineTo(this.arena.width, cy);
         ctx.stroke();
         ctx.setLineDash(NO_DASH);
       }
@@ -950,7 +962,7 @@ export class Game {
       ctx.font = '800 13px system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(kl.reason.toUpperCase(), WORLD_W / 2, ky + 36);
+      ctx.fillText(kl.reason.toUpperCase(), this.arena.width / 2, ky + 36);
     }
   }
 
@@ -1027,7 +1039,7 @@ export class Game {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillStyle = 'rgba(0,0,0,0.6)';
-    ctx.fillRect(4, H - 14 * lines.length - 10, WORLD_W - 8, 14 * lines.length + 6);
+    ctx.fillRect(4, H - 14 * lines.length - 10, this.arena.width - 8, 14 * lines.length + 6);
     ctx.fillStyle = '#00ff66';
     lines.forEach((l, i) => ctx.fillText(l, 8, H - 14 * lines.length - 6 + i * 14));
     ctx.textBaseline = 'alphabetic';

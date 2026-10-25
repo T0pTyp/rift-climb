@@ -94,11 +94,14 @@ async function boot() {
   const menuLevels = index?.levels.filter(e => e.campaign || e.id === level.id && !e.campaign) || null;
   let infinityBook=null,infinityError='';
   if(!playtest)try{infinityBook=validateChunkBook(await fetchJson('assets/endless/chunks.json'));}catch(err){infinityError='Infinity-Daten nicht verfügbar: '+err.message;}
+  const labCatalog=new Map();let labError='';
+  if(!playtest)try{for(const style of ['classic','compact']){const v=validateLevelData(await fetchJson('assets/lab/'+style+'.json'));if(!v.ok)throw Error('Ungültige '+style+'-Teststrecke');labCatalog.set(style,v.level);}}catch(err){labError=err.message;}
 
   if (handoff && handoff.debug) debug.hitboxes = true;
 
   const canvas = document.getElementById('game');
   const progression = new Progression({isolated:playtest});
+  if(!playtest&&['classic','compact'].includes(params.get('lab')))progression.setLabStyle(params.get('lab'));
   const storageFor = id => progression.storageFor(id);
   let storage = storageFor(level.id);
   const audio = new AudioEngine({ timers: !debug.manual });
@@ -111,14 +114,23 @@ async function boot() {
 
   const ui = new UI({
     progression,
+    labAvailable:()=>labCatalog.size===2,labError:()=>labError,
+    onLabStyle:style=>{if(game.state!=='menu'||!progression.setLabStyle(style))return false;const q=new URLSearchParams(location.search);q.delete('endless');q.delete('seed');q.set('lab',style);history.replaceState(null,'',location.pathname+'?'+q);return true;},
+    onLabFeedback:value=>game.state==='menu'&&progression.setLabFeedback(value),
+    onLabStart:()=>{
+      if(playtest||game.state!=='menu'||labCatalog.size!==2)return;
+      const style=progression.data.lab.style,data=labCatalog.get(style);storage=progression.labStorage(style);storage.muted=audio.muted;
+      game.setLevelData(data,storage);game.start('lab');
+      const q=new URLSearchParams(location.search);q.delete('endless');q.delete('seed');q.set('lab',style);history.replaceState(null,'',location.pathname+'?'+q);
+    },
     initialSeed:params.has('seed')?Number(params.get('seed'))>>>0:Date.now()>>>0,
     infinityAvailable:()=>!!infinityBook,infinityError:()=>infinityError,
-    onInfinityStart:seed=>{if(!infinityBook||playtest)return;storage=progression.infinityStorage(seed);storage.muted=audio.muted;game.startEndless(infinityBook,seed,storage);const q=new URLSearchParams(location.search);q.set('endless','1');q.set('seed',String(seed));history.replaceState(null,'',location.pathname+'?'+q);},
+    onInfinityStart:seed=>{if(!infinityBook||playtest)return;storage=progression.infinityStorage(seed);storage.muted=audio.muted;game.startEndless(infinityBook,seed,storage);const q=new URLSearchParams(location.search);q.delete('lab');q.set('endless','1');q.set('seed',String(seed));history.replaceState(null,'',location.pathname+'?'+q);},
     onGesture: unlockAudio,
-    onStart: (mode) => {if(game.endless)ui.h.onLevelChange(level.id);game.start(mode);},
+    onStart: (mode) => {if(game.level.id!==level.id)ui.h.onLevelChange(level.id);game.start(mode);},
     onEquip: id => {game.skinId=id;riftlingArt.loadSkin(id);ui.setSkin(id);},
     onRewardSound: name => audio.sfx(name),
-    hasNext: () => !!menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],
+    hasNext: () => game?.mode!=='lab'&&!!menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],
     onNext: () => {const next=menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],mode=game.mode;if(next){ui.h.onLevelChange(next.id);ui.openPage('levels');game.start(mode);}},
     onHome: () => {if(playtest)postToEditor({type:'forge:exit'});else{game.toMenu();ui.openPage('home');}},
     getStats: id => storageFor(id).stats,
@@ -133,9 +145,9 @@ async function boot() {
     onResume: () => game.resume(),
     onRestart: () => game.restart(),
     onDeathTap: () => game.confirm(),
-    onMenu: () => {if(playtest)postToEditor({type:'forge:exit'});else{game.toMenu();ui.openPage('levels');}},
+    onMenu: () => {if(playtest)postToEditor({type:'forge:exit'});else{const lab=game.mode==='lab';game.toMenu();ui.openPage(lab?'lab':'levels');}},
     onLevelChange: (id) => {
-      if (!catalog.has(id) || id === level.id && !game.endless || playtest) return;
+      if (!catalog.has(id) || id === game.level.id || playtest) return;
       level = catalog.get(id);
       storage = storageFor(id);
       storage.muted = audio.muted;
@@ -143,7 +155,7 @@ async function boot() {
       ui.setLevels(menuLevels, level, false, catalog);
       ui.updateMenu(storage.stats, audio.muted);
       const q = new URLSearchParams(location.search);
-      q.delete('endless');q.delete('seed');
+      q.delete('endless');q.delete('seed');q.delete('lab');
       if (id === index.default) q.delete('level'); else q.set('level', id);
       history.replaceState(null, '', location.pathname + (q.size ? '?' + q : ''));
 
@@ -162,8 +174,9 @@ async function boot() {
     onConfirm: () => {
       unlockAudio();
       if (game.state === 'menu') {
+        if(ui.panels.page==='lab'){ui.h.onLabStart();return true;}
         if(ui.panels.page!=='levels'){ui.openPage('levels');return true;}
-        game.start('normal');
+        ui.h.onStart('normal');
         return true;
       }
       return game.confirm();
@@ -184,6 +197,7 @@ async function boot() {
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
     infinity:game.endless?{seed:game.endless.seed,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index})),generated:game.endless.generated}:null,
     traps:game.traps.traps.filter(o=>Math.abs(o.y-game.y)<trapReach(o)+game.lookaheadSec*260).map(o=>({id:o.id,type:o.type,dimension:o.color,state:o.state,...trapPose(o,game.t)})),
@@ -276,6 +290,7 @@ async function boot() {
     ui.show('menu');
     if(params.has('level'))ui.openPage('levels');
     if(params.has('endless'))ui.openPage('infinity');
+    if(params.has('lab'))ui.openPage('lab');
   }
   requestAnimationFrame(frame);
 }

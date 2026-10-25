@@ -6,6 +6,44 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## COMPACT MODE / ARENA LAB (M7.6)
+
+Im Hauptmenü **ARENA LAB** öffnen, unter **ARENA STYLE** Classic oder Compact wählen und einen Test-Run starten.
+Die letzte Auswahl und optionales Spaß-Feedback bleiben lokal gespeichert. Ein Wechsel während des Runs ist gesperrt.
+Kampagne und Infinity bleiben vollständig Classic; es gibt keine automatische Verengung vorhandener Levels.
+
+| Variante | Breite | Zielschritt je Impuls | Weg nach 220 ms | Aufstieg / Hitbox |
+| --- | --- | --- | --- | --- |
+| Classic | 360 u | 90 u | 85,50 u | 260 u/s / Radius 8 u |
+| Compact | 216 u | 45 u | 42,75 u | identisch |
+
+Die vorhandene Bewegung ist eine gedämpfte Feder zu Zielspuren. Compact nutzt fünf Ziele im halben Classic-Abstand:
+`18, 63, 108, 153, 198`. Von der Mitte 108 führen zwei gleichgerichtete Impulse zum jeweiligen sicheren Randziel.
+Die Federzeit bleibt unverändert. Kamera-Pixelskalierung, Figur, Animationen und hochwertige Assets bleiben gleich;
+der schmalere Korridor sitzt mittig, die Touch-Zonen bleiben die **gesamten Displayhälften**.
+
+Eine handgefertigte **40-Sekunden-Teststrecke** bietet in beiden Varianten dieselben **28 Eingabezeitpunkte**,
+Richtungswechsel, Dimensionen, Siegel und Fallen. Die Geometrie und freien Korridore sind einzeln abgestimmt;
+Spieler- und Fallenhitboxen werden nicht verkleinert. Beide regulären Replays erreichen mit echten Kollisionen 100 %.
+
+Je Variante werden Versuche, Bestwert, Abschlüsse, Todesfälle und durchschnittlicher gemessener Fortschritt erfasst.
+Diese Lab-Daten liegen getrennt von offiziellen Medaillen, Achievements, Designs und Kampagnenstatistiken im
+bestehenden Save. LEVEL FORGE unterstützt die additive Metadatenwahl `arenaStyle` inklusive Grenzen, Raster,
+JSON, Kamera und Playtest; fehlende Angaben bedeuten Classic. Bestehende Geometrie wird nicht automatisch skaliert.
+
+**Vergleichsgrenze:** Compact hat kürzere Wege und andere Eingabetoleranzen; gleiche Schwierigkeit ist nicht bewiesen.
+Classic besitzt vier Zielspuren, Compact fünf halbe Zielschritte. Eine komplette Wand-zu-Wand-Fahrt braucht damit
+drei bzw. vier Zielwechsel. Welches Spielgefühl besser ist, muss der persönliche Test zeigen.
+
+[ARENA LAB öffnen](https://t0ptyp.github.io/rift-climb/?lab=compact) ·
+[Architektur und Daten](docs/ARENA-LAB.md) · [Tests und Grenzen](docs/M7.6-TEST-REPORT.md)
+
+```sh
+npm run test:compact          # reale Impulse, Zwei-Tipp-Test, Lab-Replays, Speicherung/Isolation
+npm run test:compact:timing   # vollständige Replays mit einzeln verschobenen Eingaben
+npm run test:compact:e2e      # Desktop, Chromium-Touch, WebKit, mobiler Forge
+```
+
 ## RIFT EXPANSION (M7.5, auf dem bestehenden M8-System)
 
 **Sechs direkt wählbare Levels und RIFT INFINITY.** Die drei ursprünglichen M7-Parcours sind unverändert.

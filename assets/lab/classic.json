@@ -1,0 +1,843 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "arena-lab-classic",
+  "name": "ARENA LAB · CLASSIC",
+  "description": "Lokaler Arena-Vergleich. Gleiche 28 Aufgaben, unveränderte Spieler-Hitbox, 40 Sekunden.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 10660,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 10400
+  },
+  "theme": "spire",
+  "music": "first-pulse",
+  "arenaStyle": "classic",
+  "sections": [
+    {
+      "id": "A",
+      "name": "TURN",
+      "y": 0,
+      "labelY": 20
+    },
+    {
+      "id": "B",
+      "name": "DIMENSIONS",
+      "y": 2080,
+      "labelY": 2040
+    },
+    {
+      "id": "C",
+      "name": "PULSE",
+      "y": 4680,
+      "labelY": 4640
+    },
+    {
+      "id": "D",
+      "name": "PRECISION",
+      "y": 7280,
+      "labelY": 7240
+    }
+  ],
+  "objects": [
+    {
+      "id": "g0-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 520,
+      "w": 177,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g0-r",
+      "type": "obstacle",
+      "x": 273,
+      "y": 520,
+      "w": 87,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g1-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 780,
+      "w": 264,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g2-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1170,
+      "w": 177,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g2-r",
+      "type": "obstacle",
+      "x": 273,
+      "y": 1170,
+      "w": 87,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g3-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1560,
+      "w": 87,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g3-r",
+      "type": "obstacle",
+      "x": 183,
+      "y": 1560,
+      "w": 177,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g4-r",
+      "type": "obstacle",
+      "x": 87,
+      "y": 1950,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-4",
+      "type": "obstacle",
+      "x": 3,
+      "y": 1950,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "g5-r",
+      "type": "obstacle",
+      "x": 87,
+      "y": 2340,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-5",
+      "type": "obstacle",
+      "x": 3,
+      "y": 2340,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "g6-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 2730,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g6-r",
+      "type": "obstacle",
+      "x": 177,
+      "y": 2730,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-6",
+      "type": "obstacle",
+      "x": 93,
+      "y": 2730,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "g7-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3120,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g7-r",
+      "type": "obstacle",
+      "x": 267,
+      "y": 3120,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-7",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3120,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "g8-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3510,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-8",
+      "type": "obstacle",
+      "x": 273,
+      "y": 3510,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "g9-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3900,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g9-r",
+      "type": "obstacle",
+      "x": 267,
+      "y": 3900,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-9",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3900,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "g10-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4290,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g10-r",
+      "type": "obstacle",
+      "x": 177,
+      "y": 4290,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-10",
+      "type": "obstacle",
+      "x": 93,
+      "y": 4290,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "g11-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4680,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g11-r",
+      "type": "obstacle",
+      "x": 267,
+      "y": 4680,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-11",
+      "type": "seal",
+      "x": 183,
+      "y": 4680,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g12-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 5070,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-12",
+      "type": "seal",
+      "x": 273,
+      "y": 5070,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g13-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 5460,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g13-r",
+      "type": "obstacle",
+      "x": 267,
+      "y": 5460,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-13",
+      "type": "saw",
+      "x": 209,
+      "y": 5460,
+      "w": 32,
+      "h": 32,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0,
+      "spin": 4,
+      "axis": "none"
+    },
+    {
+      "id": "g14-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 5850,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g14-r",
+      "type": "obstacle",
+      "x": 177,
+      "y": 5850,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-14",
+      "type": "seal",
+      "x": 93,
+      "y": 5850,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g15-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6240,
+      "w": 183,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g15-r",
+      "type": "obstacle",
+      "x": 267,
+      "y": 6240,
+      "w": 93,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-15",
+      "type": "seal",
+      "x": 183,
+      "y": 6240,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g16-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6630,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-16",
+      "type": "saw",
+      "x": 299,
+      "y": 6630,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0,
+      "spin": 4,
+      "axis": "none"
+    },
+    {
+      "id": "g17-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 7020,
+      "w": 273,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-17",
+      "type": "obstacle",
+      "x": 273,
+      "y": 7020,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "g18-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 7410,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g18-r",
+      "type": "obstacle",
+      "x": 264,
+      "y": 7410,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-18",
+      "type": "mine",
+      "x": 209,
+      "y": 7410,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "activationRadius": 140,
+      "chargeSec": 0.7,
+      "blastRadius": 70,
+      "blastSec": 0.22
+    },
+    {
+      "id": "g19-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 7800,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g19-r",
+      "type": "obstacle",
+      "x": 174,
+      "y": 7800,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-19",
+      "type": "seal",
+      "x": 96,
+      "y": 7800,
+      "w": 78,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g20-r",
+      "type": "obstacle",
+      "x": 84,
+      "y": 8190,
+      "w": 276,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-20",
+      "type": "laser",
+      "x": 29,
+      "y": 8190,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0,
+      "startAngle": 70,
+      "endAngle": 110,
+      "sweepPeriod": 3,
+      "length": 140,
+      "beamWidth": 10,
+      "warnSec": 0.9,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "g21-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8450,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g21-r",
+      "type": "obstacle",
+      "x": 174,
+      "y": 8450,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-21",
+      "type": "obstacle",
+      "x": 96,
+      "y": 8450,
+      "w": 78,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "g22-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8710,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g22-r",
+      "type": "obstacle",
+      "x": 264,
+      "y": 8710,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-22",
+      "type": "saw",
+      "x": 209,
+      "y": 8710,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0,
+      "spin": 4,
+      "axis": "none"
+    },
+    {
+      "id": "g23-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8970,
+      "w": 276,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-23",
+      "type": "seal",
+      "x": 276,
+      "y": 8970,
+      "w": 78,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g24-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9230,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g24-r",
+      "type": "obstacle",
+      "x": 264,
+      "y": 9230,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-24",
+      "type": "mine",
+      "x": 209,
+      "y": 9230,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "activationRadius": 140,
+      "chargeSec": 0.7,
+      "blastRadius": 70,
+      "blastSec": 0.22
+    },
+    {
+      "id": "g25-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9490,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g25-r",
+      "type": "obstacle",
+      "x": 174,
+      "y": 9490,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-25",
+      "type": "laser",
+      "x": 119,
+      "y": 9490,
+      "w": 32,
+      "h": 32,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0,
+      "startAngle": 70,
+      "endAngle": 110,
+      "sweepPeriod": 3,
+      "length": 140,
+      "beamWidth": 10,
+      "warnSec": 0.9,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "g26-r",
+      "type": "obstacle",
+      "x": 84,
+      "y": 9750,
+      "w": 276,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-26",
+      "type": "seal",
+      "x": 6,
+      "y": 9750,
+      "w": 78,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "g27-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10010,
+      "w": 96,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "g27-r",
+      "type": "obstacle",
+      "x": 174,
+      "y": 10010,
+      "w": 186,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-27",
+      "type": "obstacle",
+      "x": 96,
+      "y": 10010,
+      "w": 78,
+      "h": 14,
+      "dimension": "red"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 1.7,
+        "dir": 1
+      },
+      {
+        "t": 2.7,
+        "dir": 1
+      },
+      {
+        "t": 4.2,
+        "dir": -1
+      },
+      {
+        "t": 5.7,
+        "dir": -1
+      },
+      {
+        "t": 7.2,
+        "dir": -1
+      },
+      {
+        "t": 8.7,
+        "dir": -1
+      },
+      {
+        "t": 10.2,
+        "dir": 1
+      },
+      {
+        "t": 11.7,
+        "dir": 1
+      },
+      {
+        "t": 13.2,
+        "dir": 1
+      },
+      {
+        "t": 14.7,
+        "dir": -1
+      },
+      {
+        "t": 16.2,
+        "dir": -1
+      },
+      {
+        "t": 17.7,
+        "dir": 1
+      },
+      {
+        "t": 19.2,
+        "dir": 1
+      },
+      {
+        "t": 20.7,
+        "dir": -1
+      },
+      {
+        "t": 22.2,
+        "dir": -1
+      },
+      {
+        "t": 23.7,
+        "dir": 1
+      },
+      {
+        "t": 25.2,
+        "dir": 1
+      },
+      {
+        "t": 26.7,
+        "dir": 1
+      },
+      {
+        "t": 28.2,
+        "dir": -1
+      },
+      {
+        "t": 29.7,
+        "dir": -1
+      },
+      {
+        "t": 31.2,
+        "dir": -1
+      },
+      {
+        "t": 32.2,
+        "dir": 1
+      },
+      {
+        "t": 33.2,
+        "dir": 1
+      },
+      {
+        "t": 34.2,
+        "dir": 1
+      },
+      {
+        "t": 35.2,
+        "dir": -1
+      },
+      {
+        "t": 36.2,
+        "dir": -1
+      },
+      {
+        "t": 37.2,
+        "dir": -1
+      },
+      {
+        "t": 38.2,
+        "dir": 1
+      }
+    ]
+  }
+}

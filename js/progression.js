@@ -1,3 +1,4 @@
+import {blankLab,cleanLab,mergeLab,labStorage,reportLab,finishLab} from './lab-stats.js';
 import { ACHIEVEMENTS, SKINS, medalFor } from './rewards.js';
 import { STORAGE_KEY, readJson } from './storage.js';
 import {CLIMB_SPEED} from './config.js';
@@ -8,14 +9,14 @@ const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const integer=(v,max=Number.MAX_SAFE_INTEGER)=>Number.isFinite(v)?Math.min(max,Math.max(0,Math.floor(v))):0;
 const date=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))?v:null;
 const safeId=id=>/^[a-z0-9][a-z0-9-]{0,39}$/.test(id);
-const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,recordAt:null,lastSeed:null}});
+const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,recordAt:null,lastSeed:null},lab:blankLab()});
 function cleanLevel(id,raw) {
  const r=object(raw),clears=integer(r.clears),completed=r.completed===true||clears>0||integer(r.best,100)===100;
  const best=completed?100:integer(r.best,99);
  return {id,best,attempts:integer(r.attempts),clears,deaths:integer(r.deaths),completed,medal:medalFor(best),firstCompletedAt:date(r.firstCompletedAt),lastPlayedAt:date(r.lastPlayedAt),historyIncomplete:!!r.historyIncomplete};
 }
 function normalize(raw) {
- const s=blank(),r=object(raw);s.profile.activePlaytimeMs=integer(r.profile?.activePlaytimeMs);s.profile.historyIncomplete=!!r.profile?.historyIncomplete;
+ const s=blank(),r=object(raw);s.lab=cleanLab(r.lab);s.profile.activePlaytimeMs=integer(r.profile?.activePlaytimeMs);s.profile.historyIncomplete=!!r.profile?.historyIncomplete;
  s.endless={bestHeight:integer(r.endless?.bestHeight),attempts:integer(r.endless?.attempts),lastHeight:integer(r.endless?.lastHeight),recordAt:date(r.endless?.recordAt),lastSeed:Number.isInteger(r.endless?.lastSeed)?r.endless.lastSeed>>>0:null};
  for(const [id,l] of Object.entries(object(r.levels)))if(safeId(id))s.levels[id]=cleanLevel(id,l);
  for(const a of ACHIEVEMENTS)if(r.achievements?.[a.id]?.unlocked===true)s.achievements[a.id]={unlocked:true,unlockedAt:date(r.achievements[a.id].unlockedAt)};
@@ -39,7 +40,7 @@ export class Progression {
    if(source)this.data=normalize(source);
    // Recover monotonic evidence even when individual fields of the primary are damaged.
    if(backup?.schemaVersion===2) {
-    const b=normalize(backup);
+    const b=normalize(backup);mergeLab(this.data.lab,b.lab);
     for(const [id,old] of Object.entries(b.levels)) {
      const l=this.level(id);for(const k of ['best','attempts','clears','deaths'])l[k]=Math.max(l[k],old[k]);
      l.completed ||= old.completed;l.medal=medalFor(l.best);l.firstCompletedAt ||= old.firstCompletedAt;l.lastPlayedAt ||= old.lastPlayedAt;l.historyIncomplete ||= old.historyIncomplete;
@@ -88,6 +89,7 @@ export class Progression {
   run.rewards=run.rewards.filter(v=>v.type!=='medal');run.rewards.push(r);this.queue.push(r);
  }
  report(run,t,best,force=false) {
+  if(run?.kind==='lab')return reportLab(this,run,t,best,force);
   if(run?.kind==='endless')return this.reportEndless(run,t,force);
   if(!run?.eligible||run.closed)return false;
   const l=this.level(run.id),old=l.best,oldMedal=l.medal;
@@ -98,6 +100,7 @@ export class Progression {
   if(force||t-(run.savedT||0)>=1){run.savedT=t;this.persist();}return l.best>old;
  }
  finish(run,t,best,outcome) {
+  if(run?.kind==='lab')return finishLab(this,run,t,best,outcome);
   if(run?.kind==='endless'){if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;this.persist();return true;}
   if(!run?.eligible||run.closed)return false;
   this.report(run,t,best);run.closed=true;const l=this.level(run.id);
@@ -115,6 +118,9 @@ export class Progression {
   e.lastHeight=h;if(record){e.bestHeight=h;run.record=true;}
   if(force||t-(run.savedT||0)>=1){if(run.record)e.recordAt=this.now();run.savedT=t;this.persist();}return record;
  }
+ labStorage(style){return labStorage(this,style);}
+ setLabStyle(style){if(!['classic','compact'].includes(style))return false;this.data.lab.style=style;this.persist();return true;}
+ setLabFeedback(value){if(!['classic','compact','equal'].includes(value))return false;this.data.lab.feedback=value;this.persist();return true;}
  infinityStorage(seed) {
   const p=this,e=p.data.endless;
   return {progression:p,muted:false,stats:{get best(){return e.bestHeight;},get attempts(){return e.attempts;},clears:0},save(){p.persist();},
@@ -132,7 +138,7 @@ export class Progression {
  }
  storageFor(id) {
   if(this.adapters.has(id))return this.adapters.get(id);
-  const p=this,adapter={stats:this.level(id),muted:!!readJson(STORAGE_KEY)?.muted,progression:p,save(){p.persist();},beginRun(eligible){return p.begin(id,eligible);},report(run,t,pct,force){return p.report(run,t,pct,force);},finish(run,t,pct,outcome){return p.finish(run,t,pct,outcome);}};
+  const p=this,adapter={stats:this.level(id),muted:!!readJson(STORAGE_KEY)?.muted,progression:p,save(){p.persist();},beginRun(eligible,mode){return p.begin(id,eligible&&(mode===undefined||mode==='normal'));},report(run,t,pct,force){return p.report(run,t,pct,force);},finish(run,t,pct,outcome){return p.finish(run,t,pct,outcome);}};
   this.adapters.set(id,adapter);return adapter;
  }
 }

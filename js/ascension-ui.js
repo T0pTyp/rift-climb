@@ -1,3 +1,4 @@
+import {ARENAS} from './arena.js';
 import { ACHIEVEMENTS, SKINS, MEDAL_NAMES, medalFor } from './rewards.js';
 import { icon, medal, levelPreview, escapeText as esc } from './art/ui-assets.js';
 import { drawRiftling, riftlingArt } from './art/riftling.js';
@@ -6,7 +7,9 @@ const $=s=>document.querySelector(s);
 export class AscensionPanels {
  constructor(ui,h,bind){
   this.ui=ui;this.h=h;this.bind=bind;this.progression=h.progression;this.page='home';this.skin=this.progression.data.cosmetics.selectedSkinId;this.anim=new RiftlingAnimator();this.previewTime=0;this.last=0;this.thumbs=new Map();
-  for(const [id,page] of [['play','levels'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
+  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
+  this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
+  for(const el of document.querySelectorAll('[data-lab-feedback]'))bind(el,()=>{if(h.onLabFeedback(el.dataset.labFeedback))this.renderLab();},h.onGesture);
   this.seed=h.initialSeed;
   bind($('#btn-infinity-start'),()=>h.onInfinityStart(this.seed),h.onGesture);
   bind($('#btn-infinity-seed'),()=>{this.seed=crypto.getRandomValues(new Uint32Array(1))[0];this.renderInfinity();},h.onGesture);
@@ -24,9 +27,24 @@ export class AscensionPanels {
   $('#menu').scrollTop=0;
   if(page==='collection')this.renderCollection();if(page==='achievements')this.renderAchievements();if(page==='profile')this.renderProfile();if(page==='levels')this.ui.refreshCards();
   if(page==='infinity')this.renderInfinity();
+  if(page==='lab')this.renderLab();
   this.refreshWarning();
  }
  refreshWarning(){const el=$('#save-notice');el.hidden=!this.progression.warning;el.textContent=this.progression.warning;}
+ buildLab(){
+  for(const [id,copy] of [['classic','Breiter Korridor · vertraute Flugwege'],['compact','Schmaler Korridor · zwei Impulse zum Rand']]){
+   const width=ARENAS[id].width;
+   const b=document.createElement('button'),x=(360-width)/2;b.type='button';b.className='arena-card';b.dataset.arena=id;
+   b.innerHTML=`<svg viewBox="0 0 360 120" aria-hidden="true"><defs><linearGradient id="lab-${id}" x2="0" y2="1"><stop stop-color="#1c3652"/><stop offset="1" stop-color="#080d1c"/></linearGradient></defs><rect x="0" width="360" height="120" fill="#070c18"/><path d="M0 20H360M0 100H360" stroke="#272641"/><rect x="${x}" width="${width}" height="120" fill="url(#lab-${id})"/><path d="M${x+1} 0V120M${x+width-1} 0V120" stroke="#4be6ff" stroke-width="2"/><path d="M180 70H${x+width-20}M180 70H${x+20}" stroke="#b77aff" stroke-width="2" stroke-dasharray="4 5"/><image href="assets/riftling/body-blue.svg" x="167" y="45" width="26" height="31"/></svg><strong>${id.toUpperCase()}</strong><span>${copy}</span><small>${width} WELTEINHEITEN</small>`;
+   this.bind(b,()=>{if(this.h.onLabStyle(id))this.renderLab();},this.h.onGesture);$('#arena-choices').append(b);
+  }
+ }
+ renderLab(){
+  const l=this.progression.data.lab;for(const b of document.querySelectorAll('.arena-card[data-arena]')){const active=b.dataset.arena===l.style;b.setAttribute('aria-pressed',String(active));b.querySelector('small').textContent=ARENAS[b.dataset.arena].width+' u'+(active?' · AUSGEWÄHLT':'');}
+  $('#lab-stats').innerHTML=['classic','compact'].map(id=>{const s=l.stats[id],avg=s.attempts?(s.sumProgress/s.attempts).toFixed(1):'0.0';return `<article><h3>${id.toUpperCase()}</h3><strong>${s.best}%</strong><dl><dt>Versuche</dt><dd>${s.attempts}</dd><dt>Abschlüsse</dt><dd>${s.clears}</dd><dt>Todesfälle</dt><dd>${s.deaths}</dd><dt>Durchschnitt</dt><dd>${avg}%</dd></dl></article>`;}).join('');
+  for(const b of document.querySelectorAll('[data-lab-feedback]'))b.setAttribute('aria-pressed',String(b.dataset.labFeedback===l.feedback));
+  $('#btn-lab-start').textContent=`${l.style.toUpperCase()} · TEST-RUN STARTEN`;$('#btn-lab-start').disabled=!this.h.labAvailable();$('#lab-error').hidden=!this.h.labError();$('#lab-error').textContent=this.h.labError();
+ }
  renderInfinity(){const e=this.progression.data.endless;$('#infinity-best').textContent=e.bestHeight+' m';$('#infinity-attempts').textContent=e.attempts;$('#infinity-last').textContent='Letzter Aufstieg: '+e.lastHeight+' m';$('#infinity-seed').textContent='SEED '+this.seed+' · RETRY = GLEICHE WELT';$('#btn-infinity-start').disabled=!this.h.infinityAvailable();$('#infinity-error').hidden=!this.h.infinityError();$('#infinity-error').textContent=this.h.infinityError();}
  buildCards(levels,current,catalog){
   this.ui.current=current;this.ui.cards=new Map();const pick=$('#level-pick');pick.replaceChildren();
@@ -65,6 +83,12 @@ export class AscensionPanels {
   $('#history-note').textContent=s.historyIncomplete?'Frühere Bestwerte, Versuche und Abschlüsse wurden übernommen, einschließlich Archivlevels. Todesfälle und Spielzeit wurden damals nicht erfasst; diese Angaben zählen seit M8. Frühere Zeitpunkte sind unbekannt.':'Spielzeit zählt ausschließlich aktive Simulationszeit in Normal-Runs. Alle Daten liegen lokal in diesem Browser.';
  }
  result(type,options){
+  if(options.mode==='lab'){
+   $('#'+type+'-medal').replaceChildren();
+   if(type==='death')$('#death-attempts').textContent=`ARENA LAB · Versuch ${options.attempts}`;
+   else{$('#win-record').hidden=!options.isNewBest;$('#win-rewards').textContent='TESTLAUF GESPEICHERT · KEINE KAMPAGNENBELOHNUNG';$('#btn-next-level').hidden=true;}
+   this.refreshWarning();return;
+  }
   if(options.endless){$('#death-medal').replaceChildren();$('#death-attempts').textContent=`Endless-Versuch ${options.attempts}`;if(options.isNewBest)this.h.onRewardSound('record');return;}
   const practice=options.mode==='practice'||document.body.dataset.playtest==='1';
   const rank=practice?'none':options.medal||medalFor(options.best||0),fresh=options.rewards?.some(r=>r.type==='medal'&&r.id===rank);

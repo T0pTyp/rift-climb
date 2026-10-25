@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Kampagne, Fallen, Infinity, Physik, Audio und Ascension prüfen
+      - name: Classic, Compact, Kampagne, Fallen, Infinity und Ascension prüfen
         run: npm test
       - name: Statische Seite zusammenstellen
         run: |

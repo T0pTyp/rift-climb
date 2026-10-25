@@ -10,6 +10,7 @@ import {
   SEAL_OPEN_SEC, START_LANE, START_DIM, BPM,
 } from './config.js';
 import { isTrap, normalizeTrap } from './traps.js';
+import {arenaFor,arenaCenter,ARENAS} from './arena.js';
 
 export const LEVEL_SCHEMA = 'rift-climb-level';
 export const LEVEL_VERSION = 1;
@@ -59,18 +60,19 @@ export function halfHeights(h) {
   return { hh, chh: Math.max(1, hh - HIT_INSET_Y) };
 }
 
-export function createEmptyLevel({ id = 'neues-level', name = 'Neues Level' } = {}) {
+export function createEmptyLevel({ id = 'neues-level', name = 'Neues Level', arenaStyle } = {}) {
   const finishY = UNITS_PER_BEAT * 40;
   return {
     schema: LEVEL_SCHEMA,
     version: LEVEL_VERSION,
+    ...(arenaStyle?{arenaStyle}:{}),
     id,
     name,
     description: '',
     bpm: BPM,
     beatsPerBar: 4,
     height: finishY + UNITS_PER_BEAT * 2,
-    start: { lane: START_LANE, dimension: START_DIM === 'B' ? 'blue' : 'red' },
+    start: { lane: arenaFor(arenaStyle).startLane, dimension: START_DIM === 'B' ? 'blue' : 'red' },
     finish: { y: finishY },
     objects: [],
   };
@@ -169,11 +171,13 @@ export function validateLevelData(raw) {
 
   if (!Number.isInteger(level.beatsPerBar) || level.beatsPerBar < 2 || level.beatsPerBar > 7) err('meter', 'Beats pro Takt muss eine ganze Zahl von 2 bis 7 sein.', { field: 'beatsPerBar' });
 
+  const arena=arenaFor(raw);
+  if(raw.arenaStyle!==undefined){if(!Object.hasOwn(ARENAS,raw.arenaStyle))err('arena','Arena muss classic oder compact sein.',{field:'arenaStyle'});else level.arenaStyle=raw.arenaStyle;}
   const s = raw.start;
   if (!s || typeof s !== 'object') {
     err('start', 'Startposition fehlt.', { field: 'start' });
-  } else if (!Number.isInteger(s.lane) || s.lane < 0 || s.lane >= LANES || !START_DIMENSIONS[s.dimension]) {
-    err('start', `Startposition ungültig (Spur 0–${LANES - 1}, Dimension „blue“ oder „red“).`, { field: 'start' });
+  } else if (!Number.isInteger(s.lane) || s.lane < 0 || s.lane >= arena.lanes || !START_DIMENSIONS[s.dimension]) {
+    err('start', `Startposition ungültig (Spur 0–${arena.lanes - 1}, Dimension „blue“ oder „red“).`, { field: 'start' });
   } else {
     level.start = { lane: s.lane, dimension: s.dimension };
   }
@@ -206,7 +210,7 @@ export function validateLevelData(raw) {
       if (ids.has(id)) { err('object-id', `${name}: ID ist doppelt vergeben.`, ref); return; }
       ids.add(id);
       if(isTrap(o)) {
-        const {clean,errors}=normalizeTrap(o);
+        const {clean,errors}=normalizeTrap(o,arena.width);
         for(const message of errors)err('trap',`${name}: ${message}`,ref);
         if(clean.y-clean.h/2-(clean.axis==='y'?clean.amplitude:0)<0||clean.y+clean.h/2+(clean.axis==='y'?clean.amplitude:0)>level.height)err('bounds',`${name}: Falle außerhalb der Levelhöhe.`,ref);
         if(!errors.length)level.objects.push(clean);
@@ -243,7 +247,7 @@ export function validateLevelData(raw) {
         err('size', `${name}: ungültige Größe (Breite ≥ ${LIMITS.minW}, Höhe ${LIMITS.minH}–${LIMITS.maxH} u).`, ref);
         return;
       }
-      if (o.x < -1e-6 || o.x + o.w > WORLD_W + 1e-6) err('bounds', `${name}: ragt aus der Spielfeldbreite (0–${WORLD_W} u).`, ref);
+      if (o.x < -1e-6 || o.x + o.w > arena.width + 1e-6) err('bounds', `${name}: ragt aus der Spielfeldbreite (0–${arena.width} u).`, ref);
       if (o.y - o.h / 2 < 0 || o.y + o.h / 2 > level.height + 1e-6) err('bounds', `${name}: liegt außerhalb der spielbaren Höhe.`, ref);
       level.objects.push(clean);
     });
@@ -275,7 +279,7 @@ const DIM_NAME = { both: 'neutral', blue: 'blau', red: 'rot' };
 /** Design-Warnungen (keine Spielbarkeitsgarantie – nur bekannte Problemmuster). */
 function designWarnings(level, warn) {
   const solid = level.objects.filter((o) => o.type !== 'hint'&&!isTrap(o)).sort((a, b) => a.y - b.y);
-  const finishY = level.finish.y;
+  const finishY = level.finish.y,arena=arenaFor(level);
   for (const o of level.objects) {
     if (o.y > finishY) warn('after-finish', `„${o.id}“ liegt hinter der Ziellinie und wird nie erreicht.`, { objectId: o.id, y: o.y });
   }
@@ -314,8 +318,8 @@ function designWarnings(level, warn) {
     byY.get(o.y).push(o);
   }
   for (const [y, objs] of byY) {
-    const blocked = (dimColor) => [...Array(LANES).keys()].every((lane) => {
-      const c = laneCenter(lane);
+    const blocked = (dimColor) => [...Array(arena.lanes).keys()].every((lane) => {
+      const c = arenaCenter(lane,arena);
       return objs.some((o) => {
         const col = DIMENSION_COLOR[o.dimension];
         return (col === 'W' || col === dimColor) && o.x < c + 8 && o.x + o.w > c - 8;
@@ -356,10 +360,10 @@ export function serializeLevel(level) {
     start: level.start,
     finish: level.finish,
   };
-  for (const key of ['theme', 'music', 'difficulty']) if (level[key]) out[key] = level[key];
+  for (const key of ['theme', 'music', 'difficulty','arenaStyle']) if (level[key]) out[key] = level[key];
   if (level.sections) out.sections = level.sections;
   out.objects = level.objects.map((o) => {
-    if(isTrap(o))return normalizeTrap(o).clean;
+    if(isTrap(o))return normalizeTrap(o,arenaFor(level).width).clean;
     if (o.type === 'hint') return { id: o.id, type: o.type, y: o.y, text: o.text };
     const base = { id: o.id, type: o.type, x: o.x, y: o.y, w: o.w, h: o.h };
     if (o.type === 'obstacle') base.dimension = o.dimension;
@@ -378,6 +382,7 @@ const DEFAULT_SECTION_FRACTIONS = [0, 0.25, 0.6, 0.85];
  * Sonst null (freie Maße – Nachweis dann über einen aufgezeichneten Lauf).
  */
 export function laneRows(level) {
+  if(arenaFor(level).id!=='classic')return null;
   const rows = new Map();
   for (const o of level.objects) {
     if (o.type === 'hint') continue;
@@ -444,6 +449,7 @@ export function buildLevelRuntime(level) {
     id: level.id,
     name: level.name,
     theme: level.theme || 'spire',
+    arena:arenaFor(level),
     music: level.music || 'neon-ascent',
     difficulty: level.difficulty || null,
     bpm,

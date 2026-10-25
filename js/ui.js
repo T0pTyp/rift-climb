@@ -176,14 +176,19 @@ export class UI {
   showWin(options) {
     const {mode,attempts}=options;
     this.panels.result('win',options);
-    $('#win-level').textContent = this.current?.name || 'RIFT CLEARED';
-    this.el.winSub.textContent = mode === 'practice'
+    $('#win-level').textContent = options.levelName||this.current?.name || 'RIFT CLEARED';
+    this.el.winSub.textContent = mode === 'lab'?'Arena-Vergleich abgeschlossen. Dein Testlauf wurde gespeichert.':mode === 'practice'
       ? `Übungsmodus geschafft – jetzt im Normalmodus! (${attempts} Versuche)`
       : `Normalmodus geschafft nach ${attempts} Versuchen.`;
     this.show('win');
   }
 
   openPage(page) { this.panels.open(page); }
+  setArena(style,mode){
+    const lab=mode==='lab',el=$('#hud-arena');el.hidden=!lab&&style!=='compact';el.textContent=(lab?'LAB · ':'')+style.toUpperCase();
+    document.body.dataset.arena=style;
+    if(!this.playtest)for(const id of ['pause','death','win'])$('#btn-'+id+'-menu').textContent=lab?'ARENA LAB':'Levelauswahl';
+  }
   updateEndlessHud(height,best,tier,dim,attempts) {
     const key=`infinity|${height}|${best}|${tier}|${dim}|${attempts}`;
     if(this.lastHud===key)return;this.lastHud=key;this.el.bar.parentElement.hidden=true;this.el.pct.textContent=height+' m';

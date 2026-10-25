@@ -1,13 +1,14 @@
+import {arenaFor,arenaCenter,ARENA_OPTIONS} from '../arena.js';
 // LEVEL FORGE: Eigenschaftenleiste und Prüfliste.
 // Eingaben wirken sofort (live), ein abgeschlossenes Feld ergibt genau einen Undo-Schritt.
-import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
+import { CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
 import { LIMITS, unitsPerBeat, DIMENSION_COLOR, THEMES, TRACKS, DIFFICULTIES } from '../level-data.js';
 import {isTrap,TRAP_FIELDS,TRAP_DEFAULTS} from '../traps.js';
 import { fmt } from './view.js';
 
 const DIM_OPTIONS = [['both', 'Neutral (beide Dimensionen)'], ['blue', 'Blau'], ['red', 'Rot']];
 const START_DIM_OPTIONS = [['blue', 'Blau'], ['red', 'Rot']];
-const LANE_OPTIONS = [...Array(LANES).keys()].map((l) => [String(l), `Spur ${l + 1}${l === 0 ? ' (links)' : l === LANES - 1 ? ' (rechts)' : ''}`]);
+const laneOptions=level=>{const a=arenaFor(level);return Array.from({length:a.lanes},(_,l)=>[String(l),`Spur ${l+1}${l===0?' (links)':l===a.lanes-1?' (rechts)':''}`]);};
 
 function el(tag, attrs = {}, ...kids) {
   const e = document.createElement(tag);
@@ -26,13 +27,14 @@ let fieldSeq = 0;
 const secs = (y) => `${(y / CLIMB_SPEED).toFixed(2).replace('.', ',')} s`;
 
 /** Spurinfo: welche Spuren ein Objekt sichtbar abdeckt und ob es exakt spurgenau liegt (Spur-Solver). */
-function laneInfo(o) {
+function laneInfo(o,arena=arenaFor()) {
+  const {lanes:LANES,step:LANE_W}=arena;
   const lanes = [];
   for (let l = 0; l < LANES; l++) {
-    const c = l * LANE_W + LANE_W / 2;
+    const c = arenaCenter(l,arena);
     if (o.x < c && o.x + o.w > c) lanes.push(l + 1);
   }
-  const exact = Math.abs((o.x - BAR_INSET_X) / LANE_W - Math.round((o.x - BAR_INSET_X) / LANE_W)) < 1e-6 &&
+  const exact = arena.id==='classic' && Math.abs((o.x - BAR_INSET_X) / LANE_W - Math.round((o.x - BAR_INSET_X) / LANE_W)) < 1e-6 &&
     Math.abs((o.w + 2 * BAR_INSET_X) / LANE_W - Math.round((o.w + 2 * BAR_INSET_X) / LANE_W)) < 1e-6 &&
     o.h === BAR_THICKNESS && Math.abs(o.y / UNITS_PER_BEAT - Math.round(o.y / UNITS_PER_BEAT)) < 1e-6;
   const cover = lanes.length ? `Spur ${lanes[0]}${lanes.length > 1 ? '–' + lanes[lanes.length - 1] : ''}` : 'zwischen den Spurmitten';
@@ -214,7 +216,7 @@ export class PropsPanel {
         set: this.objSetter(id, (x, v) => {
           if (x.type === v) return;
           x.type = v;
-          if(TRAP_DEFAULTS[v]){Object.assign(x,TRAP_DEFAULTS[v]);x.x=Math.max(x.amplitude||0,Math.min(WORLD_W-x.w-(x.amplitude||0),x.x));return;}
+          if(TRAP_DEFAULTS[v]){Object.assign(x,TRAP_DEFAULTS[v]);x.x=Math.max(x.amplitude||0,Math.min(arenaFor(app.doc.level).width-x.w-(x.amplitude||0),x.x));return;}
           if (v === 'seal') { delete x.dimension; x.openSec = SEAL_OPEN_SEC; } else { delete x.openSec; x.dimension = 'both'; }
         }),
       }),
@@ -222,12 +224,12 @@ export class PropsPanel {
       this.info('Aktiv', () => { const x = app.doc.get(id); return x ? activeIn(x) : ''; }, { title: 'Aktivierungsstatus: in welcher Dimension das Objekt tödlich ist' }),
     ));
     rows.push(this.group('Position und Größe',
-      this.num('X (linke Kante)', { key: 'x', get: get('x'), min: 0, max: WORLD_W - LIMITS.minW, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.x = v; }) }),
+      this.num('X (linke Kante)', { key: 'x', get: get('x'), min: 0, max: arenaFor(app.doc.level).width - LIMITS.minW, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.x = v; }) }),
       this.num('Y (Mitte)', { key: 'y', get: get('y'), min: 0, max: LIMITS.finish[1], step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.y = v; }) }),
-      isTrap(o)?this.num('Radius / Körper', {key:'radius',get:()=>app.doc.get(id).w/2,min:8,max:40,step:1,unit:'u',set:this.objSetter(id,(x,v)=>{x.w=x.h=v*2;})}):this.num('Breite', { key: 'w', get: get('w'), min: LIMITS.minW, max: WORLD_W, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.w = v; }) }),
+      isTrap(o)?this.num('Radius / Körper', {key:'radius',get:()=>app.doc.get(id).w/2,min:8,max:40,step:1,unit:'u',set:this.objSetter(id,(x,v)=>{x.w=x.h=v*2;})}):this.num('Breite', { key: 'w', get: get('w'), min: LIMITS.minW, max: arenaFor(app.doc.level).width, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.w = v; }) }),
       !isTrap(o)?this.num('Höhe', { key: 'h', get: get('h'), min: LIMITS.minH, max: LIMITS.maxH, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.h = v; }) }):null,
       !isTrap(o)?this.disabled('Rotation', '0° – Rechteck bleibt achsenparallel'):null,
-      this.info('Lage', () => { const x = app.doc.get(id); return x ? laneInfo(x) : ''; }, { title: 'Spurgenaue Objekte (Standardhöhe, ganzer 0,5-s-Takt) prüft der Spur-Solver exakt' }),
+      this.info('Lage', () => { const x = app.doc.get(id); return x ? laneInfo(x,arenaFor(app.doc.level)) : ''; }, { title: 'Spurgenaue Objekte (Standardhöhe, ganzer 0,5-s-Takt) prüft der Spur-Solver exakt' }),
       this.num('Musik-Beat (ab 0)', { key: 'music-beat', get: () => (app.doc.get(id)?.y || 0) / unitsPerBeat(app.doc.level.bpm), min: 0, max: LIMITS.finish[1] / unitsPerBeat(app.doc.level.bpm), step: .25, hint: '0,25 = Viertelbeat · 0,5 = Achtelnote. Setzt die tatsächliche Höhe.', set: this.objSetter(id, (x, v) => { x.y = v * unitsPerBeat(app.doc.level.bpm); }) }),
       this.num('Musik-Takt (ab 1)', { key: 'music-bar', get: () => (app.doc.get(id)?.y || 0) / unitsPerBeat(app.doc.level.bpm) / (app.doc.level.beatsPerBar || 4) + 1, min: 1, max: 1000, step: 1, set: this.objSetter(id, (x, v) => { x.y = (v - 1) * (app.doc.level.beatsPerBar || 4) * unitsPerBeat(app.doc.level.bpm); }) }),
       this.select('Musikabschnitt', { key: 'music-section', get: () => String(Math.min(3, Math.floor((app.doc.get(id)?.y || 0) / app.doc.level.finish.y * 4))), options: [['0','INTRO'], ['1','BUILD'], ['2','DROP'], ['3','FINALE']], hint: 'Setzt die Höhe an den Abschnittsanfang.', set: this.objSetter(id, (x, v) => { x.y = Number(v) / 4 * app.doc.level.finish.y; }) }),
@@ -315,7 +317,7 @@ export class PropsPanel {
     const app = this.app;
     const L = () => app.doc.level;
     return [this.group('Start',
-      this.select('Startspur', { key: 'start-lane', get: () => String(L().start.lane), options: LANE_OPTIONS, set: (tx, v) => { tx.touchMeta().start.lane = Number(v); } }),
+      this.select('Startspur', { key: 'start-lane', get: () => String(L().start.lane), options: laneOptions(app.doc.level), set: (tx, v) => { tx.touchMeta().start.lane = Number(v); } }),
       this.select('Startdimension', { key: 'start-dim', get: () => L().start.dimension, options: START_DIM_OPTIONS, set: (tx, v) => { tx.touchMeta().start.dimension = v; } }),
       this.info('Höhe', () => 'y 0 (Startlinie) – der Spieler steigt mit 260 u/s'),
     )];
@@ -336,7 +338,7 @@ export class PropsPanel {
     const setT = (k, v) => { app.S.testMarker = { ...T(), [k]: v }; app.markEditorState(); };
     return [this.group('PLAY FROM HERE',
       this.num('Starthöhe (y)', { key: 'test-y', get: () => T().y, min: 0, max: LIMITS.finish[1], unit: 'u', set: (tx, v) => setT('y', v) }),
-      this.select('Spur', { key: 'test-lane', get: () => String(T().lane), options: LANE_OPTIONS, set: (tx, v) => setT('lane', Number(v)) }),
+      this.select('Spur', { key: 'test-lane', get: () => String(T().lane), options: laneOptions(app.doc.level), set: (tx, v) => setT('lane', Number(v)) }),
       this.select('Dimension', { key: 'test-dim', get: () => T().dim, options: [['B', 'Blau'], ['R', 'Rot']], set: (tx, v) => setT('dim', v) }),
       this.info('Hinweis', () => 'Nur Editor-Hilfe, wird nicht ins Level exportiert'),
     ), this.buttons(['▶ Ab hier testen', () => app.playtest(true), 'primary'], ['Marker entfernen', () => app.removeTestMarker()])];
@@ -352,6 +354,7 @@ export class PropsPanel {
         this.text('ID', { key: 'id', get: () => L().id, maxLength: 40, validate: (v) => /^[a-z0-9][a-z0-9-]{0,39}$/.test(v), hint: 'a–z, 0–9, Bindestrich – Dateiname beim Export', set: meta((l, v) => { l.id = v; }) }),
         this.text('Beschreibung', { key: 'description', get: () => L().description, maxLength: LIMITS.descLen, multiline: true, set: meta((l, v) => { l.description = v; }) }),
       ),
+      this.group('ARENA STYLE',this.select('Arena',{key:'arenaStyle',get:()=>L().arenaStyle||'classic',options:ARENA_OPTIONS,set:(tx,v)=>app.setArenaStyle(tx,v),hint:'Keine Skalierung vorhandener Objekte. Grenzen müssen bereits passen; Replay danach neu prüfen.'})),
       this.group('Identität',
         this.select('Architektur', { key: 'theme', get: () => L().theme || 'spire', options: THEMES, set: meta((l, v) => { l.theme = v; }) }),
         this.select('Komposition', { key: 'music', get: () => L().music || 'neon-ascent', options: TRACKS, set: meta((l, v) => { l.music = v; }) }),
@@ -366,7 +369,7 @@ export class PropsPanel {
         this.info('Dauer', () => `${secs(L().finish.y)} bis zum Ziel`),
       ),
       this.group('Start',
-        this.select('Startspur', { key: 'start-lane', get: () => String(L().start.lane), options: LANE_OPTIONS, set: meta((l, v) => { l.start.lane = Number(v); }) }),
+        this.select('Startspur', { key: 'start-lane', get: () => String(L().start.lane), options: laneOptions(app.doc.level), set: meta((l, v) => { l.start.lane = Number(v); }) }),
         this.select('Startdimension', { key: 'start-dim', get: () => L().start.dimension, options: START_DIM_OPTIONS, set: meta((l, v) => { l.start.dimension = v; }) }),
       ),
       ...(L().sections || []).map((section,i) => this.group(`Abschnitt ${section.id}`,

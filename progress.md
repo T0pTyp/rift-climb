@@ -116,3 +116,24 @@ RIFT EXPANSION: drei dynamische Fallen (Phase Saw, Pulse Mine, Sweep Laser), dre
 - Tatsächlichen Maus-Resize-Bug bei außen liegenden Griffen behoben. Enge Membranen/Siegel auf Torbreite begrenzt; alle acht Leveldateien ohne Designwarnung. Practice-/Endless-UI-Zustände sauber zurückgesetzt.
 - Zwölf vollständige Audio-Offline-Renders bestanden. Echtzeit-Performance mit 4x CPU: Singularity 75 s p95 JS 7,5 ms, Infinity 104 s p95 JS 4,3 ms. Infinity: ein Start-Seek, maximal zwei Backdrops, null Quellen nach Pause. Keine Smartphone-FPS-Behauptung.
 - README, RIFT-EXPANSION.md, M7.5-TEST-REPORT.md aktualisiert. Finale Unit-/Expansion-Runde abgeschlossen, Git-Review erfolgt. Veröffentlichungsschritt: Commit/Push main, Pages und Livesmoke.
+
+## M7.6 — COMPACT MODE (neuer Auftrag)
+ARENA LAB als isolierter A/B-Test: Classic unverändert, Compact aus realer 90-u-Zielfeder abgeleitet. Geplant: fünf Ziele im 45-u-Abstand, 18-u-Randabstand, Breite 216 u; Classic 360 u / vier Ziele. Gleiche 220-ms-Feder, Hitbox8, Aufstieg260, Kamera-Skalierung. Konfigurierbare gemeinsame Arena statt zweiter Engine; additive arenaStyle-Metadaten, Forge, lokale isolierte Lab-Statistik im vorhandenen Save. Ein gemeinsamer handgefertigter 30–45-s-Parcours mit je validierter Geometrie/Replays. Vollständige Tests, Dokumentation, Commit und Push auf main/Pages.
+
+### M7.6 Implementierung und Nachweise
+- Gemeinsame ARENAS-Parameter, Player/Game/View/Validator/Forge integriert; fehlende Metadaten bleiben Classic. Compact 216 u, 45-u-Schritte, sichere Ziele18..198, unveränderte Feder220ms/Vertikal260/HitRadius8.
+- ARENA LAB: ein40s-Parcours mit identischer28-Tipp-Folge, separat gestalteten Toren (Classic96/84/78; Compact64/60/56), vorhandene Musik und alle Mechaniken. Beide100% real; jeder einzelne ausgelassene Tipp lässt die Referenzlösung scheitern.
+- Eigenes Lab-Domain im bestehenden Save, zentraler Run-Typ lab, streng isoliert von offiziellen Rewards. Peak-basierter Durchschnitt, Abbruch/Retry/Reload, Auswahl und lokales Feedback.
+- 60 Unitprüfungen; 32 Zwei-Tipp-Kombinationen beidseitig bei5/30/60/144FPS und50/100/220/500ms Abstand. Weg220ms85.5005/42.7503, Peak713.905/356.952. CompactPracticeCP ebenfalls100%.
+- Browser86 neue Checks, Ascension131, Forge70+50 bestanden. Übrige klassische Browserregression läuft. Skill-Clientbilder beider Varianten sowie Lab-Menü, Wände und Forge angesehen.
+- Timing: Classic mindestensfrüh80/spät160ms, Compact180/180ms pro einzeln variiertem Tipp. Unterschiedliche Schwierigkeit/Spuranzahl/Startposition ausdrücklich dokumentiert.
+- Performance4xCPU real40s: Classic JS-p9512.3ms/Compact13.0ms. Strenges8ms-Hilfsbudget verfehlt; kein Smartphone60FPS-Nachweis. Keine Grafikreduktion. README und ARENA-LAB-/M7.6-Testdokumentation erstellt.
+- Noch: laufende Browserregression abschließen, finaler Review, Commit M7.6 und Push main, Pages und Live-Test.
+
+### M7.6 Abschluss-QA
+- Vollständige Node-Grundsuite bestanden, aktuelle Compact-Suite60. Alle Browserregressionen grün: Compact86, Ascension131, Forge70+50, Kampagne141, Expansion93, Pulse51, Visuals25, Fallen-Forge48, Gameplay100 (zusammen795 Browserchecks).
+- Zusatzmessung ohne CPU-Drosselung nach Abschluss der anderen Tests: Compact JS-Mittel0.62ms/p951.00ms/p991.90ms, Audio-p958.33ms; 4x-Stressbudget bleibt als verfehlt dokumentiert.
+- Sechs Kampagnen-JSONs, Infinity-Daten, config.js und Input unverändert; gesamte Spielphysik Classic und alle ursprünglichen100%-Replays geprüft.
+- Abschließender Skill-Client für endgültigen Compact-Parcours und danach Commit/Push/Pages/Live-Lab-Prüfung. Keine neue Architektur, kein Grafikprofil, keine neuen offiziellen Belohnungen.
+
+- Endgültiger Compact-Skill-Client bei54% mit passenden Zuständen/Bild geprüft, keine Konsolenfehler. Review abgeschlossen; Veröffentlichung auf main und anschließender Live-Smoke-Test.

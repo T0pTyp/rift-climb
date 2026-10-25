@@ -15,7 +15,7 @@ export const TRAP_FIELDS = {
  laser:{amplitude:[0,80],period:[1,12],phase:[0,1],startAngle:[-180,180],endAngle:[-180,180],sweepPeriod:[1,12],length:[40,320],beamWidth:[4,18],warnSec:[.5,2],activeSec:[.2,1.5],offSec:[.4,3],disableSec:[.7,2]},
 };
 export function trapReach(o) {return o.type==='laser'?o.length+o.amplitude+o.w:o.type==='mine'?o.activationRadius:o.w/2+o.amplitude;}
-export function normalizeTrap(o) {
+export function normalizeTrap(o,width=WORLD_W) {
  const d=TRAP_DEFAULTS[o.type],clean={id:o.id,type:o.type,x:o.x,y:o.y,w:o.w??d.w,h:o.h??o.w??d.h,dimension:o.dimension??d.dimension},errors=[];
  for(const [key,[min,max]] of Object.entries(TRAP_FIELDS[o.type])) {
   const v=o[key]??d[key];if(!Number.isFinite(v)||v<min||v>max)errors.push(`${key}: ${min}–${max}`);clean[key]=v;
@@ -24,7 +24,7 @@ export function normalizeTrap(o) {
  if(!['blue','red'].includes(clean.dimension))errors.push('Dimension: blue/red');
  if(![clean.x,clean.y,clean.w,clean.h].every(Number.isFinite)||clean.w<16||clean.w>80||clean.h!==clean.w)errors.push('Körper: 16–80 u, gleiche Breite/Höhe');
  const a=clean.axis==='x'?clean.amplitude:0;
- if(clean.x-a<0||clean.x+clean.w+a>WORLD_W)errors.push('Bewegung ragt seitlich aus der Arena');
+ if(clean.x-a<0||clean.x+clean.w+a>width)errors.push('Bewegung ragt seitlich aus der Arena');
  if(clean.type==='mine'&&clean.blastRadius>clean.activationRadius)errors.push('Explosion größer als Aktivierungszone');
  return {clean,errors};
 }

@@ -1,7 +1,8 @@
 import { laneCenter } from './level.js';
-import { LANES, STEER_OMEGA, TILT_PER_SPEED, TILT_MAX, TRAIL_LEN, TRAIL_SAMPLE_SEC, HIT_RADIUS } from './config.js';
+import { STEER_OMEGA, TILT_PER_SPEED, TILT_MAX, TRAIL_LEN, TRAIL_SAMPLE_SEC, HIT_RADIUS } from './config.js';
 import { clamp, springStep } from './physics.js';
 import { otherDim } from './dimensions.js';
+import {arenaFor,arenaCenter} from './arena.js';
 
 export { IMPULSE_MS, HIT_RADIUS } from './config.js';
 
@@ -10,17 +11,18 @@ export { IMPULSE_MS, HIT_RADIUS } from './config.js';
  * (stetige Geschwindigkeit, kein Überschwingen, exakt unabhängig von der Schrittweite).
  */
 export class Player {
-  constructor() {
+  constructor(arena='classic') {
+    this.arena=arenaFor(typeof arena==='string'?arena:arena?.id);
     this.trailX = new Float32Array(TRAIL_LEN);
     this.trailY = new Float32Array(TRAIL_LEN);
     this.body = { x: 0, v: 0 };
-    this.reset(1, 'B', 0);
+    this.reset(this.arena.startLane, 'B', 0);
   }
 
   reset(lane, dim, worldY) {
     this.lane = lane;
     this.dim = dim;
-    this.body.x = laneCenter(lane);
+    this.body.x = arenaCenter(lane,this.arena);
     this.body.v = 0;
     this.lastDir = 0;
     this.pop = 0;
@@ -40,7 +42,7 @@ export class Player {
 
   /** Noch unterwegs zur Zielspur (für Checkpoints). */
   get dashing() {
-    return Math.abs(this.body.x - laneCenter(this.lane)) > 2 || Math.abs(this.body.v) > 30;
+    return Math.abs(this.body.x - arenaCenter(this.lane,this.arena)) > 2 || Math.abs(this.body.v) > 30;
   }
 
   get tilt() {
@@ -52,7 +54,7 @@ export class Player {
    * Rückgabe: true, wenn die Figur an der Wand steht (nur Dimensionswechsel).
    */
   impulse(dir) {
-    const next = clamp(this.lane + dir, 0, LANES - 1);
+    const next = clamp(this.lane + dir, 0, this.arena.lanes - 1);
     const atWall = next === this.lane;
     this.lane = next;
     this.lastDir = dir;
@@ -63,7 +65,13 @@ export class Player {
   }
 
   update(dt, worldY) {
-    springStep(this.body, laneCenter(this.lane), STEER_OMEGA, dt);
+    springStep(this.body, arenaCenter(this.lane,this.arena), STEER_OMEGA, dt);
+    if(this.arena.id==='compact'){
+      // Reversals retain velocity. Bound pathological rapid alternation at the safe centers.
+      const lo=this.arena.inset,hi=this.arena.width-lo;
+      if(this.body.x<lo){this.body.x=lo;this.body.v=Math.max(0,this.body.v);}
+      if(this.body.x>hi){this.body.x=hi;this.body.v=Math.min(0,this.body.v);}
+    }
     this.pop = Math.max(0, this.pop - dt * 7);
     if (this.wallBump) {
       this.wallBump -= Math.sign(this.wallBump) * dt * 8;

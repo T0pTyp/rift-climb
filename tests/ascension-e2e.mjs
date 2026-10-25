@@ -9,7 +9,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  p.on('pageerror',e=>errors.push(e.message));const click=selector=>device.isMobile?p.tap(selector):p.click(selector);
  const snap=name=>p.screenshot({path:`test-results/m8/browser/${label}-${name}.png`});
  await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);
- check(label+' six home destinations',await p.locator('.nav-tile:visible').count()===6);await snap('home');
+ check(label+' seven home destinations',await p.locator('.nav-tile:visible').count()===7);await snap('home');
  await click('#nav-collection');check(label+' five skins, original equipped',await p.evaluate(()=>document.querySelectorAll('.skin-card').length===5&&__ASCENSION.data.cosmetics.selectedSkinId==='original'));
  await click('[data-skin="golden"]');check(label+' locked preview cannot equip',await p.isDisabled('#btn-equip'));await p.waitForTimeout(200);await snap('locked-golden');
  await click('#page-collection [data-home]');await click('#nav-play');
@@ -76,7 +76,7 @@ for(const mode of ['legacy','corrupt','blocked']) {
 }
 for(const [width,height] of [[320,568],[360,640],[390,844],[430,932],[768,1024]]) {
  const b=await chromium.launch(),p=await b.newPage({viewport:{width,height},isMobile:true,hasTouch:true});await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);
- for(const page of ['home','levels','collection','achievements','profile','settings','infinity']) {
+ for(const page of ['home','levels','collection','achievements','profile','settings','infinity','lab']) {
   await p.evaluate(page=>__RIFT.ui.openPage(page),page);
   check(`${width} ${page} scrollable without horizontal overflow`,await p.evaluate(()=>{const r=document.querySelector('#menu .panel').getBoundingClientRect();return document.documentElement.scrollWidth===innerWidth&&r.left>=0&&r.right<=innerWidth&&r.top>=0;}));
  }

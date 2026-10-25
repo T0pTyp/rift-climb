@@ -1,9 +1,10 @@
+import {arenaFor,arenaCenter} from '../arena.js';
 // LEVEL FORGE: Levelansicht (Kamera, Rendering, Treffertests).
-// Weltkoordinaten wie im Spiel (x 0–360 u nach rechts, y ab Startlinie nach oben). Die Kamera ist rein
+// Weltkoordinaten wie im Spiel (x 0–Arena-Breite nach rechts, y ab Startlinie nach oben). Die Kamera ist rein
 // darstellend: Zoom/Scroll ändern nie gespeicherte Positionen. Gezeichnet wird mit den Formen des Spiels.
-import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, PULSE_RADIUS, HIT_RADIUS } from '../config.js';
+import { WORLD_W, CLIMB_SPEED, PULSE_RADIUS, HIT_RADIUS } from '../config.js';
 import { COLORS, isDeadly } from '../dimensions.js';
-import { DIMENSION_COLOR, laneCenter, unitsPerBeat, halfHeights, START_DIMENSIONS } from '../level-data.js';
+import { DIMENSION_COLOR, unitsPerBeat, halfHeights, START_DIMENSIONS } from '../level-data.js';
 import { drawBar, drawSealClosed, drawSealOpen, drawFinish } from '../shapes.js';
 import { drawRiftling, IDLE_POSE } from '../art/riftling.js';
 import {isTrap,makeTrap,trapReach} from '../traps.js';
@@ -21,20 +22,21 @@ export function objColor(o) {
 }
 
 /** Rechteck eines Objekts in Weltkoordinaten (Hinweise: Textbox um die Feldmitte). */
-export function objRect(o) {
+export function objRect(o,arena=arenaFor()) {
   if(isTrap(o)){const a=o.amplitude||0;return{x0:o.x-(o.axis==='x'?a:0),x1:o.x+o.w+(o.axis==='x'?a:0),y0:o.y-o.h/2-(o.axis==='y'?a:0),y1:o.y+o.h/2+(o.axis==='y'?a:0)};}
   if (o.type === 'hint') {
-    const w = Math.min(WORLD_W - 8, Math.max(40, o.text.length * 9));
-    return { x0: WORLD_W / 2 - w / 2, x1: WORLD_W / 2 + w / 2, y0: o.y - 9, y1: o.y + 9 };
+    const w = Math.min(arena.width - 8, Math.max(40, o.text.length * 9));
+    return { x0: arena.width / 2 - w / 2, x1: arena.width / 2 + w / 2, y0: o.y - 9, y1: o.y + 9 };
   }
   return { x0: o.x, x1: o.x + o.w, y0: o.y - o.h / 2, y1: o.y + o.h / 2 };
 }
 
 export class ForgeView {
   constructor(canvas) {
+    this.arena=arenaFor();
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.cam = { x: WORLD_W / 2, y: 300, z: 1 };
+    this.cam = { x: this.arena.width / 2, y: 300, z: 1 };
     this.W = 1;
     this.H = 1;
     this.dpr = 1;
@@ -44,6 +46,8 @@ export class ForgeView {
   }
 
   /** Schmale Ansicht (Smartphone): Spielfeld fast randlos, Beat-Beschriftung innen. */
+  center(lane){return arenaCenter(lane,this.arena);}
+
   get compact() {
     return this.W < 600;
   }
@@ -71,7 +75,7 @@ export class ForgeView {
     return { x: this.W / 2 + (wx - x) * z, y: this.H / 2 - (wy - y) * z };
   }
 
-  /** Zoom so, dass die Spielfeldbreite (360 u) mit Rand in die Ansicht passt. */
+  /** Zoom so, dass die Classic-Referenzbreite (gleiche Objektgröße in beiden Arenen) mit Rand in die Ansicht passt. */
   fitZoom() {
     if (this.compact) return clamp((this.W - 20) / WORLD_W, ZOOM_MIN, 2.4);
     return clamp(Math.min((this.W - 140) / WORLD_W, this.H / (130 * 6)), ZOOM_MIN, 2.4);
@@ -79,7 +83,7 @@ export class ForgeView {
 
   resetZoom() {
     this.cam.z = this.fitZoom();
-    this.cam.x = WORLD_W / 2;
+    this.cam.x = this.arena.width / 2;
   }
 
   /** Zoomt um den Bildschirmpunkt (sx, sy): der Weltpunkt unter dem Mauszeiger bleibt stehen. */
@@ -93,7 +97,7 @@ export class ForgeView {
 
   clampCamera(height) {
     const halfW = this.W / 2 / this.cam.z;
-    this.cam.x = clamp(this.cam.x, Math.min(WORLD_W / 2, -halfW + 60 / this.cam.z), Math.max(WORLD_W / 2, WORLD_W + halfW - 60 / this.cam.z));
+    this.cam.x = clamp(this.cam.x, Math.min(this.arena.width / 2, -halfW + 60 / this.cam.z), Math.max(this.arena.width / 2, this.arena.width + halfW - 60 / this.cam.z));
     this.cam.y = clamp(this.cam.y, -this.H / 2 / this.cam.z + 40, height + this.H / 2 / this.cam.z);
   }
 
@@ -120,7 +124,7 @@ export class ForgeView {
     for (let i = lo; i < list.length; i++) {
       const o = list[i];
       if (o.y > y1 + margin + maxHalf) break;
-      const r = isTrap(o)?{y0:o.y-trapReach(o),y1:o.y+trapReach(o)}:objRect(o);
+      const r = isTrap(o)?{y0:o.y-trapReach(o),y1:o.y+trapReach(o)}:objRect(o,this.arena);
       if (r.y1 < y0 - margin || r.y0 > y1 + margin) continue;
       out.push(o);
     }
@@ -134,16 +138,16 @@ export class ForgeView {
     let best = null;
     let bestArea = Infinity;
     for (const o of vis) {
-      const r = objRect(o);
+      const r = objRect(o,this.arena);
       if (wx < r.x0 - tol || wx > r.x1 + tol || wy < r.y0 - tol || wy > r.y1 + tol) continue;
       const area = (r.x1 - r.x0) * (r.y1 - r.y0);
       if (area <= bestArea) { best = o.id; bestArea = area; }
     }
     if (best) return best;
     const lvl = doc.level;
-    if (extras.testMarker && Math.abs(wy - extras.testMarker.y) < 8 / this.cam.z + 4 && wx >= 0 && wx <= WORLD_W) return '__test';
-    if (Math.hypot(wx - laneCenter(lvl.start.lane), wy) < 16 + tol) return '__start';
-    if (Math.abs(wy - (lvl.finish.y - 3)) < 6 + tol && wx >= 0 && wx <= WORLD_W) return '__finish';
+    if (extras.testMarker && Math.abs(wy - extras.testMarker.y) < 8 / this.cam.z + 4 && wx >= 0 && wx <= this.arena.width) return '__test';
+    if (Math.hypot(wx - this.center(lvl.start.lane), wy) < 16 + tol) return '__start';
+    if (Math.abs(wy - (lvl.finish.y - 3)) < 6 + tol && wx >= 0 && wx <= this.arena.width) return '__finish';
     return null;
   }
 
@@ -199,20 +203,20 @@ export class ForgeView {
     const fy0 = Math.max(y0, 0);
     const fy1 = Math.min(y1, lvl.height);
     ctx.fillStyle = '#0a0a1d';
-    if (fy1 > fy0) ctx.fillRect(0, -fy1, WORLD_W, fy1 - fy0);
+    if (fy1 > fy0) ctx.fillRect(0, -fy1, this.arena.width, fy1 - fy0);
     ctx.fillStyle = 'rgba(255,255,255,0.025)';
-    if (y1 > lvl.height) ctx.fillRect(0, -y1, WORLD_W, y1 - Math.max(lvl.height, y0));
+    if (y1 > lvl.height) ctx.fillRect(0, -y1, this.arena.width, y1 - Math.max(lvl.height, y0));
     ctx.fillStyle = s.dimMode === 'R' ? COLORS.R.main : s.dimMode === 'B' ? COLORS.B.main : '#8b8bb0';
     ctx.globalAlpha = 0.5;
     ctx.fillRect(-2 * px, -top, 2 * px, top - bottom);
-    ctx.fillRect(WORLD_W, -top, 2 * px, top - bottom);
+    ctx.fillRect(this.arena.width, -top, 2 * px, top - bottom);
     ctx.globalAlpha = 1;
 
     // Spuren
     ctx.lineWidth = px;
     ctx.strokeStyle = 'rgba(255,255,255,0.07)';
     ctx.beginPath();
-    for (let i = 1; i < LANES; i++) { ctx.moveTo(i * LANE_W, -top); ctx.lineTo(i * LANE_W, -bottom); }
+    for (let i = 1; i < this.arena.lanes; i++) { ctx.moveTo(this.arena.inset+(i-.5)*this.arena.step, -top); ctx.lineTo(this.arena.inset+(i-.5)*this.arena.step, -bottom); }
     ctx.stroke();
 
     // Raster (horizontal und vertikal, sobald dicht genug sichtbar)
@@ -221,9 +225,9 @@ export class ForgeView {
       if (g * z >= 6) {
         ctx.strokeStyle = 'rgba(160,170,255,0.07)';
         ctx.beginPath();
-        for (let x = g; x < WORLD_W; x += g) { ctx.moveTo(x, -top); ctx.lineTo(x, -bottom); }
+        for (let x = g; x < this.arena.width; x += g) { ctx.moveTo(x, -top); ctx.lineTo(x, -bottom); }
         const gy0 = Math.ceil(bottom / g) * g;
-        for (let y = gy0; y <= top; y += g) { ctx.moveTo(0, -y); ctx.lineTo(WORLD_W, -y); }
+        for (let y = gy0; y <= top; y += g) { ctx.moveTo(0, -y); ctx.lineTo(this.arena.width, -y); }
         ctx.stroke();
       }
     }
@@ -244,7 +248,7 @@ export class ForgeView {
           if (div > 1 && k % div === 0) continue;
           if (div === 4 && k % 2 === 0) continue;
           ctx.moveTo(0, -k * step);
-          ctx.lineTo(WORLD_W, -k * step);
+          ctx.lineTo(this.arena.width, -k * step);
           if (div === 1) beatLabels.push(k);
         }
         ctx.stroke();
@@ -253,7 +257,7 @@ export class ForgeView {
       ctx.beginPath();
       for (let k = Math.ceil(Math.max(0, bottom) / (upb * meter)); k * upb * meter <= top; k++) {
         ctx.moveTo(0, -k * upb * meter);
-        ctx.lineTo(WORLD_W, -k * upb * meter);
+        ctx.lineTo(this.arena.width, -k * upb * meter);
       }
       ctx.stroke();
     }
@@ -266,29 +270,29 @@ export class ForgeView {
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
       for (const sec of lvl.sections) {
         if (sec.y === 0 || sec.labelY < bottom || sec.labelY > top) continue;
-        ctx.fillText(`${sec.id} · ${sec.name.toUpperCase()}`, WORLD_W / 2, -sec.labelY);
+        ctx.fillText(`${sec.id} · ${sec.name.toUpperCase()}`, this.arena.width / 2, -sec.labelY);
       }
     }
 
     // Ziel, Ende der spielbaren Höhe, Start
-    drawFinish(ctx, WORLD_W, -lvl.finish.y, 'ZIEL · 100 %');
+    drawFinish(ctx, this.arena.width, -lvl.finish.y, 'ZIEL · 100 %');
     ctx.strokeStyle = 'rgba(255,90,90,0.5)';
     ctx.setLineDash([6 * px, 6 * px]);
     ctx.beginPath();
     ctx.moveTo(0, -lvl.height);
-    ctx.lineTo(WORLD_W, -lvl.height);
+    ctx.lineTo(this.arena.width, -lvl.height);
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.strokeStyle = 'rgba(26,255,178,0.6)';
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(WORLD_W, 0);
+    ctx.lineTo(this.arena.width, 0);
     ctx.stroke();
     const startDim = START_DIMENSIONS[lvl.start.dimension];
-    this.marker(laneCenter(lvl.start.lane), 0, startDim, 1);
+    this.marker(this.center(lvl.start.lane), 0, startDim, 1);
     ctx.font = '800 10px system-ui, sans-serif';
     ctx.fillStyle = '#1affb2';
-    ctx.fillText('START', laneCenter(lvl.start.lane), 26);
+    ctx.fillText('START', this.center(lvl.start.lane), 26);
 
     // Objekte im sichtbaren Ausschnitt
     const vis = this.visibleObjects(s.doc, 30);
@@ -298,7 +302,7 @@ export class ForgeView {
         ctx.font = '800 14px system-ui, sans-serif';
         ctx.globalAlpha = 0.85;
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(o.text, WORLD_W / 2, -o.y);
+        ctx.fillText(o.text, this.arena.width / 2, -o.y);
         ctx.globalAlpha = 1;
         continue;
       }
@@ -333,7 +337,7 @@ export class ForgeView {
     for (const o of vis) {
       const sev = s.issuesById.get(o.id);
       if (!sev) continue;
-      const r = objRect(o);
+      const r = objRect(o,this.arena);
       ctx.strokeStyle = sev === 'error' ? '#ff4d6d' : '#ffb020';
       ctx.lineWidth = 2 * px;
       ctx.setLineDash(sev === 'error' ? [] : [4 * px, 3 * px]);
@@ -357,10 +361,10 @@ export class ForgeView {
       ctx.setLineDash([8 * px, 5 * px]);
       ctx.beginPath();
       ctx.moveTo(0, -t.y);
-      ctx.lineTo(WORLD_W, -t.y);
+      ctx.lineTo(this.arena.width, -t.y);
       ctx.stroke();
       ctx.setLineDash([]);
-      this.marker(laneCenter(t.lane), -t.y, t.dim, 0.75);
+      this.marker(this.center(t.lane), -t.y, t.dim, 0.75);
       ctx.font = '800 10px system-ui, sans-serif';
       ctx.fillStyle = '#1affb2';
       ctx.textAlign = 'left';
@@ -371,7 +375,7 @@ export class ForgeView {
     // Hover und Auswahl
     const hov = s.hover && s.hover !== '__start' && s.hover !== '__finish' && s.hover !== '__test' ? s.doc.get(s.hover) : null;
     if (hov && !s.selection.has(hov.id)) {
-      const r = objRect(hov);
+      const r = objRect(hov,this.arena);
       ctx.strokeStyle = 'rgba(95,243,255,0.5)';
       ctx.lineWidth = px;
       ctx.strokeRect(r.x0 - 2 * px, -r.y1 - 2 * px, r.x1 - r.x0 + 4 * px, r.y1 - r.y0 + 4 * px);
@@ -382,7 +386,7 @@ export class ForgeView {
       if (o) selObjs.push(o);
     }
     for (const o of selObjs) {
-      const r = objRect(o);
+      const r = objRect(o,this.arena);
       ctx.strokeStyle = SEL;
       ctx.lineWidth = 2 * px;
       ctx.shadowColor = SEL;
@@ -394,18 +398,18 @@ export class ForgeView {
       ctx.strokeStyle = SEL;
       ctx.lineWidth = 2 * px;
       ctx.beginPath();
-      ctx.arc(laneCenter(lvl.start.lane), 0, 20, 0, Math.PI * 2);
+      ctx.arc(this.center(lvl.start.lane), 0, 20, 0, Math.PI * 2);
       ctx.stroke();
     }
     if (s.selection.has('__finish') || s.hover === '__finish') {
       ctx.strokeStyle = SEL;
       ctx.lineWidth = 2 * px;
-      ctx.strokeRect(-3 * px, -lvl.finish.y - 3 * px, WORLD_W + 6 * px, 6 + 6 * px);
+      ctx.strokeRect(-3 * px, -lvl.finish.y - 3 * px, this.arena.width + 6 * px, 6 + 6 * px);
     }
     if (s.selection.has('__test') || s.hover === '__test') {
       ctx.strokeStyle = SEL;
       ctx.lineWidth = 2 * px;
-      ctx.strokeRect(-3 * px, -s.testMarker.y - 6 * px, WORLD_W + 6 * px, 12 * px);
+      ctx.strokeRect(-3 * px, -s.testMarker.y - 6 * px, this.arena.width + 6 * px, 12 * px);
     }
 
     // Platzierungsvorschau am Mauszeiger
@@ -415,7 +419,7 @@ export class ForgeView {
       if (g.type === 'hint') {
         ctx.font = '800 14px system-ui, sans-serif';
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(g.text, WORLD_W / 2, -g.y);
+        ctx.fillText(g.text, this.arena.width / 2, -g.y);
       } else if(isTrap(g)) {
         drawTrap(ctx,makeTrap(g),s.previewTime||0,-g.y,'both');
       } else if (g.type === 'seal') {
@@ -423,9 +427,9 @@ export class ForgeView {
       } else if (g.type === 'obstacle') {
         drawBar(ctx, objColor(g), g.x, -g.y, g.w, g.h / 2, true);
       } else if (g.type === 'start' || g.type === 'test') {
-        this.marker(laneCenter(g.lane), -g.y, g.dim || 'B', 1);
+        this.marker(this.center(g.lane), -g.y, g.dim || 'B', 1);
       } else if (g.type === 'finish') {
-        drawFinish(ctx, WORLD_W, -g.y, '');
+        drawFinish(ctx, this.arena.width, -g.y, '');
       }
       ctx.globalAlpha = 1;
       if (g.w) {
@@ -443,7 +447,7 @@ export class ForgeView {
       ctx.lineWidth = 2 * px;
       ctx.beginPath();
       ctx.moveTo(-10 * px, -s.playhead);
-      ctx.lineTo(WORLD_W + 10 * px, -s.playhead);
+      ctx.lineTo(this.arena.width + 10 * px, -s.playhead);
       ctx.stroke();
     }
 
@@ -513,7 +517,7 @@ export class ForgeView {
     const hh = o.h / 2;
     ctx.save();
     ctx.beginPath();
-    ctx.rect(0, -1e7, WORLD_W, 2e7);
+    ctx.rect(0, -1e7, this.arena.width, 2e7);
     ctx.clip();
     ctx.beginPath();
     ctx.roundRect(o.x - R, -o.y - hh - R, o.w + 2 * R, o.h + 2 * R, R);
@@ -527,8 +531,8 @@ export class ForgeView {
     ctx.restore();
     // Tipp-Zonen je Spur: unterhalb des Siegels, solange der Abstand zur sichtbaren Fläche ≤ Pulse-Radius ist
     ctx.lineWidth = 4 * px;
-    for (let lane = 0; lane < LANES; lane++) {
-      const c = laneCenter(lane);
+    for (let lane = 0; lane < this.arena.lanes; lane++) {
+      const c = this.center(lane);
       const dx = Math.max(o.x - c, 0, c - (o.x + o.w));
       if (dx > R) continue;
       const reach = Math.sqrt(R * R - dx * dx);

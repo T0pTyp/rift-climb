@@ -12,7 +12,8 @@ const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.THROTTLE || 4) });
 const level = process.env.LEVEL || 'overload';
 const endless=level==='infinity',duration=Number(process.env.DURATION||104);
-await page.goto(`${BASE}?${endless?'endless=1&seed=37':'level='+level}&autoplay=1`);
+const lab=level.startsWith('lab-');
+await page.goto(`${BASE}?${lab?'lab='+level.slice(4):endless?'endless=1&seed=37':'level='+level}&autoplay=1`);
 await page.waitForFunction(() => window.__RIFT);
 await page.evaluate(() => {
   const g = window.__RIFT;
@@ -35,7 +36,7 @@ await page.evaluate(() => {
   const update = g.update.bind(g);
   g.update = (dt) => { const t0 = performance.now(); update(dt); m.updMs = (m.updMs || 0) + performance.now() - t0; };
 });
-await page.tap(endless?'#btn-infinity-start':'#btn-start');
+await page.tap(lab?'#btn-lab-start':endless?'#btn-infinity-start':'#btn-start');
 await page.waitForFunction(({endless,duration}) => endless?__RIFT.t>=duration:__RIFT.state==='won', {endless,duration}, { timeout: (endless?duration+45:120)*1000 });
 const r = await page.evaluate(() => {
   const m = window.__PERF;
@@ -50,7 +51,7 @@ const r = await page.evaluate(() => {
     heapKB: (heap1 - m.heap0) / 1024,
   };
 });
-await page.tap('#btn-pause').catch(()=>{});await page.waitForTimeout(50);
+if(await page.isVisible('#btn-pause')&&await page.evaluate(()=>__RIFT.state==='playing'))await page.tap('#btn-pause');await page.waitForTimeout(50);
 if(endless) {r.sourcesAfterPause=await page.evaluate(()=>__RIFT.audio.voices.size);if(r.chunksMax>5||r.cacheMax>2||r.seekCalls!==1||r.sourcesAfterPause!==0)throw Error('Infinity lifetime bound failed: '+JSON.stringify(r));}
 console.log(`Level: ${level}, feste hochwertige Darstellung`);
 console.log(`Frames ${r.frames}, Ø-FPS ${r.fps.toFixed(1)}, Frame-Intervall p95 ${r.gapP95.toFixed(1)} ms, Frames > 25 ms: ${r.longFrames}`);
