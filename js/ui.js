@@ -37,6 +37,8 @@ export function bindTap(el, action, onGesture) {
   };
   el.addEventListener('pointerdown', (e) => {
     downInside = true;
+    // Unlock before pointerup preventDefault. Some browsers only open audio on the first event of the tap.
+    if (onGesture) onGesture();
     e.stopPropagation();
   });
   el.addEventListener('pointerup', (e) => {

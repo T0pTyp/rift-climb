@@ -238,10 +238,10 @@ export class PropsPanel {
     if(isTrap(o)) {
       const labels={amplitude:'Bewegungsweite',period:'Bewegungsperiode (s)',phase:'Startphase (0–1)',spin:'Rotation (rad/s)',activationRadius:'Aktivierungsradius',chargeSec:'Ladezeit (s)',blastRadius:'Explosionsradius',blastSec:'Explosionsdauer (s)',startAngle:'Startwinkel (°)',endAngle:'Endwinkel (°)',sweepPeriod:'Schwenkperiode (s)',length:'Strahllänge',beamWidth:'Strahlbreite',warnSec:'Warnzeit (s)',activeSec:'Aktivzeit (s)',offSec:'Pause (s)',disableSec:'Pulse-Deaktivierung (s)'};
       rows.push(this.group({saw:'Phase Saw',mine:'Pulse Mine',laser:'Sweep Laser'}[o.type],
-        o.type!=='mine'?this.select('Bewegungsachse',{key:'axis',get:get('axis'),options:[['none','Stationär'],['x','Horizontal'],['y','Vertikal']],set:this.objSetter(id,(x,v)=>{x.axis=v;})}):null,
-        ...Object.entries(TRAP_FIELDS[o.type]).map(([key,[min,max]])=>this.num(labels[key],{key,get:get(key),min,max,step:max<=12?.05:1,set:this.objSetter(id,(x,v)=>{x[key]=v;})})),
+        o.type!=='mine'?this.select('Bewegungsachse',{key:'axis',get:get('axis'),options:[['none','Stationär'],['x','Horizontal'],['y','Vertikal']],hint:o.type==='saw'?'Richtung, in die sich die Säge bewegt.':'Richtung, in die sich der Laserprojektor bewegt.',set:this.objSetter(id,(x,v)=>{x.axis=v;})}):null,
+        ...Object.entries(TRAP_FIELDS[o.type]).map(([key,[min,max]])=>this.num(labels[key],{key,get:get(key),min,max,step:max<=12?.05:1,hint:({period:o.type==='saw'?'Geschwindigkeit der Sägebewegung. Kleinere Periode = schneller.':'Geschwindigkeit der Projektorbewegung, zusammen mit der Bewegungsachse.',sweepPeriod:'Geschwindigkeit des Laserschwenks. Kleinere Periode = schneller.',startAngle:'Richtung des Strahls. 0° zeigt nach rechts, 90° nach oben.',endAngle:'Zweites Ende des Schwenks. Gleicher Winkel hält die Richtung fest.',spin:'Drehgeschwindigkeit der Säge in rad/s.',disableSec:'Bleibt für alte Level im JSON. Ein Pulse schaltet den Laser nicht ab.'})[key],set:this.objSetter(id,(x,v)=>{x[key]=v;})})),
         this.info('Uhr',()=> 'Deterministische Simulationszeit · Pause friert ein'),
-        this.info('Pulse',()=>o.type==='saw'?'passende Dimension: zerstören':o.type==='mine'?'passende Dimension: dauerhaft entschärfen':'passende Dimension: temporär abschalten'),
+        this.info('Pulse',()=>o.type==='saw'?'passende Dimension: zerstören':o.type==='mine'?'passende Dimension: dauerhaft entschärfen':'Laser bleibt aktiv – Pulse zerstört oder deaktiviert ihn nicht'),
       ));
     }
     if (o.type === 'seal') {

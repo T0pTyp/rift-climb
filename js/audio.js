@@ -75,10 +75,32 @@ export class AudioEngine {
       if (!this.ctx) {
         const AC = globalThis.AudioContext || globalThis.webkitAudioContext;
         if (!AC) return;
-        this.attach(new AC({ latencyHint: 'interactive' }));
+        let ctx;
+        try { ctx = new AC({ latencyHint: 'interactive' }); }
+        catch { ctx = new AC(); }
+        this.attach(ctx);
       }
-      if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {});
+      // iOS stays silent unless a node is started inside the gesture, before resume() resolves.
+      this.prime();
+      if (this.ctx.state !== 'running') {
+        const pending = this.ctx.resume?.();
+        pending?.then?.(() => {
+          if (this.wantsPlayback && this.ctx?.state === 'running') this.update(this.songTime);
+        })?.catch?.(() => {});
+      }
     } catch { /* Game remains fully playable without audio. */ }
+  }
+  prime() {
+    if (!this.ctx || this.primed) return;
+    try {
+      const ctx = this.ctx;
+      const buffer = ctx.createBuffer(1, 1, ctx.sampleRate || 8000);
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      src.connect(ctx.destination);
+      src.start(0);
+      this.primed = true;
+    } catch { /* The next gesture can try again. */ }
   }
   get ready() { return this.ctx?.state === 'running'; }
   persist() { try { globalThis.localStorage?.setItem(AUDIO_PREFS, JSON.stringify(this.settings)); } catch { /* optional */ } }
@@ -135,7 +157,9 @@ export class AudioEngine {
     this.songTime = time;
     if (this.simulationOnly) return;
     this.wantsPlayback = true;
-    if (!this.ready) return;
+    const state = this.ctx?.state;
+    // Suspended is startable: source.start() has to happen in the same gesture as the tap.
+    if (state !== 'running' && state !== 'suspended') return;
     if (time >= this.timeline.duration) { this.stop(); return; }
     const now = this.ctx.currentTime;
     this.lastSync = now;
@@ -155,6 +179,7 @@ export class AudioEngine {
       }
       if (this.timers) this.timer = setInterval(() => this.schedule(), 25);
     }
+    if (state !== 'running') { this.schedule(); return; }
     const drift = time - (now - this.anchor + START_LEAD);
     this.metrics.drift = drift;
     this.metrics.maxDrift = Math.max(this.metrics.maxDrift, Math.abs(drift));
@@ -168,9 +193,10 @@ export class AudioEngine {
     this.schedule();
   }
   schedule() {
-    if (!this.active || !this.ready) return;
+    const state = this.ctx?.state;
+    if (!this.active || (state !== 'running' && state !== 'suspended')) return;
     const now = this.ctx.currentTime;
-    if (now - this.lastSync > .25) { this.stop(); this.onInterrupt?.(); return; }
+    if (state === 'running' && now - this.lastSync > .25) { this.stop(); this.onInterrupt?.(); return; }
     while (this.anchor + this.nextStep * this.step < now + LOOKAHEAD) {
       const step = this.nextStep++;
       const t = this.anchor + step * this.step;
