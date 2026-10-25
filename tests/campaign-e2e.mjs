@@ -15,7 +15,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
  });
  await page.goto(BASE+'?manual=1');await page.waitForFunction(()=>window.__RIFT);await page.click('#nav-play');
  const session=await page.evaluate(()=>{window.__APP_TOKEN=Math.random();return __APP_TOKEN;});
- check(label+' three immediate level cards and no visual settings',await page.evaluate(()=>document.querySelectorAll('.level-card').length===3&&!document.querySelector('#btn-gfx')&&!('gfx' in __RIFT)));
+ check(label+' six immediate level cards and no visual settings',await page.evaluate(()=>document.querySelectorAll('.level-card').length===6&&!document.querySelector('#btn-gfx')&&!('gfx' in __RIFT)));
  check(label+' old visual prefs removed without losing legacy stats',await page.evaluate(()=>{const p=JSON.parse(localStorage.getItem('riftclimb.pulse.v1'));return p.stats.best===87&&p.stats.attempts===19&&!('gfx' in p)&&!('gfxManual' in p);}));
  await page.screenshot({path:`test-results/m7/browser/${label}-menu.png`});
  const trigger=selector=>profile.isMobile?page.tap(selector):page.click(selector);

@@ -1,0 +1,1469 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "voltage-run",
+  "name": "Voltage Run",
+  "description": "RIFT EXPANSION · Voltage Run. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+  "bpm": 132,
+  "beatsPerBar": 4,
+  "height": 15860,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 15600
+  },
+  "theme": "voltage",
+  "music": "voltage-run",
+  "difficulty": "hard",
+  "sections": [
+    {
+      "id": "A",
+      "name": "CAPACITOR",
+      "y": 0,
+      "labelY": -35
+    },
+    {
+      "id": "B",
+      "name": "SWEEP ARRAY",
+      "y": 3120,
+      "labelY": 3085
+    },
+    {
+      "id": "C",
+      "name": "CROSS CIRCUIT",
+      "y": 7020,
+      "labelY": 6985
+    },
+    {
+      "id": "D",
+      "name": "HIGH VOLTAGE",
+      "y": 11700,
+      "labelY": 11665
+    }
+  ],
+  "objects": [
+    {
+      "id": "wall-0-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 709.090909,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-0",
+      "type": "mine",
+      "x": 31,
+      "y": 709.090909,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-1-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1181.818182,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-1-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 1181.818182,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-1",
+      "type": "mine",
+      "x": 121,
+      "y": 1181.818182,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-2-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1654.545455,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-2-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 1654.545455,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-2",
+      "type": "obstacle",
+      "x": 183,
+      "y": 1654.545455,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "wall-3-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 2127.272727,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-3",
+      "type": "mine",
+      "x": 301,
+      "y": 2127.272727,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-4-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 2600,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-4-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 2600,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-4",
+      "type": "mine",
+      "x": 211,
+      "y": 2600,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-5-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3072.727273,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-5-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 3072.727273,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-5",
+      "type": "obstacle",
+      "x": 93,
+      "y": 3072.727273,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-6-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3545.454545,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-6-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 3545.454545,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-6",
+      "type": "laser",
+      "x": 212,
+      "y": 3545.454545,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.4624505928853751,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-7-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4018.181818,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-7",
+      "type": "laser",
+      "x": 302,
+      "y": 4018.181818,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.6719367588932801,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-8-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4490.909091,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-8-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 4490.909091,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-8",
+      "type": "obstacle",
+      "x": 183,
+      "y": 4490.909091,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "wall-9-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4963.636364,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-9-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 4963.636364,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-9",
+      "type": "laser",
+      "x": 122,
+      "y": 4963.636364,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.0909090909090901,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-10-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 5436.363636,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-10",
+      "type": "laser",
+      "x": 32,
+      "y": 5436.363636,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.3003952569169943,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-11-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 5909.090909,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-11-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 5909.090909,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-11",
+      "type": "obstacle",
+      "x": 93,
+      "y": 5909.090909,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-12-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6381.818182,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-12-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 6381.818182,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-12",
+      "type": "laser",
+      "x": 212,
+      "y": 6381.818182,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.7193675889328044,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-13-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6854.545455,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-13-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 6854.545455,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-13",
+      "type": "seal",
+      "x": 93,
+      "y": 6854.545455,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-14-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 7327.272727,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-14",
+      "type": "mine",
+      "x": 31,
+      "y": 7327.272727,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-15-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 7681.818182,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-15-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 7681.818182,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-15",
+      "type": "laser",
+      "x": 122,
+      "y": 7681.818182,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.5454545454545433,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-16-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8036.363636,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-16-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 8036.363636,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-16",
+      "type": "seal",
+      "x": 183,
+      "y": 8036.363636,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-17-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8390.909091,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-17",
+      "type": "mine",
+      "x": 301,
+      "y": 8390.909091,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-18-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8745.454545,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-18-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 8745.454545,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-18",
+      "type": "laser",
+      "x": 212,
+      "y": 8745.454545,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.7667984189723317,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-19-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9100,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-19-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 9100,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-19",
+      "type": "mine",
+      "x": 121,
+      "y": 9100,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-20-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 9454.545455,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-20",
+      "type": "seal",
+      "x": 3,
+      "y": 9454.545455,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-21-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9809.090909,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-21-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 9809.090909,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-21",
+      "type": "laser",
+      "x": 122,
+      "y": 9809.090909,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.988142292490117,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-22-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10163.636364,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-22-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 10163.636364,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-22",
+      "type": "mine",
+      "x": 211,
+      "y": 10163.636364,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-23-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10518.181818,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-23-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 10518.181818,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-23",
+      "type": "laser",
+      "x": 122,
+      "y": 10518.181818,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.8023715415019749,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-24-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10872.727273,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-24-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 10872.727273,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-24",
+      "type": "seal",
+      "x": 183,
+      "y": 10872.727273,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-25-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11227.272727,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-25",
+      "type": "mine",
+      "x": 301,
+      "y": 11227.272727,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-26-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11581.818182,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-26-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 11581.818182,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-26",
+      "type": "laser",
+      "x": 212,
+      "y": 11581.818182,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.0237154150197602,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-27-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11936.363636,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-27-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 11936.363636,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-27",
+      "type": "mine",
+      "x": 121,
+      "y": 11936.363636,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-28-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 12172.727273,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-28",
+      "type": "seal",
+      "x": 3,
+      "y": 12172.727273,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-29-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 12409.090909,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-29-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 12409.090909,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-29",
+      "type": "laser",
+      "x": 122,
+      "y": 12409.090909,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.6403162055335949,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-30-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 12645.454545,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-30-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 12645.454545,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-30",
+      "type": "mine",
+      "x": 211,
+      "y": 12645.454545,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-31-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 12881.818182,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-31",
+      "type": "laser",
+      "x": 302,
+      "y": 12881.818182,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.8498023715414992,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-32-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 13118.181818,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-32-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 13118.181818,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-32",
+      "type": "seal",
+      "x": 183,
+      "y": 13118.181818,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-33-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 13354.545455,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-33-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 13354.545455,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-33",
+      "type": "mine",
+      "x": 121,
+      "y": 13354.545455,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-34-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 13590.909091,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-34",
+      "type": "laser",
+      "x": 32,
+      "y": 13590.909091,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.6640316205533571,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-35-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 13827.272727,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-35-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 13827.272727,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-35",
+      "type": "mine",
+      "x": 121,
+      "y": 13827.272727,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-36-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 14063.636364,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-36-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 14063.636364,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-36",
+      "type": "seal",
+      "x": 183,
+      "y": 14063.636364,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-37-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 14300,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-37",
+      "type": "laser",
+      "x": 302,
+      "y": 14300,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.47826086956521496,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-38-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 14536.363636,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-38-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 14536.363636,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "mine-38",
+      "type": "mine",
+      "x": 211,
+      "y": 14536.363636,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 190,
+      "chargeSec": 0.7,
+      "blastRadius": 130,
+      "blastSec": 0.22
+    },
+    {
+      "id": "wall-39-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 14772.727273,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-39-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 14772.727273,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "laser-39",
+      "type": "laser",
+      "x": 122,
+      "y": 14772.727273,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.6877470355731192,
+      "startAngle": 75,
+      "endAngle": 105,
+      "sweepPeriod": 3,
+      "length": 180,
+      "beamWidth": 10,
+      "warnSec": 0.7,
+      "activeSec": 0.6,
+      "offSec": 1,
+      "disableSec": 1,
+      "axis": "none"
+    },
+    {
+      "id": "wall-40-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 15127.272727,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-40",
+      "type": "seal",
+      "x": 3,
+      "y": 15127.272727,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "hint-0",
+      "type": "hint",
+      "y": 118.181818,
+      "text": "MINEN WARNEN VOR DER EXPLOSION"
+    },
+    {
+      "id": "hint-1",
+      "type": "hint",
+      "y": 3309.090909,
+      "text": "LASER: WARNLINIE → STRAHL"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 2.454545,
+        "dir": -1
+      },
+      {
+        "t": 4.272727,
+        "dir": 1
+      },
+      {
+        "t": 6.090909,
+        "dir": 1
+      },
+      {
+        "t": 7.909091,
+        "dir": 1
+      },
+      {
+        "t": 9.727273,
+        "dir": -1
+      },
+      {
+        "t": 11.545455,
+        "dir": -1
+      },
+      {
+        "t": 13.363636,
+        "dir": 1
+      },
+      {
+        "t": 15.181818,
+        "dir": 1
+      },
+      {
+        "t": 17,
+        "dir": -1
+      },
+      {
+        "t": 18.818182,
+        "dir": -1
+      },
+      {
+        "t": 20.636364,
+        "dir": -1
+      },
+      {
+        "t": 22.454545,
+        "dir": 1
+      },
+      {
+        "t": 24.272727,
+        "dir": 1
+      },
+      {
+        "t": 26.090909,
+        "dir": -1
+      },
+      {
+        "t": 27.909091,
+        "dir": -1
+      },
+      {
+        "t": 29.272727,
+        "dir": 1
+      },
+      {
+        "t": 30.636364,
+        "dir": 1
+      },
+      {
+        "t": 32,
+        "dir": 1
+      },
+      {
+        "t": 33.363636,
+        "dir": -1
+      },
+      {
+        "t": 34.727273,
+        "dir": -1
+      },
+      {
+        "t": 36.090909,
+        "dir": -1
+      },
+      {
+        "t": 37.454545,
+        "dir": 1
+      },
+      {
+        "t": 38.818182,
+        "dir": 1
+      },
+      {
+        "t": 40.181818,
+        "dir": -1
+      },
+      {
+        "t": 41.545455,
+        "dir": 1
+      },
+      {
+        "t": 42.909091,
+        "dir": 1
+      },
+      {
+        "t": 44.272727,
+        "dir": -1
+      },
+      {
+        "t": 45.636364,
+        "dir": -1
+      },
+      {
+        "t": 46.545455,
+        "dir": -1
+      },
+      {
+        "t": 47.454545,
+        "dir": 1
+      },
+      {
+        "t": 48.363636,
+        "dir": 1
+      },
+      {
+        "t": 49.272727,
+        "dir": 1
+      },
+      {
+        "t": 50.181818,
+        "dir": -1
+      },
+      {
+        "t": 51.090909,
+        "dir": -1
+      },
+      {
+        "t": 52,
+        "dir": -1
+      },
+      {
+        "t": 52.909091,
+        "dir": 1
+      },
+      {
+        "t": 53.818182,
+        "dir": 1
+      },
+      {
+        "t": 54.727273,
+        "dir": 1
+      },
+      {
+        "t": 55.636364,
+        "dir": -1
+      },
+      {
+        "t": 56.545455,
+        "dir": -1
+      },
+      {
+        "t": 57.909091,
+        "dir": -1
+      }
+    ]
+  }
+}

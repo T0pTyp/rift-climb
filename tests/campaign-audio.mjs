@@ -6,7 +6,7 @@ const BASE=process.env.BASE_URL||'http://localhost:8080/';
 mkdirSync('test-results/m7/audio',{recursive:true});
 const browser=await chromium.launch(),page=await browser.newPage();await page.goto(BASE);
 const results=[];
-for(const id of ['first-pulse','fractured-rhythm','overload']) for(const dim of ['B','R']) {
+for(const id of (process.env.LEVEL_IDS||'first-pulse,fractured-rhythm,overload,shattered-gears,voltage-run,singularity-rush').split(',')) for(const dim of ['B','R']) {
  const r=await page.evaluate(async({id,dim})=>{
   const {AudioEngine}=await import('./js/audio.js'),{scoreStep}=await import('./js/pulse/score.js');
   const {buildLevelRuntime,validateLevelData}=await import('./js/level-data.js');
@@ -33,4 +33,4 @@ for(const id of ['first-pulse','fractured-rhythm','overload']) for(const dim of 
  const pcm=Buffer.from(r.pcm,'base64'),h=Buffer.alloc(44);h.write('RIFF');h.writeUInt32LE(pcm.length+36,4);h.write('WAVEfmt ',8);h.writeUInt32LE(16,16);h.writeUInt16LE(1,20);h.writeUInt16LE(1,22);h.writeUInt32LE(22050,24);h.writeUInt32LE(44100,28);h.writeUInt16LE(2,32);h.writeUInt16LE(16,34);h.write('data',36);h.writeUInt32LE(pcm.length,40);
  writeFileSync(`test-results/m7/audio/${id}-${dim}.wav`,Buffer.concat([h,pcm]));delete r.pcm;results.push(r);console.log('PASS',JSON.stringify(r));
 }
-await browser.close();writeFileSync('test-results/m7/audio/metrics.json',JSON.stringify(results,null,2));console.log('6 full soundtrack renders passed');
+await browser.close();writeFileSync('test-results/m7/audio/metrics.json',JSON.stringify(results,null,2));console.log('Full soundtrack renders passed');

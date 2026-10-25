@@ -118,7 +118,7 @@ export class UI {
     this.hud.hidden = !inGame;
     this.hints.hidden = name !== null;
     document.body.dataset.screen = name || 'play';
-    if(name==='menu')this.panels?.open(this.panels.page);
+    if(name==='menu'){this.el.checkpoint.classList.remove('show');this.panels?.open(this.panels.page);}
   }
 
   updateMenu(stats, muted) {
@@ -149,6 +149,7 @@ export class UI {
   }
 
   updateHud(pct, dim, attempts, mode) {
+    $('#hud-infinity').hidden=true;this.el.bar.parentElement.hidden=false;
     const key = `${pct}|${dim}|${attempts}|${mode}`;
     if (key === this.lastHud) return;
     this.lastHud = key;
@@ -164,9 +165,10 @@ export class UI {
   showDeath(options) {
     const {pct,best,isNewBest,reason}=options;
     this.panels.result('death',options);
-    this.el.deathPct.textContent = `${pct}%`;
+    this.el.deathPct.textContent = `${pct}${options.endless?' m':'%'}`;
     this.el.deathReason.textContent = reason || '';
-    this.el.deathBest.textContent = `${best}%`;
+    this.el.deathBest.textContent = `${best}${options.endless?' m':'%'}`;
+    this.el.deathTitle.textContent=options.endless?'RIFT INFINITY':'Rift verloren';
     this.el.deathNew.hidden = !isNewBest;
     this.show('death');
   }
@@ -182,6 +184,12 @@ export class UI {
   }
 
   openPage(page) { this.panels.open(page); }
+  updateEndlessHud(height,best,tier,dim,attempts) {
+    const key=`infinity|${height}|${best}|${tier}|${dim}|${attempts}`;
+    if(this.lastHud===key)return;this.lastHud=key;this.el.bar.parentElement.hidden=true;this.el.pct.textContent=height+' m';
+    const label=$('#hud-infinity');label.hidden=false;label.textContent=`REKORD ${best} m · ${tier}`;
+    this.el.dim.textContent=COLORS[dim].name;this.el.dim.dataset.dim=dim;this.el.attempts.textContent='Versuch '+attempts;this.el.mode.hidden=true;document.body.dataset.dim=dim;
+  }
   setSkin(id) {
     const prefix=id==='original'?'body-':id+'-';
     document.querySelector('.rb-b').src=`assets/riftling/${prefix}${id==='original'?'blue':'B'}.svg`;

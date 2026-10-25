@@ -9,11 +9,11 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  p.on('pageerror',e=>errors.push(e.message));const click=selector=>device.isMobile?p.tap(selector):p.click(selector);
  const snap=name=>p.screenshot({path:`test-results/m8/browser/${label}-${name}.png`});
  await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);
- check(label+' five home destinations',await p.locator('.nav-tile:visible').count()===5);await snap('home');
+ check(label+' six home destinations',await p.locator('.nav-tile:visible').count()===6);await snap('home');
  await click('#nav-collection');check(label+' five skins, original equipped',await p.evaluate(()=>document.querySelectorAll('.skin-card').length===5&&__ASCENSION.data.cosmetics.selectedSkinId==='original'));
  await click('[data-skin="golden"]');check(label+' locked preview cannot equip',await p.isDisabled('#btn-equip'));await p.waitForTimeout(200);await snap('locked-golden');
  await click('#page-collection [data-home]');await click('#nav-play');
- check(label+' three cards with two actions and actual artwork',await p.evaluate(()=>document.querySelectorAll('.level-art').length===3&&document.querySelectorAll('.card-actions .btn').length===6&&[...document.querySelectorAll('.level-art')].every(i=>i.naturalWidth>0)));
+ check(label+' six cards with two actions and actual artwork',await p.evaluate(()=>document.querySelectorAll('.level-art').length===6&&document.querySelectorAll('.card-actions .btn').length===12&&[...document.querySelectorAll('.level-art')].every(i=>i.naturalWidth>0)));
  await click('#btn-start');await p.waitForTimeout(220);
  check(label+' normal start counted once; First Flight',await p.evaluate(()=>__ASCENSION.summary().totalNormalAttempts===1&&!!__ASCENSION.data.achievements['first-flight']));
  await p.evaluate(()=>{__RIFT.debug.autoplay=true;__RIFT.setupAutoplay();advanceTime(21000);});
@@ -28,7 +28,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  await click('#btn-next-level');check(label+' Next starts Fractured',await p.evaluate(()=>__RIFT.level.id==='fractured-rhythm'&&__RIFT.state==='playing'&&__ASCENSION.summary().totalNormalAttempts===2));
  await p.evaluate(()=>advanceTime(57000));check(label+' real Fractured win grants Crimson',await p.evaluate(()=>__RIFT.state==='won'&&__ASCENSION.data.cosmetics.unlockedSkinIds.includes('crimson')));
  await click('#btn-next-level');await p.evaluate(()=>advanceTime(68000));
- check(label+' real Overload win: Golden Ascent and all skins',await p.evaluate(()=>__RIFT.state==='won'&&__ASCENSION.summary().goldMedals===3&&__ASCENSION.summary().skins===5&&!!__ASCENSION.data.achievements['golden-ascent']));check(label+' no Next after Overload',await p.isHidden('#btn-next-level'));
+ check(label+' real Overload win: Golden Ascent and all skins',await p.evaluate(()=>__RIFT.state==='won'&&__ASCENSION.summary().goldMedals===3&&__ASCENSION.summary().skins===5&&!!__ASCENSION.data.achievements['golden-ascent']));check(label+' Next continues into expansion',await p.isVisible('#btn-next-level'));
  await click('#btn-win-menu');await click('#page-levels [data-home]');await click('#nav-collection');await click('[data-skin="golden"]');await click('#btn-equip');
  check(label+' earned design applied to actual renderer',await p.evaluate(()=>__RIFT.skinId==='golden'&&__ASCENSION.data.cosmetics.selectedSkinId==='golden'));await p.waitForTimeout(180);await snap('collection');
  await p.reload();await p.waitForFunction(()=>window.__RIFT);
@@ -42,7 +42,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  await click('#btn-death-restart');check(label+' Retry starts exactly one attempt',await p.evaluate(()=>__RIFT.state==='playing'&&__RIFT.t===0&&__RIFT.player.dim==='B'&&__ASCENSION.level('first-pulse').deaths===1&&__ASCENSION.level('first-pulse').attempts===3));
  await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(2200);});await snap('death');await click('#btn-death-home');await click('#nav-achievements');
  check(label+' all eight achievement cards',await p.locator('.achievement-card').count()===8);await snap('achievements');await click('#page-achievements [data-home]');await click('#nav-profile');
- check(label+' profile contains measured stats and per-level records',await p.locator('.stat-card').count()===8&&await p.locator('.profile-level').count()===3);await snap('profile');
+ check(label+' profile contains measured stats and per-level records',await p.locator('#profile-stats .stat-card').count()===8&&await p.locator('.profile-level').count()===6);await snap('profile');
  await click('#page-profile [data-home]');await click('#nav-settings');await click('#btn-sound');check(label+' mute saved in audio preferences',await p.evaluate(()=>JSON.parse(localStorage.getItem('riftclimb.audio.v1')).muted===true));
  await p.reload();await p.waitForFunction(()=>window.__RIFT);check(label+' mute restored, fixed high graphics',await p.evaluate(()=>__RIFT.audio.muted&&!document.querySelector('#btn-gfx')&&__RIFT.particles.cap===320));
  const saved=await p.evaluate(()=>localStorage.getItem('riftclimb.ascension.v2'));
@@ -76,7 +76,7 @@ for(const mode of ['legacy','corrupt','blocked']) {
 }
 for(const [width,height] of [[320,568],[360,640],[390,844],[430,932],[768,1024]]) {
  const b=await chromium.launch(),p=await b.newPage({viewport:{width,height},isMobile:true,hasTouch:true});await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);
- for(const page of ['home','levels','collection','achievements','profile','settings']) {
+ for(const page of ['home','levels','collection','achievements','profile','settings','infinity']) {
   await p.evaluate(page=>__RIFT.ui.openPage(page),page);
   check(`${width} ${page} scrollable without horizontal overflow`,await p.evaluate(()=>{const r=document.querySelector('#menu .panel').getBoundingClientRect();return document.documentElement.scrollWidth===innerWidth&&r.left>=0&&r.right<=innerWidth&&r.top>=0;}));
  }

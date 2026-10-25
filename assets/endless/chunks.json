@@ -1,0 +1,4250 @@
+{
+  "schema": "rift-infinity-chunks",
+  "version": 1,
+  "metersPerUnit": 0.1,
+  "chunks": [
+    {
+      "id": "open-arch",
+      "tier": 0,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "open-arch",
+        "name": "open-arch",
+        "description": "RIFT EXPANSION · open-arch. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 650,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-0",
+            "type": "obstacle",
+            "x": 183,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 245,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 273,
+            "y": 910,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 1170,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-2",
+            "type": "obstacle",
+            "x": 183,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 1430,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-3",
+            "type": "obstacle",
+            "x": 93,
+            "y": 1430,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          }
+        ],
+        "theme": "spire",
+        "music": "first-pulse",
+        "difficulty": "easy",
+        "sections": [
+          {
+            "id": "A",
+            "name": "OPEN-ARCH",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "left-echo",
+      "tier": 0,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "left-echo",
+        "name": "left-echo",
+        "description": "RIFT EXPANSION · left-echo. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 115,
+            "y": 650,
+            "w": 245,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-0",
+            "type": "obstacle",
+            "x": 3,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 975,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 93,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 1170,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 201,
+            "y": 1170,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 1495,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-3",
+            "type": "obstacle",
+            "x": 93,
+            "y": 1495,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          }
+        ],
+        "theme": "spire",
+        "music": "first-pulse",
+        "difficulty": "easy",
+        "sections": [
+          {
+            "id": "A",
+            "name": "LEFT-ECHO",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.5,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "right-return",
+      "tier": 0,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "right-return",
+        "name": "right-return",
+        "description": "RIFT EXPANSION · right-return. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 650,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-0",
+            "type": "obstacle",
+            "x": 183,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 910,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-1",
+            "type": "saw",
+            "x": 111,
+            "y": 910,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 20,
+            "period": 3.5,
+            "phase": 0.25,
+            "spin": 4.5,
+            "axis": "x"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 115,
+            "y": 1170,
+            "w": 245,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-2",
+            "type": "obstacle",
+            "x": 3,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 1430,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-3",
+            "type": "obstacle",
+            "x": 93,
+            "y": 1430,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          }
+        ],
+        "theme": "spire",
+        "music": "first-pulse",
+        "difficulty": "easy",
+        "sections": [
+          {
+            "id": "A",
+            "name": "RIGHT-RETURN",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "pendulum-hall",
+      "tier": 0,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "pendulum-hall",
+        "name": "pendulum-hall",
+        "description": "RIFT EXPANSION · pendulum-hall. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 115,
+            "y": 650,
+            "w": 245,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 21,
+            "y": 650,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 975,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 93,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 115,
+            "y": 1170,
+            "w": 245,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 21,
+            "y": 1170,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 1495,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-3",
+            "type": "obstacle",
+            "x": 93,
+            "y": 1495,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          }
+        ],
+        "theme": "spire",
+        "music": "first-pulse",
+        "difficulty": "easy",
+        "sections": [
+          {
+            "id": "A",
+            "name": "PENDULUM-HALL",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.5,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "blue-stair",
+      "tier": 0,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "blue-stair",
+        "name": "blue-stair",
+        "description": "RIFT EXPANSION · blue-stair. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 650,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-0",
+            "type": "obstacle",
+            "x": 183,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 910,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 93,
+            "y": 910,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 295,
+            "y": 1170,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-2",
+            "type": "obstacle",
+            "x": 183,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 65,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 205,
+            "y": 1430,
+            "w": 155,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-3",
+            "type": "saw",
+            "x": 111,
+            "y": 1430,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.75,
+            "spin": 3.5,
+            "axis": "none"
+          }
+        ],
+        "theme": "spire",
+        "music": "first-pulse",
+        "difficulty": "easy",
+        "sections": [
+          {
+            "id": "A",
+            "name": "BLUE-STAIR",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gear-bridge",
+      "tier": 1,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "gear-bridge",
+        "name": "gear-bridge",
+        "description": "RIFT EXPANSION · gear-bridge. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 650,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 273,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-2",
+            "type": "seal",
+            "x": 183,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1495,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-3",
+            "type": "saw",
+            "x": 111,
+            "y": 1495,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.75,
+            "spin": 3.5,
+            "axis": "none"
+          }
+        ],
+        "theme": "gears",
+        "music": "first-pulse",
+        "difficulty": "medium",
+        "sections": [
+          {
+            "id": "A",
+            "name": "GEAR-BRIDGE",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.5,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gold-switch",
+      "tier": 1,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "gold-switch",
+        "name": "gold-switch",
+        "description": "RIFT EXPANSION · gold-switch. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 650,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-0",
+            "type": "seal",
+            "x": 3,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 910,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-1",
+            "type": "saw",
+            "x": 111,
+            "y": 910,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 3.5,
+            "phase": 0.25,
+            "spin": 4.5,
+            "axis": "x"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-2",
+            "type": "obstacle",
+            "x": 183,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1430,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 93,
+            "y": 1430,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          }
+        ],
+        "theme": "gears",
+        "music": "first-pulse",
+        "difficulty": "medium",
+        "sections": [
+          {
+            "id": "A",
+            "name": "GOLD-SWITCH",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shaft-cross",
+      "tier": 1,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "shaft-cross",
+        "name": "shaft-cross",
+        "description": "RIFT EXPANSION · shaft-cross. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 650,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 975,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-1",
+            "type": "seal",
+            "x": 93,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 1170,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 21,
+            "y": 1170,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1495,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-3",
+            "type": "obstacle",
+            "x": 93,
+            "y": 1495,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          }
+        ],
+        "theme": "gears",
+        "music": "first-pulse",
+        "difficulty": "medium",
+        "sections": [
+          {
+            "id": "A",
+            "name": "SHAFT-CROSS",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.5,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.5,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "double-lock",
+      "tier": 1,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "double-lock",
+        "name": "double-lock",
+        "description": "RIFT EXPANSION · double-lock. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 650,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-0",
+            "type": "obstacle",
+            "x": 3,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 910,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-1",
+            "type": "seal",
+            "x": 93,
+            "y": 910,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 1170,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-2",
+            "type": "obstacle",
+            "x": 3,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "dimension": "blue"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1430,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 93,
+            "y": 1430,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          }
+        ],
+        "theme": "gears",
+        "music": "first-pulse",
+        "difficulty": "medium",
+        "sections": [
+          {
+            "id": "A",
+            "name": "DOUBLE-LOCK",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fracture-steps",
+      "tier": 1,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "fracture-steps",
+        "name": "fracture-steps",
+        "description": "RIFT EXPANSION · fracture-steps. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 650,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 975,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "color-1",
+            "type": "obstacle",
+            "x": 93,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "dimension": "red"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 201,
+            "y": 1170,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1495,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 93,
+            "y": 1495,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          }
+        ],
+        "theme": "gears",
+        "music": "first-pulse",
+        "difficulty": "medium",
+        "sections": [
+          {
+            "id": "A",
+            "name": "FRACTURE-STEPS",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.5,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.5,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "capacitor-walk",
+      "tier": 2,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "capacitor-walk",
+        "name": "capacitor-walk",
+        "description": "RIFT EXPANSION · capacitor-walk. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-0",
+            "type": "mine",
+            "x": 211,
+            "y": 650,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-1",
+            "type": "laser",
+            "x": 302,
+            "y": 910,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.8695652173913042,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-2",
+            "type": "seal",
+            "x": 183,
+            "y": 1170,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1430,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-3",
+            "type": "mine",
+            "x": 121,
+            "y": 1430,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          }
+        ],
+        "theme": "voltage",
+        "music": "first-pulse",
+        "difficulty": "hard",
+        "sections": [
+          {
+            "id": "A",
+            "name": "CAPACITOR-WALK",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "laser-lattice",
+      "tier": 2,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "laser-lattice",
+        "name": "laser-lattice",
+        "description": "RIFT EXPANSION · laser-lattice. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 650,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-0",
+            "type": "laser",
+            "x": 32,
+            "y": 650,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.30434782608695643,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 975,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-1",
+            "type": "seal",
+            "x": 93,
+            "y": 975,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-2",
+            "type": "laser",
+            "x": 212,
+            "y": 1170,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.434782608695652,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1495,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-3",
+            "type": "saw",
+            "x": 111,
+            "y": 1495,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.75,
+            "spin": 3.5,
+            "axis": "none"
+          }
+        ],
+        "theme": "voltage",
+        "music": "first-pulse",
+        "difficulty": "hard",
+        "sections": [
+          {
+            "id": "A",
+            "name": "LASER-LATTICE",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.5,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ionic-return",
+      "tier": 2,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "ionic-return",
+        "name": "ionic-return",
+        "description": "RIFT EXPANSION · ionic-return. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-0",
+            "type": "mine",
+            "x": 211,
+            "y": 650,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 910,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-1",
+            "type": "seal",
+            "x": 93,
+            "y": 910,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 1170,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 21,
+            "y": 1170,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1430,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-3",
+            "type": "laser",
+            "x": 122,
+            "y": 1430,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          }
+        ],
+        "theme": "voltage",
+        "music": "first-pulse",
+        "difficulty": "hard",
+        "sections": [
+          {
+            "id": "A",
+            "name": "IONIC-RETURN",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "charged-arches",
+      "tier": 2,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "charged-arches",
+        "name": "charged-arches",
+        "description": "RIFT EXPANSION · charged-arches. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 650,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-0",
+            "type": "seal",
+            "x": 3,
+            "y": 650,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 975,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-1",
+            "type": "mine",
+            "x": 121,
+            "y": 975,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 88,
+            "y": 1170,
+            "w": 272,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-2",
+            "type": "laser",
+            "x": 32,
+            "y": 1170,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.434782608695652,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1495,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1495,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-3",
+            "type": "mine",
+            "x": 121,
+            "y": 1495,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          }
+        ],
+        "theme": "voltage",
+        "music": "first-pulse",
+        "difficulty": "hard",
+        "sections": [
+          {
+            "id": "A",
+            "name": "CHARGED-ARCHES",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 5.5,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "reactor-fold",
+      "tier": 2,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "reactor-fold",
+        "name": "reactor-fold",
+        "description": "RIFT EXPANSION · reactor-fold. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 650,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 650,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 650,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 910,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 910,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-1",
+            "type": "laser",
+            "x": 122,
+            "y": 910,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.8695652173913042,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 268,
+            "y": 1170,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-2",
+            "type": "mine",
+            "x": 211,
+            "y": 1170,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 92,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 178,
+            "y": 1430,
+            "w": 182,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 93,
+            "y": 1430,
+            "w": 84,
+            "h": 14,
+            "openSec": 0.65
+          }
+        ],
+        "theme": "voltage",
+        "music": "first-pulse",
+        "difficulty": "hard",
+        "sections": [
+          {
+            "id": "A",
+            "name": "REACTOR-FOLD",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 3.25,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "core-cascade",
+      "tier": 3,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "core-cascade",
+        "name": "core-cascade",
+        "description": "RIFT EXPANSION · core-cascade. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 585,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 585,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 585,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 715,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-1",
+            "type": "mine",
+            "x": 301,
+            "y": 715,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 845,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 845,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-2",
+            "type": "laser",
+            "x": 212,
+            "y": 845,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.9782608695652173,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 975,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 97,
+            "y": 975,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-4-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 1170,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-4",
+            "type": "mine",
+            "x": 31,
+            "y": 1170,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-5-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1300,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-5-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1300,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-5",
+            "type": "saw",
+            "x": 111,
+            "y": 1300,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.25,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-6-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-6-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1430,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-6",
+            "type": "laser",
+            "x": 212,
+            "y": 1430,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-7-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1560,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-7-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1560,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-7",
+            "type": "seal",
+            "x": 97,
+            "y": 1560,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          }
+        ],
+        "theme": "singularity",
+        "music": "first-pulse",
+        "difficulty": "extreme",
+        "sections": [
+          {
+            "id": "A",
+            "name": "CORE-CASCADE",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2,
+              "dir": 1
+            },
+            {
+              "t": 2.5,
+              "dir": 1
+            },
+            {
+              "t": 3,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 4.75,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": 1
+            },
+            {
+              "t": 5.75,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "polarity-chain",
+      "tier": 3,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "polarity-chain",
+        "name": "polarity-chain",
+        "description": "RIFT EXPANSION · polarity-chain. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 585,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-0",
+            "type": "laser",
+            "x": 32,
+            "y": 585,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.41304347826086946,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 715,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 715,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-1",
+            "type": "saw",
+            "x": 111,
+            "y": 715,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 3.5,
+            "phase": 0.25,
+            "spin": 4.5,
+            "axis": "x"
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 845,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 845,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-2",
+            "type": "seal",
+            "x": 187,
+            "y": 845,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 975,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-3",
+            "type": "mine",
+            "x": 121,
+            "y": 975,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-4-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-4-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1170,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-4",
+            "type": "laser",
+            "x": 212,
+            "y": 1170,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.434782608695652,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-5-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1300,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-5-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1300,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-5",
+            "type": "seal",
+            "x": 97,
+            "y": 1300,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-6-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 1430,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-6",
+            "type": "saw",
+            "x": 21,
+            "y": 1430,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.5,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-7-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1560,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-7-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1560,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-7",
+            "type": "mine",
+            "x": 121,
+            "y": 1560,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          }
+        ],
+        "theme": "singularity",
+        "music": "first-pulse",
+        "difficulty": "extreme",
+        "sections": [
+          {
+            "id": "A",
+            "name": "POLARITY-CHAIN",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2,
+              "dir": -1
+            },
+            {
+              "t": 2.5,
+              "dir": 1
+            },
+            {
+              "t": 3,
+              "dir": 1
+            },
+            {
+              "t": 3.5,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 4.75,
+              "dir": -1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            },
+            {
+              "t": 5.75,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "voltage-crown",
+      "tier": 3,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "voltage-crown",
+        "name": "voltage-crown",
+        "description": "RIFT EXPANSION · voltage-crown. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 585,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 585,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-0",
+            "type": "mine",
+            "x": 211,
+            "y": 585,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 715,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 715,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-1",
+            "type": "laser",
+            "x": 122,
+            "y": 715,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.19565217391304338,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 845,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-2",
+            "type": "saw",
+            "x": 21,
+            "y": 845,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 975,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-3",
+            "type": "seal",
+            "x": 97,
+            "y": 975,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-4-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-4-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1170,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-4",
+            "type": "laser",
+            "x": 212,
+            "y": 1170,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.434782608695652,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-5-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1300,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-5",
+            "type": "mine",
+            "x": 301,
+            "y": 1300,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-6-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-6-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1430,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-6",
+            "type": "seal",
+            "x": 187,
+            "y": 1430,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-7-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1560,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-7-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1560,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-7",
+            "type": "saw",
+            "x": 111,
+            "y": 1560,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 3.5,
+            "phase": 0.75,
+            "spin": 4.5,
+            "axis": "x"
+          }
+        ],
+        "theme": "singularity",
+        "music": "first-pulse",
+        "difficulty": "extreme",
+        "sections": [
+          {
+            "id": "A",
+            "name": "VOLTAGE-CROWN",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2,
+              "dir": 1
+            },
+            {
+              "t": 2.5,
+              "dir": -1
+            },
+            {
+              "t": 3,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 4.75,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            },
+            {
+              "t": 5.75,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "rift-weave",
+      "tier": 3,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "rift-weave",
+        "name": "rift-weave",
+        "description": "RIFT EXPANSION · rift-weave. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 585,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-0",
+            "type": "seal",
+            "x": 7,
+            "y": 585,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 715,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 715,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-1",
+            "type": "mine",
+            "x": 121,
+            "y": 715,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 845,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-2",
+            "type": "laser",
+            "x": 32,
+            "y": 845,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.9782608695652173,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 975,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-3",
+            "type": "saw",
+            "x": 111,
+            "y": 975,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.75,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-4-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1170,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-4-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1170,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-4",
+            "type": "mine",
+            "x": 211,
+            "y": 1170,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-5-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1300,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-5",
+            "type": "seal",
+            "x": 277,
+            "y": 1300,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-6-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1430,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-6-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 1430,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-6",
+            "type": "saw",
+            "x": 201,
+            "y": 1430,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0.5,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-7-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1560,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-7-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1560,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-7",
+            "type": "laser",
+            "x": 122,
+            "y": 1560,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.782608695652174,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          }
+        ],
+        "theme": "singularity",
+        "music": "first-pulse",
+        "difficulty": "extreme",
+        "sections": [
+          {
+            "id": "A",
+            "name": "RIFT-WEAVE",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2,
+              "dir": -1
+            },
+            {
+              "t": 2.5,
+              "dir": 1
+            },
+            {
+              "t": 3,
+              "dir": -1
+            },
+            {
+              "t": 3.5,
+              "dir": 1
+            },
+            {
+              "t": 4.25,
+              "dir": 1
+            },
+            {
+              "t": 4.75,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            },
+            {
+              "t": 5.75,
+              "dir": -1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "singular-flight",
+      "tier": 3,
+      "length": 2080,
+      "entry": {
+        "lane": 1,
+        "dimension": "blue",
+        "clearSec": 2
+      },
+      "exit": {
+        "lane": 1,
+        "dimension": "blue",
+        "settleSec": 2
+      },
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "id": "singular-flight",
+        "name": "singular-flight",
+        "description": "RIFT EXPANSION · singular-flight. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 2340,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 2080
+        },
+        "objects": [
+          {
+            "id": "wall-0-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 585,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-0-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 585,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-0",
+            "type": "saw",
+            "x": 201,
+            "y": 585,
+            "w": 48,
+            "h": 48,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 3.5,
+            "axis": "none"
+          },
+          {
+            "id": "wall-1-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 715,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-1-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 715,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-1",
+            "type": "seal",
+            "x": 97,
+            "y": 715,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-2-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 845,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-2-r",
+            "type": "obstacle",
+            "x": 263,
+            "y": 845,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-2",
+            "type": "laser",
+            "x": 212,
+            "y": 845,
+            "w": 26,
+            "h": 26,
+            "dimension": "red",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.9782608695652173,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          },
+          {
+            "id": "wall-3-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 975,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-3-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 975,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-3",
+            "type": "mine",
+            "x": 121,
+            "y": 975,
+            "w": 28,
+            "h": 28,
+            "dimension": "blue",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-4-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 1170,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "seal-4",
+            "type": "seal",
+            "x": 7,
+            "y": 1170,
+            "w": 76,
+            "h": 14,
+            "openSec": 0.65
+          },
+          {
+            "id": "wall-5-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1300,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-5-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1300,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "saw-5",
+            "type": "saw",
+            "x": 111,
+            "y": 1300,
+            "w": 48,
+            "h": 48,
+            "dimension": "blue",
+            "amplitude": 20,
+            "period": 4,
+            "phase": 0.25,
+            "spin": 5.5,
+            "axis": "y"
+          },
+          {
+            "id": "wall-6-r",
+            "type": "obstacle",
+            "x": 83,
+            "y": 1430,
+            "w": 277,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "mine-6",
+            "type": "mine",
+            "x": 31,
+            "y": 1430,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 190,
+            "chargeSec": 0.7,
+            "blastRadius": 130,
+            "blastSec": 0.22
+          },
+          {
+            "id": "wall-7-l",
+            "type": "obstacle",
+            "x": 0,
+            "y": 1560,
+            "w": 97,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "wall-7-r",
+            "type": "obstacle",
+            "x": 173,
+            "y": 1560,
+            "w": 187,
+            "h": 14,
+            "dimension": "both"
+          },
+          {
+            "id": "laser-7",
+            "type": "laser",
+            "x": 122,
+            "y": 1560,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0.782608695652174,
+            "startAngle": 75,
+            "endAngle": 105,
+            "sweepPeriod": 3,
+            "length": 180,
+            "beamWidth": 10,
+            "warnSec": 0.7,
+            "activeSec": 0.6,
+            "offSec": 1,
+            "disableSec": 1,
+            "axis": "none"
+          }
+        ],
+        "theme": "singularity",
+        "music": "first-pulse",
+        "difficulty": "extreme",
+        "sections": [
+          {
+            "id": "A",
+            "name": "SINGULAR-FLIGHT",
+            "y": 0,
+            "labelY": -35
+          }
+        ],
+        "replay": {
+          "taps": [
+            {
+              "t": 2,
+              "dir": 1
+            },
+            {
+              "t": 2.5,
+              "dir": -1
+            },
+            {
+              "t": 3,
+              "dir": 1
+            },
+            {
+              "t": 3.5,
+              "dir": -1
+            },
+            {
+              "t": 4.25,
+              "dir": -1
+            },
+            {
+              "t": 4.75,
+              "dir": 1
+            },
+            {
+              "t": 5.25,
+              "dir": -1
+            },
+            {
+              "t": 5.75,
+              "dir": 1
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

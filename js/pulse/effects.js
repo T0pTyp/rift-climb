@@ -4,7 +4,7 @@ import { BeatTimeline } from './timeline.js';
 export class BeatEffects {
   constructor(rt) {
     this.timeline = new BeatTimeline({ bpm: rt.bpm, beatsPerBar: rt.beatsPerBar, duration: rt.finishY / CLIMB_SPEED,
-      sections: rt.sections?.filter(s => !s.auto).map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
+      sections: rt.endless?[{time:0,name:'RIFT INFINITY'}]:rt.sections?.filter(s => !s.auto).map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
     this.seek(0);
   }
   seek(t) { this.time = t - 1e-7; this.lastBeat = -Infinity; this.lastAccent = -Infinity; this.events = 0; }

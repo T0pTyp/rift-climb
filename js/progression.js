@@ -1,12 +1,14 @@
 import { ACHIEVEMENTS, SKINS, medalFor } from './rewards.js';
 import { STORAGE_KEY, readJson } from './storage.js';
+import {CLIMB_SPEED} from './config.js';
+import {worldMeters} from './world-units.js';
 export const ASCENSION_KEY='riftclimb.ascension.v2';
 export const BACKUP_KEY=ASCENSION_KEY+'.backup';
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const integer=(v,max=Number.MAX_SAFE_INTEGER)=>Number.isFinite(v)?Math.min(max,Math.max(0,Math.floor(v))):0;
 const date=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))?v:null;
 const safeId=id=>/^[a-z0-9][a-z0-9-]{0,39}$/.test(id);
-const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']}});
+const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,recordAt:null,lastSeed:null}});
 function cleanLevel(id,raw) {
  const r=object(raw),clears=integer(r.clears),completed=r.completed===true||clears>0||integer(r.best,100)===100;
  const best=completed?100:integer(r.best,99);
@@ -14,6 +16,7 @@ function cleanLevel(id,raw) {
 }
 function normalize(raw) {
  const s=blank(),r=object(raw);s.profile.activePlaytimeMs=integer(r.profile?.activePlaytimeMs);s.profile.historyIncomplete=!!r.profile?.historyIncomplete;
+ s.endless={bestHeight:integer(r.endless?.bestHeight),attempts:integer(r.endless?.attempts),lastHeight:integer(r.endless?.lastHeight),recordAt:date(r.endless?.recordAt),lastSeed:Number.isInteger(r.endless?.lastSeed)?r.endless.lastSeed>>>0:null};
  for(const [id,l] of Object.entries(object(r.levels)))if(safeId(id))s.levels[id]=cleanLevel(id,l);
  for(const a of ACHIEVEMENTS)if(r.achievements?.[a.id]?.unlocked===true)s.achievements[a.id]={unlocked:true,unlockedAt:date(r.achievements[a.id].unlockedAt)};
  const unlocked=r.cosmetics?.unlockedSkinIds;
@@ -45,6 +48,8 @@ export class Progression {
     this.data.profile.historyIncomplete ||= b.profile.historyIncomplete;
     for(const [id,a] of Object.entries(b.achievements))this.data.achievements[id] ||= a;
     this.data.cosmetics.unlockedSkinIds=[...new Set([...this.data.cosmetics.unlockedSkinIds,...b.cosmetics.unlockedSkinIds])];
+    if(b.endless.bestHeight>this.data.endless.bestHeight){this.data.endless.bestHeight=b.endless.bestHeight;this.data.endless.recordAt=b.endless.recordAt;}
+    this.data.endless.attempts=Math.max(this.data.endless.attempts,b.endless.attempts);
    }
    this.migrateLegacy();this.evaluate(true);this.persist();
   }
@@ -83,6 +88,7 @@ export class Progression {
   run.rewards=run.rewards.filter(v=>v.type!=='medal');run.rewards.push(r);this.queue.push(r);
  }
  report(run,t,best,force=false) {
+  if(run?.kind==='endless')return this.reportEndless(run,t,force);
   if(!run?.eligible||run.closed)return false;
   const l=this.level(run.id),old=l.best,oldMedal=l.medal;
   this.data.profile.activePlaytimeMs+=Math.max(0,t-run.lastT)*1000;run.lastT=Math.max(t,run.lastT);
@@ -92,6 +98,7 @@ export class Progression {
   if(force||t-(run.savedT||0)>=1){run.savedT=t;this.persist();}return l.best>old;
  }
  finish(run,t,best,outcome) {
+  if(run?.kind==='endless'){if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;this.persist();return true;}
   if(!run?.eligible||run.closed)return false;
   this.report(run,t,best);run.closed=true;const l=this.level(run.id);
   if(outcome==='death')l.deaths++;
@@ -103,6 +110,17 @@ export class Progression {
   this.evaluate(false,run);this.persist();return true;
  }
  equip(id){if(!this.data.cosmetics.unlockedSkinIds.includes(id))return false;this.data.cosmetics.selectedSkinId=id;this.persist();return true;}
+ reportEndless(run,t,force=false) {
+  if(!run.eligible||run.closed)return false;const e=this.data.endless,h=worldMeters(t*CLIMB_SPEED),record=h>e.bestHeight;
+  e.lastHeight=h;if(record){e.bestHeight=h;run.record=true;}
+  if(force||t-(run.savedT||0)>=1){if(run.record)e.recordAt=this.now();run.savedT=t;this.persist();}return record;
+ }
+ infinityStorage(seed) {
+  const p=this,e=p.data.endless;
+  return {progression:p,muted:false,stats:{get best(){return e.bestHeight;},get attempts(){return e.attempts;},clears:0},save(){p.persist();},
+   beginRun(){const run={id:'rift-infinity',kind:'endless',eligible:!p.isolated,closed:false,rewards:[],record:false,savedT:0};if(run.eligible){e.attempts++;e.lastHeight=0;e.lastSeed=seed>>>0;p.persist();}return run;},
+   report:(run,t,pct,force)=>p.report(run,t,pct,force),finish:(run,t,pct,outcome)=>p.finish(run,t,pct,outcome)};
+ }
  summary() {
   const levels=Object.values(this.data.levels),sum=k=>levels.reduce((n,l)=>n+l[k],0);
   return {totalNormalAttempts:sum('attempts'),totalDeaths:sum('deaths'),totalCompletions:sum('clears'),completedLevels:levels.filter(l=>l.completed).length,goldMedals:levels.filter(l=>l.medal==='gold').length,achievements:Object.keys(this.data.achievements).length,skins:this.data.cosmetics.unlockedSkinIds.length,activePlaytimeMs:Math.floor(this.data.profile.activePlaytimeMs),historyIncomplete:this.data.profile.historyIncomplete};

@@ -13,13 +13,13 @@ export const ACHIEVEMENTS = Object.freeze([
  {id:'pulse-master',name:'Pulse Master',description:'Schließe First Pulse ab.',icon:'pulse',test:s=>complete(s,'first-pulse')},
  {id:'rhythm-breaker',name:'Rhythm Breaker',description:'Schließe Fractured Rhythm ab.',icon:'rhythm',test:s=>complete(s,'fractured-rhythm')},
  {id:'overloaded',name:'Overloaded',description:'Schließe Overload ab.',icon:'core',test:s=>complete(s,'overload')},
- {id:'golden-ascent',name:'Golden Ascent',description:'Verdiene Gold in allen drei Kampagnenlevels.',icon:'ascent',test:allGold},
+ {id:'golden-ascent',name:'Golden Ascent',description:'Gold in First Pulse, Fractured Rhythm und Overload.',icon:'ascent',test:allGold},
  {id:'persistent-climber',name:'Persistent Climber',description:'Starte insgesamt 25 reguläre Versuche.',icon:'persistent',test:s=>total(s,'attempts')>=25},
 ]);
 export const SKINS=Object.freeze([
  {id:'original',name:'Original Riftling',description:'Der erste Funke.',condition:'Von Anfang an verfügbar.',accent:'#2fd6ff',test:()=>true},
  {id:'azure',name:'Azure Riftling',description:'Kristallkühle Energie und silberne Flossen.',condition:'Gold in First Pulse.',accent:'#65dfff',test:s=>gold(s,'first-pulse')},
  {id:'crimson',name:'Crimson Riftling',description:'Warme Plasmaadern und rubinrote Reflexe.',condition:'Gold in Fractured Rhythm.',accent:'#ff5c9f',test:s=>gold(s,'fractured-rhythm')},
- {id:'golden',name:'Golden Riftling',description:'Goldene Gravuren und ein leuchtender Energiekern.',condition:'Gold in allen drei Levels.',accent:'#ffd166',test:allGold},
+ {id:'golden',name:'Golden Riftling',description:'Goldene Gravuren und ein leuchtender Energiekern.',condition:'Gold in First Pulse, Fractured Rhythm und Overload.',accent:'#ffd166',test:allGold},
  {id:'void',name:'Void Riftling',description:'Dunkle Materie mit kontrastreichen Energieadern.',condition:'Overload abschließen.',accent:'#b79bff',test:s=>complete(s,'overload')},
 ]);

@@ -8,6 +8,8 @@ import { validateLevelData, validateIndex } from './level-data.js';
 import { readJson, migrateVisualPreferences } from './storage.js';
 import { Progression } from './progression.js';
 import { riftlingArt } from './art/riftling.js';
+import {validateChunkBook,worldMeters} from './endless.js';
+import {trapPose,trapReach} from './traps.js';
 
 const LEVEL_DIR = 'assets/levels/';
 export const PLAYTEST_KEY = 'riftforge.playtest';
@@ -90,6 +92,8 @@ async function boot() {
     }));
   } catch (err) { showBootError(err.message); return; }
   const menuLevels = index?.levels.filter(e => e.campaign || e.id === level.id && !e.campaign) || null;
+  let infinityBook=null,infinityError='';
+  if(!playtest)try{infinityBook=validateChunkBook(await fetchJson('assets/endless/chunks.json'));}catch(err){infinityError='Infinity-Daten nicht verfügbar: '+err.message;}
 
   if (handoff && handoff.debug) debug.hitboxes = true;
 
@@ -107,8 +111,11 @@ async function boot() {
 
   const ui = new UI({
     progression,
+    initialSeed:params.has('seed')?Number(params.get('seed'))>>>0:Date.now()>>>0,
+    infinityAvailable:()=>!!infinityBook,infinityError:()=>infinityError,
+    onInfinityStart:seed=>{if(!infinityBook||playtest)return;storage=progression.infinityStorage(seed);storage.muted=audio.muted;game.startEndless(infinityBook,seed,storage);const q=new URLSearchParams(location.search);q.set('endless','1');q.set('seed',String(seed));history.replaceState(null,'',location.pathname+'?'+q);},
     onGesture: unlockAudio,
-    onStart: (mode) => game.start(mode),
+    onStart: (mode) => {if(game.endless)ui.h.onLevelChange(level.id);game.start(mode);},
     onEquip: id => {game.skinId=id;riftlingArt.loadSkin(id);ui.setSkin(id);},
     onRewardSound: name => audio.sfx(name),
     hasNext: () => !!menuLevels?.[menuLevels.findIndex(l=>l.id===level.id)+1],
@@ -126,9 +133,9 @@ async function boot() {
     onResume: () => game.resume(),
     onRestart: () => game.restart(),
     onDeathTap: () => game.confirm(),
-    onMenu: () => (playtest ? postToEditor({ type: 'forge:exit' }) : game.toMenu()),
+    onMenu: () => {if(playtest)postToEditor({type:'forge:exit'});else{game.toMenu();ui.openPage('levels');}},
     onLevelChange: (id) => {
-      if (!catalog.has(id) || id === level.id || playtest) return;
+      if (!catalog.has(id) || id === level.id && !game.endless || playtest) return;
       level = catalog.get(id);
       storage = storageFor(id);
       storage.muted = audio.muted;
@@ -136,6 +143,7 @@ async function boot() {
       ui.setLevels(menuLevels, level, false, catalog);
       ui.updateMenu(storage.stats, audio.muted);
       const q = new URLSearchParams(location.search);
+      q.delete('endless');q.delete('seed');
       if (id === index.default) q.delete('level'); else q.set('level', id);
       history.replaceState(null, '', location.pathname + (q.size ? '?' + q : ''));
 
@@ -177,6 +185,8 @@ async function boot() {
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
+    infinity:game.endless?{seed:game.endless.seed,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index})),generated:game.endless.generated}:null,
+    traps:game.traps.traps.filter(o=>Math.abs(o.y-game.y)<trapReach(o)+game.lookaheadSec*260).map(o=>({id:o.id,type:o.type,dimension:o.color,state:o.state,...trapPose(o,game.t)})),
     player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
     timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint ? { t:game.checkpoint.t, lane:game.checkpoint.lane, dim:game.checkpoint.dim, beat:game.checkpoint.beat } : null,
     obstacles: game.obstacles.filter(o => o.y > game.y - 50 && o.y < game.y + game.lookaheadSec * 260).map(o => ({ x: o.x0, y: o.y, w: o.x1 - o.x0, color: o.color, deadly: game.deadlyNow(o, game.player.dim) })),
@@ -265,6 +275,7 @@ async function boot() {
   } else {
     ui.show('menu');
     if(params.has('level'))ui.openPage('levels');
+    if(params.has('endless'))ui.openPage('infinity');
   }
   requestAnimationFrame(frame);
 }

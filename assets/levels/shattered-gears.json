@@ -1,0 +1,1039 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "shattered-gears",
+  "name": "Shattered Gears",
+  "description": "RIFT EXPANSION · Shattered Gears. Handgefertigte Phrasen und regulärer Replay-Nachweis.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 13260,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 13000
+  },
+  "theme": "gears",
+  "music": "shattered-gears",
+  "difficulty": "expert",
+  "sections": [
+    {
+      "id": "A",
+      "name": "MACHINE WAKE",
+      "y": 0,
+      "labelY": -35
+    },
+    {
+      "id": "B",
+      "name": "CROSS SHAFTS",
+      "y": 2600,
+      "labelY": 2565
+    },
+    {
+      "id": "C",
+      "name": "SHATTER",
+      "y": 5850,
+      "labelY": 5815
+    },
+    {
+      "id": "D",
+      "name": "GEARHEART",
+      "y": 9750,
+      "labelY": 9715
+    }
+  ],
+  "objects": [
+    {
+      "id": "wall-0-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 520,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-0-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 520,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-0",
+      "type": "saw",
+      "x": 201,
+      "y": 520,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 20,
+      "period": 3,
+      "phase": 0,
+      "spin": 3.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-1-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1040,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-1-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 1040,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-1",
+      "type": "obstacle",
+      "x": 93,
+      "y": 1040,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-2-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 1560,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-2",
+      "type": "saw",
+      "x": 21,
+      "y": 1560,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.5,
+      "spin": 5.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-3-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 2080,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-3-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 2080,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-3",
+      "type": "obstacle",
+      "x": 93,
+      "y": 2080,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-4-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 2860,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-4-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 2860,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-4",
+      "type": "saw",
+      "x": 201,
+      "y": 2860,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 3.5,
+      "phase": 0,
+      "spin": 4.5,
+      "axis": "none"
+    },
+    {
+      "id": "wall-5-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3380,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-5",
+      "type": "saw",
+      "x": 291,
+      "y": 3380,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.25,
+      "spin": 5.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-6-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 3900,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-6-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 3900,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-6",
+      "type": "obstacle",
+      "x": 183,
+      "y": 3900,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "wall-7-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 4420,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-7-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 4420,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-7",
+      "type": "saw",
+      "x": 111,
+      "y": 4420,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3.5,
+      "phase": 0.75,
+      "spin": 4.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-8-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 4940,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-8",
+      "type": "obstacle",
+      "x": 3,
+      "y": 4940,
+      "w": 84,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "wall-9-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 5460,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-9-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 5460,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-9",
+      "type": "saw",
+      "x": 111,
+      "y": 5460,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3,
+      "phase": 0.25,
+      "spin": 3.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-10-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6110,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-10-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 6110,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-10",
+      "type": "saw",
+      "x": 201,
+      "y": 6110,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3.5,
+      "phase": 0.5,
+      "spin": 4.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-11-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6500,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-11",
+      "type": "saw",
+      "x": 291,
+      "y": 6500,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.75,
+      "spin": 5.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-12-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 6890,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-12-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 6890,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-12",
+      "type": "seal",
+      "x": 183,
+      "y": 6890,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-13-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 7280,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-13-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 7280,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-13",
+      "type": "saw",
+      "x": 111,
+      "y": 7280,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 3.5,
+      "phase": 0.25,
+      "spin": 4.5,
+      "axis": "none"
+    },
+    {
+      "id": "wall-14-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 7670,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-14",
+      "type": "saw",
+      "x": 21,
+      "y": 7670,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.5,
+      "spin": 5.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-15-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8060,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-15-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 8060,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-15",
+      "type": "seal",
+      "x": 93,
+      "y": 8060,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-16-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8450,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-16-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 8450,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-16",
+      "type": "saw",
+      "x": 201,
+      "y": 8450,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3.5,
+      "phase": 0,
+      "spin": 4.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-17-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 8840,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-17-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 8840,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-17",
+      "type": "saw",
+      "x": 111,
+      "y": 8840,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.25,
+      "spin": 5.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-18-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9230,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-18-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 9230,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-18",
+      "type": "seal",
+      "x": 183,
+      "y": 9230,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-19-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 9620,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-19",
+      "type": "saw",
+      "x": 291,
+      "y": 9620,
+      "w": 48,
+      "h": 48,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 3.5,
+      "phase": 0.75,
+      "spin": 4.5,
+      "axis": "none"
+    },
+    {
+      "id": "wall-20-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10010,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-20-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 10010,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-20",
+      "type": "saw",
+      "x": 201,
+      "y": 10010,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0,
+      "spin": 5.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-21-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10270,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-21-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 10270,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-21",
+      "type": "seal",
+      "x": 93,
+      "y": 10270,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-22-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 10530,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-22",
+      "type": "saw",
+      "x": 21,
+      "y": 10530,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3.5,
+      "phase": 0.5,
+      "spin": 4.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-23-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 10790,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-23-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 10790,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-23",
+      "type": "obstacle",
+      "x": 93,
+      "y": 10790,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-24-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11050,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-24-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 11050,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-24",
+      "type": "saw",
+      "x": 201,
+      "y": 11050,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0,
+      "spin": 3.5,
+      "axis": "none"
+    },
+    {
+      "id": "wall-25-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11310,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-25",
+      "type": "seal",
+      "x": 273,
+      "y": 11310,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-26-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11570,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-26-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 11570,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-26",
+      "type": "saw",
+      "x": 201,
+      "y": 11570,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 4,
+      "phase": 0.5,
+      "spin": 5.5,
+      "axis": "y"
+    },
+    {
+      "id": "wall-27-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 11830,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-27-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 11830,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "seal-27",
+      "type": "seal",
+      "x": 93,
+      "y": 11830,
+      "w": 84,
+      "h": 14,
+      "openSec": 0.65
+    },
+    {
+      "id": "wall-28-r",
+      "type": "obstacle",
+      "x": 88,
+      "y": 12090,
+      "w": 272,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-28",
+      "type": "saw",
+      "x": 21,
+      "y": 12090,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 20,
+      "period": 3.5,
+      "phase": 0,
+      "spin": 4.5,
+      "axis": "x"
+    },
+    {
+      "id": "wall-29-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 12350,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-29-r",
+      "type": "obstacle",
+      "x": 178,
+      "y": 12350,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "color-29",
+      "type": "obstacle",
+      "x": 93,
+      "y": 12350,
+      "w": 84,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "wall-30-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 12610,
+      "w": 182,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "wall-30-r",
+      "type": "obstacle",
+      "x": 268,
+      "y": 12610,
+      "w": 92,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "saw-30",
+      "type": "saw",
+      "x": 201,
+      "y": 12610,
+      "w": 48,
+      "h": 48,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0.5,
+      "spin": 3.5,
+      "axis": "none"
+    },
+    {
+      "id": "hint-0",
+      "type": "hint",
+      "y": 130,
+      "text": "SÄGEN: FARBE BEACHTEN"
+    },
+    {
+      "id": "hint-1",
+      "type": "hint",
+      "y": 5980,
+      "text": "PASSENDER PULSE ZERSTÖRT SÄGEN"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 1.7,
+        "dir": 1
+      },
+      {
+        "t": 3.7,
+        "dir": -1
+      },
+      {
+        "t": 5.7,
+        "dir": -1
+      },
+      {
+        "t": 7.7,
+        "dir": 1
+      },
+      {
+        "t": 10.7,
+        "dir": 1
+      },
+      {
+        "t": 12.7,
+        "dir": 1
+      },
+      {
+        "t": 14.7,
+        "dir": -1
+      },
+      {
+        "t": 16.7,
+        "dir": -1
+      },
+      {
+        "t": 18.7,
+        "dir": -1
+      },
+      {
+        "t": 20.7,
+        "dir": 1
+      },
+      {
+        "t": 23.2,
+        "dir": 1
+      },
+      {
+        "t": 24.7,
+        "dir": 1
+      },
+      {
+        "t": 26.2,
+        "dir": -1
+      },
+      {
+        "t": 27.7,
+        "dir": -1
+      },
+      {
+        "t": 29.2,
+        "dir": -1
+      },
+      {
+        "t": 30.7,
+        "dir": 1
+      },
+      {
+        "t": 32.2,
+        "dir": 1
+      },
+      {
+        "t": 33.7,
+        "dir": -1
+      },
+      {
+        "t": 35.2,
+        "dir": 1
+      },
+      {
+        "t": 36.7,
+        "dir": 1
+      },
+      {
+        "t": 38.2,
+        "dir": -1
+      },
+      {
+        "t": 39.2,
+        "dir": -1
+      },
+      {
+        "t": 40.2,
+        "dir": -1
+      },
+      {
+        "t": 41.2,
+        "dir": 1
+      },
+      {
+        "t": 42.2,
+        "dir": 1
+      },
+      {
+        "t": 43.2,
+        "dir": 1
+      },
+      {
+        "t": 44.2,
+        "dir": -1
+      },
+      {
+        "t": 45.2,
+        "dir": -1
+      },
+      {
+        "t": 46.2,
+        "dir": -1
+      },
+      {
+        "t": 47.2,
+        "dir": 1
+      },
+      {
+        "t": 48.2,
+        "dir": 1
+      }
+    ]
+  }
+}

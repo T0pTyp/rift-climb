@@ -5,7 +5,7 @@ import {
   PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE, PARTICLE_CAP,
 } from './config.js';
 import { validateLevel } from './level.js';
-import { buildLevelRuntime, levelFromRows } from './level-data.js';
+import { buildLevelRuntime, levelFromRows, createEmptyLevel } from './level-data.js';
 import { RiftField, pulseRadius, distToSeal } from './rift.js';
 import { Player } from './player.js';
 import { ParticlePool, PARTICLE_KIND } from './particles.js';
@@ -18,6 +18,9 @@ import { drawTrail, drawParticles } from './art/effects.js';
 import { Backdrop } from './art/backdrop.js';
 
 import { BeatEffects } from './pulse/effects.js';
+import { TrapField,makeTrap,trapReach } from './traps.js';
+import { drawTrap } from './art/traps.js';
+import {EndlessWorld,worldMeters,INFINITY_TIERS} from './endless.js';
 
 const K = PARTICLE_KIND;
 
@@ -46,8 +49,11 @@ export class Game {
     this.seals = this.level.seals;
     this.collideRange = this.level.maxChh + HIT_RADIUS + 2;
     this.rift = new RiftField(this.seals);
+    this.traps = new TrapField(this.level.traps.map(o=>makeTrap(o)));
+    this.trapActor={x:0,y:0,dim:'B'};
     this.beatEffects = new BeatEffects(this.level);
     this.onSealOpen = this.onSealOpen.bind(this);
+    this.onTrapEvent = this.onTrapEvent.bind(this);
     // Spur-Solver nur für Level im Spurmodell; freie Level werden über einen aufgezeichneten Lauf nachgewiesen.
     this.validation = this.rows
       ? validateLevel(this.rows, this.level.start)
@@ -96,12 +102,14 @@ export class Game {
 
   /** Reuse the running app, input handlers and AudioContext for a menu selection. */
   setLevelData(data, storage) {
+    this.endless=null;
     this.audio.stop?.();
     this.levelData=data;this.level=buildLevelRuntime(data);this.storage=storage;
     this.rows=this.level.rows;this.lines=this.level.lines;
     this.obstacles=this.level.obstacles;this.seals=this.level.seals;
     this.collideRange=this.level.maxChh+HIT_RADIUS+2;
     this.rift=new RiftField(this.seals);this.beatEffects=new BeatEffects(this.level);
+    this.traps=new TrapField(this.level.traps.map(o=>makeTrap(o)));
     this.validation=this.rows?validateLevel(this.rows,this.level.start):{ok:null,errors:[],alive:null,solution:null,reachable:[]};
     this.audio.setLevel?.(this.level);
     this.t=0;this.acc=0;this.sessionAttempts=0;this.obsLo=0;this.lastRowPassed=-1;
@@ -120,10 +128,12 @@ export class Game {
   }
 
   get progress() {
+    if(this.endless)return 0;
     return Math.floor(clamp(this.y / this.level.finishY, 0, 1) * 100);
   }
 
   get attemptsDisplay() {
+    if(this.mode==='endless')return this.storage.stats.attempts;
     if(this.storage.progression?.isolated)return this.sessionAttempts;
     return this.mode === 'normal' ? this.storage.stats.attempts : this.sessionAttempts;
   }
@@ -172,14 +182,23 @@ export class Game {
     this.restart();
   }
 
+  startEndless(book,seed,storage,order=null) {
+    const data=createEmptyLevel({id:'rift-infinity',name:'RIFT INFINITY'});
+    this.setLevelData(data,storage);this.endless=new EndlessWorld(book,seed,order);
+    this.level.endless=true;this.level.finishY=Infinity;this.level.music='rift-infinity';this.level.theme='infinity';
+    this.audio.setLevel?.(this.level);this.beatEffects=new BeatEffects(this.level);
+    const v=this.view;this.backdrop.configure(v.cssW,v.cssH,v.dpr,'infinity');
+    this.start('endless');
+  }
+
   restart() {
     if (['playing','paused','dying','dead'].includes(this.state)) this.saveProgress();
     this.storage.finish?.(this.run,this.t,this.progress,'retry');
     this.timelineRevision++;
     this.runStartBest=this.storage.stats.best;
     if (this.storage.beginRun) {
-      this.run=this.storage.beginRun(this.mode==='normal'&&!this.startFrom);
-      if(this.mode!=='normal'||this.storage.progression.isolated)this.sessionAttempts++;
+      this.run=this.storage.beginRun((this.mode==='normal'||this.mode==='endless')&&!this.startFrom);
+      if(this.mode==='practice'||this.storage.progression.isolated)this.sessionAttempts++;
     } else if (this.mode === 'normal') {
       this.storage.stats.attempts++;
       this.storage.save();
@@ -189,6 +208,8 @@ export class Game {
     const from = this.startFrom;
     const st = from || this.level.start;
     this.t = from ? from.y / CLIMB_SPEED : 0;
+    this.lastAutoT=-Infinity;
+    if(this.endless){this.endless.reset();this.endless.apply(this);}
     this.acc = 0;
     this.player.reset(st.lane, st.dim, this.y);
     this.dimBlend = st.dim === 'R' ? 1 : 0;
@@ -199,6 +220,7 @@ export class Game {
     this.shake = 0;
     this.switchPulse = 0;
     this.rift.reset();
+    this.traps.reset();
     this.clearAge = 0;
     this.sealStreak = 0;
     this.killer = null;
@@ -229,6 +251,7 @@ export class Game {
   setupAutoplay() {
     this.autoplayQueue = [];
     if (!this.debug.autoplay) return;
+    if(this.endless){this.autoplayQueue=this.endless.tapsAfter(this.t,this.lastAutoT);return;}
     if (this.level.replay && !this.startFrom) {
       this.autoplayQueue = this.level.replay.taps.filter(tap => tap.t >= this.t - SIM_DT / 2).map(tap => ({ ...tap }));
       return;
@@ -309,7 +332,7 @@ export class Game {
     this.switchPulse = 1;
     this.shake = Math.max(this.shake, SWITCH_SHAKE);
     const col = COLORS[p.dim].main;
-    this.rift.emit(p.x, this.y, this.t, col);
+    this.rift.emit(p.x, this.y, this.t, col,p.dim);
     this.audio.setDimension?.(p.dim);
     this.audio.sfx('flight', p.dim, atWall);
     this.audio.sfx('switch', p.dim, atWall);
@@ -335,6 +358,7 @@ export class Game {
   }
 
   update(dt) {
+    if(this.endless&&this.state==='playing'&&this.endless.ensure(this.y)){this.endless.apply(this);this.setupAutoplay();}
     this.menuT += dt;
     this.realT += dt;
     const p = this.player;
@@ -385,15 +409,17 @@ export class Game {
       this.saveProgress();
     }
     if (this.state !== 'menu') {
-      this.ui.updateHud(this.progress, this.player.dim, this.attemptsDisplay, this.mode);
+      if(this.endless)this.ui.updateEndlessHud?.(worldMeters(this.y),this.storage.stats.best,INFINITY_TIERS[this.endless.tierAt(this.y)],this.player.dim,this.attemptsDisplay);
+      else this.ui.updateHud(this.progress, this.player.dim, this.attemptsDisplay, this.mode);
     }
   }
 
   step(h) {
     // Same before-step convention as runReplay and ordinary input -> simulation.
     while (this.autoplayQueue.length && this.autoplayQueue[0].t <= this.t + h / 2) {
-      this.press(this.autoplayQueue.shift().dir);
+      const tap=this.autoplayQueue.shift();this.lastAutoT=tap.t;this.press(tap.dir);
     }
+    const previousX=this.player.x,previousY=this.y;
     this.t += h;
     this.stats.steps++;
     const p = this.player;
@@ -410,6 +436,9 @@ export class Game {
     this.rift.step(this.t, this.onSealOpen, (seal) => {
       if (Math.abs(seal.y - this.y) < 400) this.audio.sfx('seal-close');
     });
+    const actor=this.trapActor;actor.x=p.x;actor.y=y;actor.dim=p.dim;
+    const hit=this.traps.step(this.t,h,actor,previousX,previousY,this.rift.pulses,this.onTrapEvent);
+    if(hit){this.die(hit);return;}
 
     const obs = this.obstacles;
     const range = this.collideRange;
@@ -425,13 +454,14 @@ export class Game {
     }
 
     const lines = this.lines;
-    while (this.lastRowPassed + 1 < lines.length && lines[this.lastRowPassed + 1].y + lines[this.lastRowPassed + 1].chh + HIT_RADIUS < y) {
+    while (!this.endless&&this.lastRowPassed + 1 < lines.length && lines[this.lastRowPassed + 1].y + lines[this.lastRowPassed + 1].chh + HIT_RADIUS < y) {
       this.lastRowPassed++;
       this.onRowPassed(this.lastRowPassed);
     }
 
     if (this.debug.trace && this.stats.steps % 60 === 0) {
       this.trace.push(`${this.t.toFixed(4)}:${p.x.toFixed(6)}:${p.lane}${p.dim}`);
+      if(this.endless&&this.trace.length>1024)this.trace.shift();
     }
 
     if (y >= this.level.finishY) this.win();
@@ -484,7 +514,7 @@ export class Game {
   captureCheckpoint(beat, row) {
     const p = this.player;
     return { t:this.t, lane:p.lane, dim:p.dim, beat, row,
-      x:p.x, vx:p.vx, lastDir:p.lastDir, rift:this.rift.snapshot() };
+      x:p.x, vx:p.vx, lastDir:p.lastDir, rift:this.rift.snapshot(),traps:this.traps.snapshot() };
   }
 
   sectionAt(y) {
@@ -493,7 +523,15 @@ export class Game {
     return s;
   }
 
+  onTrapEvent(o,event) {
+    this.audio.sfx(event,o.color);
+    if(event==='mine-warn')return;
+    const q=o.pose,col=COLORS[o.color].main;
+    for(let i=0;i<18;i++){const a=i/18*Math.PI*2;this.particles.spawn(q.x,q.y,Math.cos(a)*140,Math.sin(a)*140,.45,2.5,i%3?col:'#fff',.9,i%2?K.SPARK:K.SHARD);}
+  }
+
   deathReason(o, dim) {
+    if(o.type)return {saw:'PHASE SAW war aktiv – passender Pulse zerstört sie',mine:'PULSE MINE: Explosionszone war aktiv',laser:'SWEEP LASER war aktiv – Warnlinie beachten'}[o.type]||'Rift verloren';
     if (o.color === 'W') return 'WEISS tötet immer';
     if (o.color === 'S') {
       return o.timesOpened > 0 ? 'GOLD-SIEGEL hat sich wieder geschlossen' : 'GOLD-SIEGEL war zu – tippe, wenn es aufleuchtet';
@@ -505,7 +543,7 @@ export class Game {
   die(o) {
     if(this.state!=='playing')return;
     this.saveProgress();
-    this.deathNewBest=this.progress>this.runStartBest;
+    this.deathNewBest=(this.endless?worldMeters(this.y):this.progress)>this.runStartBest;
     this.storage.finish?.(this.run,this.t,this.progress,'death');
     const p = this.player;
     const y = this.y;
@@ -535,7 +573,7 @@ export class Game {
     this.deathAge = 0;
     this.deathTimer = this.mode === 'practice' ? DEATH_FREEZE_SEC * 0.8 : DEATH_FREEZE_SEC;
     // Retry is available at once; the existing impact animation continues behind it.
-    if(this.mode==='normal'){this.deathShown=true;this.showDeathResult();}
+    if(this.mode==='normal'||this.mode==='endless'){this.deathShown=true;this.showDeathResult();}
   }
 
   finishDeath() {
@@ -548,12 +586,12 @@ export class Game {
   }
 
   showDeathResult() {
-    const pct=this.progress,stats=this.storage.stats,isNewBest=this.deathNewBest;
-    this.ui.showDeath({ pct, best: stats.best, isNewBest, reason: this.killer ? this.killer.reason : '', attempts:this.attemptsDisplay, medal:stats.medal, rewards:this.run?.rewards || [] });
+    const pct=this.endless?worldMeters(this.y):this.progress,stats=this.storage.stats,isNewBest=this.deathNewBest;
+    this.ui.showDeath({ pct, best: stats.best, isNewBest, reason: this.killer ? this.killer.reason : '', attempts:this.attemptsDisplay, medal:stats.medal, rewards:this.run?.rewards || [],mode:this.mode,endless:!!this.endless });
   }
 
   saveProgress(force=false) {
-    if(this.storage.report)return this.mode==='normal'?this.storage.report(this.run,this.t,this.progress,force):false;
+    if(this.storage.report)return this.mode==='normal'||this.mode==='endless'?this.storage.report(this.run,this.t,this.progress,force):false;
     if (this.mode !== 'normal' || this.progress <= (this.storage.stats.best || 0)) return false;
     this.storage.stats.best = this.progress;
     this.storage.save();
@@ -570,6 +608,7 @@ export class Game {
     this.obsLo = 0;
     this.killer = null;
     this.rift.restore(cp.rift);
+    this.traps.restore(cp.traps);
     this.sealStreak = 0;
     this.player.reset(cp.lane, cp.dim, this.y);
     this.player.body.x = cp.x ?? this.player.x;
@@ -588,7 +627,7 @@ export class Game {
   }
 
   win() {
-    if(this.state!=='playing')return;
+    if(this.endless||this.state!=='playing')return;
     this.state = 'won';
     this.clearAge = 0;
     this.anim.onPrecise();
@@ -642,7 +681,7 @@ export class Game {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     {
       ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0);
-      this.backdrop.render(ctx, camY * v.scale, blend, inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
+      this.backdrop.render(ctx, camY * v.scale, blend, this.endless?this.t:inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
     }
 
     const amp = this.shake * this.shake * SHAKE_PX;
@@ -716,6 +755,7 @@ export class Game {
     drawParticles(ctx, this.particles, camY, psy, H);
 
     this.renderObstacles(ctx, camY, psy, H, dim);
+    for(const o of this.traps.traps)if(Math.abs(o.y-camY)<H+trapReach(o))drawTrap(ctx,o,this.t,psy-(o.y-camY),dim);
     this.renderPlayer(ctx, psy);
     if (this.state === 'won') this.renderClear(ctx, psy);
     this.renderDeath(ctx, camY, psy);
@@ -736,6 +776,7 @@ export class Game {
   }
 
   renderMarkers(ctx, camY, psy, H) {
+    if(this.endless){ctx.font='700 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#b6d4e1';for(const [y,text]of this.level.hints){const sy=psy-(y-camY);if(sy>-20&&sy<H)ctx.fillText(text,WORLD_W/2,sy);}return;}
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 

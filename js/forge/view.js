@@ -6,6 +6,8 @@ import { COLORS, isDeadly } from '../dimensions.js';
 import { DIMENSION_COLOR, laneCenter, unitsPerBeat, halfHeights, START_DIMENSIONS } from '../level-data.js';
 import { drawBar, drawSealClosed, drawSealOpen, drawFinish } from '../shapes.js';
 import { drawRiftling, IDLE_POSE } from '../art/riftling.js';
+import {isTrap,makeTrap,trapReach} from '../traps.js';
+import {drawTrap} from '../art/traps.js';
 
 export const ZOOM_MIN = 0.12;
 export const ZOOM_MAX = 6;
@@ -20,6 +22,7 @@ export function objColor(o) {
 
 /** Rechteck eines Objekts in Weltkoordinaten (Hinweise: Textbox um die Feldmitte). */
 export function objRect(o) {
+  if(isTrap(o)){const a=o.amplitude||0;return{x0:o.x-(o.axis==='x'?a:0),x1:o.x+o.w+(o.axis==='x'?a:0),y0:o.y-o.h/2-(o.axis==='y'?a:0),y1:o.y+o.h/2+(o.axis==='y'?a:0)};}
   if (o.type === 'hint') {
     const w = Math.min(WORLD_W - 8, Math.max(40, o.text.length * 9));
     return { x0: WORLD_W / 2 - w / 2, x1: WORLD_W / 2 + w / 2, y0: o.y - 9, y1: o.y + 9 };
@@ -37,6 +40,7 @@ export class ForgeView {
     this.dpr = 1;
     // Touch-Bedienung: größere Trefferflächen und Griffe (Finger statt Mauszeiger)
     this.touch = false;
+    this.trapCache=new Map();
   }
 
   /** Schmale Ansicht (Smartphone): Spielfeld fast randlos, Beat-Beschriftung innen. */
@@ -104,7 +108,7 @@ export class ForgeView {
   visibleObjects(doc, margin = 0) {
     const list = doc.byY;
     const { y0, y1 } = this.visibleY();
-    const maxHalf = 270;
+    const maxHalf = 500;
     let lo = 0;
     let hi = list.length;
     const from = y0 - margin - maxHalf;
@@ -116,7 +120,7 @@ export class ForgeView {
     for (let i = lo; i < list.length; i++) {
       const o = list[i];
       if (o.y > y1 + margin + maxHalf) break;
-      const r = objRect(o);
+      const r = isTrap(o)?{y0:o.y-trapReach(o),y1:o.y+trapReach(o)}:objRect(o);
       if (r.y1 < y0 - margin || r.y0 > y1 + margin) continue;
       out.push(o);
     }
@@ -299,7 +303,10 @@ export class ForgeView {
         continue;
       }
       const hh = o.h / 2;
-      if (o.type === 'seal') {
+      if(isTrap(o)) {
+        let runtime=this.trapCache.get(o.id);if(!runtime){runtime=makeTrap(o);this.trapCache.set(o.id,runtime);while(this.trapCache.size>128)this.trapCache.delete(this.trapCache.keys().next().value);}
+        Object.assign(runtime,o);runtime.color=o.dimension==='red'?'R':'B';drawTrap(ctx,runtime,s.previewTime||0,-o.y,s.dimMode);
+      } else if (o.type === 'seal') {
         if (s.sealOpen.has(o.id)) drawSealOpen(ctx, o.x, -o.y, o.w, hh, 1);
         else drawSealClosed(ctx, o.x, -o.y, o.w, hh, s.selection.has(o.id) && s.showReach, 0);
       } else {
@@ -312,6 +319,7 @@ export class ForgeView {
     // Kollisionsflächen (wie im Spiel: horizontal sichtbar, vertikal je 2 u kleiner)
     for (const o of vis) {
       if (o.type === 'hint') continue;
+      if(isTrap(o))continue;
       if (!s.hitboxes && !s.selection.has(o.id)) continue;
       const { chh } = halfHeights(o.h);
       ctx.strokeStyle = o.type === 'seal' ? '#ff8800' : '#ffea00';
@@ -408,6 +416,8 @@ export class ForgeView {
         ctx.font = '800 14px system-ui, sans-serif';
         ctx.fillStyle = '#ffffff';
         ctx.fillText(g.text, WORLD_W / 2, -g.y);
+      } else if(isTrap(g)) {
+        drawTrap(ctx,makeTrap(g),s.previewTime||0,-g.y,'both');
       } else if (g.type === 'seal') {
         drawSealClosed(ctx, g.x, -g.y, g.w, g.h / 2);
       } else if (g.type === 'obstacle') {

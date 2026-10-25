@@ -89,7 +89,7 @@ await ready();
     name: window.__FORGE.doc.level.name,
     check: document.querySelector('#check-summary').textContent,
   }));
-  check('[1] Editor öffnet ohne Fehler (Werkzeuge, Palette, Eigenschaften, Prüfung)', /LEVEL FORGE/.test(s.title) && s.tools === 6 && s.palette.length === 10 && errors.length === 0, `${s.name}: ${s.check}`);
+  check('[1] Editor öffnet ohne Fehler (Werkzeuge, Palette, Eigenschaften, Prüfung)', /LEVEL FORGE/.test(s.title) && s.tools === 6 && s.palette.length === 13 && errors.length === 0, `${s.name}: ${s.check}`);
   check('[1] Stacheln in der Palette als „nicht verfügbar“ gekennzeichnet (keine erfundene Mechanik)', s.spikes);
   const sp = await page.locator('.pal[data-kind="spikes"]').boundingBox();
   await page.mouse.click(sp.x + sp.width / 2, sp.y + sp.height / 2);

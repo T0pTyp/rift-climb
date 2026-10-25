@@ -35,7 +35,7 @@ werden niemals durch schlechtere Runs herabgesetzt.
 | `pulse-master` | Pulse Master | First Pulse abgeschlossen |
 | `rhythm-breaker` | Rhythm Breaker | Fractured Rhythm abgeschlossen |
 | `overloaded` | Overloaded | Overload abgeschlossen |
-| `golden-ascent` | Golden Ascent | Gold in allen drei Kampagnenlevels |
+| `golden-ascent` | Golden Ascent | Gold in First Pulse, Fractured Rhythm und Overload |
 | `persistent-climber` | Persistent Climber | 25 gestartete Normalversuche |
 
 Neue Freischaltungen erhalten einen Zeitstempel und werden nur einmal vergeben.

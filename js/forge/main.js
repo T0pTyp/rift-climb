@@ -15,6 +15,7 @@ import { TouchGestures } from './touch.js';
 import { AudioEngine } from '../audio.js';
 import { buildLevelRuntime } from '../level-data.js';
 import { BeatTimeline } from '../pulse/timeline.js';
+import {isTrap,TRAP_DEFAULTS,TRAP_NAMES,normalizeTrap} from '../traps.js';
 
 const $ = (s) => document.querySelector(s);
 const PLAYTEST_KEY = 'riftforge.playtest';
@@ -33,12 +34,15 @@ const KINDS = {
   red: { type: 'obstacle', dimension: 'red', w: 84, h: BAR_THICKNESS, label: 'Rotes Hindernis' },
   barrier: { type: 'obstacle', dimension: 'both', w: 84, h: 130, label: 'Rechteckige Barriere' },
   seal: { type: 'seal', w: 84, h: BAR_THICKNESS, openSec: SEAL_OPEN_SEC, label: 'Rift-Siegel' },
+  saw:{type:'saw',...TRAP_DEFAULTS.saw,label:'Phase Saw'},
+  mine:{type:'mine',...TRAP_DEFAULTS.mine,label:'Pulse Mine'},
+  laser:{type:'laser',...TRAP_DEFAULTS.laser,label:'Sweep Laser'},
   hint: { type: 'hint', text: 'HINWEIS', label: 'Hinweistext' },
   start: { type: 'start', label: 'Startposition' },
   finish: { type: 'finish', label: 'Zielbereich' },
   test: { type: 'test', label: 'Testmarker' },
 };
-const ID_PREFIX = { obstacle: 'obs', seal: 'seal', hint: 'hint' };
+const ID_PREFIX = { obstacle: 'obs', seal: 'seal', hint: 'hint',saw:'saw',mine:'mine',laser:'laser' };
 
 const S = {
   tool: 'select',
@@ -192,7 +196,7 @@ function render() {
   if (!doc) return;
   view.render({
     doc, selection: S.selection, hover: S.hover, dimMode: S.dimMode, grid: S.grid, beats: S.beats,
-    hitboxes: S.hitboxes, showReach: S.showReach, sealOpen: S.sealOpen, testMarker: S.testMarker,
+    hitboxes: S.hitboxes, showReach: S.showReach, sealOpen: S.sealOpen, testMarker: S.testMarker,previewTime:S.previewTime,
     ghost: S.ghost, marquee: S.marquee, playhead: S.playhead, issuesById: S.issuesById, stats: S.stats,
   });
   renderTimeline();
@@ -259,7 +263,7 @@ function updateSelInfo() {
   if (n === 1) {
     const id = ids[0];
     const o = doc.get(id);
-    text = id === '__start' ? 'Startposition' : id === '__finish' ? 'Ziellinie' : id === '__test' ? 'Testmarker' : o ? `${o.id} (${o.type === 'seal' ? 'Rift-Siegel' : o.type === 'hint' ? 'Hinweis' : 'Hindernis'})` : '';
+    text = id === '__start' ? 'Startposition' : id === '__finish' ? 'Ziellinie' : id === '__test' ? 'Testmarker' : o ? `${o.id} (${TRAP_NAMES[o.type]|| (o.type === 'seal' ? 'Rift-Siegel' : o.type === 'hint' ? 'Hinweis' : 'Hindernis')})` : '';
   } else if (n > 1) text = `${n} Objekte ausgewählt`;
   if (isPhone()) {
     if (S.tool === 'place') text = `Setzen: ${KINDS[S.kind].label} – ins Feld tippen`;
@@ -839,6 +843,7 @@ function loadPrefs() {
 function ghostFor(kind, wx, wy) {
   const k = KINDS[kind];
   if (!k) return null;
+  if(isTrap(k)){const a=k.axis==='x'?k.amplitude:0;return {...k,x:clamp(snapLeft(wx-k.w/2),a,WORLD_W-k.w-a),y:Math.max(k.h/2+(k.axis==='y'?k.amplitude:0),snapY(wy))};}
   if (k.type === 'obstacle' || k.type === 'seal') {
     const x = clamp(snapLeft(wx - k.w / 2), 0, WORLD_W - k.w);
     return { ...k, x, y: Math.max(k.h / 2, snapY(wy)) };
@@ -871,7 +876,7 @@ function placeAt(kind, wx, wy) {
     return null;
   }
   const tx = doc.begin(`${KINDS[kind].label} platzieren`);
-  const obj = g.type === 'hint'
+  const obj = isTrap(g)?{...normalizeTrap({...g,id:doc.newId(g.type)}).clean}:g.type === 'hint'
     ? { id: doc.newId('hint'), type: 'hint', y: g.y, text: g.text }
     : g.type === 'seal'
       ? { id: doc.newId('seal'), type: 'seal', x: g.x, y: g.y, w: g.w, h: g.h, openSec: g.openSec }
@@ -887,7 +892,7 @@ function startMove(tx, wx, wy, sx, sy, anchorId) {
   const orig = new Map();
   for (const id of S.selection) {
     const o = tx.touch(id);
-    if (o) orig.set(id, { x: o.x, y: o.y, w: o.w, h: o.h, type: o.type });
+    if (o) orig.set(id, { x: o.x, y: o.y, w: o.w, h: o.h, type: o.type,axis:o.axis,amplitude:o.amplitude });
   }
   S.drag = { kind: 'move', tx, wx, wy, sx, sy, orig, anchorId, moved: false };
 }
@@ -905,9 +910,9 @@ function updateMove(d, wx, wy, sx, sy) {
   let minY = Infinity;
   for (const o of d.orig.values()) {
     if (o.type === 'hint') { minY = Math.min(minY, o.y); continue; }
-    minX = Math.min(minX, o.x);
-    maxX = Math.max(maxX, o.x + o.w);
-    minY = Math.min(minY, o.y - o.h / 2);
+    minX = Math.min(minX, o.x-(o.axis==='x'?o.amplitude:0));
+    maxX = Math.max(maxX, o.x + o.w+(o.axis==='x'?o.amplitude:0));
+    minY = Math.min(minY, o.y - o.h / 2-(o.axis==='y'?o.amplitude:0));
   }
   if (minX !== Infinity) dx = clamp(dx, -minX, WORLD_W - maxX);
   dy = Math.max(dy, -minY);
@@ -949,6 +954,7 @@ function updateResize(d, wx, wy) {
     o.h = h;
     o.y = round2(top - h / 2);
   }
+  if(isTrap(o)){const size=clamp(d.handle==='l'||d.handle==='r'?o.w:o.h,16,80);o.w=o.h=size;const a=o.axis==='x'?o.amplitude:0;o.x=clamp(o.x,a,WORLD_W-size-a);}
   doc.touched();
 }
 
@@ -1022,6 +1028,14 @@ function onPointerDown(e) {
     else if (hit) toast('Start und Ziel können nicht gelöscht werden.', 'warn');
     return;
   }
+  // Small bodies use handles outside their hit rectangle. Resolve the visible
+  // handle before starting an empty-space marquee, for mouse/pen parity.
+  const single = S.selection.size === 1 ? doc.get([...S.selection][0]) : null;
+  const handle = view.handleAt(single, p.sx, p.sy);
+  if (handle && S.tool === 'select') {
+    startResize(single, handle, p.wx, p.wy);
+    return;
+  }
   if (S.tool === 'marquee' || (S.tool === 'select' && !hit)) {
     if (!multi && S.tool === 'select') setSelection([]);
     S.drag = { kind: 'marquee', add: multi || S.tool === 'marquee' && e.shiftKey };
@@ -1029,12 +1043,6 @@ function onPointerDown(e) {
     return;
   }
   // Auswahl / Bewegen
-  const single = S.selection.size === 1 ? doc.get([...S.selection][0]) : null;
-  const handle = view.handleAt(single, p.sx, p.sy);
-  if (handle && S.tool === 'select') {
-    startResize(single, handle, p.wx, p.wy);
-    return;
-  }
   if (hit === '__start' || hit === '__finish' || hit === '__test') {
     setSelection([hit]);
     S.drag = { kind: hit, tx: hit === '__test' ? null : doc.begin(hit === '__start' ? 'Start verschieben' : 'Ziel verschieben'), sx: p.sx, sy: p.sy, moved: false };

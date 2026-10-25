@@ -31,7 +31,8 @@ export class AudioEngine {
     this.stop();
     this.timeline = new BeatTimeline({ bpm: rt?.bpm || 120, beatsPerBar: rt?.beatsPerBar || 4,
       duration: rt ? rt.finishY / CLIMB_SPEED : 44,
-      sections: rt?.sections?.filter(s => !s.auto).map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
+      sections: rt?.endless?[{time:0,name:'RIFT INFINITY'}]:rt?.sections?.filter(s => !s.auto).map(s => ({ time: s.y / CLIMB_SPEED, name: s.name })) });
+    this.timeline.endless=!!rt?.endless;
     this.timeline.music = rt?.music || 'neon-ascent';
     this.timeline.accents = new Set((rt?.seals || []).map(s => Math.round(s.y / CLIMB_SPEED / this.timeline.stepSec)));
     this.step = this.timeline.stepSec;
@@ -226,6 +227,11 @@ export class AudioEngine {
     if (name === 'checkpoint') { note(880, .06, .12); note(1318.5, .05, .15, .07); }
     if (name === 'reward') { note(1046.5,.04,.12);note(1568,.035,.15,.065);note(2093,.025,.18,.12); }
     if (name === 'record') { note(783.99,.035,.10);note(1174.66,.03,.14,.06); }
+    if(name==='saw-break'){note(180,.07,.18,0,'fall');note(1200,.035,.1,.025);}
+    if(name==='mine-warn'){note(660,.04,.06);note(880,.04,.06,.12);}
+    if(name==='mine-blast'){note(90,.08,.2,0,'fall');this.voice('noise',t,0,.055,.12);}
+    if(name==='mine-disarm'){note(1174.66,.05,.12);note(1568,.035,.15,.05);}
+    if(name==='laser-disable'){note(300,.05,.16,0,'fall');note(1480,.03,.08);}
     if (name === 'win') {
       const chord=ARRANGEMENTS[this.timeline.music]?.chords[0];
       const fanfare=chord?[...chord,chord[0]+12].map(frequency):[523.25,659.25,783.99,1046.5];

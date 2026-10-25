@@ -2,6 +2,7 @@
 // Eingaben wirken sofort (live), ein abgeschlossenes Feld ergibt genau einen Undo-Schritt.
 import { WORLD_W, LANES, LANE_W, CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
 import { LIMITS, unitsPerBeat, DIMENSION_COLOR, THEMES, TRACKS, DIFFICULTIES } from '../level-data.js';
+import {isTrap,TRAP_FIELDS,TRAP_DEFAULTS} from '../traps.js';
 import { fmt } from './view.js';
 
 const DIM_OPTIONS = [['both', 'Neutral (beide Dimensionen)'], ['blue', 'Blau'], ['red', 'Rot']];
@@ -66,7 +67,7 @@ export class PropsPanel {
     else if (ids.length === 1 && ids[0] === '__test') { title = 'Testmarker'; body = this.testFields(); }
     else if (objs.length === 1) {
       const o = objs[0];
-      title = o.type === 'seal' ? 'Rift-Siegel' : o.type === 'hint' ? 'Hinweistext' : 'Hindernis';
+      title = ({saw:'Phase Saw',mine:'Pulse Mine',laser:'Sweep Laser'})[o.type]|| (o.type === 'seal' ? 'Rift-Siegel' : o.type === 'hint' ? 'Hinweistext' : 'Hindernis');
       body = o.type === 'hint' ? this.hintFields(o) : this.solidFields(o);
     } else if (objs.length > 1) { title = `${objs.length} Objekte`; body = this.multiFields(objs); }
     else body = this.levelFields();
@@ -209,28 +210,38 @@ export class PropsPanel {
       this.select('Typ', {
         key: 'type',
         get: get('type'),
-        options: [['obstacle', 'Hindernis (Balken / Barriere)'], ['seal', 'Rift-Siegel']],
+        options: [['obstacle', 'Hindernis (Balken / Barriere)'], ['seal', 'Rift-Siegel'],['saw','Phase Saw'],['mine','Pulse Mine'],['laser','Sweep Laser']],
         set: this.objSetter(id, (x, v) => {
           if (x.type === v) return;
           x.type = v;
+          if(TRAP_DEFAULTS[v]){Object.assign(x,TRAP_DEFAULTS[v]);x.x=Math.max(x.amplitude||0,Math.min(WORLD_W-x.w-(x.amplitude||0),x.x));return;}
           if (v === 'seal') { delete x.dimension; x.openSec = SEAL_OPEN_SEC; } else { delete x.openSec; x.dimension = 'both'; }
         }),
       }),
-      o.type === 'obstacle' ? this.select('Dimension', { key: 'dimension', get: get('dimension'), options: DIM_OPTIONS, set: this.objSetter(id, (x, v) => { x.dimension = v; }) }) : null,
+      o.type === 'obstacle'||isTrap(o) ? this.select('Dimension', { key: 'dimension', get: get('dimension'), options: isTrap(o)?DIM_OPTIONS.filter(([id])=>id!=='both'):DIM_OPTIONS, set: this.objSetter(id, (x, v) => { x.dimension = v; }) }) : null,
       this.info('Aktiv', () => { const x = app.doc.get(id); return x ? activeIn(x) : ''; }, { title: 'Aktivierungsstatus: in welcher Dimension das Objekt tödlich ist' }),
     ));
     rows.push(this.group('Position und Größe',
       this.num('X (linke Kante)', { key: 'x', get: get('x'), min: 0, max: WORLD_W - LIMITS.minW, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.x = v; }) }),
       this.num('Y (Mitte)', { key: 'y', get: get('y'), min: 0, max: LIMITS.finish[1], step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.y = v; }) }),
-      this.num('Breite', { key: 'w', get: get('w'), min: LIMITS.minW, max: WORLD_W, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.w = v; }) }),
-      this.num('Höhe', { key: 'h', get: get('h'), min: LIMITS.minH, max: LIMITS.maxH, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.h = v; }) }),
-      this.disabled('Rotation', '0° – vom Spiel nicht unterstützt', 'Das Spiel kennt nur achsenparallele Rechtecke; Rotation wäre eine neue Mechanik.'),
+      isTrap(o)?this.num('Radius / Körper', {key:'radius',get:()=>app.doc.get(id).w/2,min:8,max:40,step:1,unit:'u',set:this.objSetter(id,(x,v)=>{x.w=x.h=v*2;})}):this.num('Breite', { key: 'w', get: get('w'), min: LIMITS.minW, max: WORLD_W, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.w = v; }) }),
+      !isTrap(o)?this.num('Höhe', { key: 'h', get: get('h'), min: LIMITS.minH, max: LIMITS.maxH, step: 1, unit: 'u', set: this.objSetter(id, (x, v) => { x.h = v; }) }):null,
+      !isTrap(o)?this.disabled('Rotation', '0° – Rechteck bleibt achsenparallel'):null,
       this.info('Lage', () => { const x = app.doc.get(id); return x ? laneInfo(x) : ''; }, { title: 'Spurgenaue Objekte (Standardhöhe, ganzer 0,5-s-Takt) prüft der Spur-Solver exakt' }),
       this.num('Musik-Beat (ab 0)', { key: 'music-beat', get: () => (app.doc.get(id)?.y || 0) / unitsPerBeat(app.doc.level.bpm), min: 0, max: LIMITS.finish[1] / unitsPerBeat(app.doc.level.bpm), step: .25, hint: '0,25 = Viertelbeat · 0,5 = Achtelnote. Setzt die tatsächliche Höhe.', set: this.objSetter(id, (x, v) => { x.y = v * unitsPerBeat(app.doc.level.bpm); }) }),
       this.num('Musik-Takt (ab 1)', { key: 'music-bar', get: () => (app.doc.get(id)?.y || 0) / unitsPerBeat(app.doc.level.bpm) / (app.doc.level.beatsPerBar || 4) + 1, min: 1, max: 1000, step: 1, set: this.objSetter(id, (x, v) => { x.y = (v - 1) * (app.doc.level.beatsPerBar || 4) * unitsPerBeat(app.doc.level.bpm); }) }),
       this.select('Musikabschnitt', { key: 'music-section', get: () => String(Math.min(3, Math.floor((app.doc.get(id)?.y || 0) / app.doc.level.finish.y * 4))), options: [['0','INTRO'], ['1','BUILD'], ['2','DROP'], ['3','FINALE']], hint: 'Setzt die Höhe an den Abschnittsanfang.', set: this.objSetter(id, (x, v) => { x.y = Number(v) / 4 * app.doc.level.finish.y; }) }),
       this.info('Zeitpunkt', () => { const x = app.doc.get(id); return x ? `${secs(x.y)} · Beat ${fmt(Math.round(x.y / unitsPerBeat(app.doc.level.bpm) * 100) / 100)}` : ''; }),
     ));
+    if(isTrap(o)) {
+      const labels={amplitude:'Bewegungsweite',period:'Bewegungsperiode (s)',phase:'Startphase (0–1)',spin:'Rotation (rad/s)',activationRadius:'Aktivierungsradius',chargeSec:'Ladezeit (s)',blastRadius:'Explosionsradius',blastSec:'Explosionsdauer (s)',startAngle:'Startwinkel (°)',endAngle:'Endwinkel (°)',sweepPeriod:'Schwenkperiode (s)',length:'Strahllänge',beamWidth:'Strahlbreite',warnSec:'Warnzeit (s)',activeSec:'Aktivzeit (s)',offSec:'Pause (s)',disableSec:'Pulse-Deaktivierung (s)'};
+      rows.push(this.group({saw:'Phase Saw',mine:'Pulse Mine',laser:'Sweep Laser'}[o.type],
+        o.type!=='mine'?this.select('Bewegungsachse',{key:'axis',get:get('axis'),options:[['none','Stationär'],['x','Horizontal'],['y','Vertikal']],set:this.objSetter(id,(x,v)=>{x.axis=v;})}):null,
+        ...Object.entries(TRAP_FIELDS[o.type]).map(([key,[min,max]])=>this.num(labels[key],{key,get:get(key),min,max,step:max<=12?.05:1,set:this.objSetter(id,(x,v)=>{x[key]=v;})})),
+        this.info('Uhr',()=> 'Deterministische Simulationszeit · Pause friert ein'),
+        this.info('Pulse',()=>o.type==='saw'?'passende Dimension: zerstören':o.type==='mine'?'passende Dimension: dauerhaft entschärfen':'passende Dimension: temporär abschalten'),
+      ));
+    }
     if (o.type === 'seal') {
       rows.push(this.group('Rift-Siegel',
         this.num('Öffnungsdauer', {
@@ -275,14 +286,14 @@ export class PropsPanel {
   multiFields(objs) {
     const app = this.app;
     const ids = objs.map((o) => o.id);
-    const obstacles = objs.filter((o) => o.type === 'obstacle');
+    const obstacles = objs.filter((o) => o.type === 'obstacle'||isTrap(o));
     const seals = objs.filter((o) => o.type === 'seal');
     const rows = [this.info('Auswahl', () => `${obstacles.length} Hindernisse · ${seals.length} Siegel · ${objs.length - obstacles.length - seals.length} Hinweise`)];
     if (obstacles.length) {
       rows.push(this.select('Dimension (alle Hindernisse)', {
         key: 'multi-dim',
         get: () => { const d = new Set(obstacles.map((o) => app.doc.get(o.id)?.dimension)); return d.size === 1 ? [...d][0] : 'mixed'; },
-        options: [['mixed', '– gemischt –'], ...DIM_OPTIONS],
+        options: [['mixed', '– gemischt –'], ...DIM_OPTIONS.filter(([id])=>id!=='both'||!obstacles.some(isTrap))],
         set: (tx, v) => { if (v === 'mixed') return; for (const o of obstacles) { const x = tx.touch(o.id); if (x) x.dimension = v; } },
       }));
     }
@@ -371,7 +382,7 @@ export class PropsPanel {
         this.info('Objekte', () => {
           const o = L().objects;
           const n = (t) => o.filter((x) => x.type === t).length;
-          return `${n('obstacle')} Hindernisse · ${n('seal')} Siegel · ${n('hint')} Hinweise`;
+          return `${n('obstacle')} Hindernisse · ${n('seal')} Siegel · ${n('saw')+n('mine')+n('laser')} Fallen · ${n('hint')} Hinweise`;
         }),
         this.info('Abschnitte', () => (L().sections ? `${L().sections.map((s) => s.id).join(' ')} (aus der Leveldatei)` : 'automatisch (A–D nach Fortschritt, ohne Beschriftung)')),
         this.info('Aufgezeichneter Lauf', () => (L().replay ? `${L().replay.taps.length} Tipps` : 'keiner – im PLAYTEST komplett durchspielen')),

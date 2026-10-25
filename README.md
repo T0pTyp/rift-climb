@@ -6,18 +6,52 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## RIFT EXPANSION (M7.5, auf dem bestehenden M8-System)
+
+**Sechs direkt wählbare Levels und RIFT INFINITY.** Die drei ursprünglichen M7-Parcours sind unverändert.
+
+| Neues Level | Schwierigkeit | Gemessene Simulationsdauer | Schwerpunkt |
+| --- | --- | --- | --- |
+| Shattered Gears | Mittel–Schwer | 50 s, 120 BPM | Pendelnde Phase Saws, Pulse-Zerstörung, Siegelketten |
+| Voltage Run | Schwer | 60 s, 132 BPM | Minenwarnung, Laserprojektion, kombinierte Pulse-Fenster |
+| Singularity Rush | Extrem | 75 s, 144 BPM | Alle Fallen, schnelle Richtungscluster, Reaktorfinale |
+
+- **Dynamische Fallen:** detaillierte rotierende Phase Saws, aufladende Pulse Mines und schwenkende Sweep Lasers.
+  Gemeinsame Simulationszeit, sichtbare Warnungen, passende Pulse-Dimension, vollständiger Reset und Practice-Snapshots.
+- **RIFT INFINITY:** 20 handgefertigte JSON-Module, reproduzierbare Seeds, vier begrenzte Schwierigkeitsbereiche,
+  Streaming und aus Weltkoordinaten berechnete Meter. RETRY wiederholt denselben Seed; NEUER SEED erzeugt eine andere Folge.
+  Eigene Höhenrekorde und Versuche im vorhandenen Ascension-Spielstand; keine Kampagnenbelohnungen.
+- **Musik und Grafik:** drei neue Synth-Arrangements, fortlaufender Infinity-Score, Metall-/Hochspannungs-/Reaktormotive
+  und sanfte Infinity-Hintergrundwechsel. Weiterhin eine feste hochwertige Darstellung.
+- **LEVEL FORGE:** alle drei Fallen samt Bewegung, Dimension, Warn- und Pulse-Parametern bearbeitbar,
+  gemeinsames Rendering, verlustfreier JSON-Export, isolierter Playtest und mobile Bottom Sheets.
+
+Alle neuen Levels erreichen mit regulären Eingabereplays und aktiven Kollisionen 100 %. Infinity wurde über
+**1.424 Modulübergänge**, einschließlich aller 400 geordneten Modulpaare und vier langen Seed-Läufen, geprüft.
+Das ersetzt keine menschliche Balance-Abnahme oder Tests auf echten iOS-/Android-Geräten.
+
+Architektur, Level-/Fallendaten und Modulverträge: [docs/RIFT-EXPANSION.md](docs/RIFT-EXPANSION.md).
+Ausgeführte Prüfungen, Messwerte und Grenzen: [docs/M7.5-TEST-REPORT.md](docs/M7.5-TEST-REPORT.md).
+
+```sh
+npm test                          # bestehende Tests + Fallen, drei Levelreplays, Infinity/Save
+npm run test:expansion:e2e         # Spiel/Practice/Infinity/Forge + neue Fallenbedienung
+npm run test:campaign:audio        # sechs komplette Kompositionen, je beide Dimensionen
+LEVEL=infinity npm run test:perf  # Shell-abhängig: LEVEL als Umgebungsvariable setzen
+```
+
 
 ## ASCENSION SYSTEM (M8)
 
-Das Hauptmenü bietet **PLAY · RIFTLING COLLECTION · ACHIEVEMENTS · ASCENSION PROFILE · SETTINGS**.
-Alle drei M7-Levels bleiben sofort verfügbar. Ihre Karten zeigen echte Levelmotive, Rekord, höchste Medaille,
+Das Hauptmenü bietet **PLAY · RIFT INFINITY · RIFTLING COLLECTION · ACHIEVEMENTS · ASCENSION PROFILE · SETTINGS**.
+Alle sechs Kampagnenlevels bleiben sofort verfügbar. Ihre Karten zeigen echte Levelmotive, Rekord, höchste Medaille,
 Versuche und Abschlussstatus sowie eigene PLAY-/PRACTICE-Aktionen. Die Parcours und Flugphysik sind unverändert.
 
 - **Medaillen:** Bronze ab 50 %, Silber ab 75 %, Gold beim tatsächlichen Abschluss. Höchste Auszeichnung bleibt erhalten.
 - **Acht Achievements:** First Flight, Halfway There, First Victory, Pulse Master, Rhythm Breaker, Overloaded,
   Golden Ascent und Persistent Climber. Benachrichtigungen warten bis zum Menü, Tod oder Abschluss.
 - **Fünf Riftling-Designs:** Original sofort; Azure für Gold in First Pulse; Crimson für Gold in Fractured Rhythm;
-  Void für Overload; Golden für Gold in allen drei Levels. Gleiche Kontur, Größe, Animationen und Hitboxen.
+  Void für Overload; Golden für Gold in First Pulse, Fractured Rhythm und Overload. Gleiche Kontur, Größe, Animationen und Hitboxen.
 - **Profil:** Normalversuche, Todesfälle, Abschlüsse, unterschiedliche abgeschlossene Levels, Rekorde,
   Goldmedaillen, Erfolge, Designs und aktive Normal-Spielzeit. Pausen/Practice/Forge zählen nicht mit.
 - **Schneller Loop:** sofort sichtbarer RETRY-Button nach einem Treffer, Ergebnis mit Medaille und Freischaltungen,

@@ -49,3 +49,4 @@ body[data-playtest="1"] #btn-death-home{display:none;}
 #win .win-rewards p {font-size:10px;padding:6px;gap:5px;min-width:0;}
 #win .win-rewards p:last-child {grid-column:1/-1;}
 #win .win-rewards .reward-icon {width:22px;height:22px;}
+.infinity-hero{min-height:145px;border:1px solid #7b65b969;border-radius:14px;background:radial-gradient(ellipse,#43317870,#11182a);display:grid;place-items:center;gap:0;padding:8px}.infinity-hero span{font:700 100px ui-monospace;color:#81dced;text-shadow:0 0 32px #b36aff99}.infinity-hero p{font-size:9px;letter-spacing:.25em;color:#d3c3ff;margin:0 0 12px}.hud-row{flex-wrap:wrap}#hud-infinity{order:3;flex-basis:100%;font-size:10px;color:#e4cbff;border-color:#9270b9;max-width:max-content}body[data-menu=infinity] #menu .panel{border-color:#aa7ded77}.level-card[data-theme=gears]{--accent:#dbc08c}.level-card[data-theme=voltage]{--accent:#8fafff}.level-card[data-theme=singularity]{--accent:#cc7bff}

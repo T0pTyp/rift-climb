@@ -9,6 +9,7 @@ import {
   LANES, LANE_W, WORLD_W, UNITS_PER_BEAT, CLIMB_SPEED, BAR_INSET_X, BAR_THICKNESS, HIT_HALF_H,
   SEAL_OPEN_SEC, START_LANE, START_DIM, BPM,
 } from './config.js';
+import { isTrap, normalizeTrap } from './traps.js';
 
 export const LEVEL_SCHEMA = 'rift-climb-level';
 export const LEVEL_VERSION = 1;
@@ -18,11 +19,11 @@ export const INDEX_SCHEMA = 'rift-climb-level-index';
 export const DIMENSION_COLOR = Object.freeze({ both: 'W', blue: 'B', red: 'R' });
 export const COLOR_DIMENSION = Object.freeze({ W: 'both', B: 'blue', R: 'red' });
 export const START_DIMENSIONS = Object.freeze({ blue: 'B', red: 'R' });
-export const OBJECT_TYPES = Object.freeze(['obstacle', 'seal', 'hint']);
+export const OBJECT_TYPES = Object.freeze(['obstacle', 'seal', 'hint','saw','mine','laser']);
 // Optional M7 identities. Legacy JSON remains byte-compatible on export.
-export const THEMES = Object.freeze([['spire', 'Cyan Spire'], ['fracture', 'Fractured Architecture'], ['core', 'Overload Core']]);
-export const TRACKS = Object.freeze([['neon-ascent', 'Neon Ascent (M6)'], ['first-pulse', 'First Pulse'], ['fractured-rhythm', 'Fractured Rhythm'], ['overload', 'Overload']]);
-export const DIFFICULTIES = Object.freeze([['easy', 'Einfach'], ['medium', 'Mittel'], ['hard', 'Schwer']]);
+export const THEMES = Object.freeze([['spire', 'Cyan Spire'], ['fracture', 'Fractured Architecture'], ['core', 'Overload Core'],['gears','Shattered Machinery'],['voltage','Voltage Array'],['singularity','Singularity Core']]);
+export const TRACKS = Object.freeze([['neon-ascent', 'Neon Ascent (M6)'], ['first-pulse', 'First Pulse'], ['fractured-rhythm', 'Fractured Rhythm'], ['overload', 'Overload'],['shattered-gears','Shattered Gears'],['voltage-run','Voltage Run'],['singularity-rush','Singularity Rush']]);
+export const DIFFICULTIES = Object.freeze([['easy', 'Einfach'], ['medium', 'Mittel'], ['hard', 'Schwer'],['expert','Mittel–Schwer'],['extreme','Extrem']]);
 
 export const LIMITS = Object.freeze({
   minW: 8,
@@ -204,8 +205,15 @@ export function validateLevelData(raw) {
       if (!id) { err('object-id', `${at}: ID fehlt oder ist ungültig.`, ref); return; }
       if (ids.has(id)) { err('object-id', `${name}: ID ist doppelt vergeben.`, ref); return; }
       ids.add(id);
+      if(isTrap(o)) {
+        const {clean,errors}=normalizeTrap(o);
+        for(const message of errors)err('trap',`${name}: ${message}`,ref);
+        if(clean.y-clean.h/2-(clean.axis==='y'?clean.amplitude:0)<0||clean.y+clean.h/2+(clean.axis==='y'?clean.amplitude:0)>level.height)err('bounds',`${name}: Falle außerhalb der Levelhöhe.`,ref);
+        if(!errors.length)level.objects.push(clean);
+        return;
+      }
       if (!OBJECT_TYPES.includes(o.type)) {
-        err('type', `${name}: Typ „${o.type}“ wird vom Spiel nicht unterstützt (vorhanden: Hindernis, Rift-Siegel, Hinweis).`, ref);
+        err('type', `${name}: Typ „${o.type}“ wird vom Spiel nicht unterstützt (Hindernis, Rift-Siegel, Hinweis, Phase Saw, Pulse Mine, Sweep Laser).`, ref);
         return;
       }
       if (o.rotation !== undefined && o.rotation !== 0) { err('rotation', `${name}: Rotation wird vom Spiel nicht unterstützt (Objekt nicht übernommen).`, ref); return; }
@@ -266,7 +274,7 @@ const DIM_NAME = { both: 'neutral', blue: 'blau', red: 'rot' };
 
 /** Design-Warnungen (keine Spielbarkeitsgarantie – nur bekannte Problemmuster). */
 function designWarnings(level, warn) {
-  const solid = level.objects.filter((o) => o.type !== 'hint').sort((a, b) => a.y - b.y);
+  const solid = level.objects.filter((o) => o.type !== 'hint'&&!isTrap(o)).sort((a, b) => a.y - b.y);
   const finishY = level.finish.y;
   for (const o of level.objects) {
     if (o.y > finishY) warn('after-finish', `„${o.id}“ liegt hinter der Ziellinie und wird nie erreicht.`, { objectId: o.id, y: o.y });
@@ -351,6 +359,7 @@ export function serializeLevel(level) {
   for (const key of ['theme', 'music', 'difficulty']) if (level[key]) out[key] = level[key];
   if (level.sections) out.sections = level.sections;
   out.objects = level.objects.map((o) => {
+    if(isTrap(o))return normalizeTrap(o).clean;
     if (o.type === 'hint') return { id: o.id, type: o.type, y: o.y, text: o.text };
     const base = { id: o.id, type: o.type, x: o.x, y: o.y, w: o.w, h: o.h };
     if (o.type === 'obstacle') base.dimension = o.dimension;
@@ -372,6 +381,7 @@ export function laneRows(level) {
   const rows = new Map();
   for (const o of level.objects) {
     if (o.type === 'hint') continue;
+    if(isTrap(o))return null;
     const lane0 = (o.x - BAR_INSET_X) / LANE_W;
     const lanes = (o.w + 2 * BAR_INSET_X) / LANE_W;
     const step = o.y / UNITS_PER_BEAT;
@@ -398,8 +408,10 @@ export function buildLevelRuntime(level) {
   const upb = unitsPerBeat(bpm);
   const obstacles = [];
   const hints = [];
+  const traps = [];
   for (const o of level.objects) {
     if (o.type === 'hint') { hints.push([o.y, o.text]); continue; }
+    if(isTrap(o)){traps.push(o);continue;}
     const { hh, chh } = halfHeights(o.h);
     obstacles.push({
       id: o.id,
@@ -443,6 +455,7 @@ export function buildLevelRuntime(level) {
     height: level.height,
     start: { lane: level.start.lane, dim: START_DIMENSIONS[level.start.dimension] },
     obstacles,
+    traps,
     seals: obstacles.filter((o) => o.color === 'S'),
     lines,
     maxChh,

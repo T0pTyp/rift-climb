@@ -55,6 +55,10 @@ export function scoreStep(step, timeline, emit) {
 
 // Original M7 compositions: independent motifs/harmonies, same synthesis and clock.
 export const ARRANGEMENTS = Object.freeze({
+  'shattered-gears':{roots:[40,36,43,38],chords:[[64,67,71],[60,64,67],[67,71,74],[62,66,69]],motif:[0,2,1,0,2,3,1,2,0,1,3,2,1,2,0,1],drive:1},
+  'voltage-run':{roots:[37,33,40,35],chords:[[61,64,68],[57,61,64],[64,68,71],[59,63,66]],motif:[0,1,3,2,0,2,1,3,2,1,0,2,3,1,2,0],drive:2},
+  'singularity-rush':{roots:[43,39,46,41],chords:[[67,70,74],[63,67,70],[70,74,77],[65,69,72]],motif:[0,3,2,0,1,2,3,1,2,0,3,2,1,0,2,1],drive:2},
+  'rift-infinity':{roots:[45,41,48,43],chords:[[57,60,64],[53,57,60],[60,64,67],[55,59,62]],motif:[0,2,1,3,1,0,2,1,3,2,0,1,2,3,1,0],drive:1},
   'first-pulse': { title: 'First Pulse', roots: [50,47,43,45], chords: [[62,66,69],[59,62,66],[55,59,62],[57,61,64]],
     motif: [0,1,2,1,0,2,1,0, 1,2,3,2,1,0,2,1], drive: 0 },
   'fractured-rhythm': { title: 'Fractured Rhythm', roots: [38,34,41,36], chords: [[62,65,69],[58,62,65],[65,69,72],[60,64,67]],
@@ -67,7 +71,7 @@ function campaignStep(step, tl, emit) {
   if (t >= tl.duration - 1e-8) return;
   const a = ARRANGEMENTS[tl.music], beat = Math.floor(step / 4), sub = step % 4;
   const bar = Math.floor(beat / tl.beatsPerBar), inBar = beat % tl.beatsPerBar;
-  const stage = Math.min(3, tl.at(t).section), chord = Math.floor(bar / 2) % 4;
+  const stage = tl.endless?Math.min(3,Math.floor(t/24)):Math.min(3, tl.at(t).section), chord = Math.floor(bar / 2) % 4;
   const root = a.roots[chord], notes = a.chords[chord];
   // Last bar resolves to the tonic; no endless loop after the finish.
   if (t >= tl.duration - tl.beatSec * 2) {

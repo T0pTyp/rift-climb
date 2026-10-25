@@ -3,10 +3,51 @@
   "version": 1,
   "default": "first-pulse",
   "levels": [
-    { "id": "first-pulse", "name": "First Pulse", "file": "first-pulse.json", "campaign": true },
-    { "id": "fractured-rhythm", "name": "Fractured Rhythm", "file": "fractured-rhythm.json", "campaign": true },
-    { "id": "overload", "name": "Overload", "file": "overload.json", "campaign": true },
-    { "id": "rift-main", "name": "RIFT CLIMB", "file": "rift-main.json" },
-    { "id": "rift-forge-test", "name": "RIFT FORGE TEST", "file": "rift-forge-test.json" }
+    {
+      "id": "first-pulse",
+      "name": "First Pulse",
+      "file": "first-pulse.json",
+      "campaign": true
+    },
+    {
+      "id": "fractured-rhythm",
+      "name": "Fractured Rhythm",
+      "file": "fractured-rhythm.json",
+      "campaign": true
+    },
+    {
+      "id": "overload",
+      "name": "Overload",
+      "file": "overload.json",
+      "campaign": true
+    },
+    {
+      "id": "shattered-gears",
+      "name": "Shattered Gears",
+      "file": "shattered-gears.json",
+      "campaign": true
+    },
+    {
+      "id": "voltage-run",
+      "name": "Voltage Run",
+      "file": "voltage-run.json",
+      "campaign": true
+    },
+    {
+      "id": "singularity-rush",
+      "name": "Singularity Rush",
+      "file": "singularity-rush.json",
+      "campaign": true
+    },
+    {
+      "id": "rift-main",
+      "name": "RIFT CLIMB",
+      "file": "rift-main.json"
+    },
+    {
+      "id": "rift-forge-test",
+      "name": "RIFT FORGE TEST",
+      "file": "rift-forge-test.json"
+    }
   ]
 }

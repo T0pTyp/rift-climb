@@ -26,7 +26,7 @@ export class RiftField {
     this.maxHh = 0;
     for (const s of seals) this.maxHh = Math.max(this.maxHh, s.hh);
     this.pulses = [];
-    for (let i = 0; i < PULSE_POOL; i++) this.pulses.push({ live: false, growing: false, x: 0, y: 0, t0: 0, id: 0, color: '#fff' });
+    for (let i = 0; i < PULSE_POOL; i++) this.pulses.push({ live: false, growing: false, x: 0, y: 0, t0: 0, id: 0, color: '#fff',dim:'B' });
     this.nextId = 1;
     this.emitted = 0;
     this.reset();
@@ -60,7 +60,7 @@ export class RiftField {
   }
 
   /** Genau eine Welle pro gültigem Impuls; Ursprung = Spielerposition zum Tippzeitpunkt. */
-  emit(x, y, t, color) {
+  emit(x, y, t, color, dim = color === '#ff2d8a' ? 'R' : 'B') {
     let slot = this.pulses[0];
     for (const p of this.pulses) {
       if (!p.live) { slot = p; break; }
@@ -73,6 +73,7 @@ export class RiftField {
     slot.t0 = t;
     slot.id = this.nextId++;
     slot.color = color;
+    slot.dim = dim;
     this.emitted++;
     return slot;
   }

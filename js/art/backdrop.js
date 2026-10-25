@@ -10,6 +10,9 @@ const PALETTES = {
   spire: { top:'#061829', bottom:'#02050e', a:'#35d9ed', b:'#865cff', seed:0 },
   fracture: { top:'#160c2d', bottom:'#040711', a:'#699aff', b:'#ff3b97', seed:113 },
   core: { top:'#20091e', bottom:'#050612', a:'#fc43a8', b:'#35dcf4', seed:271 },
+  gears:{top:'#101d2a',bottom:'#04070d',a:'#57cedd',b:'#d7a86d',seed:329},
+  voltage:{top:'#0d1837',bottom:'#050713',a:'#5cddff',b:'#bd70ff',seed:441},
+  singularity:{top:'#210e36',bottom:'#060410',a:'#ca65ff',b:'#ffcc68',seed:557},
 };
 
 function background(w,h,dpr,palette,red) {
@@ -25,6 +28,14 @@ function background(w,h,dpr,palette,red) {
   vignette.addColorStop(0,'rgba(0,0,0,.55)');vignette.addColorStop(.28,'rgba(0,0,0,0)');
   vignette.addColorStop(.72,'rgba(0,0,0,0)');vignette.addColorStop(1,'rgba(0,0,0,.55)');
   g.fillStyle=vignette;g.fillRect(0,0,w,h);return c;
+}
+
+function gearSprite() {
+ const c=document.createElement('canvas');c.width=c.height=192;const g=c.getContext('2d');g.translate(96,96);g.fillStyle='#192b40';g.strokeStyle='#7696ad';g.lineWidth=2;
+ g.beginPath();for(let i=0;i<96;i++){const a=i*Math.PI/48,r=i%4<2?89:77;g.lineTo(Math.cos(a)*r,Math.sin(a)*r);}g.closePath();g.fill();g.stroke();
+ for(const r of [65,57,25]){g.beginPath();g.arc(0,0,r,0,Math.PI*2);g.stroke();}
+ for(let i=0;i<8;i++){g.rotate(Math.PI/4);g.fillStyle='#050c18';g.fillRect(33,-7,18,14);g.fillStyle='#bb9f71';g.fillRect(68,-2,7,4);}
+ return c;
 }
 
 // Detailed architecture is painted once into the existing parallax tiles.
@@ -48,6 +59,15 @@ function architecture(g,w,h,theme,near,r) {
       g.lineTo(x+side*s*.9,y+s*.4);g.lineTo(x-side*s*.2,y+s);g.closePath();g.fill();g.stroke();
       g.beginPath();g.moveTo(x,y-s);g.lineTo(x+side*6,y);g.lineTo(x+side*s*.9,y+s*.4);g.stroke();
       g.globalAlpha=.2;g.setLineDash([3,8]);g.beginPath();g.moveTo(edge,y-70);g.lineTo(x,y);g.stroke();g.setLineDash([]);
+    } else if(theme==='gears') {
+      const x=edge-side*w*.11;
+      g.fillStyle='#263348';g.fillRect(x-20,y-65,40,130);g.strokeRect(x-20,y-65,40,130);
+      for(let j=0;j<7;j++){g.beginPath();g.moveTo(x-22,y-51+j*17);g.lineTo(x+22,y-45+j*17);g.stroke();}
+      g.strokeRect(x-side*35,y-31,side*35,62);
+    } else if(theme==='voltage') {
+      const x=edge-side*w*.12;
+      for(let j=0;j<4;j++){g.strokeRect(x-20,y-45+j*25,40,13);g.beginPath();g.moveTo(x-27,y-38+j*25);g.lineTo(x+27,y-38+j*25);g.stroke();}
+      g.beginPath();g.moveTo(edge,y-75);g.lineTo(x,y-60);g.lineTo(x,y+65);g.lineTo(edge,y+78);g.stroke();
     } else {
       // Reactor sockets and sixfold containment chambers.
       const x=edge-side*w*.08, radius=32+r()*24;
@@ -142,8 +162,10 @@ export class Backdrop {
     this.w = cssW;
     this.h = Math.max(cssH, 640);
     this.viewH = cssH;
+    if(theme==='infinity'){this.variants=new Map();this.variantSize={cssW,cssH,dpr};return;}
     const palette=PALETTES[theme]||PALETTES.spire;
     this.backgrounds=[background(cssW,cssH,dpr,palette,false),background(cssW,cssH,dpr,palette,true)];
+    if(theme==='gears')this.gear=gearSprite();
     this.layers = [];
     {
       for (const def of LAYERS) this.layers.push({ def, ...paintLayer(cssW, this.h, dpr, def, theme) });
@@ -158,15 +180,22 @@ export class Backdrop {
    * Zeichnet im Bildschirm-Transform (CSS-px). scroll = Kamerahöhe in CSS-px, blend 0 Blau … 1 Rot,
    * progress 0–1 (leichte Farbverschiebung mit der Höhe), time für Splitter-Drift.
    */
-  render(ctx, scroll, blend, progress, time) {
-    ctx.globalAlpha=1;ctx.drawImage(this.backgrounds[0],0,0,this.w,this.viewH);
-    if(blend>.001){ctx.globalAlpha=blend;ctx.drawImage(this.backgrounds[1],0,0,this.w,this.viewH);}
+  render(ctx, scroll, blend, progress, time, opacity=1) {
+    if(this.theme==='infinity') {
+      const names=['spire','gears','voltage','singularity'],zone=Math.floor(progress/32),phase=progress%32,index=zone%4,next=(index+1)%4;
+      const variant=i=>{if(!this.variants.has(i)){const b=new Backdrop(),v=this.variantSize;b.configure(v.cssW,v.cssH,v.dpr,names[i]);this.variants.set(i,b);while(this.variants.size>2)this.variants.delete(this.variants.keys().next().value);}return this.variants.get(i);};
+      variant(index).render(ctx,scroll,blend,.5,time);
+      if(phase>24)variant(next);if(phase>28)variant(next).render(ctx,scroll,blend,.5,time,(phase-28)/4);
+      return;
+    }
+    ctx.globalAlpha=opacity;ctx.drawImage(this.backgrounds[0],0,0,this.w,this.viewH);
+    if(blend>.001){ctx.globalAlpha=blend*opacity;ctx.drawImage(this.backgrounds[1],0,0,this.w,this.viewH);}
     ctx.globalAlpha=1;
     const H = this.h;
     const vh = Math.min(this.viewH, H);
     for (const { def, canvas, k, strips } of this.layers) {
       const off = ((scroll * def.speed) % H + H) % H;
-      ctx.globalAlpha = def.alpha * (0.85 + 0.3 * progress);
+      ctx.globalAlpha = def.alpha * (0.85 + 0.3 * progress)*opacity;
       // Zwei Kacheln, jeweils nur der sichtbare Teil: oben [0, off) aus dem Kachelende, darunter [off, vh) vom Kachelanfang
       const topH = Math.min(off, vh);
       const botH = vh - topH;
@@ -177,6 +206,10 @@ export class Backdrop {
       }
     }
     ctx.globalAlpha = 1;
+    if(this.theme==='gears')for(let i=0;i<4;i++){
+      const x=i%2?this.w*.92:this.w*.08,y=((i*this.h/3+scroll*.23)%this.h+this.h)%this.h;
+      ctx.save();ctx.translate(x,y);ctx.rotate(time*(i%2?.17:-.17));ctx.globalAlpha=.24*opacity;ctx.drawImage(this.gear,-90,-90,180,180);ctx.restore();
+    }
     ctx.fillStyle = blend < 0.5 ? '#2fd6ff' : '#ff2d8a';
     for (const s of this.shards) {
       const y = ((s.y * H + scroll * s.z * 0.55 + time * s.drift) % H + H) % H;
@@ -185,7 +218,7 @@ export class Backdrop {
       const sz = s.size * s.z;
       const c = Math.cos(r) * sz;
       const sn = Math.sin(r) * sz * 0.45;
-      ctx.globalAlpha = s.a * (0.7 + 0.3 * Math.sin(time * 1.7 + s.x * 20));
+      ctx.globalAlpha = s.a * (0.7 + 0.3 * Math.sin(time * 1.7 + s.x * 20))*opacity;
       ctx.beginPath();
       ctx.moveTo(x - sn, y - c * 1.8);
       ctx.lineTo(x + c * 0.5, y);

@@ -99,3 +99,20 @@ ASCENSION SYSTEM: zentrales versioniertes Fortschrittssystem, Migration M7, Bron
 - Skill-Client für Gameplay und Collection-State ausgeführt; Game-Canvas geprüft. Vollständige DOM-Screenshots von Menüs, Sammlung, Profil, Achievements und Ergebnissen separat geprüft.
 - Dokumentiert: README, docs/ASCENSION-SYSTEM.md und docs/M8-TEST-REPORT.md. Bekannte Grenzen: keine echte iOS-/Android-Hardware, Windows-WebKit ohne Web Audio, kein Cloudspeicher, historische Todesfälle/Spielzeit unbekannt, menschliche Langzeitabnahme offen.
 - Nächster Schritt: M8 auf main committen/pushen, Pages-Workflow und veröffentlichte Spiel-/Forge-Version prüfen. Keine Force-Pushes.
+## M7.5 — Originalauftrag aus angehängtem Text
+RIFT EXPANSION: drei dynamische Fallen (Phase Saw, Pulse Mine, Sweep Laser), drei weitere handgefertigte Levels, RIFT INFINITY mit mindestens 20 validierten Chunks/Seed-Generierung/separaten Höhenrekorden, kompletter Forge-/Mobile-Support, feste hohe Grafik, Tests/Dokumentation/Commit/Pages. M8 ist bereits vorhanden und wird erhalten sowie für Endless erweitert.
+
+### Architektur und erste Nachweise
+- Bestehender main e6d9922 sauber; 260 u/s und 240 Hz bleiben erhalten. Neue TrapField-Logik, gemeinsames Datenmodell/Rendering im Spiel und Forge. Zeit nur aus Simulation; Pulse-Dimension wird an der Welle gespeichert.
+- 20 Trap-Tests bestanden: Bewegungsachsen, Dimensionen, Pulse vor Kollisionsauswertung, Minenwarnung/Explosion, Laserwarnung/Erholung, bewegliche Kollisionsflächen und exakte CP-Zustände.
+- Levels nacheinander erstellt und geprüft: Shattered Gears 50 s / 31 Impulse / 19 Sägen; danach Voltage Run 60 s / 41 Impulse / 14 Minen und 15 Laser; danach Singularity Rush 75 s / 99 Impulse / alle Fallen. 27 Leveltests inkl. 5/30/60/144 FPS, Practice, Reset, Eingabefenster bestanden.
+- 20 handgefertigte datengetriebene Infinity-Phrasen: einzeln regulär bis 100 % geprüft. Streaming in derselben Game-Klasse; maximal fünf gehaltene Chunks, unveränderte Spielersteuerung, 10 u = 1 m.
+- Infinity: alle 400 geordneten Modulpaare und vier Seeds mit je 256 Übergängen (1.424 Übergänge insgesamt) regulär simuliert; 11 Prüfungen bestanden. Erholung aus allen acht Spur-/Dimensionszuständen mit regulären Eingaben geprüft. Keine automatische Korrektur von Spielereingaben.
+- Separate Endless-Daten im vorhandenen v2-Save; normale Rekorde, Achievements und Skinbedingungen bleiben erhalten. Golden Ascent/Golden Skin beziehen sich weiterhin auf die drei ursprünglichen First-Ascent-Level.
+
+### Abschlussprüfung M7.5
+- 21 Fallen-, 27 Level- und 16 Infinity-Prüfungen; 1.424 Übergänge inkl. vier 34-Minuten-Simulationen erfolgreich. Beobachtet: maximal 88 Objekte, vier Chunks; erlaubte Grenzen 140/fünf.
+- Browser: Expansion 93, Fallen-Forge 48, ursprüngliche Kampagne 141, Ascension 126, Gameplay 100, Pulse 51, M5-Visuals 25, Desktop-Forge 70, Mobile-Forge 50 erfolgreich. WebKit ohne natives Audio ehrlich als stummer Fallback behandelt.
+- Tatsächlichen Maus-Resize-Bug bei außen liegenden Griffen behoben. Enge Membranen/Siegel auf Torbreite begrenzt; alle acht Leveldateien ohne Designwarnung. Practice-/Endless-UI-Zustände sauber zurückgesetzt.
+- Zwölf vollständige Audio-Offline-Renders bestanden. Echtzeit-Performance mit 4x CPU: Singularity 75 s p95 JS 7,5 ms, Infinity 104 s p95 JS 4,3 ms. Infinity: ein Start-Seek, maximal zwei Backdrops, null Quellen nach Pause. Keine Smartphone-FPS-Behauptung.
+- README, RIFT-EXPANSION.md, M7.5-TEST-REPORT.md aktualisiert. Finale Unit-/Expansion-Runde abgeschlossen, Git-Review erfolgt. Veröffentlichungsschritt: Commit/Push main, Pages und Livesmoke.
