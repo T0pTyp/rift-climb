@@ -21,8 +21,9 @@ import { BeatEffects } from './pulse/effects.js';
 import { TrapField,makeTrap,trapReach } from './traps.js';
 import { drawTrap } from './art/traps.js';
 import {EndlessWorld,worldMeters,INFINITY_TIERS} from './endless.js';
-import {DIRECTOR_TIERS,zoneAt} from './rift-director.js';
+import {DIRECTOR_TIERS,zoneAt,directorSignature} from './rift-director.js';
 import {phaseFlowState} from './phase-flow.js';
+import {currentInputEventTime} from './input-time.js';
 
 const K = PARTICLE_KIND;
 
@@ -240,6 +241,7 @@ export class Game {
     this.trace.length = 0;
     this.lastSwitch = null;
     this.recentInputs.length=0;
+    this.endlessRecording=null;
     this.infinityRecordAnnounced=false;
     this.stats.steps = this.stats.frameSteps = this.stats.impulses = 0;
     this.checkpoint = this.captureCheckpoint(this.y / UNITS_PER_BEAT, this.lastRowPassed);
@@ -321,8 +323,15 @@ export class Game {
   }
 
   /** Spielfeld-Eingabe (Tipp oder Taste). Bedeutung hängt vom Zustand ab. */
+  recordEndlessInputs() {
+    if(!this.endless?.director||this.t!==0||this.state!=='playing'||!(this.debug.hitboxes||this.debug.trace))return false;
+    this.endlessRecording={schema:'rift-infinity-replay',version:1,seed:this.endless.seed,revision:this.endless.book.revision,signature:directorSignature(this.endless.book),simulation:'spring-240-v1',arenaWidth:270,arenaStep:90,taps:[],truncated:false};return true;
+  }
+  exportEndlessReplay(){return this.endlessRecording?structuredClone({...this.endlessRecording,duration:this.t,outcome:this.state}):null;}
+
   press(dir) {
     if (this.state === 'playing') {
+      if(this.endlessRecording){if(this.endlessRecording.taps.length<16000)this.endlessRecording.taps.push({t:this.t,dir,inputMs:currentInputEventTime()});else this.endlessRecording.truncated=true;}
       if(this.debug.hitboxes||this.debug.trace){this.recentInputs.push({t:this.t,dir});if(this.recentInputs.length>64)this.recentInputs.shift();}
       if (this.recording) this.recording.push({ t: Math.round(this.t * 1e4) / 1e4, dir });
       this.impulse(dir);

@@ -5,7 +5,7 @@ import { Game } from './game.js';
 import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS, STEER_OMEGA, HIT_RADIUS, PULSE_RADIUS, PULSE_GROW_SEC } from './config.js';
 import { laneRows, START_DIMENSIONS } from './level-data.js';
 import { validateLevel } from './level.js';
-import {accepts,chunkFingerprint} from './rift-director.js';
+import {accepts,chunkFingerprint,directorSignature} from './rift-director.js';
 
 const noop = () => {};
 
@@ -97,6 +97,22 @@ export function checkChunkPlayability(level) {
   if(!replay.won||!accepts(m.exit,{...f,dimension:f?.dimension==='B'?'blue':'red'}))return {method:'replay',ok:false,message:`Probe ${s.id}: Tod oder ungültiger Ausgang.`,replay};
  }
  return {method:'replay',ok:true,replay,message:`${fixtures.length} reale Eintrittsproben → Ausgang bestätigt. Zwischenwerte sind keine mathematische Garantie.`,certificate:{status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(level),fixtures:fixtures.length,proof:replay.proof}};
+}
+
+/** Developer replay: shared Game, real inputs, no renderer/audio dependency. */
+export function runEndlessReplay(book,replay) {
+ const taps=replay?.taps;
+ // Accepted physical contacts may share a simulation tick after a browser stall.
+ const invalidInput=(p,i)=>{const prev=taps[i-1],gap=prev&&(Number.isFinite(p.inputMs)&&Number.isFinite(prev.inputMs)?(p.inputMs-prev.inputMs)/1000:p.t-prev.t);return ![1,-1].includes(p.dir)||!Number.isFinite(p.t)||p.t<0||p.t>replay.duration||(i&&(p.t<prev.t||gap<.045-1e-8));};
+ if(replay?.schema!=='rift-infinity-replay'||replay.version!==1||replay.truncated||replay.simulation!=='spring-240-v1'||replay.signature!==directorSignature(book)||replay.revision!==book.revision||replay.arenaWidth!==270||replay.arenaStep!==90||!Number.isInteger(replay.seed)||replay.seed<0||replay.seed>0xffffffff||!Number.isFinite(replay.duration)||replay.duration<0||replay.duration>3600||!Array.isArray(taps)||taps.length>16000||taps.some(invalidInput))return {ok:false,error:'Ungültiger, veralteter oder abgeschnittener Infinity-Replay.'};
+ const g=headlessGame(book.chunks[0].level);g.startEndless(book,replay.seed,g.storage);let i=0;
+ const steps=Math.round(replay.duration/SIM_DT);
+ for(let n=0;n<steps&&g.state==='playing';n++){
+  if(g.endless.ensure(g.y))g.endless.apply(g);
+  while(i<taps.length&&taps[i].t<=g.t+SIM_DT/2)g.press(taps[i++].dir);
+  g.step(SIM_DT);
+ }
+ return {ok:i===taps.length&&Math.abs(g.t-replay.duration)<SIM_DT*1.1,state:g.state,t:g.t,y:g.y,x:g.player.x,vx:g.player.vx,dimension:g.player.dim,pulses:g.rift.emitted,tapsUsed:i,killer:g.killer?.reason||null,seed:g.endless.seed};
 }
 
 function firstBadRow(v, rows) {

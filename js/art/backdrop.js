@@ -153,27 +153,30 @@ export class Backdrop {
   }
 
   /** Eine feste Darstellung: beide Architektur-Ebenen und 26 Energiefragmente. */
-  configure(cssW, cssH, dpr, theme = 'spire') {
+  configure(cssW, cssH, dpr, theme = 'spire', deferred = false) {
     if (typeof document === 'undefined') return;
     const key = `${Math.round(cssW)}x${Math.round(cssH)}@${dpr}:${theme}`;
     if (key === this.key) return;
     this.key = key;
+    this.pendingVariant=null;
+    if(theme!=='infinity')this.variants?.clear();
     this.theme = theme;
     this.w = cssW;
     this.h = Math.max(cssH, 640);
     this.viewH = cssH;
-    if(theme==='infinity'){this.variants=new Map();this.variantSize={cssW,cssH,dpr};return;}
+    if(theme==='infinity'){this.variants=new Map();this.pendingVariant=null;this.variantSize={cssW,cssH,dpr};return;}
     const palette=PALETTES[theme]||PALETTES.spire;
-    this.backgrounds=[background(cssW,cssH,dpr,palette,false),background(cssW,cssH,dpr,palette,true)];
-    if(theme==='gears')this.gear=gearSprite();
+    this.backgrounds=[];
     this.layers = [];
-    {
-      for (const def of LAYERS) this.layers.push({ def, ...paintLayer(cssW, this.h, dpr, def, theme) });
-    }
+    const jobs=[()=>this.backgrounds.push(background(cssW,cssH,dpr,palette,false)),()=>this.backgrounds.push(background(cssW,cssH,dpr,palette,true))];
+    if(theme==='gears')jobs.push(()=>{this.gear=gearSprite();});
+    for(const def of LAYERS)jobs.push(()=>this.layers.push({def,...paintLayer(cssW,this.h,dpr,def,theme)}));
     const r = rng(97);
     this.shards = Array.from({ length: 26 }, () => ({
       x: r(), y: r(), z: 0.45 + r() * 0.5, size: 1.6 + r() * 3.2, rot: r() * 6.28, spin: (r() - 0.5) * 1.2, a: 0.22 + r() * 0.35, drift: (r() - 0.5) * 6,
     }));
+    if(deferred)return jobs;
+    for(const job of jobs)job();
   }
 
   /**
@@ -183,9 +186,17 @@ export class Backdrop {
   render(ctx, scroll, blend, progress, time, opacity=1) {
     if(this.theme==='infinity') {
       const names=['spire','fracture','gears','voltage','core','singularity'],zone=Math.floor(progress/32),phase=progress%32,index=zone%6,next=(index+1)%6;
-      const variant=i=>{if(!this.variants.has(i)){const b=new Backdrop(),v=this.variantSize;b.configure(v.cssW,v.cssH,v.dpr,names[i]);this.variants.set(i,b);while(this.variants.size>2)this.variants.delete(this.variants.keys().next().value);}return this.variants.get(i);};
+      if(this.pendingVariant&&this.pendingVariant.index!==index&&this.pendingVariant.index!==next)this.pendingVariant=null;
+      const variant=i=>{if(!this.variants.has(i)){let b;const pending=this.pendingVariant;if(pending?.index===i){this.pendingVariant=null;for(const job of pending.jobs)job();b=pending.backdrop;}else{b=new Backdrop();const v=this.variantSize;b.configure(v.cssW,v.cssH,v.dpr,names[i]);}this.variants.set(i,b);while(this.variants.size>2)this.variants.delete(this.variants.keys().next().value);}return this.variants.get(i);};
       variant(index).render(ctx,scroll,blend,.5,time);
-      if(phase>24)variant(next);if(phase>28)variant(next).render(ctx,scroll,blend,.5,time,(phase-28)/4);
+      // Prepare exactly the same artwork in small tasks, well before the blend.
+      // Never present partial layers or lower quality when a task runs late.
+      if(phase>12&&!this.variants.has(next)&&!this.pendingVariant){
+        for(const key of this.variants.keys())if(key!==index)this.variants.delete(key);
+        const b=new Backdrop(),v=this.variantSize,build={index:next,backdrop:b,jobs:b.configure(v.cssW,v.cssH,v.dpr,names[next],true)};this.pendingVariant=build;
+        const tick=()=>{if(this.pendingVariant!==build)return;build.jobs.shift()?.();if(build.jobs.length)setTimeout(tick,0);else{this.variants.set(next,b);while(this.variants.size>2)this.variants.delete(this.variants.keys().next().value);this.pendingVariant=null;}};setTimeout(tick,0);
+      }
+      if(phase>28)variant(next).render(ctx,scroll,blend,.5,time,(phase-28)/4);
       return;
     }
     ctx.globalAlpha=opacity;ctx.drawImage(this.backgrounds[0],0,0,this.w,this.viewH);

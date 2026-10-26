@@ -37,7 +37,8 @@ await page.evaluate(() => {
   g.update = (dt) => { const t0 = performance.now(); update(dt); m.updMs = (m.updMs || 0) + performance.now() - t0; };
 });
 await page.tap(lab?'#btn-lab-start':endless?'#btn-infinity-start':'#btn-start');
-await page.waitForFunction(({endless,duration}) => endless?__RIFT.t>=duration:__RIFT.state==='won', {endless,duration}, { timeout: (endless?duration+45:120)*1000 });
+try {await page.waitForFunction(({endless,duration}) => endless?__RIFT.t>=duration:__RIFT.state==='won', {endless,duration}, { timeout: (endless?duration+45:120)*1000 });}
+catch(error){const out=process.env.PERF_DIR||'test-results/m7';mkdirSync(out,{recursive:true});writeFileSync(`${out}/failure.json`,JSON.stringify(await page.evaluate(()=>({state:__RIFT.state,t:__RIFT.t,killer:__RIFT.killer?.reason,audio:__RIFT.audio.status(),frames:__PERF.js.length,lastJs:__PERF.js.slice(-10),gaps:__PERF.gaps.slice(-10)})),null,2));await page.screenshot({path:`${out}/failure.png`});await browser.close();throw error;}
 const r = await page.evaluate(() => {
   const m = window.__PERF;
   const q = (a, p) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(s.length * p))]; };

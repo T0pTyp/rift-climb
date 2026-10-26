@@ -16,9 +16,12 @@ export function validContract(c,exit=false) {
 }
 // FNV audit fingerprint: detects stale offline certificates, not an anti-cheat signature.
 export function chunkFingerprint(level) {
- const {validation,...meta}=level.chunk||{},text=JSON.stringify({...level,chunk:meta});let h=2166136261;
+ const {validation,...meta}=level.chunk||{};
+ // Editor normalization and JSON export may reorder keys. Sign semantic data.
+ const text=JSON.stringify({...level,chunk:meta},(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).sort(([a],[b])=>a<b?-1:a>b?1:0)):v);let h=2166136261;
  for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return(h>>>0).toString(16).padStart(8,'0');
 }
+export const directorSignature=book=>chunkFingerprint({revision:book.revision,chunks:book.chunks.map(c=>({id:c.id,hash:chunkFingerprint(c.level)}))});
 export class RiftDirector {
  constructor(book,random){this.book=book;this.random=random;this.reset();}
  reset(){this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;}
@@ -32,7 +35,7 @@ export class RiftDirector {
   if(!pool.length)throw Error('RIFT DIRECTOR: kein zertifizierter Übergang');
   const weights=pool.map(c=>{const m=c.level.chunk,freq=this.history.filter(h=>h.id===c.id).length;
    const difficulty=m.tier===tier?2:Math.pow(.55,tier-m.tier),recovery=last?.actions>=6&&m.actions<=4?2:1;
-   return difficulty/(1+freq*3)*(last?.category===m.category?.35:1)*recovery*(last?.family===m.hazardFamily?.6:1);
+   return difficulty/(1+freq*3)*(last?.category===m.category ? .35 : 1)*recovery*(last?.family===m.hazardFamily ? .6 : 1);
   });
   let roll=this.random()*weights.reduce((a,b)=>a+b,0),chosen=pool.at(-1);
   for(let i=0;i<pool.length;i++){roll-=weights[i];if(roll<0){chosen=pool[i];break;}}
