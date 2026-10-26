@@ -5,7 +5,7 @@ const BASE=process.env.BASE_URL||'http://localhost:8080/';let checks=0;
 const check=(n,v)=>{assert.ok(v,n);checks++;console.log('PASS '+n);};mkdirSync('test-results/compact/browser',{recursive:true});
 for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,devices['iPhone 13'],'webkit'],[chromium,{viewport:{width:1280,height:900}},'desktop']]){
  const b=await engine.launch(),c=await b.newContext(device),p=await c.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));const click=s=>device.isMobile?p.tap(s):p.click(s);
- await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);await click('#nav-lab');
+ await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);check(label+' home menu hides Arena Lab',await p.evaluate(()=>{const b=document.querySelector('#nav-lab');return !!b&&b.hidden&&getComputedStyle(b).display==='none'&&!!document.querySelector('#page-lab');}));await p.goto(BASE+'?lab=compact&manual=1');await p.waitForFunction(()=>window.__RIFT&&document.querySelector('#page-lab')&&!document.querySelector('#page-lab').hidden);
  check(label+' two distinct arena previews and no quality selector',await p.evaluate(()=>document.querySelectorAll('.arena-card svg').length===2&&!document.querySelector('#btn-gfx')));
  await click('.arena-card[data-arena="compact"]');check(label+' selection persisted',await p.evaluate(()=>__ASCENSION.data.lab.style==='compact'&&JSON.parse(localStorage.getItem('riftclimb.ascension.v2')).lab.style==='compact'&&document.querySelector('.arena-card[data-arena="compact"]').getAttribute('aria-pressed')==='true'));
  await p.waitForTimeout(180);await p.screenshot({path:`test-results/compact/browser/${label}-lab.png`});

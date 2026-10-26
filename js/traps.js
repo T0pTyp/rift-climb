@@ -67,15 +67,13 @@ export class TrapField {
    const reach=trapReach(o);
    if(Math.abs(o.y-player.y)>reach+240)continue;
    const q=trapPose(o,t,o.pose),old=trapPose(o,t-h,o.previous);
-   // Sweep Laser stays armed. A matching pulse still destroys saws and disarms mines.
-   if(o.type!=='laser'&&o.state!=='destroyed'&&o.state!=='disarmed')for(const p of pulses) {
+   // Saws and sweep lasers stay armed. A matching pulse still disarms mines.
+   if(o.type==='mine'&&o.state!=='destroyed'&&o.state!=='disarmed')for(const p of pulses) {
     if(!p.live||t-p.t0>PULSE_GROW_SEC+SIM_DT||p.dim!==o.color||o.pulseId===p.id)continue;
     if(Math.hypot(p.x-q.x,p.y-q.y)-o.w/2>pulseRadius(t-p.t0))continue;
     o.pulseId=p.id;
-    if(o.type==='saw'){o.state='destroyed';o.deadAt=t;}
-    else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;}
-    else continue;
-    this.events++;onEvent?.(o,o.type==='saw'?'saw-break':'mine-disarm');
+    o.state='disarmed';o.deadAt=t;
+    this.events++;onEvent?.(o,'mine-disarm');
    }
    if(o.state==='destroyed'||o.state==='disarmed')continue;
    if(o.type==='mine') {

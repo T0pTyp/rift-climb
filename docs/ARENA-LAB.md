@@ -57,8 +57,9 @@ dekorative Außenlinien. Die leuchtenden Arena-Grenzen markieren den spielbaren 
 Input verwendet unverändert das Rechteck des gesamten Game-Canvas: links → rechts,
 rechts → links. Auch ein Tipp neben der schmalen Arena bewegt die Figur. Die bestehenden
 200-ms-Startfreigabe und 45-ms-Doppelereignissperre bleiben unverändert. Der Arena-
-Schalter befindet sich ausschließlich im Menü und verweigert Änderungen bei einem
-laufenden oder pausierten Versuch. Neustart bleibt in derselben Variante.
+Schalter liegt auf der Lab-Seite und verweigert Änderungen bei einem laufenden oder
+pausierten Versuch. Das Hauptmenü bietet den Einstieg derzeit nicht an. Neustart bleibt
+in derselben Variante.
 
 Es gibt weiterhin genau eine hochwertige Grafik, keine Qualitätsprofile und keine
 automatisch entfernten Effekte. Partikelpool und Riftling-Rastercache werden wiederverwendet.
@@ -71,12 +72,13 @@ und Infinity-Chunks bleiben unverändert. `tools/author-arena-lab.mjs` enthält 
 explizite handgefertigte Phrasenliste und schreibt erst nach erfolgreicher echter Simulation.
 Die Dateien lassen sich anschließend normal in Forge importieren und bearbeiten.
 
-Beide Varianten: 40 s / 10.400 u, 120 BPM, 28 identische Richtungen und Eingabezeiten,
-gleiche Musik/Abschnitte und Reihenfolge der Mechaniken:
+Beide Varianten: 40 s / 10.400 u, 120 BPM, gleiche Musik/Abschnitte und Reihenfolge der
+Mechaniken. Die aufgezeichneten Eingaben sind nicht mehr identisch, seit ein Rift Pulse
+Sägen nicht mehr zerstört:
 
 - TURN: erste Richtungsfolgen und Seitenhindernisse.
 - DIMENSIONS: blaue/rote Durchgänge, jeder Impuls verändert den Gefahrenzustand.
-- PULSE: Siegel und stationäre zerstörbare Phase Saws.
+- PULSE: Siegel und stationäre Phase Saws. Ein Pulse zerstört Sägen nicht.
 - PRECISION: engere Richtungswechsel, Siegel, Sägen, Minen und Sweep Lasers im Abschluss.
 
 Die freie Torbreite beträgt in Classic 96/84/78 u, in Compact 64/60/56 u.
@@ -94,8 +96,8 @@ pauschal erreichbar. Es gibt keine unsichtbare Balancekorrektur oder Rhythmus-Ei
 startet mittig x=108. Classic besitzt vier, Compact fünf Zielstellen; über die gesamte
 Breite sind drei bzw. vier Zielwechsel nötig. Kürzere Weltwege bedeuten daher nicht
 automatisch weniger Tipps oder höhere absolute Seitengeschwindigkeit. In beiden
-vorgegebenen Replays sind alle 28 Eingaben relevant: Entfernen eines einzelnen Tipps
-führt zum Scheitern. Eine globale Minimalzahl beliebig anderer Lösungen wurde nicht bewiesen.
+vorgegebenen Replays ist jede aufgezeichnete Eingabe relevant: Entfernen eines einzelnen
+Tipps führt zum Scheitern. Eine globale Minimalzahl beliebig anderer Lösungen wurde nicht bewiesen.
 Gemessene frühe Eingabetoleranz ist in Compact größer. Diese Version ermöglicht den
 persönlichen Vergleich und behauptet keine identische Schwierigkeit oder höhere Beliebtheit.
 

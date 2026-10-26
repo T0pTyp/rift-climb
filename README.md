@@ -8,9 +8,10 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 ## COMPACT MODE / ARENA LAB (M7.6)
 
-Im Hauptmenü **ARENA LAB** öffnen, unter **ARENA STYLE** Classic oder Compact wählen und einen Test-Run starten.
-Die letzte Auswahl und optionales Spaß-Feedback bleiben lokal gespeichert. Ein Wechsel während des Runs ist gesperrt.
+Der Vergleichsmodus bleibt im Code und in den Lab-Daten, ist im Hauptmenü aber nicht mehr angeboten.
 Kampagne und Infinity bleiben vollständig Classic; es gibt keine automatische Verengung vorhandener Levels.
+Die letzte Auswahl und optionales Spaß-Feedback bleiben lokal gespeichert, sobald die Lab-Seite geöffnet ist.
+Ein Wechsel während des Runs ist gesperrt.
 
 | Variante | Breite | Zielschritt je Impuls | Weg nach 220 ms | Aufstieg / Hitbox |
 | --- | --- | --- | --- | --- |
@@ -22,8 +23,8 @@ Die vorhandene Bewegung ist eine gedämpfte Feder zu Zielspuren. Compact nutzt f
 Die Federzeit bleibt unverändert. Kamera-Pixelskalierung, Figur, Animationen und hochwertige Assets bleiben gleich;
 der schmalere Korridor sitzt mittig, die Touch-Zonen bleiben die **gesamten Displayhälften**.
 
-Eine handgefertigte **40-Sekunden-Teststrecke** bietet in beiden Varianten dieselben **28 Eingabezeitpunkte**,
-Richtungswechsel, Dimensionen, Siegel und Fallen. Die Geometrie und freien Korridore sind einzeln abgestimmt;
+Eine handgefertigte **40-Sekunden-Teststrecke** liegt in beiden Varianten vor. Die Geometrie und freien Korridore
+sind einzeln abgestimmt; die aufgezeichneten Läufe sind getrennt, weil ein Rift Pulse Sägen nicht mehr zerstört.
 Spieler- und Fallenhitboxen werden nicht verkleinert. Beide regulären Replays erreichen mit echten Kollisionen 100 %.
 
 Je Variante werden Versuche, Bestwert, Abschlüsse, Todesfälle und durchschnittlicher gemessener Fortschritt erfasst.
@@ -35,7 +36,6 @@ JSON, Kamera und Playtest; fehlende Angaben bedeuten Classic. Bestehende Geometr
 Classic besitzt vier Zielspuren, Compact fünf halbe Zielschritte. Eine komplette Wand-zu-Wand-Fahrt braucht damit
 drei bzw. vier Zielwechsel. Welches Spielgefühl besser ist, muss der persönliche Test zeigen.
 
-[ARENA LAB öffnen](https://t0ptyp.github.io/rift-climb/?lab=compact) ·
 [Architektur und Daten](docs/ARENA-LAB.md) · [Tests und Grenzen](docs/M7.6-TEST-REPORT.md)
 
 ```sh
