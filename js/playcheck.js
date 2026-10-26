@@ -2,13 +2,13 @@
 // mit der echten Game-Klasse (gleiche Physik, gleiche Kollision, fester 240-Hz-Schritt).
 // Genutzt von LEVEL FORGE (Validierung) und tests/validate-level.mjs (Deploy-Prüfung).
 import { Game } from './game.js';
-import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS } from './config.js';
+import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS, STEER_OMEGA, HIT_RADIUS, PULSE_RADIUS, PULSE_GROW_SEC } from './config.js';
 import { laneRows, START_DIMENSIONS } from './level-data.js';
 import { validateLevel } from './level.js';
 
 const noop = () => {};
 
-function headlessGame(level) {
+export function headlessGame(level) {
   return new Game({
     canvas: { getContext: () => null, width: 0, height: 0 },
     ui: { show: noop, updateHud: noop, toast: noop, showDeath: noop, showWin: noop, updateMenu: noop },
@@ -24,13 +24,14 @@ function headlessGame(level) {
  * Spielt taps ([{ t, dir }], Spielzeit in s) ab Levelstart im Normalmodus ab.
  * Ein Tipp wirkt vor dem Simulationsschritt, in dem er aufgezeichnet wurde (wie im Spiel: Eingabe -> Schritt).
  */
-export function runReplay(level, taps) {
+export function runReplay(level, taps, { proof = false } = {}) {
   const legal = Array.isArray(taps) && taps.every((tap, i) =>
     Number.isFinite(tap.t) && (tap.dir === 1 || tap.dir === -1) &&
     tap.t >= START_GRACE_MS / 1000 && (!i || tap.t - taps[i - 1].t >= MIN_PRESS_INTERVAL_MS / 1000 - 1e-8));
   if (!legal) return { won: false, progress: 0, tapsUsed: 0, killer: null, error: 'Ungültige Eingabefolge (Startschutz / Mindestabstand / Richtung).' };
   const g = headlessGame(level);
   g.start('normal');
+  const start = proof ? {t:g.t,x:g.player.x,y:g.y,vx:g.player.vx,lane:g.player.lane,dimension:g.player.dim} : null;
   const limit = level.finish.y / CLIMB_SPEED + 1;
   let i = 0;
   while (g.state === 'playing' && g.t < limit) {
@@ -38,7 +39,7 @@ export function runReplay(level, taps) {
     g.step(SIM_DT);
   }
   const k = g.killer;
-  return {
+  const result = {
     won: g.state === 'won',
     t: g.t,
     y: g.y,
@@ -46,6 +47,17 @@ export function runReplay(level, taps) {
     tapsUsed: i,
     killer: k ? { id: k.o.id, y: k.o.y, reason: k.reason } : null,
   };
+  if(proof)result.proof={schema:'rift-replay-proof',version:1,levelId:level.id,levelHash:replayFingerprint(level),inputHash:replayFingerprint(taps),seed:null,
+    config:{simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC},
+    start,finish:{...result,x:g.player.x,vx:g.player.vx,dimension:g.player.dim,steps:g.stats.steps,pulses:g.rift.emitted}};
+  return result;
+}
+
+/** Deterministic audit fingerprint, not a security or anti-cheat signature. */
+export function replayFingerprint(value) {
+  let hash=2166136261;const text=JSON.stringify(value);
+  for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619);
+  return (hash>>>0).toString(16).padStart(8,'0');
 }
 
 /**

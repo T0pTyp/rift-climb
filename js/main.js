@@ -166,8 +166,12 @@ async function boot() {
     onPress: (dir, ts) => {
       // Simulation erst bis zum Eingabezeitpunkt vorspulen: der Impuls wirkt dort,
       // wo die Figur beim Tipp tatsächlich war (keine Verzögerung um bis zu einen Frame).
+      const wasPlaying=game.state==='playing';
       advanceTo(eventTime(ts));
       if (!audio.ready) unlockAudio();
+      // A death discovered while catching up to this event must remain visible.
+      // A fresh event on the death screen can retry immediately, without a timer.
+      if(wasPlaying&&game.state!=='playing')return;
       game.press(dir);
     },
     onPause: () => (game.state === 'paused' ? game.resume() : game.pause()),
@@ -196,6 +200,7 @@ async function boot() {
   ui.updateVolumes(audio.settings);
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
+    ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog}}:{}),
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),

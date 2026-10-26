@@ -18,6 +18,7 @@ export class Input {
     this.lastPress = -Infinity;
     this.lastTouchTs = -1;
     this.ignored = 0;
+    this.activePointers = new Set();
 
     const press = (dir, ts) => {
       const now = performance.now();
@@ -39,12 +40,18 @@ export class Input {
       surface.addEventListener('pointerdown', (e) => {
         if (e.button !== undefined && e.button > 0) return;
         e.preventDefault();
+        if(this.activePointers.has(e.pointerId)){this.ignored++;return;}
+        this.activePointers.add(e.pointerId);
         pointerPress(e.clientX, e.timeStamp);
       }, { passive: false });
+      const release=e=>this.activePointers.delete(e.pointerId);
+      window.addEventListener('pointerup',release,true);
+      window.addEventListener('pointercancel',release,true);
+      window.addEventListener('blur',()=>this.activePointers.clear());
     } else {
       surface.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        for (const t of e.changedTouches) pointerPress(t.clientX, e.timeStamp);
+        if(e.changedTouches.length)pointerPress(e.changedTouches[0].clientX, e.timeStamp);
         this.lastTouchTs = performance.now();
       }, { passive: false });
       surface.addEventListener('mousedown', (e) => {
@@ -64,6 +71,7 @@ export class Input {
         return;
       }
       if (k === 'Enter' || k === ' ' || k === 'r' || k === 'R') {
+        if(e.repeat){e.preventDefault();return;}
         if (this.onConfirm(k)) e.preventDefault();
         if (k === ' ') e.preventDefault();
         return;

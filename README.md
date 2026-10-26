@@ -6,6 +6,36 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## M7.7 – Gameplay Refinement & Balancing
+
+Direktere schnelle Menü-Taps und Instant Retry, präzise durchgehende Rechteckkollisionen,
+zuverlässige Pulse-Treffer und eine abwechslungsreichere, reproduzierbare Infinity-Auswahl.
+Die Flugphysik bleibt bei **260 u/s, 90 u Zielschritt, 220 ms bis 95 % und 240 Hz**.
+Compact bleibt ausgeblendet. Es gibt weiterhin ausschließlich hochwertige Grafik.
+
+Die aktuellen Pulse-Regeln haben Vorrang vor älteren Meilensteinbeschreibungen:
+Passende Wellen zerstören Phase Saws, entschärfen Pulse Mines und schalten
+Laserprojektoren vorübergehend ab. Danach warnt der Laser erneut vollständig.
+Kein Pulse-Treffer verändert die Flugbahn. Die sechs vorhandenen Levels bleiben
+erhalten; nur eine Sägeposition und eine Minenladezeit in Singularity Rush wurden
+gezielt entschärft. Fortschrittsdaten, Practice und isolierte Forge-Playtests bleiben erhalten.
+
+Infinity vermeidet die letzten zwei Chunk-IDs, gewichtet kürzliche Wiederholungen
+und wechselt zwischen vorhandenen Mechanikmustern. Schwierigkeit und Geschwindigkeit
+sind gedeckelt. Alle **400 Chunk-Paare** und reguläre Seed-Läufe über **53.253 m**
+sind mit echten Eingaben und aktiven Kollisionen überprüft. Ein separater
+10.000-Chunk-Generierungstest ist ausdrücklich kein erfolgreicher Spielerlauf.
+
+- [Architektur, Ausgangswerte und Balancing](docs/GAMEPLAY-REFINEMENT.md)
+- [Tatsächliche Testergebnisse und Grenzen](docs/M7.7-TEST-REPORT.md)
+- [Reproduzierbare Nachweise aller sechs Levelabschlüsse](docs/M7.7-REPLAY-PROOFS.json)
+
+`npm test` führt alle Node-Regressionen einschließlich `tests/refinement.mjs` aus.
+Mit laufendem lokalem Server ergänzt `BASE_URL=http://localhost:8080/ node tests/refinement-e2e.mjs`
+die Touch-, Retry- und Pixelvergleichstests (Playwright erforderlich).
+`?debug=1` zeigt vorhandene Hitboxen und bietet über `render_game_to_text()` ein
+begrenztes lokales Todesprotokoll. Es gibt keine externe Telemetrie.
+
 ## COMPACT MODE / ARENA LAB (M7.6)
 
 Der Vergleichsmodus bleibt im Code und in den Lab-Daten, ist im Hauptmenü aber nicht mehr angeboten.

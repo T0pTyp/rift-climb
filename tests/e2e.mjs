@@ -148,6 +148,7 @@ async function desktopTests(type, label) {
     for (let i = 0; i < 2; i++) {
       c.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, cancelable: true, clientX: r.left + r.width * 0.2, clientY: r.top + r.height / 2, pointerId: 1, isPrimary: true, button: 0 }));
     }
+    window.dispatchEvent(new PointerEvent('pointerup',{pointerId:1}));
     return { before, after: { lane: g.player.lane, dim: g.player.dim, ign: g.input.ignored, pulses: g.rift.emitted } };
   });
   check(`[${label}] Doppelte Touch-Verarbeitung -> nur ein Impuls/Dimensionswechsel`,
@@ -166,7 +167,8 @@ async function desktopTests(type, label) {
   s = await state(page);
   check(`[${label}] Kollision beendet Versuch mit Todesgrund`, s.killerColor === 'W' && /WEISS/.test(s.reason), s.reason);
   await page.keyboard.press('d');
-  check(`[${label}] Kein versehentlicher Neustart direkt im Todesmoment`, ['dying', 'dead'].includes((await state(page)).state));
+  s=await state(page);
+  check(`[${label}] Neuer Tastendruck startet sofort neu, ohne zusätzlichen Flugimpuls`,s.state==='playing'&&s.lane===1&&s.dim==='B'&&s.t<.2);
   await waitState(page, ['dead']);
   s = await state(page);
   check(`[${label}] Todesscreen zeigt Fortschritt + Grund`, (await page.textContent('#death-pct')).trim() === `${s.pct}%` && (await page.textContent('#death-reason')).includes('WEISS'));

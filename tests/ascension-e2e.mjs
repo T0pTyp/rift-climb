@@ -9,7 +9,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  p.on('pageerror',e=>errors.push(e.message));const click=selector=>device.isMobile?p.tap(selector):p.click(selector);
  const snap=name=>p.screenshot({path:`test-results/m8/browser/${label}-${name}.png`});
  await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);
- check(label+' seven home destinations',await p.locator('.nav-tile:visible').count()===7);await snap('home');
+ check(label+' six active home destinations',await p.locator('.nav-tile:visible').count()===6);await snap('home');
  await click('#nav-collection');check(label+' five skins, original equipped',await p.evaluate(()=>document.querySelectorAll('.skin-card').length===5&&__ASCENSION.data.cosmetics.selectedSkinId==='original'));
  await click('[data-skin="golden"]');check(label+' locked preview cannot equip',await p.isDisabled('#btn-equip'));await p.waitForTimeout(200);await snap('locked-golden');
  await click('#page-collection [data-home]');await click('#nav-play');

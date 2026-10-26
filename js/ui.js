@@ -24,24 +24,23 @@ document.addEventListener('click', (e) => {
  */
 export function bindTap(el, action, onGesture) {
   let downInside = false;
-  let lastFire = -Infinity;
   const fire = (e) => {
     e.stopPropagation();
     if (onGesture) onGesture();
     const now = performance.now();
-    if (now - lastFire < 450) return;
-    lastFire = now;
     e.preventDefault();
     if (e.type === 'pointerup') clickShieldUntil = now + CLICK_SHIELD_MS;
     action(e);
   };
   el.addEventListener('pointerdown', (e) => {
+    if(e.button>0||e.isPrimary===false)return;
     downInside = true;
     // Unlock before pointerup preventDefault. Some browsers only open audio on the first event of the tap.
     if (onGesture) onGesture();
     e.stopPropagation();
   });
   el.addEventListener('pointerup', (e) => {
+    if(e.isPrimary===false)return;
     if (!downInside) return;
     downInside = false;
     fire(e);

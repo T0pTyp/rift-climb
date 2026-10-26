@@ -15,7 +15,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -179,7 +179,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -348,7 +348,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -517,7 +517,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -682,7 +682,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -860,7 +860,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -1074,7 +1074,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -1275,7 +1275,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -1481,7 +1481,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -1636,7 +1636,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -1875,7 +1875,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -2060,7 +2060,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -2287,7 +2287,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -2497,7 +2497,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -2673,7 +2673,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -2900,7 +2900,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -3263,7 +3263,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -3618,7 +3618,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -3981,7 +3981,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",
@@ -4335,7 +4335,7 @@
       "exit": {
         "lane": 1,
         "dimension": "blue",
-        "settleSec": 2
+        "settleSec": 1
       },
       "level": {
         "schema": "rift-climb-level",

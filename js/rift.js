@@ -34,6 +34,8 @@ export class RiftField {
 
   /** Alle Siegel geschlossen, keine Wellen (Neustart, Respawn am Checkpoint). */
   reset() {
+    this.nextId = 1;
+    this.emitted = 0;
     for (const s of this.seals) {
       s.openUntil = -Infinity;
       s.openedAt = -Infinity;
@@ -46,7 +48,7 @@ export class RiftField {
 
   /** Checkpoints preserve the exact open windows AND waves already in flight. */
   snapshot() {
-    return { nextId: this.nextId,
+    return { nextId: this.nextId, emitted: this.emitted,
       seals: this.seals.map(s => ({ openUntil:s.openUntil, openedAt:s.openedAt, pulseId:s.pulseId, timesOpened:s.timesOpened, closePending:s.closePending })),
       pulses: this.pulses.map(p => ({ ...p })) };
   }
@@ -55,6 +57,7 @@ export class RiftField {
     this.reset();
     if (!snapshot) return;
     this.nextId = snapshot.nextId;
+    this.emitted = snapshot.emitted ?? snapshot.nextId - 1;
     this.seals.forEach((s,i) => Object.assign(s,snapshot.seals[i]));
     this.pulses.forEach((p,i) => Object.assign(p,snapshot.pulses[i]));
   }
@@ -91,7 +94,7 @@ export class RiftField {
         for (const s of this.seals) {
           if (s.y + s.hh < p.y - PULSE_RADIUS) continue;
           if (s.y - this.maxHh > p.y + PULSE_RADIUS) break;
-          if (s.pulseId === p.id || distToSeal(p.x, p.y, s) > r) continue;
+          if (s.pulseId >= p.id || distToSeal(p.x, p.y, s) > r) continue;
           const wasOpen = this.isOpen(s, t);
           s.pulseId = p.id;
           s.closePending = true;

@@ -2405,7 +2405,7 @@
       "id": "saw-82",
       "type": "saw",
       "x": 111,
-      "y": 17008.333333,
+      "y": 16992.333333,
       "w": 48,
       "h": 48,
       "dimension": "red",
@@ -2581,7 +2581,7 @@
       "h": 28,
       "dimension": "red",
       "activationRadius": 190,
-      "chargeSec": 0.7,
+      "chargeSec": 0.8,
       "blastRadius": 130,
       "blastSec": 0.22
     },

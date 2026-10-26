@@ -1,6 +1,6 @@
 import {
   BEAT_SEC, CLIMB_SPEED, UNITS_PER_BEAT, WORLD_W, CHECKPOINT_EVERY_BEATS,
-  SIM_DT, HIT_RADIUS, DEATH_FREEZE_SEC, RESTART_GUARD_SEC, RESPAWN_SEC,
+  SIM_DT, HIT_RADIUS, DEATH_FREEZE_SEC, RESPAWN_SEC,
   CAMERA_PLAYER_Y, CAMERA_MIN_BOTTOM, SWITCH_SHAKE, DEATH_SHAKE, SHAKE_PX,
   PULSE_RADIUS, PULSE_GROW_SEC, PULSE_FADE_SEC, SEAL_WARN_SEC, SEAL_STREAK_SHAKE, PARTICLE_CAP,
 } from './config.js';
@@ -10,7 +10,7 @@ import { RiftField, pulseRadius, distToSeal } from './rift.js';
 import { Player } from './player.js';
 import { ParticlePool, PARTICLE_KIND } from './particles.js';
 import { COLORS, isDeadly } from './dimensions.js';
-import { circleRectOverlap, clamp } from './physics.js';
+import { sweptCircleRect, clamp } from './physics.js';
 import { DASH, NO_DASH, drawBar, drawSealClosed, drawSealOpen, drawFinish } from './shapes.js';
 import { RiftlingAnimator } from './art/riftling-anim.js';
 import { drawRiftling, riftlingArt } from './art/riftling.js';
@@ -94,6 +94,7 @@ export class Game {
     this.clearAge = 0;
     this.autoplayQueue = [];
     this.trace = [];
+    this.deathLog = []; // Explicit debug mode only; bounded, local, never persisted/uploaded.
     this.stats = { fps: 60, steps: 0, frameSteps: 0, impulses: 0 };
   }
 
@@ -230,6 +231,7 @@ export class Game {
     this.rowSolvable = true;
     this.obsLo = 0;
     this.trace.length = 0;
+    this.stats.steps = this.stats.frameSteps = this.stats.impulses = 0;
     this.checkpoint = this.captureCheckpoint(this.y / UNITS_PER_BEAT, this.lastRowPassed);
     // Aufzeichnung (Nachweis der Durchspielbarkeit) nur für vollständige Läufe im Normalmodus
     this.recording = this.mode === 'normal' && !from ? [] : null;
@@ -313,7 +315,7 @@ export class Game {
       this.impulse(dir);
       return true;
     }
-    if ((this.state === 'dying' || this.state === 'dead') && this.deathAge >= RESTART_GUARD_SEC) {
+    if (this.state === 'dying' || this.state === 'dead') {
       this.quickRestart();
       return true;
     }
@@ -450,7 +452,7 @@ export class Game {
       const o = obs[i];
       if (o.y > y + range) break;
       if (!this.deadlyNow(o, p.dim)) continue;
-      if (circleRectOverlap(p.x, y, HIT_RADIUS, o.x0, o.y - o.chh, o.x1, o.y + o.chh)) {
+      if (sweptCircleRect(previousX, previousY, p.x, y, HIT_RADIUS, o.x0, o.y - o.chh, o.x1, o.y + o.chh)) {
         this.die(o);
         return;
       }
@@ -530,7 +532,10 @@ export class Game {
     this.audio.sfx(event,o.color);
     if(event==='mine-warn')return;
     const q=o.pose,col=COLORS[o.color].main;
-    for(let i=0;i<18;i++){const a=i/18*Math.PI*2;this.particles.spawn(q.x,q.y,Math.cos(a)*140,Math.sin(a)*140,.45,2.5,i%3?col:'#fff',.9,i%2?K.SPARK:K.SHARD);}
+    for(let i=0;i<18;i++){
+      const a=i/18*Math.PI*2,implode=event==='mine-disarm',radius=implode?o.w:0,speed=implode?-75:event==='laser-disable'?90:140;
+      this.particles.spawn(q.x+Math.cos(a)*radius,q.y+Math.sin(a)*radius,Math.cos(a)*speed,Math.sin(a)*speed,.32,2.5,event==='saw-break'&&i%3===0?'#c7d9eb':i%3?col:'#fff',.9,i%2?K.SPARK:K.SHARD);
+    }
   }
 
   deathReason(o, dim) {
@@ -551,6 +556,11 @@ export class Game {
     const p = this.player;
     const y = this.y;
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
+    if (this.debug.hitboxes || this.debug.trace) {
+      const chunk=this.endless?.chunks.find(c=>y>=c.origin&&y<c.end);
+      this.deathLog.push({type:o.type|| (o.color==='S'?'seal':'obstacle'),id:o.id,x:p.x,y,vx:p.vx,dimension:p.dim,t:this.t,level:this.level.id,chunk:chunk?.id,chunkIndex:chunk?.index,seed:this.endless?.seed,reason:this.killer.reason});
+      if(this.deathLog.length>32)this.deathLog.shift();
+    }
     this.sealStreak = 0;
     const colors = [COLORS[o.color].main, '#ffffff', COLORS[p.dim].main];
     // Trefferimpuls (Funken) und Energiefragmente des Körpers (Splitter in der Dimensionsfarbe)
@@ -658,7 +668,6 @@ export class Game {
   /** Tastatur-Bestätigung (Enter/Leertaste/R) auf Overlays. */
   confirm() {
     if (this.state === 'dying' || this.state === 'dead') {
-      if (this.deathAge < RESTART_GUARD_SEC) return true;
       this.quickRestart();
       return true;
     }

@@ -67,13 +67,22 @@ export class TrapField {
    const reach=trapReach(o);
    if(Math.abs(o.y-player.y)>reach+240)continue;
    const q=trapPose(o,t,o.pose),old=trapPose(o,t-h,o.previous);
-   // Saws and sweep lasers stay armed. A matching pulse still disarms mines.
-   if(o.type==='mine'&&o.state!=='destroyed'&&o.state!=='disarmed')for(const p of pulses) {
-    if(!p.live||t-p.t0>PULSE_GROW_SEC+SIM_DT||p.dim!==o.color||o.pulseId===p.id)continue;
-    if(Math.hypot(p.x-q.x,p.y-q.y)-o.w/2>pulseRadius(t-p.t0))continue;
+   // The expanding wave affects the actual body, never the laser's distant beam.
+   // Monotonic IDs prevent overlapping pooled waves from re-triggering feedback.
+   if(o.state!=='destroyed'&&o.state!=='disarmed'&&o.state!=='spent')for(const p of pulses) {
+    const age=t-p.t0;
+    if(!p.live||age<0||age>PULSE_GROW_SEC+SIM_DT||p.dim!==o.color||p.id<=o.pulseId)continue;
+    let distance=Math.hypot(p.x-q.x,p.y-q.y)-o.w/2;
+    if(o.type==='laser') {
+     const dx=p.x-q.x,dy=p.y-q.y,c=Math.cos(q.angle),s=Math.sin(q.angle);
+     distance=Math.hypot(Math.max(0,Math.abs(dx*c+dy*s)-o.w/2),Math.max(0,Math.abs(-dx*s+dy*c)-o.h/2));
+    }
+    if(distance>pulseRadius(age)+1e-8)continue;
     o.pulseId=p.id;
-    o.state='disarmed';o.deadAt=t;
-    this.events++;onEvent?.(o,'mine-disarm');
+    if(o.type==='saw'){o.state='destroyed';o.deadAt=t;}
+    else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;}
+    else {o.disabledUntil=t+o.disableSec;o.epoch=o.disabledUntil+o.phase*(o.warnSec+o.activeSec+o.offSec);}
+    this.events++;onEvent?.(o,o.type==='saw'?'saw-break':o.type==='mine'?'mine-disarm':'laser-disable');
    }
    if(o.state==='destroyed'||o.state==='disarmed')continue;
    if(o.type==='mine') {
@@ -84,7 +93,8 @@ export class TrapField {
    if(o.color!==player.dim)continue;
    if(o.type==='saw'&&pointSegmentDistance(0,0,previousX-old.x,previousY-old.y,player.x-q.x,player.y-q.y)<=HIT_RADIUS+o.w/2-1)return o;
    if(o.type==='mine'&&o.state==='exploding'&&pointSegmentDistance(q.x,q.y,previousX,previousY,player.x,player.y)<=o.blastRadius+HIT_RADIUS)return o;
-   if(o.type==='laser'&&(q.phase==='active'||old.phase==='active')) {
+   // Gate immediately after a pulse; the old pose cannot leave a one-step ghost beam.
+   if(o.type==='laser'&&t>=o.disabledUntil&&(q.phase==='active'||old.phase==='active')) {
     // Adaptive subdivision bounds moving capsule endpoints to < 4 u per sample.
     const n=Math.max(1,Math.ceil((o.length*Math.abs(q.angle-old.angle)+Math.hypot(q.x-old.x,q.y-old.y)+Math.hypot(player.x-previousX,player.y-previousY))/4));
     for(let i=0;i<=n;i++) {

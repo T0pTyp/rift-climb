@@ -35,6 +35,7 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webki
  await p.screenshot({path:`test-results/expansion/browser/${label}-infinity.png`});
  await p.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:true});document.dispatchEvent(new Event('visibilitychange'));Object.defineProperty(document,'hidden',{configurable:true,value:false});});
  const frozen=await p.evaluate(()=>JSON.stringify([__RIFT.t,__RIFT.traps.snapshot()]));await p.evaluate(()=>advanceTime(5000));
+ await p.waitForTimeout(35); // Audio envelopes release over 12 ms of real audio time.
  check(label+' Infinity pause freezes simulation and sources',await p.evaluate(s=>JSON.stringify([__RIFT.t,__RIFT.traps.snapshot()])===s&&!__RIFT.audio.active&&__RIFT.audio.voices.size===0,frozen));
  await click('#btn-resume');await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(15000);});
  check(label+' Infinity real collision saves height and shows record',await p.evaluate(()=>['dying','dead'].includes(__RIFT.state)&&__ASCENSION.data.endless.bestHeight>=3328&&__ASCENSION.data.endless.recordAt&&document.querySelector('#death-pct').textContent.includes('m')));

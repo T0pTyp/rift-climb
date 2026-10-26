@@ -1,5 +1,16 @@
 Original prompt: RIFT CLIMB: PULSE – M6: PULSE ENGINE. Bestehendes Repository analysieren und vollständig um Musik, feste Beat-Timeline, Dimensions-Layer, Action-SFX, Audio-Einstellungen, mobile Lifecycle-Behandlung und LEVEL FORGE erweitern; testen, dokumentieren, committen und auf den vorhandenen Pages-Branch main pushen.
 
+## M7.7 – Gameplay Refinement (2026-10-26)
+- Auftrag: bestehende sechs Levels, Eingaben/Kollisionen/Pulse und Infinity gezielt verbessern; Compact bleibt verborgen, hohe Grafik bleibt fest. M8 existiert bereits und wird erhalten.
+- Ausgangspunkt: main 366d1c4, sauber. Sechs reguläre Replays bestanden. Alle Ausgangstests bis einschließlich Infinity bestanden; archivierter Lab-Roundtrip scheiterte unter Windows nur an CRLF (lokal ohne semantischen Diff normalisiert).
+- Physik unverändert: 360 u, 90 u pro Spur, 260 u/s, 220 ms bis 95 %, 240 Hz, Radius 8. Kein zusätzlicher Input-Buffer nötig.
+- Korrekturen: exakter Circle/Rect-Sweep mit winziger numerischer Tangententoleranz; Pulse-Einmaligkeit; ausdrücklich erneut angeforderte Saw-Zerstörung/Laser-Abschaltung; volle neue Laserwarnung; doppelte Pointer-Kontakte unterdrückt, absichtliche Zwei-Finger-Tipps weiter gültig; keine Tastatur-Autowiederholung auf Retry; keine 450-ms-Sperre echter UI-Taps.
+- Bestehende Infinity-Auswahl um begrenzte 8er-Historie, Wiederholungssperre und Gewichte ergänzt. Falsche pauschale 2-s-Ausgangsruhe auf tatsächlich garantierte 1 s berichtigt (späte Tipps bei 6.9/8 s). Alle 20 Chunk-Geometrien unverändert. Nur Singularity saw-82 um 16 u tiefer und mine-88 Ladung .7→.8 s: gemessenes isoliertes Gesamtminimum 20/10→40/20 ms.
+- 332 Node-Checks + 8 Leveldefinitionen bestanden. Sechs echte reproduzierbare 100-%-Nachweise mit Fingerprints, fünf Frameprofilen, Start-/Endzustand; JSON-Nachweise unter docs/. Infinity: 400 Paare, 4 Seeds je 53.253 m/256 Übergänge, maximal 4 Chunks/88 Objekte. Separater Generatorstress 10.002 Chunks, kein Spielerlauf.
+- Browser 656 Checks bestanden (Kampagne, Erweiterung, Progression, Mobile Forge, Audio, neue Eingaben/Retry/Pixelgleichheit und 100 Legacy-Regressionschecks). Alte Restart-Guard-Erwartung an ausdrücklich verlangten Sofort-Retry angepasst; synthetischer Pointertest gibt seinen Kontakt wieder frei. Echte Zwei-Finger-Eingaben bleiben gültig.
+- rAF Infinity 104 s: ungedrosselt JS p95 .60 ms, 4× CPU p95 4.30 ms; Quellen nach Pause 0, Cache 2, keine Chunk-Seeks. Keine physischen Smartphones verfügbar; Windows-WebKit ohne Web Audio prüft nur Silent-Fallback. Screenshots tatsächlich angesehen. Details/Grenzen in docs/M7.7-TEST-REPORT.md.
+- Offen: Commit/Push main und Pages-Liveprüfung. Compact bleibt verborgen, hohe Grafik bleibt fest; kein neues Progressionssystem. Physische Smartphone-Tests als spätere Aufgabe empfohlen.
+
 ## Ausgangslage
 - Sauberer main, origin T0pTyp/rift-climb, Pages deployt main.
 - M1–M5 vorhanden: konstante 260 u/s, 240-Hz-Simulation, Practice, Spur-Solver, mobiler Forge.

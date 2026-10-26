@@ -1,0 +1,230 @@
+{
+  "generated": "2026-10-26",
+  "engineBaseline": "366d1c4 plus M7.7 changes",
+  "command": "node tests/refinement.mjs",
+  "note": "Actual Game simulation with regular inputs and active collisions; hashes are audit fingerprints, not security signatures.",
+  "proofs": [
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "first-pulse",
+      "levelHash": "d98d7ac3",
+      "inputHash": "21550d08",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 40.00000000000487,
+        "y": 10400.000000001266,
+        "progress": 100,
+        "tapsUsed": 23,
+        "killer": null,
+        "x": 224.9999999950514,
+        "vx": 1.0289278403032564e-7,
+        "dimension": "R",
+        "steps": 9600,
+        "pulses": 23
+      }
+    },
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "fractured-rhythm",
+      "levelHash": "10d37955",
+      "inputHash": "ad09d77c",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 56.2500000000178,
+        "y": 14625.000000004628,
+        "progress": 100,
+        "tapsUsed": 56,
+        "killer": null,
+        "x": 135.000000025616,
+        "vx": -5.313298280383335e-7,
+        "dimension": "B",
+        "steps": 13500,
+        "pulses": 56
+      }
+    },
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "overload",
+      "levelHash": "df612dd4",
+      "inputHash": "521c3ed9",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 66.6666666666882,
+        "y": 17333.33333333893,
+        "progress": 100,
+        "tapsUsed": 107,
+        "killer": null,
+        "x": 224.99999962894822,
+        "vx": 0.000007660198089535141,
+        "dimension": "R",
+        "steps": 16000,
+        "pulses": 107
+      }
+    },
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "shattered-gears",
+      "levelHash": "eff6e14f",
+      "inputHash": "6a49c74c",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 50.000000000012825,
+        "y": 13000.000000003334,
+        "progress": 100,
+        "tapsUsed": 46,
+        "killer": null,
+        "x": 224.9999999999999,
+        "vx": 1.1993605156837802e-12,
+        "dimension": "B",
+        "steps": 12000,
+        "pulses": 46
+      }
+    },
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "voltage-run",
+      "levelHash": "1f6daf97",
+      "inputHash": "d51acf06",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 60.00000000002078,
+        "y": 15600.000000005404,
+        "progress": 100,
+        "tapsUsed": 41,
+        "killer": null,
+        "x": 45.00000000000003,
+        "vx": -2.9950607159613467e-13,
+        "dimension": "R",
+        "steps": 14400,
+        "pulses": 41
+      }
+    },
+    {
+      "schema": "rift-replay-proof",
+      "version": 1,
+      "levelId": "singularity-rush",
+      "levelHash": "32b364ab",
+      "inputHash": "62c46826",
+      "seed": null,
+      "config": {
+        "simDt": 0.004166666666666667,
+        "climbSpeed": 260,
+        "steerOmega": 21.563636363636363,
+        "hitRadius": 8,
+        "pulseRadius": 120,
+        "pulseGrowSec": 0.15
+      },
+      "start": {
+        "t": 0,
+        "x": 135,
+        "y": 0,
+        "vx": 0,
+        "lane": 1,
+        "dimension": "B"
+      },
+      "finish": {
+        "won": true,
+        "t": 75.00000000001396,
+        "y": 19500.000000003627,
+        "progress": 100,
+        "tapsUsed": 104,
+        "killer": null,
+        "x": 314.9999999999998,
+        "vx": 2.3964699960112194e-12,
+        "dimension": "B",
+        "steps": 18000,
+        "pulses": 104
+      }
+    }
+  ]
+}
