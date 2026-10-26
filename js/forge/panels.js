@@ -1,4 +1,5 @@
 import {arenaFor,arenaCenter,ARENA_OPTIONS} from '../arena.js';
+import {CATEGORIES,chunkFingerprint} from '../rift-director.js';
 // LEVEL FORGE: Eigenschaftenleiste und Prüfliste.
 // Eingaben wirken sofort (live), ein abgeschlossenes Feld ergibt genau einen Undo-Schritt.
 import { CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
@@ -349,6 +350,21 @@ export class PropsPanel {
     const L = () => app.doc.level;
     const meta = (fn) => (tx, v) => fn(tx.touchMeta(), v);
     return [
+      ...(L().chunk?[this.group('RIFT DIRECTOR',
+        this.select('Kategorie',{key:'chunk-category',get:()=>L().chunk.category,options:CATEGORIES.map(k=>[k,k]),set:meta((l,v)=>{l.chunk.category=v;})}),
+        this.num('Director-Stufe',{key:'chunk-tier',get:()=>L().chunk.tier,min:0,max:5,step:1,set:meta((l,v)=>{l.chunk.tier=Math.round(v);})}),
+        ...['entry','exit'].flatMap(kind=>[
+          ...['x','vx'].flatMap(k=>[0,1].map(i=>this.num(`${kind} ${k} ${i?'max':'min'}`,{key:`chunk-${kind}-${k}-${i}`,get:()=>L().chunk[kind][k][i],min:k==='x'?8:-1000,max:k==='x'?262:1000,step:1,set:meta((l,v)=>{l.chunk[kind][k][i]=v;})}))),
+          this.select(`${kind} Dimension`,{key:`chunk-${kind}-dimension`,get:()=>L().chunk[kind].dimension,options:START_DIM_OPTIONS,set:meta((l,v)=>{l.chunk[kind].dimension=v;})}),
+          this.select(`${kind} Flugrichtung`,{key:`chunk-${kind}-directions`,get:()=>L().chunk[kind].lastDirs.join(','),options:[['-1,0,1','Alle / Start'],['-1,1','Links oder rechts'],['-1','Nach links'],['0','Start'],['1','Nach rechts']],set:meta((l,v)=>{l.chunk[kind].lastDirs=v.split(',').map(Number);})}),
+          this.select(`${kind} Impulszustand`,{key:`chunk-${kind}-impulses`,get:()=>L().chunk[kind].impulses.join(','),options:[['idle,active','Ruhend oder aktiv'],['idle','Ruhend'],['active','Aktiv']],set:meta((l,v)=>{l.chunk[kind].impulses=v.split(',');})}),
+          this.num(`${kind} Zielindex`,{key:`chunk-${kind}-target`,get:()=>L().chunk[kind].target,min:0,max:2,step:1,set:meta((l,v)=>{l.chunk[kind].target=Math.round(v);})}),
+          this.num(`${kind} Reaktionsraum`,{key:`chunk-${kind}-clear`,get:()=>L().chunk[kind].clearSec,min:.7,max:3,step:.1,unit:'s',set:meta((l,v)=>{l.chunk[kind].clearSec=v;})}),
+        ]),
+        this.select('Eintritt für Playtest',{key:'chunk-entry-fixture',get:()=>String(app.S.chunkEntry||0),options:(L().chunk.fixtures||[]).map((s,i)=>[String(i),`${s.id}: x ${s.x}, vx ${s.vx}`]),set:(tx,v)=>{app.S.chunkEntry=Number(v);}}),
+        this.info('Zertifikat',()=>L().chunk.validation?.hash===chunkFingerprint(L())?'Aktuell · Stichproben bestätigt':'Veraltet / ungeprüft'),
+        this.buttons(['Chunk validieren',()=>app.validateChunk(),'primary'],['Eintritt testen',()=>app.playtest(false)]),
+      )]:[this.buttons(['Als Director-Chunk vorbereiten',()=>app.prepareChunk()])]),
       this.group('Level',
         this.text('Name', { key: 'name', get: () => L().name, maxLength: LIMITS.nameLen, validate: (v) => v.trim().length > 0, set: meta((l, v) => { l.name = v; }) }),
         this.text('ID', { key: 'id', get: () => L().id, maxLength: 40, validate: (v) => /^[a-z0-9][a-z0-9-]{0,39}$/.test(v), hint: 'a–z, 0–9, Bindestrich – Dateiname beim Export', set: meta((l, v) => { l.id = v; }) }),

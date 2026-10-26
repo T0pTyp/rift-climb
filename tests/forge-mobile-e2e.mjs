@@ -160,6 +160,9 @@ await ready();
 }
 
 let blueId;
+// This gesture suite uses authored 360-u campaign coordinates (including x315).
+// New documents now default to 270 u; test that arena separately in director-e2e.
+await F(()=>{const f=window.__FORGE;f.app.edit('Classic campaign fixture',tx=>f.app.setArenaStyle(tx,'classic'));});
 // ---------------------------------------------------------------- 3./4. Objekt auswählen und platzieren
 {
   await centerCamera(500);
@@ -355,14 +358,14 @@ let savedJson;
     const list = await f.store.listLevels();
     return { ids: list.map((l) => l.id), id: f.doc.level.id, status: document.querySelector('#save-status').dataset.state, dirty: document.querySelector('#m-save').classList.contains('dirty') };
   });
-  savedJson = (await docState()).json;
+  savedJson = await F(()=>window.__FORGE.actions.exportText().text);
   check('[12] Speichern-Knopf legt das Level lokal ab (IndexedDB), Status „Gespeichert“', st.ids.includes(st.id) && st.status === 'ok' && !st.dirty, JSON.stringify(st));
   await F(() => window.__FORGE.actions.setSelection([]));
   await wait(700);
   await page.reload();
   await ready();
   const s = await docState();
-  check('[13] Nach Neuladen: letzter Stand automatisch wiederhergestellt (identisches JSON)', s.json === savedJson, `${s.n} Objekte`);
+  check('[13] Nach Neuladen: letzter Stand automatisch wiederhergestellt (identisches JSON)', await F(()=>window.__FORGE.actions.exportText().text) === savedJson, `${s.n} Objekte`);
   const note = await F(() => document.querySelector('#m-storage-note').textContent);
   check('[12] Hinweis: lokale Browserdaten können verloren gehen (keine Cloud)', /nur lokal/.test(note) && /verloren|entfernen/.test(note) && /exportieren/i.test(note));
 }

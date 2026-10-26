@@ -21,6 +21,7 @@ import { BeatEffects } from './pulse/effects.js';
 import { TrapField,makeTrap,trapReach } from './traps.js';
 import { drawTrap } from './art/traps.js';
 import {EndlessWorld,worldMeters,INFINITY_TIERS} from './endless.js';
+import {DIRECTOR_TIERS,zoneAt} from './rift-director.js';
 import {phaseFlowState} from './phase-flow.js';
 
 const K = PARTICLE_KIND;
@@ -98,6 +99,8 @@ export class Game {
     this.deathLog = []; // Explicit debug mode only; bounded, local, never persisted/uploaded.
     this.stats = { fps: 60, steps: 0, frameSteps: 0, impulses: 0 };
     this.lastSwitch = null;
+    this.recentInputs=[];
+    this.infinityRecordAnnounced=false;
   }
 
   get y() {
@@ -188,7 +191,7 @@ export class Game {
   }
 
   startEndless(book,seed,storage,order=null) {
-    const data=createEmptyLevel({id:'rift-infinity',name:'RIFT INFINITY'});
+    const data=createEmptyLevel({id:'rift-infinity',name:'RIFT INFINITY',arenaStyle:book.arenaStyle});
     this.setLevelData(data,storage);this.endless=new EndlessWorld(book,seed,order);
     this.level.endless=true;this.level.finishY=Infinity;this.level.music='rift-infinity';this.level.theme='infinity';
     this.audio.setLevel?.(this.level);this.beatEffects=new BeatEffects(this.level);
@@ -217,6 +220,8 @@ export class Game {
     if(this.endless){this.endless.reset();this.endless.apply(this);}
     this.acc = 0;
     this.player.reset(st.lane, st.dim, this.y);
+    // Declared chunk entry fixtures use the same continuous body, only at run start.
+    if(from&&Number.isFinite(from.x)&&Number.isFinite(from.vx)){this.player.body.x=from.x;this.player.body.v=from.vx;this.player.lastDir=from.lastDir||0;}
     this.dimBlend = st.dim === 'R' ? 1 : 0;
     this.particles.clear();
     this.anim.reset(this.dimBlend, { rebuild: true, duration: 0.28 });
@@ -234,6 +239,8 @@ export class Game {
     this.obsLo = 0;
     this.trace.length = 0;
     this.lastSwitch = null;
+    this.recentInputs.length=0;
+    this.infinityRecordAnnounced=false;
     this.stats.steps = this.stats.frameSteps = this.stats.impulses = 0;
     this.checkpoint = this.captureCheckpoint(this.y / UNITS_PER_BEAT, this.lastRowPassed);
     // Aufzeichnung (Nachweis der Durchspielbarkeit) nur für vollständige Läufe im Normalmodus
@@ -316,6 +323,7 @@ export class Game {
   /** Spielfeld-Eingabe (Tipp oder Taste). Bedeutung hängt vom Zustand ab. */
   press(dir) {
     if (this.state === 'playing') {
+      if(this.debug.hitboxes||this.debug.trace){this.recentInputs.push({t:this.t,dir});if(this.recentInputs.length>64)this.recentInputs.shift();}
       if (this.recording) this.recording.push({ t: Math.round(this.t * 1e4) / 1e4, dir });
       this.impulse(dir);
       return true;
@@ -421,7 +429,11 @@ export class Game {
       this.saveProgress();
     }
     if (this.state !== 'menu') {
-      if(this.endless)this.ui.updateEndlessHud?.(worldMeters(this.y),this.storage.stats.best,INFINITY_TIERS[this.endless.tierAt(this.y)],this.player.dim,this.attemptsDisplay);
+      if(this.endless){
+        const tier=this.endless.tierAt(this.y),director=this.endless.director;
+        this.ui.updateEndlessHud?.(worldMeters(this.y),this.storage.stats.best,(director?DIRECTOR_TIERS:INFINITY_TIERS)[tier],this.player.dim,this.attemptsDisplay,director?zoneAt(this.t):'');
+        if(this.state==='playing'&&!this.infinityRecordAnnounced&&worldMeters(this.y)>this.runStartBest){this.infinityRecordAnnounced=true;this.ui.toast('NEUER HÖHENREKORD');this.audio.sfx('checkpoint',this.player.dim);}
+      }
       else this.ui.updateHud(this.progress, this.player.dim, this.attemptsDisplay, this.mode);
     }
   }
@@ -566,7 +578,7 @@ export class Game {
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
     if (this.debug.hitboxes || this.debug.trace) {
       const chunk=this.endless?.chunks.find(c=>y>=c.origin&&y<c.end);
-      this.deathLog.push({type:o.type|| (o.color==='S'?'seal':'obstacle'),id:o.id,x:p.x,y,vx:p.vx,dimension:p.dim,t:this.t,level:this.level.id,chunk:chunk?.id,chunkIndex:chunk?.index,seed:this.endless?.seed,reason:this.killer.reason});
+      this.deathLog.push({type:o.type|| (o.color==='S'?'seal':'obstacle'),id:o.id,x:p.x,y,vx:p.vx,dimension:p.dim,t:this.t,level:this.level.id,chunk:chunk?.id,chunkIndex:chunk?.index,seed:this.endless?.seed,reason:this.killer.reason,inputs:(this.recentInputs||[]).filter(i=>this.t-i.t<=6)});
       if(this.deathLog.length>32)this.deathLog.shift();
     }
     this.sealStreak = 0;
@@ -1066,6 +1078,7 @@ export class Game {
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,
       `Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];
+    if(this.endless?.director){const e=this.endless,c=e.chunks.find(c=>this.y>=c.origin&&this.y<c.end);lines.push(`Seed ${e.seed} · ${c?.id} · ${c?.category}`,`Director ${DIRECTOR_TIERS[e.tierAt(this.y)]} · geprüft ${c?.validation?.status}`,`Chunks ${e.chunks.length} / erzeugt ${e.generated} · verworfen ${e.director.rejected} · Fallback ${e.director.fallbacks}`,`Objekte ${this.obstacles.length+this.traps.traps.length} · Fallen ${this.traps.traps.length}`);}
     ctx.font = '600 10px ui-monospace, monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';

@@ -96,7 +96,7 @@ async function boot() {
   } catch (err) { showBootError(err.message); return; }
   const menuLevels = index?.levels.filter(e => e.campaign || e.id === level.id && !e.campaign) || null;
   let infinityBook=null,infinityError='';
-  if(!playtest)try{infinityBook=validateChunkBook(await fetchJson('assets/endless/chunks.json'));}catch(err){infinityError='Infinity-Daten nicht verfügbar: '+err.message;}
+  if(!playtest)try{infinityBook=validateChunkBook(await fetchJson('assets/endless/director.json'));}catch(err){infinityError='Infinity-Daten nicht verfügbar: '+err.message;}
   const labCatalog=new Map();let labError='';
   if(!playtest)try{for(const style of LAB_STYLES){const v=validateLevelData(await fetchJson('assets/lab/'+style+'.json'));if(!v.ok)throw Error('Ungültige '+style+'-Teststrecke');labCatalog.set(style,v.level);}}catch(err){labError=err.message;}
 
@@ -207,7 +207,7 @@ async function boot() {
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
-    infinity:game.endless?{seed:game.endless.seed,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index})),generated:game.endless.generated}:null,
+    infinity:game.endless?{seed:game.endless.seed,revision:game.endless.book.revision,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index,category:c.category,challenge:c.challenge})),generated:game.endless.generated,...(debug.hitboxes||debug.trace?{rejected:game.endless.director?.rejected,fallbacks:game.endless.director?.fallbacks,current:game.endless.chunks.find(c=>game.y>=c.origin&&game.y<c.end)?.id,heapBytes:performance.memory?.usedJSHeapSize}:{} )}:null,
     traps:game.traps.traps.filter(o=>Math.abs(o.y-game.y)<trapReach(o)+game.lookaheadSec*260).map(o=>({id:o.id,type:o.type,dimension:o.color,state:o.state,...trapPose(o,game.t)})),
     player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
     timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint ? { t:game.checkpoint.t, lane:game.checkpoint.lane, dim:game.checkpoint.dim, beat:game.checkpoint.beat } : null,

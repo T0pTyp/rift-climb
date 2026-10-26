@@ -50,7 +50,7 @@ for(const [type,profile,label] of [[chromium,{},'Chromium desktop'],[chromium,de
  await page.click('#pulse-preview');const pos=await page.evaluate(()=>__FORGE.S.previewTime);await page.waitForTimeout(150);
  check(label+' editor preview pause preserves position',await page.evaluate(t=>!__FORGE.S.rhythm&&__FORGE.S.previewTime===t&&!__FORGE.previewAudio.active,pos));
  await page.locator('#pulse-seek').fill('4');await page.click('#pulse-preview');await page.waitForTimeout(200);await page.click('#pulse-preview');
- check(label+' editor seek/resume updates musical position',await page.evaluate(()=>__FORGE.S.previewTime>4&&document.querySelector('#pulse-position').textContent.includes('T4')));
+ check(label+' editor seek/resume updates musical position',await page.evaluate(()=>{const t=__FORGE.S.previewTime,tl=__FORGE.previewAudio.timeline;return t>4&&t<6&&document.querySelector('#pulse-position').textContent.includes('T'+(Math.floor(t/(tl.beatSec*tl.beatsPerBar))+1));}));
  await page.screenshot({path:`test-results/m6/forge-${label.split(' ')[0]}-${profile.isMobile?'mobile':'desktop'}.png`});
  const before=await page.evaluate(()=>JSON.stringify(__FORGE.doc.level));
  await page.evaluate(()=>__FORGE.actions.playtest(false));const frame=await (await page.$('#pt-frame')).contentFrame();await frame.waitForFunction(()=>window.__RIFT);

@@ -33,7 +33,7 @@ for(const [engine,profile,label] of [[chromium,devices['Pixel 7'],'android'],[we
  await p.evaluate(()=>__RIFT.restart());await p.waitForTimeout(350);
  check(label+' restart clears switch/pulse state and leaves no pending buffers',await p.evaluate(()=>__RIFT.t===0&&__RIFT.lastSwitch===null&&__RIFT.rift.emitted===0&&!JSON.parse(render_game_to_text()).debug.phaseFlow.inputBuffer.pending));
  await p.goto(BASE+'?manual=1&level=singularity-rush&arena=306&inputBuffer=100&phaseBuffer=100&debug=1');await p.waitForFunction(()=>window.__RIFT);await p.tap('#btn-start');
- check(label+' internal tuning cannot be activated by URL and campaign stays 360',await p.evaluate(()=>__RIFT.arena.width===360&&document.querySelector('#nav-lab').hidden&&document.querySelector('#nav-infinity').hidden&&JSON.parse(render_game_to_text()).debug.phaseFlow.phaseBuffer.durationMs===0));
+ check(label+' internal tuning cannot be activated by URL and campaign stays 360',await p.evaluate(()=>__RIFT.arena.width===360&&document.querySelector('#nav-lab').hidden&&!document.querySelector('#nav-infinity').hidden&&JSON.parse(render_game_to_text()).debug.phaseFlow.phaseBuffer.durationMs===0));
  await p.evaluate(()=>{__RIFT.debug.autoplay=true;__RIFT.setupAutoplay();advanceTime(66500);});await p.screenshot({path:`test-results/m78/browser/${label}-finale.png`});
  await p.evaluate(()=>advanceTime(9000));check(label+' balanced Singularity completes with normal collision rules',await p.evaluate(()=>__RIFT.state==='won'&&__RIFT.progress===100&&__ASCENSION.level('singularity-rush').clears===1));
  const view=await p.evaluate(()=>({lookahead:__RIFT.lookaheadSec,width:innerWidth,canvas:document.querySelector('canvas').getBoundingClientRect().width}));

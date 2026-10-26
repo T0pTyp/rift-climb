@@ -182,7 +182,7 @@ export class Backdrop {
    */
   render(ctx, scroll, blend, progress, time, opacity=1) {
     if(this.theme==='infinity') {
-      const names=['spire','gears','voltage','singularity'],zone=Math.floor(progress/32),phase=progress%32,index=zone%4,next=(index+1)%4;
+      const names=['spire','fracture','gears','voltage','core','singularity'],zone=Math.floor(progress/32),phase=progress%32,index=zone%6,next=(index+1)%6;
       const variant=i=>{if(!this.variants.has(i)){const b=new Backdrop(),v=this.variantSize;b.configure(v.cssW,v.cssH,v.dpr,names[i]);this.variants.set(i,b);while(this.variants.size>2)this.variants.delete(this.variants.keys().next().value);}return this.variants.get(i);};
       variant(index).render(ctx,scroll,blend,.5,time);
       if(phase>24)variant(next);if(phase>28)variant(next).render(ctx,scroll,blend,.5,time,(phase-28)/4);

@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
+import {performance} from 'node:perf_hooks';
+import {Progression} from '../js/progression.js';
+import {Player} from '../js/player.js';
+import {EndlessWorld,validateChunkBook} from '../js/endless.js';
+import {headlessGame,runReplay,checkChunkPlayability} from '../js/playcheck.js';
+import {validateLevelData,serializeLevel} from '../js/level-data.js';
+import {CATEGORIES,compatible,RiftDirector,directorTier,accepts,stateOf,chunkFingerprint} from '../js/rift-director.js';
+const book=validateChunkBook(JSON.parse(readFileSync('assets/endless/director.json')));
+let checks=0,pairs=0,entries=0,timing=0;const test=(s,f)=>{f();checks++;console.log('PASS '+s);};
+const memory=()=>{const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),key:i=>[...m.keys()][i],get length(){return m.size;}};};
+function game(seed=37,order=null){const g=headlessGame(book.chunks[0].level);g.debug.autoplay=true;g.startEndless(book,seed,g.storage,order);return g;}
+function play(g,seconds,dt=.2){const end=Math.round(seconds*240);let guard=0;while(g.state==='playing'&&g.stats.steps<end&&guard++<end+1)g.update(Math.min(dt,(end-g.stats.steps)/240));return g;}
+test('270/90 actual spring: symmetric movement, immediate retarget, stable walls',()=>{for(const dir of [-1,1]){const p=new Player('narrow');p.impulse(dir);assert.equal(p.x,135);assert.equal(p.dim,'R');p.update(.22,0);assert.ok(Math.abs(p.x-135-dir*85.498)<.02);const x=p.x;p.impulse(-dir);assert.equal(p.x,x);assert.equal(p.dim,'B');for(let i=0;i<240;i++)p.update(1/240,i/240*260);assert.ok(Math.abs(p.x-135)<.001);for(let i=0;i<100;i++){p.impulse(dir);p.update(.05,i*13);assert.ok(p.x>=8&&p.x<=262);}assert.ok(Math.abs(p.x-(dir>0?225:45))<.001);}});
+test('30 authored narrow modules / all six categories / continuous entry probes',()=>{
+ assert.equal(book.chunks.length,30);
+ for(const category of CATEGORIES)assert.equal(book.chunks.filter(c=>c.level.chunk.category===category).length,5);
+ for(const c of book.chunks){const l=c.level,v=validateLevelData(l);assert.ok(v.ok);assert.deepEqual(JSON.parse(serializeLevel(v.level)),l);const proof=checkChunkPlayability(l);assert.ok(proof.ok,c.id+proof.message);entries+=l.chunk.fixtures.length;assert.equal(proof.certificate.hash,l.chunk.validation.hash);assert.ok(runReplay(l,l.replay.taps).won);}
+});
+const timingLimits=[];
+test('Every input is audited at ±10–50 ms, with at least ±20 ms verified',()=>{for(const c of book.chunks){let minimum=50;for(let i=0;i<c.level.replay.taps.length;i++)for(const sign of [-1,1]){let good=0;for(const ms of [10,20,30,40,50]){const taps=c.level.replay.taps.map((t,j)=>({...t,t:t.t+(i===j?sign*ms/1000:0)})),r=runReplay(c.level,taps);timing++;if(!r.won)break;good=ms;}minimum=Math.min(minimum,good);assert.ok(good>=20,c.id+' input '+i+' '+sign+' only '+good+'ms');}timingLimits.push({id:c.id,minMs:minimum});}});
+test('All 900 ordered seams play both chunks with real traps and inputs',()=>{
+ for(let a=0;a<30;a++)for(let b=0;b<30;b++){const g=game(37,[a,b]),seconds=(book.chunks[a].length+book.chunks[b].length)/260;play(g,seconds);assert.equal(g.state,'playing',`${a} → ${b}: ${JSON.stringify(g.killer?.reason)}`);assert.ok(accepts(book.chunks[b].level.chunk.exit,stateOf(g)));assert.equal(g.stats.impulses,book.chunks[a].level.replay.taps.length+book.chunks[b].level.replay.taps.length);pairs++;}
+});
+test('Contracts reject mismatched velocity, dimension, target, impulse and clocks',()=>{const a=structuredClone(book.chunks[0].level.chunk.exit),b=book.chunks[1].level.chunk.entry;assert.ok(compatible(a,b));for(const change of [{dimension:'red'},{target:2},{vx:[-400,400]},{lastDirs:[9]},{impulses:['invalid']},{traps:'live'}])assert.equal(compatible({...a,...change},b),false);assert.equal(compatible({...a,impulses:['active']},{...b,impulses:['idle']}),false);});
+test('Stale/invalid definitions are rejected before a run',()=>{for(const mutate of [b=>b.chunks[0].level.objects[0].x++,b=>b.chunks[0].level.chunk.entry.vx=[NaN,2],b=>b.chunks[0].level.chunk.category='ALIEN',b=>b.chunks[0].level.chunk.validation.status='draft']){const b=structuredClone(book);mutate(b);assert.throws(()=>validateChunkBook(b));}});
+test('Safe FLOW fallback and rejected-candidate counters execute',()=>{const small={chunks:book.chunks.filter(c=>c.level.chunk.category==='FLOW').slice(0,3)},d=new RiftDirector(small,()=>.5);d.history=small.chunks.map(c=>({id:c.id}));assert.equal(d.select(0).level.chunk.category,'FLOW');assert.equal(d.fallbacks,1);const bad=structuredClone(small.chunks[0]);bad.level.chunk.entry.dimension='red';small.chunks.push(bad);d.select(0);assert.ok(d.rejected>0);});
+test('Six capped difficulty bands keep speed fixed',()=>{assert.deepEqual([0,249,250,500,750,1250,2000,1e9].map(m=>directorTier(m*10)),[0,0,1,2,3,4,5,5]);});
+const long=[];
+for(const seed of [1,37,2026,0xffffffff])test('Regular-input 10000 m gameplay seed '+seed,()=>{
+ const g=game(seed),marks=[],start=performance.now();for(const m of [250,500,1000,2500,5000,10000]){play(g,Math.ceil(m/26));assert.equal(g.state,'playing',JSON.stringify({seed,t:g.t,killer:g.killer?.reason,chunk:g.endless.chunks[0].id}));marks.push({target:m,height:Math.floor(g.y*.1),objects:g.obstacles.length+g.traps.traps.length,chunks:g.endless.chunks.length});}
+ assert.ok(g.endless.maxObjects<120);assert.ok(g.endless.chunks.length<=6);assert.equal(g.recording,null);long.push({seed,seconds:g.t,meters:g.y*.1,generated:g.endless.generated,maxObjects:g.endless.maxObjects,wallMs:performance.now()-start,marks});
+});
+test('5/30/60/144 FPS have identical simulated states and ordered generation',()=>{let ref;for(const fps of [5,30,60,144]){const g=game(37);play(g,192,1/fps);assert.equal(g.state,'playing');const state={x:g.player.x,vx:g.player.vx,dim:g.player.dim,t:g.t,impulses:g.stats.impulses,ids:g.endless.chunks.map(c=>c.id),traps:g.traps.snapshot()};if(ref)assert.deepEqual(state,ref);else ref=state;}});
+let stress;
+test('10000 generated chunks: seeded, bounded, varied, challenge cooldown (technical stress)',()=>{
+ const a=new EndlessWorld(book,37),b=new EndlessWorld(book,37),categories=new Set(),types=new Set(),seen=new Set();let lastChallenge=-Infinity,maxChunks=0,repeat=0,last=null,maxMs=0;const challengeHeights=[];
+ for(let i=0;i<10000;i++){const y=i*2080,t=performance.now();a.ensure(y);maxMs=Math.max(maxMs,performance.now()-t);b.ensure(y);assert.deepEqual(a.chunks.map(c=>c.id),b.chunks.map(c=>c.id));maxChunks=Math.max(maxChunks,a.chunks.length);
+  for(const c of a.chunks)if(!seen.has(c.index)){seen.add(c.index);categories.add(c.category);for(const o of c.rt.traps)types.add(o.type);repeat=c.id===last?repeat+1:1;assert.ok(repeat<3);last=c.id;if(c.challenge){assert.ok(c.origin*.1-lastChallenge>=450);lastChallenge=c.origin*.1;challengeHeights.push(lastChallenge);}}
+ }
+ assert.equal(categories.size,6);assert.equal(types.size,3);assert.ok(challengeHeights.length>100);assert.ok(maxChunks<=6);stress={iterations:10000,generated:a.generated,maxChunks,maxGenerationMs:maxMs,categories:[...categories],types:[...types],challenges:challengeHeights.length};
+});
+test('Pause/retry clears inputs, traps, waves, time; same seed restarts exactly',()=>{const g=game();play(g,24);const old=g.t;g.pause();g.update(.2);assert.equal(g.t,old);g.resume();g.restart();assert.equal(g.t,0);assert.equal(g.player.x,135);assert.equal(g.player.dim,'B');assert.equal(g.rift.emitted,0);assert.equal(g.traps.events,0);assert.equal(g.recentInputs.length,0);assert.equal(g.infinityRecordAnnounced,false);assert.deepEqual(g.endless.chunks.map(c=>c.id),game().endless.chunks.map(c=>c.id));});
+test('Central storage persists heights / isolates normal and editor statistics',()=>{const store=memory(),p=new Progression({storage:store}),g=game();g.storage=p.infinityStorage(37);g.restart();play(g,20);g.saveProgress(true);const height=p.data.endless.bestHeight;assert.ok(height>=500);assert.equal(p.data.endless.attempts,1);assert.equal(p.summary().totalNormalAttempts,0);assert.equal(p.summary().goldMedals,0);assert.equal(new Progression({storage:store}).data.endless.bestHeight,height);const before=JSON.stringify(p.data),isolated=new Progression({storage:store,isolated:true}),i=game();i.storage=isolated.infinityStorage(37);i.restart();play(i,20);i.saveProgress(true);assert.equal(JSON.stringify(new Progression({storage:store}).data),before);});
+mkdirSync('test-results/m79',{recursive:true});writeFileSync('test-results/m79/director.json',JSON.stringify({checks,pairs,entries,timing,timingLimits,long,stress},null,2));console.log(JSON.stringify({checks,pairs,entries,timing,long,stress}));

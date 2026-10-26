@@ -6,6 +6,44 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## M7.9 – RIFT INFINITY 2.0
+
+Der **RIFT DIRECTOR** verwendet die aktuelle **270-u-Arena / 90-u-Zielschritte**
+aus `arena.js`. Die Bewegung bleibt eine kontinuierliche, jederzeit neu steuerbare
+Federbewegung mit 260 u/s Aufstieg und 240-Hz-Simulation. Keine Teleports,
+neue Spursteuerung oder automatische Eingabekorrektur. RIFT INFINITY ist wieder
+im Hauptmenü erreichbar; Compact und die alte Arena-Auswahl bleiben verborgen.
+Die sechs Kampagnenlevel behalten ihre eigenen, unveränderten Leveldaten.
+
+30 neue, gestaltete JSON-Abschnitte mit 6 bzw. 8 Sekunden Länge ersetzen die
+früheren 360-u-Abschnitte im aktiven Endless-Modus. Je fünf gehören zu **FLOW,
+PHASE, SAW, VOLTAGE, PRECISION und COMBO**. Der vorhandene `EndlessWorld`
+bleibt für Generierung, Trap-Clocks und Culling verantwortlich. Der Director
+gewichtet vorberechnete Verträge nach Schwierigkeit, Kategorie, Erholung und
+Wiederholung. Geprüfte Challenges erscheinen mit variablen Abständen;
+Geschwindigkeit und Kollisionsgeometrie werden dabei nicht verändert.
+
+**Nachweis:** 210 Eintrittsproben, 900 tatsächlich gespielte geordnete Chunk-Paare,
+1320 lokale Timing-Proben und vier reguläre Replay-Runs über je 10.000 m.
+Getestete Eintrittsproben sind ausdrücklich keine Garantie für alle kontinuierlichen
+Zwischenzustände oder beliebige Eingabefehler. Sammelräume erlauben manuelles
+Ausrichten auf Mitte / Blau. Die alten 20 Definitionen bleiben als historische
+Regressionsdaten erhalten; sie werden nicht vom aktiven Director geladen.
+
+Sechs hochwertige Hintergrundzonen blenden sanft über. Die PULSE ENGINE läuft
+ohne Chunk-Neustarts weiter und variiert die Intensität. Höhenrekorde nutzen
+weiter den vorhandenen Ascension-Speicher. Forge öffnet die Chunk-Bibliothek,
+bearbeitet Verträge, wählt bewegte Eintrittsproben und validiert mit derselben
+`Game`-Klasse. Exportierte Metadaten bleiben beim Import erhalten.
+
+- `npm run test:director` – reale Chunk-/Seam-/Langzeit-Simulationen.
+- `node tools/build-director.mjs` – Offline-Autorentool und Zertifikate erneuern.
+- `node tests/director-e2e.mjs` – Touch, Retry, Speicher und Forge in drei Browserprofilen.
+- [Architektur und Bearbeitung](docs/M7.9-RIFT-DIRECTOR.md) · [Testbericht](docs/M7.9-TESTS.md).
+
+Die folgenden Meilensteinberichte beschreiben den jeweiligen historischen Stand;
+die aktuelle Arena-Konfiguration oben hat Vorrang.
+
 ## M7.8 – Phase Flow & Fairness
 
 Gültige schnelle Kontakte werden jetzt anhand ihrer **Ereigniszeit** verarbeitet,

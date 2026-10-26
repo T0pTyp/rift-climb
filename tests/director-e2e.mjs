@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import {chromium,webkit,devices} from 'playwright';
+import {mkdirSync,writeFileSync} from 'node:fs';
+const BASE=process.env.BASE_URL||'http://localhost:8080/',out='test-results/m79/browser';mkdirSync(out,{recursive:true});
+let checks=0;const observations=[],check=(n,v)=>{assert.ok(v,n);checks++;console.log('PASS '+n);};
+for(const [engine,device,label]of [[chromium,devices['Pixel 7'],'android'],[webkit,devices['iPhone 13'],'webkit'],[chromium,{...devices['iPhone SE'],viewport:{width:320,height:568}},'small']]){
+ const browser=await engine.launch(),context=await browser.newContext(device),p=await context.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
+ await p.goto(BASE+'?manual=1&debug=1');await p.waitForFunction(()=>window.__RIFT);
+ check(label+' Infinity accessible / Compact hidden / no quality setting',await p.evaluate(()=>!document.querySelector('#nav-infinity').hidden&&document.querySelector('#nav-lab').hidden&&![...document.querySelectorAll('select,button')].some(e=>e.offsetParent&&/grafikqualität|graphics quality|performance mode/i.test(e.textContent))));
+ await p.tap('#nav-infinity');await p.tap('#btn-infinity-start');await p.waitForTimeout(300);
+ check(label+' correct narrow arena, start, book and shared physics',await p.evaluate(()=>__RIFT.arena.width===270&&__RIFT.arena.step===90&&__RIFT.player.x===135&&__RIFT.player.dim==='B'&&__RIFT.endless.book.chunks.length===30&&__RIFT.t===0));
+ const h=device.viewport.height,w=device.viewport.width;
+ await p.touchscreen.tap(5,h*.65);await p.evaluate(()=>advanceTime(50));
+ check(label+' left display edge outside arena moves right / one switch and pulse',await p.evaluate(()=>__RIFT.player.x>135&&__RIFT.player.dim==='R'&&__RIFT.rift.emitted===1&&__RIFT.player.lane===2));
+ await p.waitForTimeout(65);await p.touchscreen.tap(w-5,h*.65);await p.evaluate(()=>advanceTime(250));
+ check(label+' right display edge reverses immediately / exactly two pulses',await p.evaluate(()=>__RIFT.player.dim==='B'&&__RIFT.rift.emitted===2&&__RIFT.player.lane===1&&Math.abs(__RIFT.player.x-135)<5));
+ await p.evaluate(()=>{const g=__RIFT;g.debug.autoplay=true;g.restart();window.__seeks=0;const seek=g.audio.seek.bind(g.audio);g.audio.seek=(...a)=>{__seeks++;return seek(...a);};});
+ for(const seconds of [4,36,68,100,132,164]){await p.evaluate(seconds=>advanceTime((seconds-__RIFT.t)*1000),seconds);check(label+' regular gameplay survives zone '+seconds,await p.evaluate(()=>__RIFT.state==='playing'));await p.screenshot({path:`${out}/${label}-zone-${seconds}.png`});}
+ await p.evaluate(()=>advanceTime((385-__RIFT.t)*1000));
+ check(label+' actual 10000 m run / bounded objects, no per-chunk music restart',await p.evaluate(()=>__RIFT.state==='playing'&&__RIFT.y*.1>=10000&&__RIFT.endless.chunks.length<=5&&__RIFT.endless.maxObjects<120&&__RIFT.backdrop.variants.size<=2&&__seeks===0&&__RIFT.recentInputs.length<=64&&__ASCENSION.summary().totalNormalAttempts===0));
+ const before=await p.evaluate(()=>({t:__RIFT.t,traps:__RIFT.traps.snapshot(),best:__ASCENSION.data.endless.bestHeight}));
+ await p.tap('#btn-pause');await p.evaluate(()=>advanceTime(1000));await p.waitForTimeout(45);
+ check(label+' pause freezes timeline/traps and releases old audio',await p.evaluate(s=>__RIFT.t===s.t&&JSON.stringify(__RIFT.traps.snapshot())===JSON.stringify(s.traps)&&__RIFT.audio.voices.size===0,before));
+ await p.tap('#btn-resume');await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(60000);});
+ check(label+' real death records cause and recent inputs without campaign rewards',await p.evaluate(()=>['dead','dying'].includes(__RIFT.state)&&__RIFT.deathLog.length>0&&Array.isArray(__RIFT.deathLog.at(-1).inputs)&&__ASCENSION.data.endless.bestHeight>=10000&&__ASCENSION.summary().goldMedals===0));
+ const best=await p.evaluate(()=>__ASCENSION.data.endless.bestHeight);await p.tap('#btn-death-restart');
+ check(label+' immediate Retry resets simulation/traps without flight input',await p.evaluate(()=>__RIFT.state==='playing'&&__RIFT.t===0&&__RIFT.player.x===135&&__RIFT.player.dim==='B'&&__RIFT.rift.emitted===0&&__RIFT.stats.impulses===0&&__RIFT.traps.traps.every(o=>o.state==='idle')));
+ await p.reload();await p.waitForFunction(()=>window.__RIFT);check(label+' central height store survives reload',await p.evaluate(best=>__ASCENSION.data.endless.bestHeight===best,best));
+ await p.goto(BASE+'assets/forge/');await p.waitForFunction(()=>document.body.dataset.ready==='1');
+ await p.evaluate(async()=>{const b=await(await fetch('../endless/director.json')).json();__FORGE.actions.loadDocument(b.chunks.find(c=>c.id==='infinity-combo-4').level);});
+ check(label+' chunk fields and shared editor canvas load',await p.evaluate(()=>__FORGE.doc.level.chunk.category==='COMBO'&&!!document.querySelector('[data-key="chunk-category"]')&&__FORGE.view.arena.width===270));
+ const original=await p.evaluate(()=>__FORGE.actions.exportText().text);
+ await p.evaluate(()=>{const f=__FORGE;f.app.edit('Move trap',tx=>{const o=f.doc.objects.find(o=>o.type==='saw');tx.touch(o.id).x+=.25;});f.S.chunkEntry=6;});
+ check(label+' edited chunk retains metadata and JSON roundtrip',await p.evaluate(async()=>{const f=__FORGE,{parseLevelText}=await import('../../js/level-data.js');const text=f.actions.exportText().text,r=parseLevelText(text);return r.ok&&r.level.chunk.category==='COMBO'&&r.level.objects.some(o=>o.type==='saw');}));
+ await p.evaluate(()=>__FORGE.app.validateChunk());
+ check(label+' actual entry simulations recertify modified chunk',await p.evaluate(()=>__FORGE.S.play?.ok===true&&__FORGE.doc.level.chunk.validation.fixtures===7));
+ await p.evaluate(()=>__FORGE.actions.playtest());await p.waitForFunction(()=>document.querySelector('#pt-frame').contentWindow?.__RIFT?.state==='paused');
+ const frame=await(await p.$('#pt-frame')).contentFrame();
+ check(label+' chosen continuous entry reaches isolated shared Game',await frame.evaluate(()=>__RIFT.player.x===147&&__RIFT.player.vx===240&&__RIFT.arena.width===270&&__ASCENSION.isolated));
+ await frame.evaluate(()=>{const g=__RIFT;g.debug.manual=true;g.audio.simulationOnly=true;g.autoplayQueue=g.level.replay.taps.map(t=>({...t}));});await frame.tap('#btn-resume');await frame.evaluate(()=>advanceTime(6500));
+ check(label+' chunk playtest completes with active collisions',await frame.evaluate(()=>__RIFT.state==='won'&&__RIFT.progress===100));
+ await frame.locator('body').press('Escape');await p.waitForFunction(()=>document.querySelector('#playtest').hidden);
+ check(label+' return preserves edits, scrollable mobile editor and progress isolation',await p.evaluate(async best=>{const f=__FORGE,{Progression}=await import('../../js/progression.js');return f.doc.level.chunk.category==='COMBO'&&f.S.chunkEntry===6&&new Progression().data.endless.bestHeight===best&&document.documentElement.scrollWidth<=innerWidth+1;},best));
+ await p.screenshot({path:`${out}/${label}-forge.png`});
+ observations.push({label,viewport:device.viewport,errors});check(label+' no uncaught browser exceptions',errors.length===0);await browser.close();
+}
+writeFileSync('test-results/m79/browser.json',JSON.stringify({checks,observations},null,2));console.log(checks+' Director browser checks passed');

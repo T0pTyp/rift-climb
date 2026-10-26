@@ -11,6 +11,7 @@ import {
 } from './config.js';
 import { isTrap, normalizeTrap } from './traps.js';
 import {arenaFor,arenaCenter,ARENAS} from './arena.js';
+import {CATEGORIES,validContract} from './rift-director.js';
 
 export const LEVEL_SCHEMA = 'rift-climb-level';
 export const LEVEL_VERSION = 1;
@@ -259,6 +260,11 @@ export function validateLevelData(raw) {
     if (ok) level.sections = raw.sections.map((x) => ({ id: x.id.slice(0, 3), name: x.name.slice(0, 24), y: x.y, labelY: isNum(x.labelY) ? x.labelY : x.y }));
     else warn('sections', 'Abschnittsliste ist ungültig und wird ignoriert.');
   }
+  if(raw.chunk!==undefined){
+    const m=raw.chunk;
+    if(!m||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>5||!validContract(m.entry)||!validContract(m.exit,true)||level.arenaStyle!=='narrow')err('chunk','Chunk: Kategorie, Schwierigkeit oder Bewegungsvertrag ungültig.');
+    else level.chunk=JSON.parse(JSON.stringify(m));
+  }
   if (raw.replay !== undefined) {
     const r = raw.replay;
     const ok = r && Array.isArray(r.taps) && r.taps.every((t, i, a) => t && isNum(t.t) && t.t >= 0 && (t.dir === 1 || t.dir === -1) && (i === 0 || t.t >= a[i - 1].t));
@@ -362,6 +368,7 @@ export function serializeLevel(level) {
   };
   for (const key of ['theme', 'music', 'difficulty','arenaStyle']) if (level[key]) out[key] = level[key];
   if (level.sections) out.sections = level.sections;
+  if (level.chunk) out.chunk = level.chunk;
   out.objects = level.objects.map((o) => {
     if(isTrap(o))return normalizeTrap(o,arenaFor(level).width).clean;
     if (o.type === 'hint') return { id: o.id, type: o.type, y: o.y, text: o.text };

@@ -6,7 +6,7 @@ import { CLIMB_SPEED, SEAL_OPEN_SEC, BAR_THICKNESS } from '../config.js';
 import {
   validateLevelData, parseLevelText, serializeLevel, createEmptyLevel, unitsPerBeat, validateIndex, LIMITS,
 } from '../level-data.js';
-import { checkPlayability } from '../playcheck.js';
+import { checkPlayability,checkChunkPlayability } from '../playcheck.js';
 import { LevelDoc } from './history.js';
 import { ForgeView, objRect, fmt, ZOOM_MIN, ZOOM_MAX } from './view.js';
 import { ForgeStore } from './store.js';
@@ -242,6 +242,7 @@ function loadDocument(level, { sourceId = null, clean = true, message } = {}) {
   S.selection.clear();
   S.sealOpen.clear();
   S.testMarker = null;
+  S.chunkEntry = 0;
   S.hover = null;
   S.sourceId = sourceId || level.id;
   S.cleanJson = clean ? JSON.stringify(doc.level) : '';
@@ -643,6 +644,8 @@ async function openDialog() {
   } catch (err) {
     item(gameList, 'Levelindex nicht erreichbar', err.message, []);
   }
+  const chunkList=mkList('RIFT DIRECTOR · Chunks','270-u-Abschnitte. Veränderte Geometrie erfordert eine neue Validierung.');
+  try{const book=await fetchJson('../endless/director.json');for(const c of book.chunks)item(chunkList,c.level.name,`${c.level.chunk.category} · Stufe ${c.level.chunk.tier+1} · ${c.length/260} s`,[['Öffnen',async()=>{close('opened');if(await confirmDiscard())loadDocument(validateLevelData(c.level).level,{message:'Chunk geöffnet: '+c.id});},'primary']]);}catch(err){item(chunkList,'Chunk-Bibliothek nicht erreichbar',err.message,[]);}
   if (store.available) {
     const levels = (await store.listLevels()).sort((a, b) => (b.savedAt || '').localeCompare(a.savedAt || ''));
     if (!levels.length) item(localList, 'Noch nichts gespeichert', 'Strg/Cmd+S speichert das aktuelle Level hier.', []);
@@ -1261,6 +1264,7 @@ function playtest(fromHere = false) {
     return false;
   }
   let from = null;
+  if(!fromHere&&res.level.chunk){const fixtures=res.level.chunk.fixtures||[],s=fixtures[S.chunkEntry||0];if(s&&!(s.x===135&&s.vx===0&&s.lane===1&&s.dim==='B'&&!s.lastDir&&res.level.start.lane===1&&res.level.start.dimension==='blue'))from={...s};}
   if (fromHere) {
     if (!S.testMarker) {
       S.testMarker = { y: Math.max(0, snapY(view.cam.y)), lane: doc.level.start.lane, dim: doc.level.start.dimension === 'red' ? 'R' : 'B' };
@@ -1768,6 +1772,8 @@ function bindMobile() {
 const app = {
   S, get doc() { return doc; }, liveEdit, commitEdit, edit, toast, duplicate, deleteSelection, setToggle, playtest,
   removeTestMarker, clearReplay, markEditorState, setArenaStyle,
+  validateChunk(){const l=structuredClone(doc.level);l.chunk.actions=l.replay?.taps.length||0;l.chunk.requiredSwitches=l.chunk.actions;const r=checkChunkPlayability(l);if(r.ok)edit('Chunk zertifizieren',tx=>{Object.assign(tx.touchMeta().chunk,{actions:l.chunk.actions,requiredSwitches:l.chunk.requiredSwitches,validation:r.certificate});});toast(r.message,r.ok?'ok':'error');runValidation();},
+  async prepareChunk(){if(doc.level.arenaStyle!=='narrow'||doc.level.finish.y<780||doc.level.finish.y>2080){toast('Für Chunks: 270-u-Arena und 3–8 s Länge einstellen.','warn');return;}const b=await fetchJson('../endless/director.json');edit('Chunk vorbereiten',tx=>{const m=structuredClone(b.chunks[0].level.chunk);m.validation={status:'draft'};m.actions=doc.level.replay?.taps.length||0;m.requiredSwitches=m.actions;tx.touchMeta().chunk=m;});props.render();runValidation();},
 };
 
 function bindUi() {

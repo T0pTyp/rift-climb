@@ -71,7 +71,8 @@ function campaignStep(step, tl, emit) {
   if (t >= tl.duration - 1e-8) return;
   const a = ARRANGEMENTS[tl.music], beat = Math.floor(step / 4), sub = step % 4;
   const bar = Math.floor(beat / tl.beatsPerBar), inBar = beat % tl.beatsPerBar;
-  const stage = tl.endless?Math.min(3,Math.floor(t/24)):Math.min(3, tl.at(t).section), chord = Math.floor(bar / 2) % 4;
+  const section=tl.director?.find(c=>t>=c.start&&t<c.end);
+  const stage = section?(section.challenge?3:section.category==='FLOW'?Math.min(1,section.tier):Math.min(3,Math.ceil(section.tier/2)+1)):tl.endless?Math.min(3,Math.floor(t/24)):Math.min(3, tl.at(t).section), chord = Math.floor(bar / 2) % 4;
   const root = a.roots[chord], notes = a.chords[chord];
   // Last bar resolves to the tonic; no endless loop after the finish.
   if (t >= tl.duration - tl.beatSec * 2) {
@@ -105,6 +106,7 @@ function campaignStep(step, tl, emit) {
     emit('warm',frequency(root),.05,tl.beatSec*.4,'red');
   }
   if (tl.accents?.has(step+1)) emit('snare',0,.045,.065,'base');
+  if(section?.challenge&&Math.abs(t-section.start)<tl.stepSec/2){emit('air',frequency(notes[2]+12),.045,.3,'blue');emit('warm',frequency(root),.045,.3,'red');}
   if (intake) { if(sub===0) emit('air',frequency(notes[inBar%3]+12),.045,tl.beatSec*.6,'blue'); return; }
   const melodic = stage>=1 || (a.drive>0) || (sub===0 && inBar===3);
   if (melodic && (sub===0 || ((full || a.drive===1) && sub===2))) {

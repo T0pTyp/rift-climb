@@ -9,7 +9,8 @@ export class AscensionPanels {
   this.ui=ui;this.h=h;this.bind=bind;this.progression=h.progression;this.page='home';this.skin=this.progression.data.cosmetics.selectedSkinId;this.anim=new RiftlingAnimator();this.previewTime=0;this.last=0;this.thumbs=new Map();
   for(const [id,page] of [['lab','lab'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
   bind($('#nav-play'),()=>{if(h.onLabStyle(ACTIVE_ARENA))this.open('lab');},h.onGesture);
-  this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
+    this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
+    $('#nav-infinity').hidden=false;
   for(const el of document.querySelectorAll('[data-lab-feedback]'))bind(el,()=>{if(h.onLabFeedback(el.dataset.labFeedback))this.renderLab();},h.onGesture);
   this.seed=h.initialSeed;
   bind($('#btn-infinity-start'),()=>h.onInfinityStart(this.seed),h.onGesture);

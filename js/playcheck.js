@@ -5,6 +5,7 @@ import { Game } from './game.js';
 import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS, STEER_OMEGA, HIT_RADIUS, PULSE_RADIUS, PULSE_GROW_SEC } from './config.js';
 import { laneRows, START_DIMENSIONS } from './level-data.js';
 import { validateLevel } from './level.js';
+import {accepts,chunkFingerprint} from './rift-director.js';
 
 const noop = () => {};
 
@@ -24,13 +25,13 @@ export function headlessGame(level) {
  * Spielt taps ([{ t, dir }], Spielzeit in s) ab Levelstart im Normalmodus ab.
  * Ein Tipp wirkt vor dem Simulationsschritt, in dem er aufgezeichnet wurde (wie im Spiel: Eingabe -> Schritt).
  */
-export function runReplay(level, taps, { proof = false } = {}) {
+export function runReplay(level, taps, { proof = false, entry = null } = {}) {
   const legal = Array.isArray(taps) && taps.every((tap, i) =>
     Number.isFinite(tap.t) && (tap.dir === 1 || tap.dir === -1) &&
     tap.t >= START_GRACE_MS / 1000 && (!i || tap.t - taps[i - 1].t >= MIN_PRESS_INTERVAL_MS / 1000 - 1e-8));
   if (!legal) return { won: false, progress: 0, tapsUsed: 0, killer: null, error: 'Ungültige Eingabefolge (Startschutz / Mindestabstand / Richtung).' };
   const g = headlessGame(level);
-  g.start('normal');
+  g.start('normal',entry);
   const start = proof ? {t:g.t,x:g.player.x,y:g.y,vx:g.player.vx,lane:g.player.lane,dimension:g.player.dim} : null;
   const limit = level.finish.y / CLIMB_SPEED + 1;
   let i = 0;
@@ -48,8 +49,8 @@ export function runReplay(level, taps, { proof = false } = {}) {
     killer: k ? { id: k.o.id, y: k.o.y, reason: k.reason } : null,
   };
   if(proof)result.proof={schema:'rift-replay-proof',version:1,levelId:level.id,levelHash:replayFingerprint(level),inputHash:replayFingerprint(taps),seed:null,
-    config:{simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC},
-    start,finish:{...result,x:g.player.x,vx:g.player.vx,dimension:g.player.dim,steps:g.stats.steps,pulses:g.rift.emitted}};
+    config:{simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC,arenaWidth:g.arena.width,arenaStep:g.arena.step},
+    start,finish:{...result,x:g.player.x,vx:g.player.vx,target:g.player.lane,lastDir:g.player.lastDir,impulse:g.player.dashing?'active':'idle',dimension:g.player.dim,steps:g.stats.steps,pulses:g.rift.emitted}};
   return result;
 }
 
@@ -67,6 +68,7 @@ export function replayFingerprint(value) {
  *  - method 'none': weder Spurmodell noch Aufzeichnung -> nicht nachgewiesen
  */
 export function checkPlayability(level) {
+  if(level.chunk)return checkChunkPlayability(level);
   // Prefer an actual simulation proof over the coarse lane abstraction.
   if (level.replay) {
     const replay = runReplay(level, level.replay.taps);
@@ -82,6 +84,19 @@ export function checkPlayability(level) {
     return { method: 'solver', ok: false, message: `Spur-Solver: ${v.errors[0] || 'keine Lösung'}.`, solver: v, row: v.errors.length ? firstBadRow(v, rows) : null };
   }
   return { method: 'none', ok: null, message: 'Nicht nachgewiesen: freie Maße ohne aufgezeichneten Lauf. Im Playtest einmal komplett durchspielen, um den Lauf zu speichern.' };
+}
+
+export function checkChunkPlayability(level) {
+ const m=level.chunk,taps=level.replay?.taps,fixtures=m?.fixtures;
+ if(!taps||!Array.isArray(fixtures)||!fixtures.length||fixtures.length>64)return {method:'replay',ok:false,message:'Chunk braucht 1–64 explizite Eintrittsproben und eine Eingabefolge.'};
+ let replay;
+ for(const s of fixtures){
+  const state={x:s.x,vx:s.vx,target:s.lane,dimension:s.dim==='B'?'blue':'red',lastDir:s.lastDir,impulse:Math.abs(s.x-(45+90*s.lane))>2||Math.abs(s.vx)>30?'active':'idle'};
+  if(s.y!==0||!accepts(m.entry,state))return {method:'replay',ok:false,message:'Eintrittsprobe außerhalb des Vertrags: '+s.id};
+  replay=runReplay(level,taps,{entry:s,proof:true});const f=replay.proof?.finish;
+  if(!replay.won||!accepts(m.exit,{...f,dimension:f?.dimension==='B'?'blue':'red'}))return {method:'replay',ok:false,message:`Probe ${s.id}: Tod oder ungültiger Ausgang.`,replay};
+ }
+ return {method:'replay',ok:true,replay,message:`${fixtures.length} reale Eintrittsproben → Ausgang bestätigt. Zwischenwerte sind keine mathematische Garantie.`,certificate:{status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(level),fixtures:fixtures.length,proof:replay.proof}};
 }
 
 function firstBadRow(v, rows) {

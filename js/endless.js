@@ -1,6 +1,7 @@
 import {buildLevelRuntime,validateLevelData} from './level-data.js';
 import {makeTrap} from './traps.js';
-import {CLIMB_SPEED,MIN_PRESS_INTERVAL_MS,START_GRACE_MS} from './config.js';
+import {CLIMB_SPEED,MIN_PRESS_INTERVAL_MS,START_GRACE_MS,SIM_DT,STEER_OMEGA,HIT_RADIUS,PULSE_RADIUS,PULSE_GROW_SEC} from './config.js';
+import {RiftDirector,CATEGORIES,validContract,compatible,chunkFingerprint,directorTier} from './rift-director.js';
 export {METERS_PER_UNIT,worldMeters} from './world-units.js';
 export const INFINITY_TIERS=['EINFACH','MITTEL','SCHWER','SEHR SCHWER'];
 export const INFINITY_MIN_SEAM_SEC=2;
@@ -15,6 +16,7 @@ export function chunkFlow(chunk) {
  return {firstTap:taps[0].t,lastTap:taps.at(-1).t,minGap,maxBurst,tailRest:chunk.length/CLIMB_SPEED-taps.at(-1).t};
 }
 export function validateChunkBook(raw) {
+ if(raw?.version===2)return validateDirectorBook(raw);
  if(raw?.schema!=='rift-infinity-chunks'||raw.version!==1||!Array.isArray(raw.chunks)||raw.chunks.length<20)throw Error('Infinity-Modulbuch ungültig');
  const ids=new Set();
  if(raw.metersPerUnit!==.1)throw Error('Infinity: ungültiger Höhenmaßstab');
@@ -33,17 +35,32 @@ export function validateChunkBook(raw) {
  }
  return raw;
 }
+function validateDirectorBook(raw) {
+ if(raw.schema!=='rift-infinity-chunks'||raw.arenaStyle!=='narrow'||raw.metersPerUnit!==.1||!Array.isArray(raw.chunks)||raw.chunks.length<30)throw Error('RIFT DIRECTOR: ungültiges Modulbuch');
+ const ids=new Set();
+ for(const c of raw.chunks){const l=c.level,m=l?.chunk,v=validateLevelData(l);
+  if(!v.ok||!m||c.id!==l.id||ids.has(c.id)||l.arenaStyle!=='narrow'||c.length!==l.finish.y||c.length<780||c.length>2080||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>5||!validContract(m.entry)||!validContract(m.exit,true)||!Array.isArray(l.replay?.taps)||m.actions!==l.replay.taps.length||m.validation?.status!=='verified'||m.validation.hash!==chunkFingerprint(l)||m.validation.physics!=='spring-240-v1')throw Error('RIFT DIRECTOR: ungültiges / veraltetes Zertifikat '+c.id);
+  const taps=l.replay.taps;if(!taps.length||taps.some((p,i)=>![1,-1].includes(p.dir)||!Number.isFinite(p.t)||p.t<.2||p.t>c.length/CLIMB_SPEED-m.exit.clearSec||(i&&p.t-taps[i-1].t<.045-1e-8)))throw Error('RIFT DIRECTOR: Eingaben '+c.id);
+  const config=m.validation.proof?.config,expected={simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC,arenaWidth:270,arenaStep:90};
+  if(!config||Object.keys(expected).some(k=>config[k]!==expected[k]))throw Error('RIFT DIRECTOR: Physik-Zertifikat veraltet '+c.id);
+  ids.add(c.id);
+ }
+ if(CATEGORIES.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<5))throw Error('RIFT DIRECTOR: Kategorien unvollständig');
+ for(const a of raw.chunks)for(const b of raw.chunks)if(!compatible(a.level.chunk.exit,b.level.chunk.entry))throw Error('RIFT DIRECTOR: inkompatibler Übergang '+a.id+' / '+b.id);
+ return raw;
+}
 /** Seeded selection of proven modules. No geometry depends on rendering/audio. */
 export class EndlessWorld {
  constructor(book,seed,order=null){
   this.book=validateChunkBook(book);this.order=order;this.seed=seed>>>0;
+  this.director=book.version===2?new RiftDirector(book,()=>this.random()):null;
   if(order&&(!order.length||order.some(i=>!Number.isInteger(i)||!book.chunks[i])))throw Error('Infinity: ungültige Testreihenfolge');
   this.pools=[0,1,2,3].map(tier=>book.chunks.filter(c=>c.tier===tier).map(source=>{
    const types=new Set(source.level.objects.map(o=>o.type)),family=types.has('mine')&&types.has('saw')?'mixed':types.has('laser')?'laser':types.has('seal')?'pulse':types.has('saw')?'saw':'precision';
    return {source,family,actions:source.level.replay.taps.length,burst:chunkFlow(source).maxBurst};
   }));this.reset();
  }
- reset(){this.rng=this.seed||0x6d2b79f5;this.chunks=[];this.history=[];this.nextIndex=0;this.nextY=0;this.generated=0;this.maxObjects=0;this.ensure(0);}
+ reset(){this.rng=this.seed||0x6d2b79f5;this.director?.reset();this.chunks=[];this.history=[];this.nextIndex=0;this.nextY=0;this.generated=0;this.maxObjects=0;this.ensure(0);}
  random(){let x=this.rng;x^=x<<13;x^=x>>>17;x^=x<<5;this.rng=x>>>0;return this.rng/4294967296;}
  select(tier) {
   const pool=this.pools[tier],last=this.history.at(-1),recent=this.history.slice(-2);
@@ -63,12 +80,12 @@ export class EndlessWorld {
  ensure(y) {
   let changed=false;
   while(this.nextY<y+4680) {
-   const tier=infinityTier(this.nextY);
-   const source=this.order?this.book.chunks[this.order[this.nextIndex%this.order.length]]:this.select(tier);
+   const tier=this.director?directorTier(this.nextY):infinityTier(this.nextY);
+   const source=this.order?this.book.chunks[this.order[this.nextIndex%this.order.length]]:this.director?this.director.select(this.nextY):this.select(tier);
    const index=this.nextIndex++,origin=this.nextY,t0=origin/260,prefix=`c${index}-`;
    const level={...source.level,objects:source.level.objects.map(o=>({...o,id:prefix+o.id,y:o.y+origin})),finish:{y:source.length+origin},height:source.length+origin+260};
    const rt=buildLevelRuntime(level);rt.traps=rt.traps.map(o=>makeTrap(o,t0));
-   this.chunks.push({index,id:source.id,tier,origin,end:origin+source.length,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
+   this.chunks.push({index,id:source.id,tier,category:source.level.chunk?.category,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+source.length,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
    this.nextY+=source.length;this.generated++;changed=true;
   }
   while(this.chunks.length&&this.chunks[0].end<y-520){this.chunks.shift();changed=true;}
@@ -76,14 +93,15 @@ export class EndlessWorld {
  }
  apply(game) {
   const chunks=this.chunks,rt=game.level;
-  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=chunks.map(c=>[c.origin+260,'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
+  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=chunks.map(c=>[c.origin+260,c.challenge?'RIFT CHALLENGE · '+c.category:this.director?'SAMMELN · MITTE / BLAU':'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
   game.obstacles=rt.obstacles;game.seals=rt.seals;game.traps.traps=rt.traps;game.rift.seals=rt.seals;game.rift.maxHh=20;game.obsLo=0;
   rt.maxChh=6;rt.maxHh=8;game.collideRange=16;
   this.maxObjects=Math.max(this.maxObjects,rt.obstacles.length+rt.traps.length);
   if(game.audio.timeline)game.audio.timeline.accents=new Set(rt.seals.map(s=>Math.round(s.y/260/game.audio.timeline.stepSec)));
+  if(game.audio.timeline&&this.director)game.audio.timeline.director=chunks.map(c=>({start:c.t0,end:c.end/260,tier:c.tier,category:c.category,challenge:c.challenge}));
  }
  tapsAfter(t,last=-Infinity){return this.chunks.flatMap(c=>c.taps).filter(p=>p.t>=t-1/480&&p.t>last+1e-8);}
- tierAt(y){return this.chunks.find(c=>y>=c.origin&&y<c.end)?.tier??infinityTier(y);}
+ tierAt(y){return this.chunks.find(c=>y>=c.origin&&y<c.end)?.tier??(this.director?directorTier(y):infinityTier(y));}
 }
 /** Optional entry recovery uses ordinary wall taps, never hidden input correction. */
 export function entryTaps(lane,dim) {

@@ -201,10 +201,11 @@ export class UI {
     document.body.dataset.arena=style;
     if(!this.playtest)for(const id of ['pause','death','win'])$('#btn-'+id+'-menu').textContent=lab?'ARENA LAB':'Levelauswahl';
   }
-  updateEndlessHud(height,best,tier,dim,attempts) {
-    const key=`infinity|${height}|${best}|${tier}|${dim}|${attempts}`;
+  updateEndlessHud(height,best,tier,dim,attempts,zone='') {
+    const key=`infinity|${height}|${best}|${tier}|${dim}|${attempts}|${zone}`;
     if(this.lastHud===key)return;this.lastHud=key;this.el.bar.parentElement.hidden=true;this.el.pct.textContent=height+' m';
-    const label=$('#hud-infinity');label.hidden=false;label.textContent=`REKORD ${best} m · ${tier}`;
+    const label=$('#hud-infinity');label.hidden=false;label.textContent=`REKORD ${best} m · ${tier}`;label.title=zone;
+    if(zone){const arena=$('#hud-arena');arena.hidden=false;arena.textContent=zone;}
     this.el.dim.textContent=COLORS[dim].name;this.el.dim.dataset.dim=dim;this.el.attempts.textContent='Versuch '+attempts;this.el.mode.hidden=true;document.body.dataset.dim=dim;
   }
   setSkin(id) {
