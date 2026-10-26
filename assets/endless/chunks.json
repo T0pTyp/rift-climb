@@ -933,7 +933,7 @@
             "id": "wall-2-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1170,
+            "y": 1160,
             "w": 182,
             "h": 14,
             "dimension": "both"
@@ -942,7 +942,7 @@
             "id": "wall-2-r",
             "type": "obstacle",
             "x": 268,
-            "y": 1170,
+            "y": 1160,
             "w": 92,
             "h": 14,
             "dimension": "both"
@@ -951,7 +951,7 @@
             "id": "seal-2",
             "type": "seal",
             "x": 183,
-            "y": 1170,
+            "y": 1160,
             "w": 84,
             "h": 14,
             "openSec": 0.65
@@ -1097,7 +1097,7 @@
             "id": "wall-0-r",
             "type": "obstacle",
             "x": 88,
-            "y": 650,
+            "y": 654,
             "w": 272,
             "h": 14,
             "dimension": "both"
@@ -1106,7 +1106,7 @@
             "id": "seal-0",
             "type": "seal",
             "x": 3,
-            "y": 650,
+            "y": 654,
             "w": 84,
             "h": 14,
             "openSec": 0.65
@@ -1330,7 +1330,7 @@
             "id": "wall-1-l",
             "type": "obstacle",
             "x": 0,
-            "y": 975,
+            "y": 973,
             "w": 92,
             "h": 14,
             "dimension": "both"
@@ -1339,7 +1339,7 @@
             "id": "wall-1-r",
             "type": "obstacle",
             "x": 178,
-            "y": 975,
+            "y": 973,
             "w": 182,
             "h": 14,
             "dimension": "both"
@@ -1348,7 +1348,7 @@
             "id": "seal-1",
             "type": "seal",
             "x": 93,
-            "y": 975,
+            "y": 973,
             "w": 84,
             "h": 14,
             "openSec": 0.65
@@ -1691,7 +1691,7 @@
             "id": "wall-1-l",
             "type": "obstacle",
             "x": 0,
-            "y": 975,
+            "y": 962,
             "w": 92,
             "h": 14,
             "dimension": "both"
@@ -1700,7 +1700,7 @@
             "id": "wall-1-r",
             "type": "obstacle",
             "x": 178,
-            "y": 975,
+            "y": 962,
             "w": 182,
             "h": 14,
             "dimension": "both"
@@ -1709,7 +1709,7 @@
             "id": "color-1",
             "type": "obstacle",
             "x": 93,
-            "y": 975,
+            "y": 962,
             "w": 84,
             "h": 14,
             "dimension": "red"
@@ -1718,7 +1718,7 @@
             "id": "wall-2-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1170,
+            "y": 1178,
             "w": 182,
             "h": 14,
             "dimension": "both"
@@ -1727,7 +1727,7 @@
             "id": "wall-2-r",
             "type": "obstacle",
             "x": 268,
-            "y": 1170,
+            "y": 1178,
             "w": 92,
             "h": 14,
             "dimension": "both"
@@ -1736,7 +1736,7 @@
             "id": "saw-2",
             "type": "saw",
             "x": 201,
-            "y": 1170,
+            "y": 1178,
             "w": 48,
             "h": 48,
             "dimension": "red",
@@ -1750,7 +1750,7 @@
             "id": "wall-3-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1495,
+            "y": 1489,
             "w": 92,
             "h": 14,
             "dimension": "both"
@@ -1759,7 +1759,7 @@
             "id": "wall-3-r",
             "type": "obstacle",
             "x": 178,
-            "y": 1495,
+            "y": 1489,
             "w": 182,
             "h": 14,
             "dimension": "both"
@@ -1768,7 +1768,7 @@
             "id": "seal-3",
             "type": "seal",
             "x": 93,
-            "y": 1495,
+            "y": 1489,
             "w": 84,
             "h": 14,
             "openSec": 0.65
@@ -2955,7 +2955,7 @@
             "id": "wall-1-l",
             "type": "obstacle",
             "x": 0,
-            "y": 715,
+            "y": 703,
             "w": 277,
             "h": 14,
             "dimension": "both"
@@ -2964,7 +2964,7 @@
             "id": "mine-1",
             "type": "mine",
             "x": 301,
-            "y": 715,
+            "y": 703,
             "w": 28,
             "h": 28,
             "dimension": "blue",
@@ -2977,7 +2977,7 @@
             "id": "wall-2-l",
             "type": "obstacle",
             "x": 0,
-            "y": 845,
+            "y": 856,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -2986,7 +2986,7 @@
             "id": "wall-2-r",
             "type": "obstacle",
             "x": 263,
-            "y": 845,
+            "y": 856,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -2995,7 +2995,7 @@
             "id": "laser-2",
             "type": "laser",
             "x": 212,
-            "y": 845,
+            "y": 856,
             "w": 26,
             "h": 26,
             "dimension": "red",
@@ -3017,7 +3017,7 @@
             "id": "wall-3-l",
             "type": "obstacle",
             "x": 0,
-            "y": 975,
+            "y": 968,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -3026,7 +3026,7 @@
             "id": "wall-3-r",
             "type": "obstacle",
             "x": 173,
-            "y": 975,
+            "y": 968,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -3035,7 +3035,7 @@
             "id": "seal-3",
             "type": "seal",
             "x": 97,
-            "y": 975,
+            "y": 968,
             "w": 76,
             "h": 14,
             "openSec": 0.65
@@ -3058,7 +3058,7 @@
             "h": 28,
             "dimension": "red",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.82,
             "blastRadius": 130,
             "blastSec": 0.22
           },
@@ -3317,7 +3317,7 @@
             "id": "wall-1-l",
             "type": "obstacle",
             "x": 0,
-            "y": 715,
+            "y": 727,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -3326,7 +3326,7 @@
             "id": "wall-1-r",
             "type": "obstacle",
             "x": 173,
-            "y": 715,
+            "y": 727,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -3335,7 +3335,7 @@
             "id": "saw-1",
             "type": "saw",
             "x": 111,
-            "y": 715,
+            "y": 727,
             "w": 48,
             "h": 48,
             "dimension": "blue",
@@ -3349,7 +3349,7 @@
             "id": "wall-2-l",
             "type": "obstacle",
             "x": 0,
-            "y": 845,
+            "y": 843,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -3358,7 +3358,7 @@
             "id": "wall-2-r",
             "type": "obstacle",
             "x": 263,
-            "y": 845,
+            "y": 843,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -3367,7 +3367,7 @@
             "id": "seal-2",
             "type": "seal",
             "x": 187,
-            "y": 845,
+            "y": 843,
             "w": 76,
             "h": 14,
             "openSec": 0.65
@@ -3399,7 +3399,7 @@
             "h": 28,
             "dimension": "blue",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.76,
             "blastRadius": 130,
             "blastSec": 0.22
           },
@@ -3447,7 +3447,7 @@
             "id": "wall-5-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1300,
+            "y": 1287,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -3456,7 +3456,7 @@
             "id": "wall-5-r",
             "type": "obstacle",
             "x": 173,
-            "y": 1300,
+            "y": 1287,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -3465,7 +3465,7 @@
             "id": "seal-5",
             "type": "seal",
             "x": 97,
-            "y": 1300,
+            "y": 1287,
             "w": 76,
             "h": 14,
             "openSec": 0.65
@@ -3664,7 +3664,7 @@
             "h": 28,
             "dimension": "red",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.72,
             "blastRadius": 130,
             "blastSec": 0.22
           },
@@ -3762,7 +3762,7 @@
             "id": "wall-4-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1170,
+            "y": 1163,
             "w": 187,
             "h": 14,
             "dimension": "both"
@@ -3771,7 +3771,7 @@
             "id": "wall-4-r",
             "type": "obstacle",
             "x": 263,
-            "y": 1170,
+            "y": 1163,
             "w": 97,
             "h": 14,
             "dimension": "both"
@@ -3780,7 +3780,7 @@
             "id": "laser-4",
             "type": "laser",
             "x": 212,
-            "y": 1170,
+            "y": 1163,
             "w": 26,
             "h": 26,
             "dimension": "red",
@@ -3803,7 +3803,7 @@
             "type": "obstacle",
             "x": 0,
             "y": 1300,
-            "w": 277,
+            "w": 251,
             "h": 14,
             "dimension": "both"
           },
@@ -3825,7 +3825,7 @@
             "type": "obstacle",
             "x": 0,
             "y": 1430,
-            "w": 187,
+            "w": 161,
             "h": 14,
             "dimension": "both"
           },
@@ -3841,9 +3841,9 @@
           {
             "id": "seal-6",
             "type": "seal",
-            "x": 187,
+            "x": 161,
             "y": 1430,
-            "w": 76,
+            "w": 102,
             "h": 14,
             "openSec": 0.65
           },
@@ -4004,7 +4004,7 @@
             "id": "wall-0-r",
             "type": "obstacle",
             "x": 83,
-            "y": 585,
+            "y": 592,
             "w": 277,
             "h": 14,
             "dimension": "both"
@@ -4013,7 +4013,7 @@
             "id": "seal-0",
             "type": "seal",
             "x": 7,
-            "y": 585,
+            "y": 592,
             "w": 76,
             "h": 14,
             "openSec": 0.65
@@ -4023,7 +4023,7 @@
             "type": "obstacle",
             "x": 0,
             "y": 715,
-            "w": 97,
+            "w": 87,
             "h": 14,
             "dimension": "both"
           },
@@ -4139,7 +4139,7 @@
             "h": 28,
             "dimension": "red",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.78,
             "blastRadius": 130,
             "blastSec": 0.22
           },
@@ -4147,7 +4147,7 @@
             "id": "wall-5-l",
             "type": "obstacle",
             "x": 0,
-            "y": 1300,
+            "y": 1290,
             "w": 277,
             "h": 14,
             "dimension": "both"
@@ -4156,7 +4156,7 @@
             "id": "seal-5",
             "type": "seal",
             "x": 277,
-            "y": 1300,
+            "y": 1290,
             "w": 76,
             "h": 14,
             "openSec": 0.65
@@ -4480,7 +4480,7 @@
             "h": 28,
             "dimension": "blue",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.78,
             "blastRadius": 130,
             "blastSec": 0.22
           },
@@ -4538,7 +4538,7 @@
             "id": "wall-6-r",
             "type": "obstacle",
             "x": 83,
-            "y": 1430,
+            "y": 1428,
             "w": 277,
             "h": 14,
             "dimension": "both"
@@ -4547,12 +4547,12 @@
             "id": "mine-6",
             "type": "mine",
             "x": 31,
-            "y": 1430,
+            "y": 1428,
             "w": 28,
             "h": 28,
             "dimension": "red",
             "activationRadius": 190,
-            "chargeSec": 0.7,
+            "chargeSec": 0.82,
             "blastRadius": 130,
             "blastSec": 0.22
           },

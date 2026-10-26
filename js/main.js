@@ -1,4 +1,6 @@
 import { Game } from './game.js';
+import { inputTime } from './input-time.js';
+import { phaseFlowState } from './phase-flow.js';
 import { UI } from './ui.js';
 import { Input } from './input.js';
 import { AudioEngine } from './audio.js';
@@ -200,7 +202,7 @@ async function boot() {
   ui.updateVolumes(audio.settings);
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
-    ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog}}:{}),
+    ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog,phaseFlow:phaseFlowState(game)}}:{}),
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
@@ -251,8 +253,7 @@ async function boot() {
   let clockArmed = false;
 
   function eventTime(ts) {
-    const now = performance.now();
-    return Number.isFinite(ts) && ts <= now && ts > now - 1000 ? ts : now;
+    return inputTime(ts);
   }
 
   function advanceTo(now) {
@@ -261,7 +262,7 @@ async function boot() {
     const elapsed = (now - last) / 1000;
     // Pause a blind stall even without audio. At 5 FPS, all 200 ms still simulate:
     // frame rate must never slow down the ascent or change collision behavior.
-    if (elapsed > MAX_FRAME_DT && clockArmed && (game.state === 'playing' || game.state === 'respawn')) game.pause();
+    if (elapsed > MAX_FRAME_DT && clockArmed && (game.state === 'playing' || game.state === 'respawn')) game.pause(true);
     const dt = Math.min(MAX_FRAME_DT, elapsed) * debug.speed;
     last = now;
     game.update(dt);

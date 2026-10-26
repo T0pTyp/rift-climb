@@ -1,6 +1,7 @@
 import { AscensionPanels } from './ascension-ui.js';
 import { medal } from './art/ui-assets.js';
 import { COLORS } from './dimensions.js';
+import { withInputEvent } from './input-time.js';
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -23,29 +24,38 @@ document.addEventListener('click', (e) => {
  * - ruft onGesture bei jedem Gesten-Event synchron auf (WebAudio-Unlock).
  */
 export function bindTap(el, action, onGesture) {
-  let downInside = false;
+  let downId = null;
   const fire = (e) => {
     e.stopPropagation();
+    if(el.disabled||!el.getClientRects().length)return;
+    if(e.type==='pointerup'){
+      const r=el.getBoundingClientRect();
+      if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
+    }
     if (onGesture) onGesture();
     const now = performance.now();
     e.preventDefault();
     if (e.type === 'pointerup') clickShieldUntil = now + CLICK_SHIELD_MS;
-    action(e);
+    withInputEvent(e.timeStamp,()=>action(e));
   };
   el.addEventListener('pointerdown', (e) => {
-    if(e.button>0||e.isPrimary===false)return;
-    downInside = true;
+    if(e.button>0||downId!==null)return;
+    downId=e.pointerId;
+    try{el.setPointerCapture?.(e.pointerId);}catch{/* Synthetic test events have no native capture. */}
     // Unlock before pointerup preventDefault. Some browsers only open audio on the first event of the tap.
     if (onGesture) onGesture();
     e.stopPropagation();
   });
   el.addEventListener('pointerup', (e) => {
-    if(e.isPrimary===false)return;
-    if (!downInside) return;
-    downInside = false;
+    if (downId!==e.pointerId) return;
+    downId = null;
+    e.preventDefault();
+    clickShieldUntil=performance.now()+CLICK_SHIELD_MS;
     fire(e);
   });
-  el.addEventListener('pointercancel', () => { downInside = false; });
+  const cancel=e=>{if(downId===e.pointerId)downId=null;};
+  el.addEventListener('pointercancel',cancel);
+  el.addEventListener('lostpointercapture',cancel);
   el.addEventListener('click', fire);
 }
 

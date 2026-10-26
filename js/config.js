@@ -31,7 +31,7 @@ export const HIT_RADIUS = 8; // Kollisionskreis des Spielers (sichtbare Figur ~2
 
 // Eingabe
 export const START_GRACE_MS = 200; // Start-Tap zählt nicht als Impuls
-export const MIN_PRESS_INTERVAL_MS = 45; // doppelt verarbeitete Touches ignorieren
+export const MIN_PRESS_INTERVAL_MS = 45; // Entprellung nach physischer Ereigniszeit, keine Bewegungssperre
 
 // Tod und Neustart
 export const DEATH_FREEZE_SEC = 0.28; // kurzer Treffer-Moment, danach Todesscreen

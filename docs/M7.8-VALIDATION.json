@@ -1,0 +1,1270 @@
+{
+  "date": "2026-10-26",
+  "baseline": "2822215",
+  "production": {
+    "arenaWidth": 360,
+    "inputBufferMs": 0,
+    "phaseBufferMs": 0,
+    "climbSpeed": 260,
+    "simHz": 240,
+    "inputDebounceMs": 45,
+    "hitRadius": 8
+  },
+  "inputBefore": {
+    "case": "physical events 60ms apart, delivered together after a 100ms browser stall",
+    "accepted": 1,
+    "received": [
+      {
+        "d": 1,
+        "t": 100
+      }
+    ],
+    "ignored": 1
+  },
+  "inputAfter": {
+    "eventTimesMs": [
+      100,
+      160
+    ],
+    "receiptTimeMs": 200,
+    "accepted": 2,
+    "lastDispatchDelayMs": 40
+  },
+  "phasePrototypes": [
+    {
+      "ms": 0,
+      "activeRedIgnoredAt25ms": false,
+      "neutralIgnored": false,
+      "activeRedIgnoredAt110ms": false
+    },
+    {
+      "ms": 60,
+      "activeRedIgnoredAt25ms": true,
+      "neutralIgnored": false,
+      "activeRedIgnoredAt110ms": false
+    },
+    {
+      "ms": 100,
+      "activeRedIgnoredAt25ms": true,
+      "neutralIgnored": false,
+      "activeRedIgnoredAt110ms": false
+    }
+  ],
+  "arenaComparisons": [
+    {
+      "width": 360,
+      "step": 90,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "timeTo95ms": 220,
+      "wallToWallInputs": 3,
+      "wallHitboxMargin": 37,
+      "initialAcceleration": 41849.13719008264,
+      "peakVelocity": 713.9046964746296,
+      "campaignWins": 6,
+      "chunkWins": 20,
+      "trapBodyRepositions": 0
+    },
+    {
+      "width": 324,
+      "step": 81,
+      "exactRestDisplacementAt220ms": 76.95045314818245,
+      "timeTo95ms": 220,
+      "wallToWallInputs": 3,
+      "wallHitboxMargin": 32.5,
+      "initialAcceleration": 37664.22347107438,
+      "peakVelocity": 642.5142268271666,
+      "campaignWins": 6,
+      "chunkWins": 20,
+      "trapBodyRepositions": 6
+    },
+    {
+      "width": 306,
+      "step": 76.5,
+      "exactRestDisplacementAt220ms": 72.6754279732834,
+      "timeTo95ms": 220,
+      "wallToWallInputs": 3,
+      "wallHitboxMargin": 30.25,
+      "initialAcceleration": 35571.766611570245,
+      "peakVelocity": 606.8189920034351,
+      "campaignWins": 6,
+      "chunkWins": 20,
+      "trapBodyRepositions": 6
+    }
+  ],
+  "motionProfiles": [
+    {
+      "scenario": "rest",
+      "initialX": 135,
+      "initialVx": 0,
+      "initialDim": "B",
+      "sampledDurationMs": 220.83333333333331,
+      "displacement": 85.5668102851316,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": 79.00489023192263,
+      "finalDim": "R",
+      "peak": 713.9046964746296,
+      "firstReverseMs": null
+    },
+    {
+      "scenario": "geometric-center",
+      "initialX": 180,
+      "initialVx": 0,
+      "initialDim": "B",
+      "sampledDurationMs": 220.83333333333331,
+      "displacement": 42.78340514256581,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": 39.50244511596121,
+      "finalDim": "R",
+      "peak": 356.9523482373149,
+      "firstReverseMs": null
+    },
+    {
+      "scenario": "moving-forward",
+      "initialX": 168.3886641079213,
+      "initialVx": 688.5566261064247,
+      "initialDim": "R",
+      "sampledDurationMs": 220.83333333333331,
+      "displacement": 140.6894956140857,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": 106.55605119052136,
+      "finalDim": "B",
+      "peak": 1201.8158035489937,
+      "firstReverseMs": null
+    },
+    {
+      "scenario": "reversal",
+      "initialX": 168.3886641079213,
+      "initialVx": 688.5566261064247,
+      "initialDim": "R",
+      "sampledDurationMs": 220.83333333333331,
+      "displacement": -30.44412495617746,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": -51.453729273324356,
+      "finalDim": "B",
+      "peak": 513.7086660726037,
+      "firstReverseMs": 25
+    },
+    {
+      "scenario": "wall",
+      "initialX": 315,
+      "initialVx": 0,
+      "initialDim": "B",
+      "sampledDurationMs": 220.83333333333331,
+      "displacement": 0,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": 0,
+      "finalDim": "R",
+      "peak": 0,
+      "firstReverseMs": null
+    },
+    {
+      "scenario": "two-taps",
+      "initialX": 135,
+      "initialVx": 0,
+      "initialDim": "B",
+      "sampledDurationMs": 279.1666666666667,
+      "displacement": 174.03154556860846,
+      "exactRestDisplacementAt220ms": 85.50050349798047,
+      "finalVx": 107.39473975670002,
+      "finalDim": "B",
+      "peak": 1211.2545951627555,
+      "firstReverseMs": null
+    }
+  ],
+  "reactionMeasurements": [
+    {
+      "id": "first-pulse",
+      "durationSec": 40,
+      "minimumInputSpacingSec": 1,
+      "minimumStaticRowCenterSpacingSec": 1,
+      "isolated50msFailures": []
+    },
+    {
+      "id": "fractured-rhythm",
+      "durationSec": 56.25,
+      "minimumInputSpacingSec": 0.46875,
+      "minimumStaticRowCenterSpacingSec": 0.46875,
+      "isolated50msFailures": []
+    },
+    {
+      "id": "overload",
+      "durationSec": 66.66666666538461,
+      "minimumInputSpacingSec": 0.3125,
+      "minimumStaticRowCenterSpacingSec": 0.3125,
+      "isolated50msFailures": []
+    },
+    {
+      "id": "shattered-gears",
+      "durationSec": 50,
+      "minimumInputSpacingSec": 0.1599999999999966,
+      "minimumStaticRowCenterSpacingSec": 1,
+      "isolated50msFailures": []
+    },
+    {
+      "id": "voltage-run",
+      "durationSec": 60,
+      "minimumInputSpacingSec": 0.9090900000000062,
+      "minimumStaticRowCenterSpacingSec": 0.9090909076923008,
+      "isolated50msFailures": []
+    },
+    {
+      "id": "singularity-rush",
+      "durationSec": 75,
+      "minimumInputSpacingSec": 0.1999999999999993,
+      "minimumStaticRowCenterSpacingSec": 0.30480769230769234,
+      "isolated50msFailures": []
+    }
+  ],
+  "campaignChanges": [
+    {
+      "id": "singularity-rush",
+      "changes": [
+        {
+          "id": "wall-16-l",
+          "field": "y",
+          "before": 4333.333333,
+          "after": 4331.333333
+        },
+        {
+          "id": "wall-16-r",
+          "field": "y",
+          "before": 4333.333333,
+          "after": 4331.333333
+        },
+        {
+          "id": "seal-16",
+          "field": "y",
+          "before": 4333.333333,
+          "after": 4331.333333
+        },
+        {
+          "id": "wall-64-l",
+          "field": "y",
+          "before": 14489.583333,
+          "after": 14498.583333
+        },
+        {
+          "id": "wall-64-r",
+          "field": "y",
+          "before": 14489.583333,
+          "after": 14498.583333
+        },
+        {
+          "id": "mine-64",
+          "field": "y",
+          "before": 14489.583333,
+          "after": 14498.583333
+        },
+        {
+          "id": "wall-68-l",
+          "field": "y",
+          "before": 14977.083333,
+          "after": 14979.083333
+        },
+        {
+          "id": "mine-68",
+          "field": "y",
+          "before": 14977.083333,
+          "after": 14979.083333
+        },
+        {
+          "id": "wall-72-l",
+          "field": "y",
+          "before": 15464.583333,
+          "after": 15466.583333
+        },
+        {
+          "id": "wall-72-r",
+          "field": "y",
+          "before": 15464.583333,
+          "after": 15466.583333
+        },
+        {
+          "id": "laser-72",
+          "field": "y",
+          "before": 15464.583333,
+          "after": 15466.583333
+        },
+        {
+          "id": "wall-76-l",
+          "field": "y",
+          "before": 15789.583333,
+          "after": 15798.583333
+        },
+        {
+          "id": "wall-76-r",
+          "field": "y",
+          "before": 15789.583333,
+          "after": 15798.583333
+        },
+        {
+          "id": "mine-76",
+          "field": "y",
+          "before": 15789.583333,
+          "after": 15798.583333
+        },
+        {
+          "id": "mine-80",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.76
+        },
+        {
+          "id": "wall-83-r",
+          "field": "y",
+          "before": 17116.666667,
+          "after": 17118.666667
+        },
+        {
+          "id": "seal-83",
+          "field": "y",
+          "before": 17116.666667,
+          "after": 17118.666667
+        },
+        {
+          "id": "mine-84",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.72
+        },
+        {
+          "id": "wall-87-l",
+          "field": "y",
+          "before": 17658.333333,
+          "after": 17667.333333
+        },
+        {
+          "id": "wall-87-r",
+          "field": "y",
+          "before": 17658.333333,
+          "after": 17667.333333
+        },
+        {
+          "id": "seal-87",
+          "field": "y",
+          "before": 17658.333333,
+          "after": 17667.333333
+        },
+        {
+          "id": "mine-92",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.76
+        },
+        {
+          "id": "mine-96",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.78
+        }
+      ]
+    }
+  ],
+  "chunkChanges": [
+    {
+      "id": "gear-bridge",
+      "tier": 1,
+      "changes": [
+        {
+          "id": "wall-2-l",
+          "field": "y",
+          "before": 1170,
+          "after": 1160
+        },
+        {
+          "id": "wall-2-r",
+          "field": "y",
+          "before": 1170,
+          "after": 1160
+        },
+        {
+          "id": "seal-2",
+          "field": "y",
+          "before": 1170,
+          "after": 1160
+        }
+      ]
+    },
+    {
+      "id": "gold-switch",
+      "tier": 1,
+      "changes": [
+        {
+          "id": "wall-0-r",
+          "field": "y",
+          "before": 650,
+          "after": 654
+        },
+        {
+          "id": "seal-0",
+          "field": "y",
+          "before": 650,
+          "after": 654
+        }
+      ]
+    },
+    {
+      "id": "shaft-cross",
+      "tier": 1,
+      "changes": [
+        {
+          "id": "wall-1-l",
+          "field": "y",
+          "before": 975,
+          "after": 973
+        },
+        {
+          "id": "wall-1-r",
+          "field": "y",
+          "before": 975,
+          "after": 973
+        },
+        {
+          "id": "seal-1",
+          "field": "y",
+          "before": 975,
+          "after": 973
+        }
+      ]
+    },
+    {
+      "id": "fracture-steps",
+      "tier": 1,
+      "changes": [
+        {
+          "id": "wall-1-l",
+          "field": "y",
+          "before": 975,
+          "after": 962
+        },
+        {
+          "id": "wall-1-r",
+          "field": "y",
+          "before": 975,
+          "after": 962
+        },
+        {
+          "id": "color-1",
+          "field": "y",
+          "before": 975,
+          "after": 962
+        },
+        {
+          "id": "wall-2-l",
+          "field": "y",
+          "before": 1170,
+          "after": 1178
+        },
+        {
+          "id": "wall-2-r",
+          "field": "y",
+          "before": 1170,
+          "after": 1178
+        },
+        {
+          "id": "saw-2",
+          "field": "y",
+          "before": 1170,
+          "after": 1178
+        },
+        {
+          "id": "wall-3-l",
+          "field": "y",
+          "before": 1495,
+          "after": 1489
+        },
+        {
+          "id": "wall-3-r",
+          "field": "y",
+          "before": 1495,
+          "after": 1489
+        },
+        {
+          "id": "seal-3",
+          "field": "y",
+          "before": 1495,
+          "after": 1489
+        }
+      ]
+    },
+    {
+      "id": "core-cascade",
+      "tier": 3,
+      "changes": [
+        {
+          "id": "wall-1-l",
+          "field": "y",
+          "before": 715,
+          "after": 703
+        },
+        {
+          "id": "mine-1",
+          "field": "y",
+          "before": 715,
+          "after": 703
+        },
+        {
+          "id": "wall-2-l",
+          "field": "y",
+          "before": 845,
+          "after": 856
+        },
+        {
+          "id": "wall-2-r",
+          "field": "y",
+          "before": 845,
+          "after": 856
+        },
+        {
+          "id": "laser-2",
+          "field": "y",
+          "before": 845,
+          "after": 856
+        },
+        {
+          "id": "wall-3-l",
+          "field": "y",
+          "before": 975,
+          "after": 968
+        },
+        {
+          "id": "wall-3-r",
+          "field": "y",
+          "before": 975,
+          "after": 968
+        },
+        {
+          "id": "seal-3",
+          "field": "y",
+          "before": 975,
+          "after": 968
+        },
+        {
+          "id": "mine-4",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.82
+        }
+      ]
+    },
+    {
+      "id": "polarity-chain",
+      "tier": 3,
+      "changes": [
+        {
+          "id": "wall-1-l",
+          "field": "y",
+          "before": 715,
+          "after": 727
+        },
+        {
+          "id": "wall-1-r",
+          "field": "y",
+          "before": 715,
+          "after": 727
+        },
+        {
+          "id": "saw-1",
+          "field": "y",
+          "before": 715,
+          "after": 727
+        },
+        {
+          "id": "wall-2-l",
+          "field": "y",
+          "before": 845,
+          "after": 843
+        },
+        {
+          "id": "wall-2-r",
+          "field": "y",
+          "before": 845,
+          "after": 843
+        },
+        {
+          "id": "seal-2",
+          "field": "y",
+          "before": 845,
+          "after": 843
+        },
+        {
+          "id": "mine-3",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.76
+        },
+        {
+          "id": "wall-5-l",
+          "field": "y",
+          "before": 1300,
+          "after": 1287
+        },
+        {
+          "id": "wall-5-r",
+          "field": "y",
+          "before": 1300,
+          "after": 1287
+        },
+        {
+          "id": "seal-5",
+          "field": "y",
+          "before": 1300,
+          "after": 1287
+        }
+      ]
+    },
+    {
+      "id": "voltage-crown",
+      "tier": 3,
+      "changes": [
+        {
+          "id": "mine-0",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.72
+        },
+        {
+          "id": "wall-4-l",
+          "field": "y",
+          "before": 1170,
+          "after": 1163
+        },
+        {
+          "id": "wall-4-r",
+          "field": "y",
+          "before": 1170,
+          "after": 1163
+        },
+        {
+          "id": "laser-4",
+          "field": "y",
+          "before": 1170,
+          "after": 1163
+        },
+        {
+          "id": "wall-5-l",
+          "field": "w",
+          "before": 277,
+          "after": 251
+        },
+        {
+          "id": "wall-6-l",
+          "field": "w",
+          "before": 187,
+          "after": 161
+        },
+        {
+          "id": "seal-6",
+          "field": "x",
+          "before": 187,
+          "after": 161
+        },
+        {
+          "id": "seal-6",
+          "field": "w",
+          "before": 76,
+          "after": 102
+        }
+      ]
+    },
+    {
+      "id": "rift-weave",
+      "tier": 3,
+      "changes": [
+        {
+          "id": "wall-0-r",
+          "field": "y",
+          "before": 585,
+          "after": 592
+        },
+        {
+          "id": "seal-0",
+          "field": "y",
+          "before": 585,
+          "after": 592
+        },
+        {
+          "id": "wall-1-l",
+          "field": "w",
+          "before": 97,
+          "after": 87
+        },
+        {
+          "id": "mine-4",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.78
+        },
+        {
+          "id": "wall-5-l",
+          "field": "y",
+          "before": 1300,
+          "after": 1290
+        },
+        {
+          "id": "seal-5",
+          "field": "y",
+          "before": 1300,
+          "after": 1290
+        }
+      ]
+    },
+    {
+      "id": "singular-flight",
+      "tier": 3,
+      "changes": [
+        {
+          "id": "mine-3",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.78
+        },
+        {
+          "id": "wall-6-r",
+          "field": "y",
+          "before": 1430,
+          "after": 1428
+        },
+        {
+          "id": "mine-6",
+          "field": "y",
+          "before": 1430,
+          "after": 1428
+        },
+        {
+          "id": "mine-6",
+          "field": "chargeSec",
+          "before": 0.7,
+          "after": 0.82
+        }
+      ]
+    }
+  ],
+  "endless": {
+    "bookFingerprint": "1523b306",
+    "longRuns": [
+      {
+        "seed": 1,
+        "seconds": 2048.1958333245652,
+        "meters": 53253,
+        "transitions": 256,
+        "maxObjects": 88,
+        "chunks": 4
+      },
+      {
+        "seed": 37,
+        "seconds": 2048.1958333245652,
+        "meters": 53253,
+        "transitions": 256,
+        "maxObjects": 88,
+        "chunks": 4
+      },
+      {
+        "seed": 2026,
+        "seconds": 2048.1958333245652,
+        "meters": 53253,
+        "transitions": 256,
+        "maxObjects": 88,
+        "chunks": 4
+      },
+      {
+        "seed": 4294967295,
+        "seconds": 2048.1958333245652,
+        "meters": 53253,
+        "transitions": 256,
+        "maxObjects": 88,
+        "chunks": 4
+      }
+    ],
+    "entries": 480,
+    "timingVariations": 2100,
+    "sampledOffsetsMs": [
+      -50,
+      -40,
+      -30,
+      -20,
+      -10,
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "minimumWallMargin": 24.819869476217534,
+    "minimumSeamRecoverySec": 2.2499999999999996,
+    "flowContracts": 400,
+    "failures": 0,
+    "flows": [
+      {
+        "id": "open-arch",
+        "tier": 0,
+        "firstTap": 2.25,
+        "lastTap": 5.25,
+        "minGap": 1,
+        "maxBurst": 1,
+        "tailRest": 2.75
+      },
+      {
+        "id": "left-echo",
+        "tier": 0,
+        "firstTap": 2.25,
+        "lastTap": 5.5,
+        "minGap": 0.75,
+        "maxBurst": 1,
+        "tailRest": 2.5
+      },
+      {
+        "id": "right-return",
+        "tier": 0,
+        "firstTap": 2.25,
+        "lastTap": 5.25,
+        "minGap": 1,
+        "maxBurst": 1,
+        "tailRest": 2.75
+      },
+      {
+        "id": "pendulum-hall",
+        "tier": 0,
+        "firstTap": 2.25,
+        "lastTap": 5.5,
+        "minGap": 0.75,
+        "maxBurst": 1,
+        "tailRest": 2.5
+      },
+      {
+        "id": "blue-stair",
+        "tier": 0,
+        "firstTap": 2.25,
+        "lastTap": 5.25,
+        "minGap": 1,
+        "maxBurst": 1,
+        "tailRest": 2.75
+      },
+      {
+        "id": "gear-bridge",
+        "tier": 1,
+        "firstTap": 1.25,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 4,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "gold-switch",
+        "tier": 1,
+        "firstTap": 1.25,
+        "lastTap": 5.21,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 5,
+        "tailRest": 2.79
+      },
+      {
+        "id": "shaft-cross",
+        "tier": 1,
+        "firstTap": 1.25,
+        "lastTap": 4.84,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 5,
+        "tailRest": 3.16
+      },
+      {
+        "id": "double-lock",
+        "tier": 1,
+        "firstTap": 2.25,
+        "lastTap": 5.25,
+        "minGap": 1,
+        "maxBurst": 1,
+        "tailRest": 2.75
+      },
+      {
+        "id": "fracture-steps",
+        "tier": 1,
+        "firstTap": 1.25,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 4,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "capacitor-walk",
+        "tier": 2,
+        "firstTap": 2.25,
+        "lastTap": 5.25,
+        "minGap": 1,
+        "maxBurst": 1,
+        "tailRest": 2.75
+      },
+      {
+        "id": "laser-lattice",
+        "tier": 2,
+        "firstTap": 2.25,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 6,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "ionic-return",
+        "tier": 2,
+        "firstTap": 2.25,
+        "lastTap": 5.13,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 4,
+        "tailRest": 2.87
+      },
+      {
+        "id": "charged-arches",
+        "tier": 2,
+        "firstTap": 2.25,
+        "lastTap": 5.5,
+        "minGap": 0.75,
+        "maxBurst": 1,
+        "tailRest": 2.5
+      },
+      {
+        "id": "reactor-fold",
+        "tier": 2,
+        "firstTap": 1.25,
+        "lastTap": 5.21,
+        "minGap": 0.18000000000000016,
+        "maxBurst": 3,
+        "tailRest": 2.79
+      },
+      {
+        "id": "core-cascade",
+        "tier": 3,
+        "firstTap": 1.15,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 5,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "polarity-chain",
+        "tier": 3,
+        "firstTap": 1.5,
+        "lastTap": 6.9,
+        "minGap": 0.1599999999999997,
+        "maxBurst": 7,
+        "tailRest": 1.0999999999999996
+      },
+      {
+        "id": "voltage-crown",
+        "tier": 3,
+        "firstTap": 1.15,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 4,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "rift-weave",
+        "tier": 3,
+        "firstTap": 1.15,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 7,
+        "tailRest": 1.3099999999999996
+      },
+      {
+        "id": "singular-flight",
+        "tier": 3,
+        "firstTap": 1.15,
+        "lastTap": 6.69,
+        "minGap": 0.17999999999999972,
+        "maxBurst": 6,
+        "tailRest": 1.3099999999999996
+      }
+    ]
+  },
+  "browserFlow": {
+    "checks": 39,
+    "observations": [
+      {
+        "label": "android",
+        "queued": {
+          "before": 0.25000000000000033,
+          "after": 0.25000000000000033,
+          "impulses": 2,
+          "pulses": 2,
+          "dim": "B",
+          "flow": {
+            "arenaWidth": 360,
+            "impulseTargetDistance": 90,
+            "steerOmega": 21.563636363636363,
+            "motionForecast": {
+              "atMs": 220,
+              "left": -85.50050349798047,
+              "right": 85.50050349798047,
+              "assumption": "no further input; motion only, not a safe-route prediction"
+            },
+            "x": 135,
+            "vx": 0,
+            "dimension": "B",
+            "simTime": 0.25000000000000033,
+            "impulseActive": false,
+            "interruptible": true,
+            "movementCooldownMs": 0,
+            "debounceRemainingMs": 3.299999952316284,
+            "inputBuffer": {
+              "durationMs": 0,
+              "pending": false,
+              "reason": "spring-is-interruptible"
+            },
+            "phaseBuffer": {
+              "durationMs": 0,
+              "active": false,
+              "remainingMs": 0,
+              "reason": "geometry-and-event-time; no collision immunity"
+            },
+            "input": {
+              "accepted": true,
+              "reason": "immediate",
+              "eventTimeMs": 1026.2000000476837,
+              "dispatchDelayMs": 41.40000009536743
+            },
+            "lastSwitch": {
+              "t": 0.25000000000000033,
+              "from": "R",
+              "to": "B",
+              "pulseId": 2
+            },
+            "nextBand": {
+              "id": "gate-4-0",
+              "dimension": "W",
+              "seconds": 1.6923076923076918,
+              "horizontalClearance": -8,
+              "method": "vertical-band-only",
+              "collisionPrediction": false
+            },
+            "collision": {
+              "decision": "current-dimension-and-real-geometry",
+              "phaseProtection": false
+            },
+            "chunk": null
+          }
+        },
+        "view": {
+          "lookahead": 2.199320388349515,
+          "width": 412,
+          "canvas": 412
+        },
+        "errors": []
+      },
+      {
+        "label": "webkit",
+        "queued": {
+          "before": 0.25000000000000033,
+          "after": 0.25000000000000033,
+          "impulses": 2,
+          "pulses": 2,
+          "dim": "B",
+          "flow": {
+            "arenaWidth": 360,
+            "impulseTargetDistance": 90,
+            "steerOmega": 21.563636363636363,
+            "motionForecast": {
+              "atMs": 220,
+              "left": -85.50050349798047,
+              "right": 85.50050349798047,
+              "assumption": "no further input; motion only, not a safe-route prediction"
+            },
+            "x": 135,
+            "vx": 0,
+            "dimension": "B",
+            "simTime": 0.25000000000000033,
+            "impulseActive": false,
+            "interruptible": true,
+            "movementCooldownMs": 0,
+            "debounceRemainingMs": 5,
+            "inputBuffer": {
+              "durationMs": 0,
+              "pending": false,
+              "reason": "spring-is-interruptible"
+            },
+            "phaseBuffer": {
+              "durationMs": 0,
+              "active": false,
+              "remainingMs": 0,
+              "reason": "geometry-and-event-time; no collision immunity"
+            },
+            "input": {
+              "accepted": true,
+              "reason": "immediate",
+              "eventTimeMs": 1518,
+              "dispatchDelayMs": 40
+            },
+            "lastSwitch": {
+              "t": 0.25000000000000033,
+              "from": "R",
+              "to": "B",
+              "pulseId": 2
+            },
+            "nextBand": {
+              "id": "gate-4-0",
+              "dimension": "W",
+              "seconds": 1.6923076923076918,
+              "horizontalClearance": -8,
+              "method": "vertical-band-only",
+              "collisionPrediction": false
+            },
+            "collision": {
+              "decision": "current-dimension-and-real-geometry",
+              "phaseProtection": false
+            },
+            "chunk": null
+          }
+        },
+        "view": {
+          "lookahead": 1.8387692307692312,
+          "width": 390,
+          "canvas": 390
+        },
+        "errors": []
+      },
+      {
+        "label": "small",
+        "queued": {
+          "before": 0.25000000000000033,
+          "after": 0.25000000000000033,
+          "impulses": 2,
+          "pulses": 2,
+          "dim": "B",
+          "flow": {
+            "arenaWidth": 360,
+            "impulseTargetDistance": 90,
+            "steerOmega": 21.563636363636363,
+            "motionForecast": {
+              "atMs": 220,
+              "left": -85.50050349798047,
+              "right": 85.50050349798047,
+              "assumption": "no further input; motion only, not a safe-route prediction"
+            },
+            "x": 135,
+            "vx": 0,
+            "dimension": "B",
+            "simTime": 0.25000000000000033,
+            "impulseActive": false,
+            "interruptible": true,
+            "movementCooldownMs": 0,
+            "debounceRemainingMs": 3.3999998569488525,
+            "inputBuffer": {
+              "durationMs": 0,
+              "pending": false,
+              "reason": "spring-is-interruptible"
+            },
+            "phaseBuffer": {
+              "durationMs": 0,
+              "active": false,
+              "remainingMs": 0,
+              "reason": "geometry-and-event-time; no collision immunity"
+            },
+            "input": {
+              "accepted": true,
+              "reason": "immediate",
+              "eventTimeMs": 1037.3999998569489,
+              "dispatchDelayMs": 41.30000019073486
+            },
+            "lastSwitch": {
+              "t": 0.25000000000000033,
+              "from": "R",
+              "to": "B",
+              "pulseId": 2
+            },
+            "nextBand": {
+              "id": "gate-4-0",
+              "dimension": "W",
+              "seconds": 1.6923076923076918,
+              "horizontalClearance": -8,
+              "method": "vertical-band-only",
+              "collisionPrediction": false
+            },
+            "collision": {
+              "decision": "current-dimension-and-real-geometry",
+              "phaseProtection": false
+            },
+            "chunk": null
+          }
+        },
+        "view": {
+          "lookahead": 1.917,
+          "width": 320,
+          "canvas": 320
+        },
+        "errors": []
+      },
+      {
+        "label": "native-queued-stall",
+        "native": {
+          "state": "playing",
+          "impulses": 2,
+          "pulses": 2,
+          "input": {
+            "accepted": true,
+            "reason": "immediate",
+            "eventTimeMs": 1243.9000000953674,
+            "dispatchDelayMs": 98.29999995231628
+          }
+        }
+      }
+    ]
+  },
+  "performance": {
+    "cpuThrottle": 4,
+    "deviceProfile": "Pixel 7 emulation",
+    "audio": {
+      "state": "running",
+      "active": true,
+      "songTime": 104.00416666665424,
+      "nextStep": 833,
+      "sources": 19,
+      "dimension": "B",
+      "settings": {
+        "music": 0.65,
+        "sfx": 0.7,
+        "muted": false
+      },
+      "scheduled": 833,
+      "resyncs": 2,
+      "drift": 0.03366666665424134,
+      "maxDrift": 0.17083333333333345,
+      "sfx": {
+        "flight": 156,
+        "switch": 156,
+        "pulse": 156,
+        "seal": 17,
+        "seal-close": 17,
+        "saw-break": 15,
+        "laser-disable": 18,
+        "mine-warn": 15,
+        "mine-disarm": 14,
+        "mine-blast": 1
+      }
+    },
+    "sourcesMax": 29,
+    "driftP95": 0.036666666688361715,
+    "seconds": 104.00416666665424,
+    "seed": 37,
+    "generated": 16,
+    "chunksMax": 4,
+    "cacheMax": 2,
+    "seekCalls": 1,
+    "maxObjects": 88,
+    "frames": 24717,
+    "jsAvg": 1.1771614681860774,
+    "jsP95": 2,
+    "jsP99": 3,
+    "fps": 237.99390282632012,
+    "gapP95": 4.900000095367432,
+    "longFrames": 11,
+    "heapKB": 1608.333984375,
+    "sourcesAfterPause": 0
+  },
+  "musicSealAccentGridChanges": 0,
+  "notes": [
+    "Technical fixture initial velocities are declared start conditions, never teleports during a playthrough.",
+    "Width variants exist only in tests; transformed geometry preserves player and moving hazard body sizes.",
+    "Vertical band spacing is not a full reaction-time or collision prediction.",
+    "All campaign proof runs use production collision rules with zero phase immunity."
+  ]
+}

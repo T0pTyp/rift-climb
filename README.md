@@ -6,6 +6,33 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## M7.8 – Phase Flow & Fairness
+
+Gültige schnelle Kontakte werden jetzt anhand ihrer **Ereigniszeit** verarbeitet,
+auch wenn der Browser sie nach einem kurzen Stall gemeinsam zustellt. Szenenwechsel
+halten neue Eingaben von alten getrennt, ohne frische Folgeeingaben einer langsamen
+Startaktion zu verlieren. Retry funktioniert auch mit dem zweiten Finger.
+
+Die intern geprüften Breiten **360/324/306 u** bestehen ihre Replays; die schmaleren
+Varianten liefern jedoch keinen zusätzlichen Zeitgewinn und verlieren Sicherheitsraum.
+Das Hauptspiel bleibt bei **360 u**, derselben Flugphysik und derselben Kamera.
+**Input Buffer und Phase Buffer bleiben bei 0 ms**: Impulse sind unterbrechbar,
+es gibt keine zusätzliche Kollisions-Unverwundbarkeit. Compact bleibt verborgen,
+Grafikqualität bleibt dauerhaft hochwertig und nicht einstellbar.
+
+Gezielte Korrekturen in Singularity Rush und neun bestehenden Infinity-Modulen
+verbessern knappe gekoppelte Flug-/Dimensionsfolgen. Alle regulären Replay-Eingaben
+und Level-IDs bleiben erhalten. Die 20 Chunks bestehen zusätzlich **2100 einzelne
+Timing-Varianten**, **480 bewegte Eingänge** und geprüfte Übergänge. Die Auswahl
+berücksichtigt Erholung nach schnellen Aktionsserien; die Schwierigkeit bleibt gedeckelt.
+
+- [Entscheidungen, Vorher/Nachher, Tests und Grenzen](docs/M7.8-PHASE-FLOW.md)
+- [Maschinenlesbare Messungen](docs/M7.8-VALIDATION.json)
+- [Aktuelle reguläre 100-%-Nachweise](docs/M7.8-REPLAY-PROOFS.json)
+
+`npm run test:flow` prüft die gezielten Fälle, `npm run test:flow:timing` die
+Kampagnen-Reserven und `npm run test:flow:e2e` die Browser-Eingaben.
+
 ## M7.7 – Gameplay Refinement & Balancing
 
 Direktere schnelle Menü-Taps und Instant Retry, präzise durchgehende Rechteckkollisionen,

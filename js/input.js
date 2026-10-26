@@ -3,6 +3,7 @@
 // Tipp links -> Impuls schräg rechts oben (+1), Tipp rechts -> schräg links oben (-1).
 // Tastatur: A / Pfeil links -> nach links oben, D / Pfeil rechts -> nach rechts oben.
 import { START_GRACE_MS, MIN_PRESS_INTERVAL_MS } from './config.js';
+import { inputTime,withInputEvent,currentInputEventTime } from './input-time.js';
 
 export class Input {
   /**
@@ -19,18 +20,27 @@ export class Input {
     this.lastTouchTs = -1;
     this.ignored = 0;
     this.activePointers = new Set();
+    this.eventFloor = -Infinity;
+    this.lastDecision = { accepted:false, reason:'no-input', eventTimeMs:0, dispatchDelayMs:0 };
 
     const press = (dir, ts) => {
       const now = performance.now();
-      if (now - this.lastPress < MIN_PRESS_INTERVAL_MS) {
+      const time = inputTime(ts, now);
+      const stale = time < this.eventFloor || now-time>1000;
+      if (stale || time - this.lastPress < MIN_PRESS_INTERVAL_MS - .01) {
         this.ignored++;
+        this.lastDecision={accepted:false,reason:stale?'previous-run-event':'minimum-interval',eventTimeMs:time,dispatchDelayMs:now-time};
         return;
       }
-      this.lastPress = now;
-      this.onPress(dir, ts);
+      this.lastPress = time;
+      this.lastDecision={accepted:true,reason:'immediate',eventTimeMs:time,dispatchDelayMs:now-time};
+      withInputEvent(time,()=>this.onPress(dir, time));
     };
     const pointerPress = (clientX, ts) => {
-      if (performance.now() < this.blockPointerUntil) return;
+      const time=inputTime(ts),now=performance.now();
+      if (now < this.blockPointerUntil || time < this.blockPointerUntil) {
+        this.lastDecision={accepted:false,reason:'start-guard',eventTimeMs:time,dispatchDelayMs:now-time};return;
+      }
       const rect = surface.getBoundingClientRect();
       const leftSide = clientX - rect.left < rect.width / 2;
       press(leftSide ? 1 : -1, ts);
@@ -65,14 +75,19 @@ export class Input {
 
     window.addEventListener('keydown', (e) => {
       const k = e.key;
+      if(['Escape','p','P','Enter',' ','r','R'].includes(k)){
+        const time=inputTime(e.timeStamp);
+        if(time<this.eventFloor||performance.now()-time>1000){this.ignored++;e.preventDefault();return;}
+      }
       if (k === 'Escape' || k === 'p' || k === 'P') {
-        this.onPause();
+        if(e.repeat){e.preventDefault();return;}
+        withInputEvent(e.timeStamp,()=>this.onPause());
         e.preventDefault();
         return;
       }
       if (k === 'Enter' || k === ' ' || k === 'r' || k === 'R') {
         if(e.repeat){e.preventDefault();return;}
-        if (this.onConfirm(k)) e.preventDefault();
+        if (withInputEvent(e.timeStamp,()=>this.onConfirm(k))) e.preventDefault();
         if (k === ' ') e.preventDefault();
         return;
       }
@@ -88,7 +103,11 @@ export class Input {
   }
 
   /** Verhindert, dass der Tipp auf "Start" gleichzeitig als Spiel-Impuls zählt (nur Pointer). */
-  guard(ms = START_GRACE_MS) {
-    this.blockPointerUntil = performance.now() + ms;
+  guard(ms = START_GRACE_MS,useGesture=true) {
+    // DOM timestamps may be quantized to whole milliseconds on mobile browsers.
+    const now=Math.floor(performance.now());
+    this.blockPointerUntil = now + ms;
+    this.eventFloor = Math.floor(useGesture?(currentInputEventTime()??now):now);
+    this.lastPress = -Infinity;
   }
 }

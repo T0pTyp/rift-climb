@@ -21,6 +21,7 @@ import { BeatEffects } from './pulse/effects.js';
 import { TrapField,makeTrap,trapReach } from './traps.js';
 import { drawTrap } from './art/traps.js';
 import {EndlessWorld,worldMeters,INFINITY_TIERS} from './endless.js';
+import {phaseFlowState} from './phase-flow.js';
 
 const K = PARTICLE_KIND;
 
@@ -96,6 +97,7 @@ export class Game {
     this.trace = [];
     this.deathLog = []; // Explicit debug mode only; bounded, local, never persisted/uploaded.
     this.stats = { fps: 60, steps: 0, frameSteps: 0, impulses: 0 };
+    this.lastSwitch = null;
   }
 
   get y() {
@@ -231,6 +233,7 @@ export class Game {
     this.rowSolvable = true;
     this.obsLo = 0;
     this.trace.length = 0;
+    this.lastSwitch = null;
     this.stats.steps = this.stats.frameSteps = this.stats.impulses = 0;
     this.checkpoint = this.captureCheckpoint(this.y / UNITS_PER_BEAT, this.lastRowPassed);
     // Aufzeichnung (Nachweis der Durchspielbarkeit) nur für vollständige Läufe im Normalmodus
@@ -279,11 +282,12 @@ export class Game {
     this.autoplayQueue.sort((a, b) => a.t - b.t);
   }
 
-  pause() {
+  pause(interrupted=false) {
     if (this.state !== 'playing' && this.state !== 'respawn') return;
     this.saveProgress(true);
     this.pausedFrom = this.state;
     this.state = 'paused';
+    this.input.guard(0,!interrupted); // Physical gesture epoch, or actual interruption time.
     this.audio.suspend();
     this.ui.show('pause');
   }
@@ -303,6 +307,7 @@ export class Game {
     this.saveProgress();
     this.storage.finish?.(this.run,this.t,this.progress,'quit');
     this.state = 'menu';
+    this.input.guard(0);
     this.audio.stop?.();
     this.ui.updateMenu(this.storage.stats, this.storage.muted);
     this.ui.show('menu');
@@ -331,6 +336,7 @@ export class Game {
   impulse(dir) {
     if (this.state !== 'playing') return;
     const p = this.player;
+    const from = p.dim;
     const atWall = p.impulse(dir);
     this.stats.impulses++;
     this.flash = 1;
@@ -338,6 +344,7 @@ export class Game {
     this.shake = Math.max(this.shake, SWITCH_SHAKE);
     const col = COLORS[p.dim].main;
     this.rift.emit(p.x, this.y, this.t, col,p.dim);
+    this.lastSwitch={t:this.t,from,to:p.dim,pulseId:this.rift.nextId-1};
     this.audio.setDimension?.(p.dim);
     this.audio.sfx('flight', p.dim, atWall);
     this.audio.sfx('switch', p.dim, atWall);
@@ -550,6 +557,7 @@ export class Game {
 
   die(o) {
     if(this.state!=='playing')return;
+    this.input.guard(0,false);
     this.saveProgress();
     this.deathNewBest=(this.endless?worldMeters(this.y):this.progress)>this.runStartBest;
     this.storage.finish?.(this.run,this.t,this.progress,'death');
@@ -612,6 +620,7 @@ export class Game {
   }
 
   respawn() {
+    this.lastSwitch=null;
     const cp = this.checkpoint;
     const dy = cp.t * CLIMB_SPEED - this.y;
     this.particles.offset(dy);
@@ -642,6 +651,7 @@ export class Game {
   win() {
     if(this.endless||this.state!=='playing')return;
     this.state = 'won';
+    this.input.guard(0,false);
     this.clearAge = 0;
     this.anim.onPrecise();
     for (let i=0;i<72;i++) {
@@ -946,6 +956,13 @@ export class Game {
     }
     if (dead && this.state === 'dead' && pose.alpha <= 0.01) return;
     drawRiftling(ctx, dead && this.killer ? this.killer.x : p.x, sy, pose, v.dpr * v.scale, this.skinId || 'original');
+    if(!dead&&this.state!=='menu'){
+      // A crisp state marker follows the actual dimension even while skin art blends.
+      ctx.save();ctx.strokeStyle=COLORS[p.dim].main;ctx.lineWidth=1.4;
+      ctx.globalAlpha=.45+.4*this.switchPulse;
+      for(let i=0;i<2;i++){const angle=.15+i*Math.PI;ctx.beginPath();ctx.arc(p.x,sy,17,angle,angle+1.15);ctx.stroke();}
+      ctx.restore();
+    }
   }
 
   renderDeath(ctx, camY, psy) {
@@ -1034,7 +1051,12 @@ export class Game {
       sealLine = `Siegel B${next.beat}: ${open ? 'OFFEN ' + this.rift.remaining(next, this.t).toFixed(2) + ' s' : 'ZU'}  ` +
         `d ${distToSeal(p.x, this.y, next).toFixed(0)} u${!open && this.rift.inReach(next, p.x, this.y) ? '  IN REICHWEITE' : ''}`;
     }
+    const flow=phaseFlowState(this),band=flow.nextBand;
     const lines = [
+      `Arena ${this.arena.width} u · Ziel ${this.arena.step} u · Impuls unterbrechbar · Sperre 0 ms`,
+      `Δx220 ms L ${flow.motionForecast.left.toFixed(1)} / R ${flow.motionForecast.right.toFixed(1)} u (ohne weitere Eingabe)`,
+      `Input 0 ms / Phase 0 ms · kein Kollisionsschutz · Entprellung ${flow.debounceRemainingMs.toFixed(0)} ms`,
+      band?`Aktives Höhenband in ${band.seconds.toFixed(2)} s · nur y, keine Kollisionsvorhersage`:'Kein aktives statisches Höhenband voraus',
       `Pulse R ${PULSE_RADIUS} u  Öffnung ${next ? next.openSec : '–'} s  Wellen ${this.rift.activePulses}  gesendet ${this.rift.emitted}`,
       sealLine,
       `FPS ${this.stats.fps.toFixed(0)}  Sim ${Math.round(1 / SIM_DT)} Hz  Schritte/Frame ${this.stats.frameSteps}`,
