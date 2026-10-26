@@ -37,15 +37,15 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webki
  }
  await p.evaluate(()=>__RIFT.ui.h.onLabFeedback('equal'));await p.reload();await p.waitForFunction(()=>window.__RIFT);
  check(label+' reload preserves variant, real stats, average and feedback',await p.evaluate(()=>__ASCENSION.data.lab.style==='compact'&&__ASCENSION.data.lab.feedback==='equal'&&__ASCENSION.data.lab.stats.classic.clears===1&&__ASCENSION.data.lab.stats.compact.clears===1&&document.querySelector('#lab-stats').textContent.includes('Durchschnitt')));
- await click('#page-lab [data-home]');await p.evaluate(()=>__RIFT.ui.openPage('levels'));await click('#btn-start');check(label+' campaign ignores Compact selection and uses untouched Classic',await p.evaluate(()=>__RIFT.mode==='normal'&&__RIFT.arena.width===360&&__RIFT.level.id==='first-pulse'&&__ASCENSION.level('first-pulse').attempts===1));
+ await click('#page-lab [data-home]');await p.evaluate(()=>__RIFT.ui.openPage('levels'));await click('#btn-start');check(label+' campaign uses the two-tap arena',await p.evaluate(()=>__RIFT.mode==='normal'&&__RIFT.arena.width===270&&__RIFT.arena.lanes===3&&__RIFT.level.id==='first-pulse'&&__ASCENSION.level('first-pulse').attempts===1));
  await click('#btn-pause');await click('#btn-pause-menu');await p.evaluate(()=>__RIFT.ui.openPage('infinity'));await click('#btn-infinity-start');
- check(label+' Infinity ignores Lab Compact preference and remains Classic',await p.evaluate(()=>__RIFT.mode==='endless'&&__RIFT.arena.width===360&&__ASCENSION.data.lab.style==='compact'));
+ check(label+' Infinity stays on the two-tap arena',await p.evaluate(()=>__RIFT.mode==='endless'&&__RIFT.arena.width===270&&__RIFT.arena.lanes===3&&__ASCENSION.data.lab.style==='compact'));
  // Existing editor: choose metadata on an empty level, protect pre-authored Classic geometry.
  await p.goto(BASE+'assets/forge/');await p.waitForFunction(()=>document.body.dataset.ready==='1');
  await p.evaluate(async()=>{const f=__FORGE,idx=await f.actions.gameLevels();await f.actions.openGameLevel(idx.levels.find(l=>l.id==='overload'));f.actions.setSelection([]);});
  if(device.isMobile)await click('#dk-props');
  await p.locator('[data-key="arenaStyle"]').selectOption('compact');
- check(label+' editor refuses silently shrinking existing campaign',await p.evaluate(()=>!__FORGE.doc.level.arenaStyle&&__FORGE.view.arena.width===360));
+ check(label+' editor keeps the two-tap campaign instead of shrinking it',await p.evaluate(()=>__FORGE.doc.level.arenaStyle==='narrow'&&__FORGE.view.arena.width===270));
  if(device.isMobile)await click('#sheet-close');
  await p.evaluate(async()=>{const {createEmptyLevel}=await import('../../js/level-data.js');__FORGE.actions.loadDocument(createEmptyLevel());});if(device.isMobile)await click('#dk-props');
  await p.locator('[data-key="arenaStyle"]').selectOption('compact');

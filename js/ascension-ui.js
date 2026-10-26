@@ -8,8 +8,7 @@ export class AscensionPanels {
  constructor(ui,h,bind){
   this.ui=ui;this.h=h;this.bind=bind;this.progression=h.progression;this.page='home';this.skin=this.progression.data.cosmetics.selectedSkinId;this.anim=new RiftlingAnimator();this.previewTime=0;this.last=0;this.thumbs=new Map();
   this.brandAnim=new RiftlingAnimator();this.resultAnim=new RiftlingAnimator();this.equippedSkin=this.skin;this.portraitAge=0;
-  for(const [id,page] of [['lab','lab'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
-  bind($('#nav-play'),()=>{if(h.onLabStyle(ACTIVE_ARENA))this.open('lab');},h.onGesture);
+  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
   this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
   for(const el of document.querySelectorAll('[data-lab-feedback]'))bind(el,()=>{if(h.onLabFeedback(el.dataset.labFeedback))this.renderLab();},h.onGesture);
   this.seed=h.initialSeed;

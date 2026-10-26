@@ -36,7 +36,7 @@ aus `arena.js`. Die Bewegung bleibt eine kontinuierliche, jederzeit neu steuerba
 Federbewegung mit 260 u/s Aufstieg und 240-Hz-Simulation. Keine Teleports,
 neue Spursteuerung oder automatische Eingabekorrektur. RIFT INFINITY ist wieder
 im Hauptmenü erreichbar; Compact und die alte Arena-Auswahl bleiben verborgen.
-Die sechs Kampagnenlevel behalten ihre eigenen, unveränderten Leveldaten.
+Die sechs Kampagnenlevel laufen auf derselben 270-u-Arena: drei Spuren, 90 u pro Tipp, zwei Tipps von Wand zu Wand. Die aufgezeichneten Eingaben bleiben, die Öffnungen liegen auf diesem Weg.
 
 30 neue, gestaltete JSON-Abschnitte mit 6 bzw. 8 Sekunden Länge ersetzen die
 früheren 360-u-Abschnitte im aktiven Endless-Modus. Je fünf gehören zu **FLOW,
@@ -313,9 +313,7 @@ npm run test:audio:e2e
 | `Esc` / `P` | Pause / Weiter (im Editor-Playtest: `Esc` = zurück zum Editor, `P` = Pause) |
 | `Enter` / `Leertaste` / `R` | Levelauswahl öffnen, dort Start; Neustart, Weiter in der Pause |
 
-Das Spielfeld hat vier Spuren. Ein Impuls gegen die Wand bewegt die Figur nicht, wechselt aber trotzdem die Dimension.
-Das ist eine zentrale Technik: Weil jeder normale Impuls Spur **und** Farbe gleichzeitig ändert, bleibt die
-Kombination „Spur-Parität + Farbe“ erhalten – nur ein Wand-Tipp kippt sie. Overloads Abschnitt B nutzt das gezielt.
+Kampagne und Infinity haben drei Spuren. Von der linken Spur zur rechten sind es zwei Tipps. Ein Impuls gegen die Wand bewegt die Figur nicht, wechselt aber trotzdem die Dimension.
 
 ## Dimensionssystem
 
