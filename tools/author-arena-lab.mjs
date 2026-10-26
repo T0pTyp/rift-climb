@@ -11,9 +11,11 @@ const phrases=[
  [57,-1,'mine'],[60,-1,'seal'],[63,-1,'laser'],[65,1,'color'],[67,1,'saw'],[69,1,'seal'],[71,-1,'mine'],[73,-1,'laser'],[75,-1,'seal'],[77,1,'color'],
 ];
 mkdirSync('assets/lab',{recursive:true});
-for(const style of ['classic','compact']){
- const a=arenaFor(style),l=createEmptyLevel({id:'arena-lab-'+style,name:'ARENA LAB · '+style.toUpperCase(),arenaStyle:style});
- Object.assign(l,{description:'Lokaler Arena-Vergleich. Gleiche 28 Aufgaben, unveränderte Spieler-Hitbox, 40 Sekunden.',height:10660,finish:{y:10400},music:'first-pulse',theme:'spire',sections:[{id:'A',name:'TURN',y:0,labelY:20},{id:'B',name:'DIMENSIONS',y:2080,labelY:2040},{id:'C',name:'PULSE',y:4680,labelY:4640},{id:'D',name:'PRECISION',y:7280,labelY:7240}]});
+const styles=process.argv.slice(2);
+for(const style of (styles.length?styles:['classic','compact','narrow'])){
+ const title=style==='narrow'?'ZWEI TIPPS':style.toUpperCase();
+ const a=arenaFor(style),l=createEmptyLevel({id:'arena-lab-'+style,name:'ARENA LAB · '+title,arenaStyle:style});
+ Object.assign(l,{description:style==='narrow'?'Lokaler Breitentest. Drei Spuren, zwei Tipps von Wand zu Wand, 40 Sekunden.':'Lokaler Arena-Vergleich. Gleiche 28 Aufgaben, unveränderte Spieler-Hitbox, 40 Sekunden.',height:10660,finish:{y:10400},music:'first-pulse',theme:'spire',sections:[{id:'A',name:'TURN',y:0,labelY:20},{id:'B',name:'DIMENSIONS',y:2080,labelY:2040},{id:'C',name:'PULSE',y:4680,labelY:4640},{id:'D',name:'PRECISION',y:7280,labelY:7240}]});
  let lane=a.startLane,dim='blue';const objects=[],taps=[];
  for(const [i,[beat,dir,type]] of phrases.entries()){
   const t=(beat-.6)*.5,y=beat*130;lane=Math.max(0,Math.min(a.lanes-1,lane+dir));dim=dim==='blue'?'red':'blue';taps.push({t,dir});

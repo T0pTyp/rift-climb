@@ -1,3 +1,4 @@
+import { LAB_STYLES } from './arena.js';
 import { Game } from './game.js';
 import { inputTime } from './input-time.js';
 import { phaseFlowState } from './phase-flow.js';
@@ -97,13 +98,13 @@ async function boot() {
   let infinityBook=null,infinityError='';
   if(!playtest)try{infinityBook=validateChunkBook(await fetchJson('assets/endless/chunks.json'));}catch(err){infinityError='Infinity-Daten nicht verfügbar: '+err.message;}
   const labCatalog=new Map();let labError='';
-  if(!playtest)try{for(const style of ['classic','compact']){const v=validateLevelData(await fetchJson('assets/lab/'+style+'.json'));if(!v.ok)throw Error('Ungültige '+style+'-Teststrecke');labCatalog.set(style,v.level);}}catch(err){labError=err.message;}
+  if(!playtest)try{for(const style of LAB_STYLES){const v=validateLevelData(await fetchJson('assets/lab/'+style+'.json'));if(!v.ok)throw Error('Ungültige '+style+'-Teststrecke');labCatalog.set(style,v.level);}}catch(err){labError=err.message;}
 
   if (handoff && handoff.debug) debug.hitboxes = true;
 
   const canvas = document.getElementById('game');
   const progression = new Progression({isolated:playtest});
-  if(!playtest&&['classic','compact'].includes(params.get('lab')))progression.setLabStyle(params.get('lab'));
+  if(!playtest&&LAB_STYLES.includes(params.get('lab')))progression.setLabStyle(params.get('lab'));
   const storageFor = id => progression.storageFor(id);
   let storage = storageFor(level.id);
   const audio = new AudioEngine({ timers: !debug.manual });
@@ -116,11 +117,11 @@ async function boot() {
 
   const ui = new UI({
     progression,
-    labAvailable:()=>labCatalog.size===2,labError:()=>labError,
+    labAvailable:()=>labCatalog.size===LAB_STYLES.length,labError:()=>labError,
     onLabStyle:style=>{if(game.state!=='menu'||!progression.setLabStyle(style))return false;const q=new URLSearchParams(location.search);q.delete('endless');q.delete('seed');q.set('lab',style);history.replaceState(null,'',location.pathname+'?'+q);return true;},
     onLabFeedback:value=>game.state==='menu'&&progression.setLabFeedback(value),
     onLabStart:()=>{
-      if(playtest||game.state!=='menu'||labCatalog.size!==2)return;
+      if(playtest||game.state!=='menu'||labCatalog.size!==LAB_STYLES.length)return;
       const style=progression.data.lab.style,data=labCatalog.get(style);storage=progression.labStorage(style);storage.muted=audio.muted;
       game.setLevelData(data,storage);game.start('lab');
       const q=new URLSearchParams(location.search);q.delete('endless');q.delete('seed');q.set('lab',style);history.replaceState(null,'',location.pathname+'?'+q);

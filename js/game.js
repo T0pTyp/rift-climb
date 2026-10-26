@@ -704,7 +704,7 @@ export class Game {
     {
       ctx.setTransform(v.dpr, 0, 0, v.dpr, 0, 0);
       this.backdrop.render(ctx, camY * v.scale, blend, this.endless?this.t:inGame ? clamp(this.y / this.level.finishY, 0, 1) : 0, this.realT);
-      if(this.arena.id==='compact'){
+      if(this.arena.width<WORLD_W){
         // Retain Classic pixel scale/lookahead; dark outer architecture is not playable.
         const edge=v.offsetX,right=edge+this.arena.width*v.scale;
         ctx.fillStyle='rgba(2,5,14,.57)';ctx.fillRect(0,0,edge,v.cssH);ctx.fillRect(right,0,v.cssW-right,v.cssH);
@@ -718,7 +718,7 @@ export class Game {
     const sy = amp ? (Math.random() - 0.5) * amp : 0;
     const k = v.dpr * v.scale;
     ctx.setTransform(k, 0, 0, k, v.dpr * v.offsetX + sx * k, sy * k);
-    if(this.arena.id==='compact'){ctx.save();ctx.beginPath();ctx.rect(0,0,this.arena.width,H);ctx.clip();}
+    if(this.arena.width<WORLD_W){ctx.save();ctx.beginPath();ctx.rect(0,0,this.arena.width,H);ctx.clip();}
 
     // --- Effekt-Ebene (liegt UNTER den Hindernissen)
     if (this.flash > 0) {
@@ -774,7 +774,7 @@ export class Game {
     }
     ctx.globalAlpha = 1;
 
-    if (!inGame) {if(this.arena.id==='compact')ctx.restore();return;}
+    if (!inGame) {if(this.arena.width<WORLD_W)ctx.restore();return;}
 
     // Rift Pulse (Energiewelle) und Reichweiten-Hinweis – unter den Hindernissen
     this.renderPulses(ctx, camY, psy);
@@ -790,7 +790,7 @@ export class Game {
     if (this.state === 'won') this.renderClear(ctx, psy);
     this.renderDeath(ctx, camY, psy);
     if (this.debug.hitboxes) this.renderDebug(ctx, camY, psy, H);
-    if(this.arena.id==='compact')ctx.restore();
+    if(this.arena.width<WORLD_W)ctx.restore();
   }
 
   renderClear(ctx, sy) {

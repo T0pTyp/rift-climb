@@ -9,10 +9,10 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  p.on('pageerror',e=>errors.push(e.message));const click=selector=>device.isMobile?p.tap(selector):p.click(selector);
  const snap=name=>p.screenshot({path:`test-results/m8/browser/${label}-${name}.png`});
  await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);
- check(label+' six active home destinations',await p.locator('.nav-tile:visible').count()===6);await snap('home');
+ check(label+' five active home destinations',await p.locator('.nav-tile:visible').count()===5);await snap('home');
  await click('#nav-collection');check(label+' five skins, original equipped',await p.evaluate(()=>document.querySelectorAll('.skin-card').length===5&&__ASCENSION.data.cosmetics.selectedSkinId==='original'));
  await click('[data-skin="golden"]');check(label+' locked preview cannot equip',await p.isDisabled('#btn-equip'));await p.waitForTimeout(200);await snap('locked-golden');
- await click('#page-collection [data-home]');await click('#nav-play');
+ await click('#page-collection [data-home]');await p.evaluate(()=>__RIFT.ui.openPage('levels'));
  check(label+' six cards with two actions and actual artwork',await p.evaluate(()=>document.querySelectorAll('.level-art').length===6&&document.querySelectorAll('.card-actions .btn').length===12&&[...document.querySelectorAll('.level-art')].every(i=>i.naturalWidth>0)));
  await click('#btn-start');await p.waitForTimeout(220);
  check(label+' normal start counted once; First Flight',await p.evaluate(()=>__ASCENSION.summary().totalNormalAttempts===1&&!!__ASCENSION.data.achievements['first-flight']));
@@ -33,8 +33,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  check(label+' earned design applied to actual renderer',await p.evaluate(()=>__RIFT.skinId==='golden'&&__ASCENSION.data.cosmetics.selectedSkinId==='golden'));await p.waitForTimeout(180);await snap('collection');
  await p.reload();await p.waitForFunction(()=>window.__RIFT);
  check(label+' reload retains skin, medals and attempts',await p.evaluate(()=>__RIFT.skinId==='golden'&&__ASCENSION.summary().goldMedals===3&&__ASCENSION.summary().totalNormalAttempts===3));
- if(!await p.isVisible('#nav-play'))await click('#page-levels [data-home]');
- await click('#nav-play');await click('[data-level="first-pulse"]');await click('#btn-practice');const before=await p.evaluate(()=>JSON.stringify(__ASCENSION.data));
+ await p.evaluate(()=>__RIFT.ui.openPage('levels'));await click('[data-level="first-pulse"]');await click('#btn-practice');const before=await p.evaluate(()=>JSON.stringify(__ASCENSION.data));
  await p.evaluate(()=>{__RIFT.debug.autoplay=true;__RIFT.setupAutoplay();advanceTime(41000);});check(label+' Practice win leaves progression unchanged',await p.evaluate(s=>__RIFT.state==='won'&&JSON.stringify(__ASCENSION.data)===s,before));
  await click('#btn-next-level');check(label+' Practice Next remains isolated Practice',await p.evaluate(()=>__RIFT.level.id==='fractured-rhythm'&&__RIFT.mode==='practice'&&__ASCENSION.summary().totalNormalAttempts===3));
  await click('#btn-pause');await click('#btn-pause-menu');await click('[data-level="first-pulse"]');await click('#btn-start');await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(2000);});

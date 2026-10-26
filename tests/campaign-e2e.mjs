@@ -13,7 +13,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
  await context.addInitScript(()=>{
    localStorage.setItem('riftclimb.pulse.v1',JSON.stringify({stats:{best:87,attempts:19,clears:0},gfx:'low',gfxManual:true}));
  });
- await page.goto(BASE+'?manual=1');await page.waitForFunction(()=>window.__RIFT);await page.click('#nav-play');
+ await page.goto(BASE+'?manual=1');await page.waitForFunction(()=>window.__RIFT);await page.evaluate(()=>__RIFT.ui.openPage('levels'));
  const session=await page.evaluate(()=>{window.__APP_TOKEN=Math.random();return __APP_TOKEN;});
  check(label+' six immediate level cards and no visual settings',await page.evaluate(()=>document.querySelectorAll('.level-card').length===6&&!document.querySelector('#btn-gfx')&&!('gfx' in __RIFT)));
  check(label+' old visual prefs removed without losing legacy stats',await page.evaluate(()=>{const p=JSON.parse(localStorage.getItem('riftclimb.pulse.v1'));return p.stats.best===87&&p.stats.attempts===19&&!('gfx' in p)&&!('gfxManual' in p);}));
@@ -89,7 +89,7 @@ for(const [type,profile,label] of [[chromium,{viewport:{width:1280,height:800}},
 // Live Web Audio transport for each M7 score (separate from accelerated replay tests).
 {
  const b=await chromium.launch(),c=await b.newContext(devices['Pixel 7']),p=await c.newPage();
- await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);await p.tap('#nav-play');
+ await p.goto(BASE);await p.waitForFunction(()=>window.__RIFT);await p.evaluate(()=>__RIFT.ui.openPage('levels'));
  for(const id of ids) {
   await p.tap(`[data-level="${id}"]`);await p.waitForTimeout(200);await p.tap('#btn-start');
   await p.waitForFunction(()=>__RIFT.t>.3&&__RIFT.audio.active);

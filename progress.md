@@ -160,3 +160,9 @@ ARENA LAB als isolierter A/B-Test: Classic unverändert, Compact aus realer 90-u
 - Abschließender Skill-Client für endgültigen Compact-Parcours und danach Commit/Push/Pages/Live-Lab-Prüfung. Keine neue Architektur, kein Grafikprofil, keine neuen offiziellen Belohnungen.
 
 - Endgültiger Compact-Skill-Client bei54% mit passenden Zuständen/Bild geprüft, keine Konsolenfehler. Review abgeschlossen; Veröffentlichung auf main und anschließender Live-Smoke-Test.
+
+## Breitentest ZWEI TIPPS (2026-10-26)
+- Auftrag: das Spielfeld so verkleinern, dass von links nach rechts zwei Tipps statt drei reichen, nur als Test.
+- Classic bleibt 360 u / 4 Spuren / 90 u. Neue Lab-Arena `narrow`: 270 u, 3 Spuren, Start Mitte, gleicher 90-u-Tipp. Spur 0 (x=45) bis Spur 2 (x=225) = zwei Impulse. Pixelmaßstab weiter durch 360, Korridor daher 75 % der Handybreite mit dunklen Rändern.
+- Kampagne und Infinity unverändert. Arena Lab ist im Hauptmenü sichtbar. Parcours `assets/lab/narrow.json`, 28 Tipps, Replay 100 %. Compact-Suite 61 Checks. Telefonviewport 390×844: linker Rand x=45.05, nach zwei Rechtstipps x=224.98, spielbare Breite 292.5 von 390 px.
+- Entscheidung: Zwei Tipps bleiben aktiv. Classic/Compact-Karten, Abstimmungszeile, Arena-Lab- und Infinity-Kachel sind im Menü versteckt. SPIELEN öffnet nur noch die 270-u-Arena. Neue Forge-Level starten mit arenaStyle narrow. Kampagnen-JSONs und Infinity-Daten bleiben auf 360 u und sind über die vorhandenen Seiten weiter ladbar.

@@ -172,7 +172,7 @@ export function validateLevelData(raw) {
   if (!Number.isInteger(level.beatsPerBar) || level.beatsPerBar < 2 || level.beatsPerBar > 7) err('meter', 'Beats pro Takt muss eine ganze Zahl von 2 bis 7 sein.', { field: 'beatsPerBar' });
 
   const arena=arenaFor(raw);
-  if(raw.arenaStyle!==undefined){if(!Object.hasOwn(ARENAS,raw.arenaStyle))err('arena','Arena muss classic oder compact sein.',{field:'arenaStyle'});else level.arenaStyle=raw.arenaStyle;}
+  if(raw.arenaStyle!==undefined){if(!Object.hasOwn(ARENAS,raw.arenaStyle))err('arena','Arena muss classic, compact oder narrow sein.',{field:'arenaStyle'});else level.arenaStyle=raw.arenaStyle;}
   const s = raw.start;
   if (!s || typeof s !== 'object') {
     err('start', 'Startposition fehlt.', { field: 'start' });

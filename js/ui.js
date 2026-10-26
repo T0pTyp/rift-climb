@@ -1,3 +1,4 @@
+import { ARENAS } from './arena.js';
 import { AscensionPanels } from './ascension-ui.js';
 import { medal } from './art/ui-assets.js';
 import { COLORS } from './dimensions.js';
@@ -196,7 +197,7 @@ export class UI {
 
   openPage(page) { this.panels.open(page); }
   setArena(style,mode){
-    const lab=mode==='lab',el=$('#hud-arena');el.hidden=!lab&&style!=='compact';el.textContent=(lab?'LAB · ':'')+style.toUpperCase();
+    const lab=mode==='lab',el=$('#hud-arena');el.hidden=!lab&&style!=='compact'&&style!=='narrow';el.textContent=(lab?'LAB · ':'')+(ARENAS[style]?.label||String(style||'').toUpperCase());
     document.body.dataset.arena=style;
     if(!this.playtest)for(const id of ['pause','death','win'])$('#btn-'+id+'-menu').textContent=lab?'ARENA LAB':'Levelauswahl';
   }

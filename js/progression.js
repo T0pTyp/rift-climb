@@ -1,4 +1,5 @@
 import {blankLab,cleanLab,mergeLab,labStorage,reportLab,finishLab} from './lab-stats.js';
+import {LAB_STYLES,LAB_FEEDBACK} from './arena.js';
 import { ACHIEVEMENTS, SKINS, medalFor } from './rewards.js';
 import { STORAGE_KEY, readJson } from './storage.js';
 import {CLIMB_SPEED} from './config.js';
@@ -119,8 +120,8 @@ export class Progression {
   if(force||t-(run.savedT||0)>=1){if(run.record)e.recordAt=this.now();run.savedT=t;this.persist();}return record;
  }
  labStorage(style){return labStorage(this,style);}
- setLabStyle(style){if(!['classic','compact'].includes(style))return false;this.data.lab.style=style;this.persist();return true;}
- setLabFeedback(value){if(!['classic','compact','equal'].includes(value))return false;this.data.lab.feedback=value;this.persist();return true;}
+ setLabStyle(style){if(!LAB_STYLES.includes(style))return false;this.data.lab.style=style;this.persist();return true;}
+ setLabFeedback(value){if(!LAB_FEEDBACK.includes(value))return false;this.data.lab.feedback=value;this.persist();return true;}
  infinityStorage(seed) {
   const p=this,e=p.data.endless;
   return {progression:p,muted:false,stats:{get best(){return e.bestHeight;},get attempts(){return e.attempts;},clears:0},save(){p.persist();},

@@ -37,13 +37,18 @@ check('Normal store rejects Lab run mode; isolated Forge cannot earn Lab stats',
 check('Older M8 save gains neutral Lab defaults without changing historical evidence',()=>{const storage=memory(),p=new Progression({storage}),data=JSON.parse(JSON.stringify(p.data));delete data.lab;storage.setItem(ASCENSION_KEY,JSON.stringify(data));const q=new Progression({storage});assert.equal(q.data.lab.style,'classic');assert.equal(q.data.lab.stats.classic.attempts,0);assert.deepEqual(q.summary(),p.summary());});
 check('Blocked save remains playable and reports storage warning',()=>{const p=new Progression({storage:{getItem:()=>null,setItem:()=>{throw Error('quota');}}}),s=p.labStorage('compact'),r=s.beginRun();s.finish(r,40,100,'win');assert.equal(s.stats.clears,1);assert.ok(p.warning);});
 check('Damaged Lab fields are sanitized without changing valid Classic evidence',()=>{const storage=memory(),p=new Progression({storage}),d=structuredClone(p.data);d.lab={style:'bad',feedback:'online',stats:{classic:{attempts:3,best:72,clears:0,deaths:2,sumProgress:150},compact:{attempts:-2,best:'no',sumProgress:Infinity}}};storage.setItem(ASCENSION_KEY,JSON.stringify(d));const q=new Progression({storage});assert.equal(q.data.lab.style,'classic');assert.equal(q.data.lab.feedback,null);assert.equal(q.data.lab.stats.classic.best,72);assert.equal(q.data.lab.stats.classic.sumProgress,150);assert.equal(q.data.lab.stats.compact.attempts,0);});
-check('Compact stays implemented but the home menu no longer offers it',()=>{
+check('Narrow test crosses in two classic steps and the lab offers it',()=>{
+ assert.equal(ARENAS.narrow.width,270);assert.equal(ARENAS.narrow.lanes,3);assert.equal(ARENAS.narrow.step,90);assert.equal(ARENAS.narrow.inset,45);
+ const p=new Player('narrow');assert.equal(p.lane,1);p.impulse(-1);p.update(1,0);assert.equal(p.lane,0);assert.ok(Math.abs(p.x-45)<1e-6);
+ p.impulse(1);p.update(1,0);p.impulse(1);p.update(1,0);assert.equal(p.lane,2);assert.ok(Math.abs(p.x-225)<1e-6);
  const html=readFileSync('index.html','utf8'),main=readFileSync('js/main.js','utf8');
- const start=html.indexOf('<button id="nav-lab"');
- assert.ok(start>=0);
- const tag=html.slice(start, html.indexOf('>', start));
- assert.match(tag,/(?:^|\s)hidden(?:\s|$)/);assert.match(html,/id="page-lab"/);
- assert.match(main,/params\.get\('lab'\)/);assert.match(main,/openPage\('lab'\)/);
+ const lab=html.slice(html.indexOf('<button id="nav-lab"'), html.indexOf('>', html.indexOf('<button id="nav-lab"')));
+ const play=html.slice(html.indexOf('<button id="nav-play"'), html.indexOf('>', html.indexOf('<button id="nav-play"')));
+ const infinity=html.slice(html.indexOf('<button id="nav-infinity"'), html.indexOf('>', html.indexOf('<button id="nav-infinity"')));
+ assert.match(lab,/(?:^|\s)hidden(?:\s|$)/);assert.match(infinity,/(?:^|\s)hidden(?:\s|$)/);assert.doesNotMatch(play,/(?:^|\s)hidden(?:\s|$)/);
+ assert.match(html,/id="page-lab"/);assert.match(html,/class="lab-feedback" hidden/);assert.match(main,/ACTIVE_ARENA|openPage\('lab'\)/);
  assert.equal(validateLevelData(JSON.parse(readFileSync('assets/lab/compact.json','utf8'))).ok,true);
+ const narrow=validateLevelData(JSON.parse(readFileSync('assets/lab/narrow.json','utf8'))).level;
+ assert.equal(arenaFor(narrow).width,270);assert.equal(arenaFor(narrow).lanes,3);assert.equal(narrow.replay.taps.length,28);assert.ok(runReplay(narrow,narrow.replay.taps).won);
 });
 mkdirSync('test-results/compact',{recursive:true});writeFileSync('test-results/compact/physics.json',JSON.stringify({checks,measurements},null,2));console.log(`${checks} Compact checks passed`);

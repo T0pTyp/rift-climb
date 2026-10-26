@@ -1,13 +1,15 @@
 // Optional domain of the existing Ascension save, never a campaign level/reward.
+import {LAB_STYLES,LAB_FEEDBACK} from './arena.js';
 const count=v=>Number.isFinite(v)?Math.max(0,Math.min(Number.MAX_SAFE_INTEGER,Math.floor(v))):0;
-export const blankLab=()=>({style:'classic',feedback:null,stats:{classic:{attempts:0,best:0,clears:0,deaths:0,sumProgress:0},compact:{attempts:0,best:0,clears:0,deaths:0,sumProgress:0}}});
+const blankStat=()=>({attempts:0,best:0,clears:0,deaths:0,sumProgress:0});
+export const blankLab=()=>({style:'classic',feedback:null,stats:Object.fromEntries(LAB_STYLES.map(id=>[id,blankStat()]))});
 export function cleanLab(raw){
- const l=blankLab();if(['classic','compact'].includes(raw?.style))l.style=raw.style;
- if(['classic','compact','equal'].includes(raw?.feedback))l.feedback=raw.feedback;
- for(const id of ['classic','compact']){const r=raw?.stats?.[id],attempts=count(r?.attempts);l.stats[id]={attempts,best:count(r?.best)>100?100:count(r?.best),clears:Math.min(attempts,count(r?.clears)),deaths:Math.min(attempts,count(r?.deaths)),sumProgress:Math.min(attempts*100,count(r?.sumProgress))};}
+ const l=blankLab();if(LAB_STYLES.includes(raw?.style))l.style=raw.style;
+ if(LAB_FEEDBACK.includes(raw?.feedback))l.feedback=raw.feedback;
+ for(const id of LAB_STYLES){const r=raw?.stats?.[id],attempts=count(r?.attempts);l.stats[id]={attempts,best:count(r?.best)>100?100:count(r?.best),clears:Math.min(attempts,count(r?.clears)),deaths:Math.min(attempts,count(r?.deaths)),sumProgress:Math.min(attempts*100,count(r?.sumProgress))};}
  return l;
 }
-export function mergeLab(l,b){for(const id of ['classic','compact'])for(const k of ['attempts','best','clears','deaths','sumProgress'])l.stats[id][k]=Math.max(l.stats[id][k],b.stats[id][k]);}
+export function mergeLab(l,b){for(const id of LAB_STYLES)for(const k of ['attempts','best','clears','deaths','sumProgress'])l.stats[id][k]=Math.max(l.stats[id][k],b.stats[id][k]);}
 export function reportLab(p,run,t,best,force=false){
  if(!run?.eligible||run.closed||run.kind!=='lab')return false;
  const s=p.data.lab.stats[run.style],pct=Math.max(run.best,Math.min(100,count(best))),changed=pct>s.best;

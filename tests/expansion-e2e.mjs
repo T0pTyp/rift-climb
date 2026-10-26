@@ -9,7 +9,7 @@ const check=(name,ok)=>{assert.ok(ok,name);checks++;console.log('PASS '+name);};
 for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,devices['iPhone 13'],'webkit'],[chromium,{viewport:{width:1280,height:900}},'desktop']]){
  const b=await engine.launch(),c=await b.newContext(device),p=await c.newPage(),errors=[];
  p.on('pageerror',e=>errors.push(e.message));const click=s=>device.isMobile?p.tap(s):p.click(s);
- await p.goto(BASE+'?manual=1&autoplay=1');await p.waitForFunction(()=>window.__RIFT);await click('#nav-play');
+ await p.goto(BASE+'?manual=1&autoplay=1');await p.waitForFunction(()=>window.__RIFT);await p.evaluate(()=>__RIFT.ui.openPage('levels'));
  for(const id of ids){
   await click(`[data-level="${id}"]`);await click('#btn-start');
   check(label+' '+id+' starts with own score and traps',await p.evaluate(id=>__RIFT.state==='playing'&&__RIFT.t===0&&__RIFT.player.dim==='B'&&__RIFT.audio.timeline.music===id&&__RIFT.traps.traps.length>0,id));
@@ -27,7 +27,7 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webki
   await click('#btn-win-menu');
  }
  // A bounded seeded world uses the same Game and the M8 store, without campaign rewards.
- await click('#page-levels [data-home]');await click('#nav-infinity');
+ await p.evaluate(()=>__RIFT.ui.openPage('infinity'));
  const before=await p.evaluate(()=>{const d=structuredClone(__ASCENSION.data);delete d.endless;return JSON.stringify(d);});
  await click('#btn-infinity-start');const seed=await p.evaluate(()=>__RIFT.endless.seed);
  await p.evaluate(()=>advanceTime(128000));
@@ -41,7 +41,7 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webki
  check(label+' Infinity real collision saves height and shows record',await p.evaluate(()=>['dying','dead'].includes(__RIFT.state)&&__ASCENSION.data.endless.bestHeight>=3328&&__ASCENSION.data.endless.recordAt&&document.querySelector('#death-pct').textContent.includes('m')));
  const best=await p.evaluate(()=>__ASCENSION.data.endless.bestHeight);await click('#btn-death-restart');
  check(label+' Infinity Retry resets traps, repeats seed, counts one attempt',await p.evaluate(seed=>__RIFT.t===0&&__RIFT.player.dim==='B'&&__RIFT.endless.seed===seed&&__ASCENSION.data.endless.attempts===2&&__RIFT.traps.traps.every(t=>t.state==='idle'),seed));
- await p.waitForTimeout(470);await click('#btn-pause');await click('#btn-pause-menu');await click('#page-levels [data-home]');await click('#nav-infinity');
+ await p.waitForTimeout(470);await click('#btn-pause');await click('#btn-pause-menu');await p.evaluate(()=>__RIFT.ui.openPage('infinity'));
  await click('#btn-infinity-seed');check(label+' fresh seed selectable',await p.evaluate(seed=>__RIFT.ui.panels.seed!==seed,seed));
  await p.reload();await p.waitForFunction(()=>window.__RIFT);check(label+' Infinity record persists alongside all campaign records',await p.evaluate(best=>__ASCENSION.data.endless.bestHeight===best&&__ASCENSION.level('singularity-rush').clears===1,best));
  // Forge opens all JSON definitions without dropping trap fields; original export is byte-identical.

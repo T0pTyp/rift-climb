@@ -572,7 +572,7 @@ async function confirmDiscard() {
 async function newLevel() {
   if (!(await confirmDiscard())) return;
   const id = `level-${Date.now().toString(36).slice(-6)}`;
-  loadDocument(createEmptyLevel({ id, name: 'Neues Level' }), { clean: false, message: 'Neues Level angelegt – Name, ID und BPM in den Level-Einstellungen.' });
+  loadDocument(createEmptyLevel({ id, name: 'Neues Level', arenaStyle: 'narrow' }), { clean: false, message: 'Neues Level angelegt – Name, ID und BPM in den Level-Einstellungen.' });
 }
 
 async function fetchJson(url) {
@@ -851,7 +851,7 @@ function loadPrefs() {
 // ------------------------------------------------------------------ Platzieren und Ziehen
 
 function ghostFor(kind, wx, wy) {
-  if(arenaFor(doc?.level).id==='compact'&&(wx<0||wx>arenaFor(doc.level).width))return null;
+  const placeArena=arenaFor(doc?.level);if(placeArena.id!=='classic'&&(wx<0||wx>placeArena.width))return null;
   const k = KINDS[kind];
   if (!k) return null;
   if(isTrap(k)){const a=k.axis==='x'?k.amplitude:0;return {...k,x:clamp(snapLeft(wx-k.w/2),a,arenaFor(doc?.level).width-k.w-a),y:Math.max(k.h/2+(k.axis==='y'?k.amplitude:0),snapY(wy))};}
@@ -1880,7 +1880,7 @@ async function boot() {
       const entry = idx.levels.find((l) => l.id === idx.default) || idx.levels[0];
       await openGameLevel(entry);
     } catch (err) {
-      loadDocument(createEmptyLevel({ id: 'neues-level', name: 'Neues Level' }), { clean: false, message: `Spiel-Level nicht erreichbar (${err.message}) – leeres Level angelegt.` });
+      loadDocument(createEmptyLevel({ id: 'neues-level', name: 'Neues Level', arenaStyle: 'narrow' }), { clean: false, message: `Spiel-Level nicht erreichbar (${err.message}) – leeres Level angelegt.` });
     }
   }
   setSaveState(restored ? 'draft' : S.saveState);

@@ -9,7 +9,7 @@ for(const [engine,profile,label] of [[chromium,devices['Pixel 7'],'android'],[we
  const browser=await engine.launch(),context=await browser.newContext(profile),page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.goto(BASE+'?manual=1&debug=1');await page.waitForFunction(()=>window.__RIFT);
- check(label+' Compact remains hidden and no graphics selector',await page.evaluate(()=>document.querySelector('#nav-lab').hidden&&![...document.querySelectorAll('select,button')].some(e=>e.offsetParent&&/graphics quality|grafikqualität|performance mode/i.test(e.textContent))));
+ check(label+' two-tap play is offered, old widths stay hidden, and there is no graphics selector',await page.evaluate(()=>!document.querySelector('#nav-play').hidden&&document.querySelector('#nav-play').textContent.includes('ZWEI TIPPS')&&document.querySelector('#nav-lab').hidden&&document.querySelector('#nav-infinity').hidden&&![...document.querySelectorAll('select,button')].some(e=>e.offsetParent&&/graphics quality|grafikqualität|performance mode/i.test(e.textContent))));
  // Exercise the real shared button handler: distinct touches <450 ms apart are
  // valid; the compatibility click belonging to a touch must not fire twice.
  await page.evaluate(async()=>{const {bindTap}=await import('./js/ui.js');const b=document.createElement('button');b.id='tap-probe';b.textContent='Tap';b.style='position:fixed;top:100px;left:10px;width:80px;height:60px;z-index:10000';document.body.append(b);window.__tapCount=0;bindTap(b,()=>window.__tapCount++);});
@@ -17,7 +17,7 @@ for(const [engine,profile,label] of [[chromium,devices['Pixel 7'],'android'],[we
  check(label+' two genuine rapid UI taps are accepted once each',await page.evaluate(()=>__tapCount===2));
  await page.evaluate(()=>{document.querySelector('#tap-probe').click();document.querySelector('#tap-probe').remove();});
  check(label+' no ghost compatibility click after touch',await page.evaluate(()=>__tapCount===2));
- await page.tap('#nav-play');await page.tap('#btn-start');await page.waitForTimeout(220);
+ await page.evaluate(()=>__RIFT.ui.openPage('levels'));await page.tap('#btn-start');await page.waitForTimeout(220);
  const pos=await page.evaluate(()=>{const r=document.querySelector('canvas').getBoundingClientRect();return {left:r.x+r.width*.15,right:r.x+r.width*.85,y:r.y+r.height*.65};});
  await page.touchscreen.tap(pos.left,pos.y);
  check(label+' left display half immediately flies right and switches/pulses exactly once',await page.evaluate(()=>__RIFT.player.lane===2&&__RIFT.player.dim==='R'&&__RIFT.stats.impulses===1&&__RIFT.rift.emitted===1));
