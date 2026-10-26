@@ -205,6 +205,7 @@ async function boot() {
     coordinates: 'x right, y up, world units; y = simulation seconds * 260',
     ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog,phaseFlow:phaseFlowState(game)}}:{}),
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    character:{id:'riftling',design:'classic-blob',ready:riftlingArt.ready,animation:game.anim.state,blend:game.anim.pose.blend,pulse:game.anim.pose.pulse||0,hitRadius:game.player.hitRadius},
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
     infinity:game.endless?{seed:game.endless.seed,revision:game.endless.book.revision,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index,category:c.category,challenge:c.challenge})),generated:game.endless.generated,...(debug.hitboxes||debug.trace?{rejected:game.endless.director?.rejected,fallbacks:game.endless.director?.fallbacks,current:game.endless.chunks.find(c=>game.y>=c.origin&&game.y<c.end)?.id,heapBytes:performance.memory?.usedJSHeapSize}:{} )}:null,

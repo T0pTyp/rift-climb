@@ -367,6 +367,7 @@ export class Game {
     this.audio.sfx('switch', p.dim, atWall);
     this.audio.sfx('pulse', p.dim);
     this.anim.onSwitch(dir);
+    this.anim.onPulse();
     const y = this.y;
     // Rückstoß nach unten-hinten (Funken) und Energie-Impuls als kleiner Ring in der neuen Dimensionsfarbe
     for (let i = 0, n = 10; i < n; i++) {

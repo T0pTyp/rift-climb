@@ -182,7 +182,7 @@ export class ForgeView {
   /** Start-/Testmarker: derselbe Riftling wie im Spiel (Farbe der Startdimension). */
   marker(x, y, dim, alpha) {
     const pose = { ...IDLE_POSE, blend: dim === 'R' ? 1 : 0, alpha, glow: 0.7 };
-    drawRiftling(this.ctx, x, y, pose, this.dpr * this.cam.z, 1);
+    drawRiftling(this.ctx, x, y, pose, this.dpr * this.cam.z, 'original');
   }
 
   render(s) {

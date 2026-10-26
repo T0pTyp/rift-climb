@@ -177,6 +177,7 @@ export class UI {
   showDeath(options) {
     const {pct,best,isNewBest,reason}=options;
     this.panels.result('death',options);
+    this.panels.resetPortrait('death');
     this.el.deathPct.textContent = `${pct}${options.endless?' m':'%'}`;
     this.el.deathReason.textContent = reason || '';
     this.el.deathBest.textContent = `${best}${options.endless?' m':'%'}`;
@@ -188,6 +189,7 @@ export class UI {
   showWin(options) {
     const {mode,attempts}=options;
     this.panels.result('win',options);
+    this.panels.resetPortrait('win');
     $('#win-level').textContent = options.levelName||this.current?.name || 'RIFT CLEARED';
     this.el.winSub.textContent = mode === 'lab'?'Arena-Vergleich abgeschlossen. Dein Testlauf wurde gespeichert.':mode === 'practice'
       ? `Übungsmodus geschafft – jetzt im Normalmodus! (${attempts} Versuche)`
@@ -209,9 +211,7 @@ export class UI {
     this.el.dim.textContent=COLORS[dim].name;this.el.dim.dataset.dim=dim;this.el.attempts.textContent='Versuch '+attempts;this.el.mode.hidden=true;document.body.dataset.dim=dim;
   }
   setSkin(id) {
-    const prefix=id==='original'?'body-':id+'-';
-    document.querySelector('.rb-b').src=`assets/riftling/${prefix}${id==='original'?'blue':'B'}.svg`;
-    document.querySelector('.rb-r').src=`assets/riftling/${prefix}${id==='original'?'red':'R'}.svg`;
+    this.panels.equippedSkin=id;
   }
   animate(now,state) { this.panels.animate(now,state); }
 

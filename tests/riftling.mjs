@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import {RiftlingAnimator} from '../js/art/riftling-anim.js';
+import {RIFTLING_SPRITE} from '../js/art/riftling.js';
+import {recolorRiftling,RIFTLING_SKINS} from '../js/art/riftling-palette.js';
+import {HIT_RADIUS,CLIMB_SPEED} from '../js/config.js';
+import {ARENAS} from '../js/arena.js';
+let checks=0;const test=(n,f)=>{f();checks++;console.log('PASS '+n);},idle={vx:0,tilt:0,targetBlend:0,alive:true};
+test('Official asset set exists, two-eye overlays and matching frame',()=>{for(const src of Object.values(RIFTLING_SPRITE.files))assert.ok(existsSync(new URL(src)));assert.equal(RIFTLING_SPRITE.frame.w,RIFTLING_SPRITE.frame.h);assert.ok(RIFTLING_SPRITE.frame.w*RIFTLING_SPRITE.unitsPerPx<36);const svg=readFileSync(new URL(RIFTLING_SPRITE.files.eye),'utf8');assert.equal((svg.match(/<ellipse /g)||[]).length,4);});
+test('Existing skin IDs only, cosmetic operations preserve every alpha',()=>{assert.deepEqual(RIFTLING_SKINS,['original','azure','crimson','golden','void']);for(const skin of RIFTLING_SKINS)for(const dim of ['B','R']){const data=new Uint8ClampedArray(256*4);for(let i=0;i<256;i++)data.set([i,255-i,(i*17)%256,i],i*4);recolorRiftling(data,skin,dim);for(let i=0;i<256;i++)assert.equal(data[i*4+3],i);}});
+test('Idle breath and two-eye blink are animated',()=>{const a=new RiftlingAnimator();a.blinkIn=.01;const p=a.update(.06,idle);assert.equal(a.state,'idle');assert.ok(p.eye<.2);assert.notEqual(p.sx,1);assert.ok(Number.isFinite(p.flow));});
+test('Flight left/right keep continuous animated pose',()=>{for(const dir of [-1,1]){const a=new RiftlingAnimator();const p=a.update(.1,{...idle,vx:dir*500,tilt:dir*.2});assert.equal(a.state,dir<0?'flightLeft':'flightRight');assert.equal(p.tilt,dir*.2);assert.ok(p.sy>p.sx);assert.equal(Math.sign(p.gazeX),dir);}});
+test('Switch and pulse are immediate visual events',()=>{const a=new RiftlingAnimator();a.onSwitch(1);a.onPulse();const p=a.update(.02,{...idle,targetBlend:1});assert.equal(a.state,'switch');assert.ok(p.blend>0&&p.blend<1);assert.ok(p.pulse>.8);assert.ok(p.glow>1);});
+test('Color transition is time-based at different update frequencies',()=>{const a=new RiftlingAnimator(),b=new RiftlingAnimator();a.update(.2,{...idle,targetBlend:1});for(let i=0;i<4;i++)b.update(.05,{...idle,targetBlend:1});assert.ok(Math.abs(a.pose.blend-b.pose.blend)<1e-12);});
+test('Death dissolves, respawn materializes without player changes',()=>{const a=new RiftlingAnimator();a.onDeath();a.update(.1,{...idle,alive:false});assert.equal(a.state,'death');assert.ok(a.pose.alpha>0&&a.pose.alpha<1);a.update(.5,{...idle,alive:false});assert.equal(a.pose.alpha,0);a.onRespawn(.28);a.update(.08,idle);assert.equal(a.state,'respawn');assert.ok(a.pose.alpha>0);a.update(.3,idle);assert.equal(a.state,'idle');assert.equal(a.pose.alpha,1);});
+test('Authoritative movement/collision values remain unchanged',()=>{assert.equal(HIT_RADIUS,8);assert.equal(CLIMB_SPEED,260);assert.equal(ARENAS.narrow.width,270);assert.equal(ARENAS.narrow.step,90);});
+console.log(checks+' official Riftling checks passed');

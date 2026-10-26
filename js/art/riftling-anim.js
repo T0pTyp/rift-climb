@@ -23,6 +23,7 @@ export class RiftlingAnimator {
     this.rebuildAge = rebuild ? 0 : Infinity;
     this.rebuildSec = duration;
     this.boost = 0;
+    this.pulseAge=Infinity;
     this.blinkIn = 1.5 + Math.random() * 2;
     this.blinkAge = Infinity;
     this.blend = blend;
@@ -38,6 +39,7 @@ export class RiftlingAnimator {
   onDeath() {
     this.deathAge = 0;
   }
+  onPulse(){this.pulseAge=0;}
 
   onRespawn(duration = REBUILD_SEC) {
     this.deathAge = Infinity;
@@ -60,6 +62,7 @@ export class RiftlingAnimator {
     this.deathAge += dt;
     this.rebuildAge += dt;
     this.boost = Math.max(0, this.boost - dt * 3);
+    this.pulseAge+=dt;
     this.blend += (s.targetBlend - this.blend) * (1 - Math.exp(-dt * 22));
 
     this.blinkIn -= dt;
@@ -89,9 +92,10 @@ export class RiftlingAnimator {
       const k = Math.exp(-a * 15) * Math.cos(a * 34);
       sx += 0.2 * k;
       sy -= 0.17 * k;
-      flash = Math.max(flash, Math.max(0, 1 - a / 0.11) * 0.75);
+      flash = Math.max(flash, Math.max(0, 1 - a / 0.09) * 0.3);
       glow += Math.max(0, 1 - a / SWITCH_SEC) * 0.8;
     }
+    const pulse=Math.max(0,1-this.pulseAge/.25);glow+=pulse*.35;sx+=pulse*.035;sy+=pulse*.035;
 
     let state;
     if (!s.alive) {
@@ -131,6 +135,7 @@ export class RiftlingAnimator {
     p.flash = flash;
     p.glow = glow;
     p.alpha = alpha;
+    p.pulse=pulse;p.flow=Math.sin(t*7)*speed*.9;p.gazeX=Math.tanh(s.vx/400)*.35;p.gazeY=-.1;
     this.state = state;
     this.speed = speed;
     return p;

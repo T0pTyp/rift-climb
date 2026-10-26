@@ -6,6 +6,29 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## M7.10 – Official Riftling
+
+Der ausgewählte **CLASSIC BLOB** aus der vorhandenen Konzeptgrafik ist jetzt die
+gemeinsame Charakterdarstellung: runder Gelkörper, dunkles Gesicht, zwei große
+leuchtende Augen, gebogener Kopfzipfel und organische Ausläufer. Gameplay,
+Hauptmenü, Collection samt Karten, Ergebnisbildschirme und Forge verwenden
+dieselbe Figur. Alte einäugige Charakterbilder werden nicht mehr eingebunden.
+
+Zwei transparente 512er WebP-Körper (zusammen ca. 135 KB) und zwei SVG-Augenebenen
+bilden die Laufzeitassets. Beide Dimensionen haben exakt dieselbe Alphasilhouette.
+Idle/Blinzeln, Flugneigung, Squash & Stretch, Farbübergang, Pulse-Leuchten,
+Auflösung und Materialisierung verwenden das bestehende Animationssystem.
+Texturen und vorhandene kosmetische Paletten werden gecacht.
+
+**Unverändert:** aktive Arena 270 u, Zielschritt 90 u, Aufstieg 260 u/s,
+Hitboxradius 8 u, Eingaben, Kollisionen, Leveldaten und Rift-Pulse-Regeln.
+Bestehende M8-Freischaltungen bleiben erhalten; keine neuen Skins oder Shops.
+Compact bleibt verborgen und die hochwertige Darstellung bleibt fest aktiv.
+
+`npm run test:riftling` prüft Assets, Animation und Paletten;
+`npm run test:riftling:e2e` prüft drei Browser-/Smartphoneprofile.
+[Assets, Integration und Testbericht](docs/M7.10-RIFTLING.md).
+
 ## M7.9 – RIFT INFINITY 2.0
 
 Der **RIFT DIRECTOR** verwendet die aktuelle **270-u-Arena / 90-u-Zielschritte**
