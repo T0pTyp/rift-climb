@@ -20,7 +20,7 @@ import { Backdrop } from './art/backdrop.js';
 import { BeatEffects } from './pulse/effects.js';
 import { TrapField,makeTrap,trapReach } from './traps.js';
 import { drawTrap } from './art/traps.js';
-import {EndlessWorld,worldMeters,INFINITY_TIERS} from './endless.js';
+import {EndlessWorld,worldMeters,INFINITY_TIERS,infinityClimbY,infinityClimbSpeed} from './endless.js';
 import {DIRECTOR_TIERS,zoneAt,directorSignature} from './rift-director.js';
 import {phaseFlowState} from './phase-flow.js';
 import {currentInputEventTime} from './input-time.js';
@@ -105,7 +105,7 @@ export class Game {
   }
 
   get y() {
-    return this.t * CLIMB_SPEED;
+    return this.endless?.director ? infinityClimbY(this.t) : this.t * CLIMB_SPEED;
   }
 
   /** Reuse the running app, input handlers and AudioContext for a menu selection. */
@@ -207,6 +207,7 @@ export class Game {
     this.runStartBest=this.storage.stats.best;
     if (this.storage.beginRun) {
       this.run=this.storage.beginRun((this.mode==='normal'||this.mode==='endless'||this.mode==='lab')&&!this.startFrom,this.mode);
+      if(this.run&&this.endless?.director)this.run.ramp=true;
       if(this.mode==='practice'||this.storage.progression.isolated)this.sessionAttempts++;
     } else if (this.mode === 'normal') {
       this.storage.stats.attempts++;
@@ -644,7 +645,7 @@ export class Game {
   respawn() {
     this.lastSwitch=null;
     const cp = this.checkpoint;
-    const dy = cp.t * CLIMB_SPEED - this.y;
+    const dy = (this.endless?.director ? infinityClimbY(cp.t) : cp.t * CLIMB_SPEED) - this.y;
     this.particles.offset(dy);
     this.t = cp.t;
     this.acc = 0;
@@ -1084,7 +1085,7 @@ export class Game {
       `FPS ${this.stats.fps.toFixed(0)}  Sim ${Math.round(1 / SIM_DT)} Hz  Schritte/Frame ${this.stats.frameSteps}`,
       `t ${this.t.toFixed(3)} s  Beat ${this.beat.toFixed(2)}/${this.level.finishBeat.toFixed(0)}  Abschnitt ${this.sectionAt(this.y).id}  ${this.level.bpm} BPM`,
       `x ${p.x.toFixed(1)}  y ${this.y.toFixed(0)}  vx ${p.vx.toFixed(0)} u/s  Spur ${p.lane}  Dim ${dim}`,
-      `vy ${CLIMB_SPEED} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
+      `vy ${(this.endless?.director?infinityClimbSpeed(this.y):CLIMB_SPEED)} u/s  Vorschau ${this.lookaheadSec.toFixed(2)} s  Siegel-Serie ${this.sealStreak}`,
       `Impulse ${this.stats.impulses}  ignoriert ${this.input.ignored}  Solver: ${solver}`,
       `Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];

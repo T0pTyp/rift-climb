@@ -2,7 +2,8 @@ import {buildLevelRuntime,validateLevelData} from './level-data.js';
 import {makeTrap} from './traps.js';
 import {CLIMB_SPEED,MIN_PRESS_INTERVAL_MS,START_GRACE_MS,SIM_DT,STEER_OMEGA,HIT_RADIUS,PULSE_RADIUS,PULSE_GROW_SEC} from './config.js';
 import {RiftDirector,CATEGORIES,validContract,compatible,chunkFingerprint,directorTier} from './rift-director.js';
-export {METERS_PER_UNIT,worldMeters} from './world-units.js';
+import {infinityClimbTime,infinitySpaceScale} from './world-units.js';
+export {METERS_PER_UNIT,worldMeters,infinityClimbY,infinityClimbSpeed,infinityClimbTime,infinitySpaceScale,INFINITY_SPEED_MARK_M,INFINITY_SPEED_RAMP_M} from './world-units.js';
 export const INFINITY_TIERS=['EINFACH','MITTEL','SCHWER','SEHR SCHWER'];
 export const INFINITY_MIN_SEAM_SEC=2;
 // Inside a module, hazard rows stay under a second of climb. 0.95 × 260 u/s = 247 u.
@@ -103,11 +104,11 @@ export class EndlessWorld {
   while(this.nextY<y+4680) {
    const tier=this.director?directorTier(this.nextY):infinityTier(this.nextY);
    const source=this.order?this.book.chunks[this.order[this.nextIndex%this.order.length]]:this.director?this.director.select(this.nextY):this.select(tier);
-   const index=this.nextIndex++,origin=this.nextY,t0=origin/260,prefix=`c${index}-`;
-   const level={...source.level,objects:source.level.objects.map(o=>({...o,id:prefix+o.id,y:o.y+origin})),finish:{y:source.length+origin},height:source.length+origin+260};
+   const index=this.nextIndex++,origin=this.nextY,scale=this.director?infinitySpaceScale(origin):1,span=source.length*scale,t0=this.director?infinityClimbTime(origin):origin/260,prefix=`c${index}-`;
+   const level={...source.level,objects:source.level.objects.map(o=>({...o,id:prefix+o.id,y:o.y*scale+origin})),finish:{y:origin+span},height:origin+span+260};
    const rt=buildLevelRuntime(level);rt.traps=rt.traps.map(o=>makeTrap(o,t0));
-   this.chunks.push({index,id:source.id,tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+source.length,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
-   this.nextY+=source.length;this.generated++;changed=true;
+   this.chunks.push({index,id:source.id,tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+span,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
+   this.nextY+=span;this.generated++;changed=true;
   }
   while(this.chunks.length&&this.chunks[0].end<y-520){this.chunks.shift();changed=true;}
   return changed;
@@ -115,12 +116,12 @@ export class EndlessWorld {
  apply(game) {
   const chunks=this.chunks,rt=game.level;
   const names={SLIT:'SCHLITZ',PAIR:'FARBPAAR',LASER:'DREHLASER',MILL:'WINDMÜHLE',COMBO:'KOMBI'};
-  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=chunks.map(c=>[c.origin+40,this.director?(c.opening?'ANFANG':names[c.category]||c.category):'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
+  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=chunks.map(c=>[c.origin+(this.director?40*infinitySpaceScale(c.origin):40),this.director?(c.opening?'ANFANG':names[c.category]||c.category):'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
   game.obstacles=rt.obstacles;game.seals=rt.seals;game.traps.traps=rt.traps;game.rift.seals=rt.seals;game.rift.maxHh=20;game.obsLo=0;
   rt.maxChh=6;rt.maxHh=8;game.collideRange=16;
   this.maxObjects=Math.max(this.maxObjects,rt.obstacles.length+rt.traps.length);
   if(game.audio.timeline)game.audio.timeline.accents=new Set(rt.seals.map(s=>Math.round(s.y/260/game.audio.timeline.stepSec)));
-  if(game.audio.timeline&&this.director)game.audio.timeline.director=chunks.map(c=>({start:c.t0,end:c.end/260,tier:c.tier,category:c.category,challenge:c.challenge}));
+  if(game.audio.timeline&&this.director)game.audio.timeline.director=chunks.map(c=>({start:c.t0,end:infinityClimbTime(c.end),tier:c.tier,category:c.category,challenge:c.challenge}));
  }
  tapsAfter(t,last=-Infinity){return this.chunks.flatMap(c=>c.taps).filter(p=>p.t>=t-1/480&&p.t>last+1e-8);}
  tierAt(y){return this.chunks.find(c=>y>=c.origin&&y<c.end)?.tier??(this.director?directorTier(y):infinityTier(y));}

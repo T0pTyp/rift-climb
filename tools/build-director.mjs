@@ -65,7 +65,7 @@ add({
 
 const states=[[0,'blue',1],[0,'red',1],[1,'blue',2],[1,'red',2],[2,'blue',1],[2,'red',1]];
 for(const stage of [1,2]){
- const tier=stage===1?0:2,hole=stage===1?56:40,lead=stage===1?.4:.28,spin=stage===1?1.2:2.5,millSpin=stage===1?1.05:1.6,millLen=stage===1?100:112;
+ const tier=stage-1,hole=stage===1?56:40,lead=stage===1?.4:.28,spin=stage===1?1.2:2.5,millSpin=stage===1?1.05:1.6,millLen=stage===1?100:112;
  for(const [lane,dim,dest] of states){
   const dir=dest>lane?1:-1,wall=lane===0?-1:1,flip=dim==='blue'?'red':'blue',tag=`s${stage}-l${lane}${dim[0]}`;
   const slitT=stage===1?.7:.56,pairT=stage===1?.72:.55,pairGap=stage===1?.34:.26;
@@ -113,7 +113,7 @@ for(const [lane,dim] of [[0,'blue'],[0,'red'],[2,'blue'],[2,'red']]){
  const tag=`s3-${lane}${dim[0]}`;
  const slitT=.76,millT=1.08,safe=dim==='red'?90:0;
  add({
-  id:`infinity-${tag}-slit-mill`,name:'Schlitz und Mühle',category:'COMBO',tier:4,stage:3,block:'slit-mill',
+  id:`infinity-${tag}-slit-mill`,name:'Schlitz und Mühle',category:'COMBO',tier:2,stage:3,block:'slit-mill',
   entryLane:lane,entryDim:dim,exitLane:other,exitDim:dim,
   taps:[{t:.22,dir},{t:.46,dir}],
   objects:[...slit('slit',slitT,other,44),...mill(millT,1.35,100,safe)],
@@ -121,7 +121,7 @@ for(const [lane,dim] of [[0,'blue'],[0,'red'],[2,'blue'],[2,'red']]){
  });
  const pairT=.58,laserT=1.2;
  add({
-  id:`infinity-${tag}-pair-laser`,name:'Paar und Laser',category:'COMBO',tier:4,stage:3,block:'pair-laser',
+  id:`infinity-${tag}-pair-laser`,name:'Paar und Laser',category:'COMBO',tier:2,stage:3,block:'pair-laser',
   entryLane:lane,entryDim:dim,exitLane:lane,exitDim:flip,
   taps:[{t:.38,dir:wall}],
   objects:[...bars('pair',pairT,dim),crossBeam('spin-a0',laserT,dim,2.1,lane),crossBeam('spin-a1',laserT+.28,dim,-2.1,lane),beam('spin-b0',laserT+.62,flip,1.4,90,lane===0?214:8,70),beam('spin-b1',laserT+.9,flip,-1.4,90,lane===0?214:8,70)],
@@ -192,7 +192,7 @@ function prove(spec){
 }
 function finishYOf(level){return level.finish.y;}
 
-const book={schema:'rift-infinity-chunks',version:2,arenaStyle:'narrow',metersPerUnit:.1,revision:'director-3',chunks:[]};
+const book={schema:'rift-infinity-chunks',version:2,arenaStyle:'narrow',metersPerUnit:.1,revision:'director-4',chunks:[]};
 for(const spec of modules){
  const chunk=prove(spec);
  book.chunks.push(chunk);

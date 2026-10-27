@@ -1,4 +1,5 @@
 import {CLIMB_SPEED,HIT_RADIUS,MIN_PRESS_INTERVAL_MS,STEER_OMEGA,IMPULSE_MS} from './config.js';
+import {infinityClimbSpeed} from './world-units.js';
 import {springStep,clamp} from './physics.js';
 import {arenaCenter} from './arena.js';
 
@@ -9,7 +10,8 @@ export function phaseFlowState(game,now=performance.now()) {
  for(let i=game.obsLo;i<game.obstacles.length;i++){
   const o=game.obstacles[i];
   if(o.y+o.chh+HIT_RADIUS<game.y||!game.deadlyNow(o,p.dim))continue;
-  next={id:o.id,dimension:o.color,seconds:Math.max(0,(o.y-o.chh-HIT_RADIUS-game.y)/CLIMB_SPEED),
+  const climb=game.endless?.director?infinityClimbSpeed(game.y):CLIMB_SPEED;
+  next={id:o.id,dimension:o.color,seconds:Math.max(0,(o.y-o.chh-HIT_RADIUS-game.y)/climb),
     horizontalClearance:Math.max(o.x0-p.x,p.x-o.x1,0)-HIT_RADIUS,method:'vertical-band-only',collisionPrediction:false};break;
  }
  return {

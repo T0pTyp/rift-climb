@@ -3,7 +3,7 @@
   "version": 2,
   "arenaStyle": "narrow",
   "metersPerUnit": 0.1,
-  "revision": "director-3",
+  "revision": "director-4",
   "chunks": [
     {
       "id": "infinity-opening",
@@ -4756,7 +4756,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -4853,13 +4853,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "5aab0416",
+            "hash": "8d4ec829",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0b-pair",
-              "levelHash": "8e06b656",
+              "levelHash": "5e683d03",
               "inputHash": "20576955",
               "seed": null,
               "config": {
@@ -4953,7 +4953,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -5050,13 +5050,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "7ef16d0e",
+            "hash": "9f914f41",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0b-slit",
-              "levelHash": "e97a2d64",
+              "levelHash": "f7b9cad1",
               "inputHash": "bc1312f3",
               "seed": null,
               "config": {
@@ -5150,7 +5150,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "LASER",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "laser",
@@ -5247,13 +5247,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "48504b27",
+            "hash": "1751886a",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0b-laser",
-              "levelHash": "59fbda73",
+              "levelHash": "a2747e9e",
               "inputHash": "4c7bf0d9",
               "seed": null,
               "config": {
@@ -5421,7 +5421,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "MILL",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "mill",
@@ -5518,13 +5518,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "ddf0b0bd",
+            "hash": "3674d4f6",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0b-mill",
-              "levelHash": "63087cd5",
+              "levelHash": "8abef6c2",
               "inputHash": "741638a5",
               "seed": null,
               "config": {
@@ -5687,7 +5687,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -5784,13 +5784,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "15bb165b",
+            "hash": "6fed975e",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0r-pair",
-              "levelHash": "becd2ec5",
+              "levelHash": "7536e648",
               "inputHash": "20576955",
               "seed": null,
               "config": {
@@ -5884,7 +5884,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -5981,13 +5981,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "cdbda385",
+            "hash": "8d30aec0",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0r-slit",
-              "levelHash": "785133b3",
+              "levelHash": "3cdbef46",
               "inputHash": "bc1312f3",
               "seed": null,
               "config": {
@@ -6081,7 +6081,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "LASER",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "laser",
@@ -6178,13 +6178,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "841452e2",
+            "hash": "75d9a6c1",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0r-laser",
-              "levelHash": "9b46f50e",
+              "levelHash": "b945f0ff",
               "inputHash": "4c7bf0d9",
               "seed": null,
               "config": {
@@ -6352,7 +6352,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "MILL",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "mill",
@@ -6449,13 +6449,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "9035e2e7",
+            "hash": "834474c8",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l0r-mill",
-              "levelHash": "da3e8213",
+              "levelHash": "b6b529c0",
               "inputHash": "741638a5",
               "seed": null,
               "config": {
@@ -6618,7 +6618,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -6715,13 +6715,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "f7d3c8c1",
+            "hash": "75c1c686",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l1b-pair",
-              "levelHash": "53690939",
+              "levelHash": "50ed3ea0",
               "inputHash": "20576955",
               "seed": null,
               "config": {
@@ -6815,7 +6815,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -6912,13 +6912,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "349d92db",
+            "hash": "7fe542e2",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l1b-slit",
-              "levelHash": "2a07d3a7",
+              "levelHash": "99592fce",
               "inputHash": "bc1312f3",
               "seed": null,
               "config": {
@@ -7012,7 +7012,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -7109,13 +7109,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "a5e6a38a",
+            "hash": "4fe2c877",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l1r-pair",
-              "levelHash": "00da0966",
+              "levelHash": "7aaa08f7",
               "inputHash": "20576955",
               "seed": null,
               "config": {
@@ -7209,7 +7209,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -7306,13 +7306,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "737a0e86",
+            "hash": "09ff3861",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l1r-slit",
-              "levelHash": "a8ba3d16",
+              "levelHash": "c4fed7a7",
               "inputHash": "bc1312f3",
               "seed": null,
               "config": {
@@ -7406,7 +7406,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -7503,13 +7503,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "bee3e82b",
+            "hash": "9da7d3da",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2b-pair",
-              "levelHash": "73a379bb",
+              "levelHash": "d4eca21a",
               "inputHash": "c1d21472",
               "seed": null,
               "config": {
@@ -7603,7 +7603,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -7700,13 +7700,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "6ca854d1",
+            "hash": "539fc868",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2b-slit",
-              "levelHash": "c45adc73",
+              "levelHash": "e7bd9a0a",
               "inputHash": "623a6612",
               "seed": null,
               "config": {
@@ -7800,7 +7800,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "LASER",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "laser",
@@ -7897,13 +7897,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "8d7f9c5c",
+            "hash": "67a522ab",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2b-laser",
-              "levelHash": "74787e38",
+              "levelHash": "d7136c05",
               "inputHash": "f16708c6",
               "seed": null,
               "config": {
@@ -8071,7 +8071,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "MILL",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "mill",
@@ -8168,13 +8168,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "d05fa82d",
+            "hash": "cc27b2ae",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2b-mill",
-              "levelHash": "5042223d",
+              "levelHash": "0062e2f6",
               "inputHash": "741638a5",
               "seed": null,
               "config": {
@@ -8337,7 +8337,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "PAIR",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "pair",
@@ -8434,13 +8434,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "e4049f94",
+            "hash": "355d9e93",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2r-pair",
-              "levelHash": "51bd919a",
+              "levelHash": "d456f123",
               "inputHash": "c1d21472",
               "seed": null,
               "config": {
@@ -8534,7 +8534,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "SLIT",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "slit",
@@ -8631,13 +8631,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "44148250",
+            "hash": "eca26397",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2r-slit",
-              "levelHash": "e3d53a76",
+              "levelHash": "5e17e61b",
               "inputHash": "623a6612",
               "seed": null,
               "config": {
@@ -8731,7 +8731,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "LASER",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "laser",
@@ -8828,13 +8828,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "f9af18bf",
+            "hash": "47f43682",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2r-laser",
-              "levelHash": "25440f2f",
+              "levelHash": "6055613e",
               "inputHash": "f16708c6",
               "seed": null,
               "config": {
@@ -9002,7 +9002,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "MILL",
-          "tier": 2,
+          "tier": 1,
           "stage": 2,
           "opening": false,
           "block": "mill",
@@ -9099,13 +9099,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "8a7f4abf",
+            "hash": "26aa1e0c",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s2-l2r-mill",
-              "levelHash": "7a27e6cb",
+              "levelHash": "eed837a8",
               "inputHash": "741638a5",
               "seed": null,
               "config": {
@@ -9268,7 +9268,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "slit-mill",
@@ -9365,13 +9365,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "f1514b6d",
+            "hash": "6e87c01b",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-0b-slit-mill",
-              "levelHash": "441086f3",
+              "levelHash": "f68308a9",
               "inputHash": "a140821b",
               "seed": null,
               "config": {
@@ -9561,7 +9561,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "pair-laser",
@@ -9658,13 +9658,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "32579cb1",
+            "hash": "3ee2380f",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-0b-pair-laser",
-              "levelHash": "6e4d1115",
+              "levelHash": "a5ebbf4b",
               "inputHash": "aa956051",
               "seed": null,
               "config": {
@@ -9850,7 +9850,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "slit-mill",
@@ -9947,13 +9947,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "d59ff4c2",
+            "hash": "57873fe4",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-0r-slit-mill",
-              "levelHash": "5fa70414",
+              "levelHash": "081f68d2",
               "inputHash": "a140821b",
               "seed": null,
               "config": {
@@ -10143,7 +10143,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "pair-laser",
@@ -10240,13 +10240,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "d601a4e6",
+            "hash": "17a47994",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-0r-pair-laser",
-              "levelHash": "13cf3468",
+              "levelHash": "e79f673a",
               "inputHash": "aa956051",
               "seed": null,
               "config": {
@@ -10432,7 +10432,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "slit-mill",
@@ -10529,13 +10529,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "818438ff",
+            "hash": "f0ad7db9",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-2b-slit-mill",
-              "levelHash": "7c6cfb79",
+              "levelHash": "099f660b",
               "inputHash": "8b77380b",
               "seed": null,
               "config": {
@@ -10725,7 +10725,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "pair-laser",
@@ -10822,13 +10822,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "bdc3368c",
+            "hash": "e1f8b676",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-2b-pair-laser",
-              "levelHash": "fd2cc8b2",
+              "levelHash": "e42bb358",
               "inputHash": "ff2d913e",
               "seed": null,
               "config": {
@@ -11014,7 +11014,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "slit-mill",
@@ -11111,13 +11111,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "baee03c0",
+            "hash": "b44009f6",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-2r-slit-mill",
-              "levelHash": "be93ed34",
+              "levelHash": "db831392",
               "inputHash": "8b77380b",
               "seed": null,
               "config": {
@@ -11307,7 +11307,7 @@
         "arenaStyle": "narrow",
         "chunk": {
           "category": "COMBO",
-          "tier": 4,
+          "tier": 2,
           "stage": 3,
           "opening": false,
           "block": "pair-laser",
@@ -11404,13 +11404,13 @@
           "validation": {
             "status": "verified",
             "physics": "spring-240-v1",
-            "hash": "816073a5",
+            "hash": "33ef7fff",
             "fixtures": 4,
             "proof": {
               "schema": "rift-replay-proof",
               "version": 1,
               "levelId": "infinity-s3-2r-pair-laser",
-              "levelHash": "6f6655a9",
+              "levelHash": "51b951af",
               "inputHash": "ff2d913e",
               "seed": null,
               "config": {

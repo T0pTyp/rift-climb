@@ -3,7 +3,7 @@ import {LAB_STYLES,LAB_FEEDBACK} from './arena.js';
 import { ACHIEVEMENTS, SKINS, medalFor } from './rewards.js';
 import { STORAGE_KEY, readJson } from './storage.js';
 import {CLIMB_SPEED} from './config.js';
-import {worldMeters} from './world-units.js';
+import {worldMeters,infinityClimbY} from './world-units.js';
 export const ASCENSION_KEY='riftclimb.ascension.v2';
 export const BACKUP_KEY=ASCENSION_KEY+'.backup';
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
@@ -115,7 +115,7 @@ export class Progression {
  }
  equip(id){if(!this.data.cosmetics.unlockedSkinIds.includes(id))return false;this.data.cosmetics.selectedSkinId=id;this.persist();return true;}
  reportEndless(run,t,force=false) {
-  if(!run.eligible||run.closed)return false;const e=this.data.endless,h=worldMeters(t*CLIMB_SPEED),record=h>e.bestHeight;
+  if(!run.eligible||run.closed)return false;const e=this.data.endless,h=worldMeters(run.ramp?infinityClimbY(t):t*CLIMB_SPEED),record=h>e.bestHeight;
   e.lastHeight=h;if(record){e.bestHeight=h;run.record=true;}
   if(force||t-(run.savedT||0)>=1){if(run.record)e.recordAt=this.now();run.savedT=t;this.persist();}return record;
  }

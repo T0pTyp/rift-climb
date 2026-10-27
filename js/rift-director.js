@@ -2,7 +2,10 @@
 export const CATEGORIES=['SLIT','PAIR','LASER','MILL','COMBO'];
 export const DIRECTOR_TIERS=['FLOW','PHASE FLOW','MECHANICAL','VOLTAGE','CONVERGENCE','INFINITY'];
 export const ZONES=['CYAN RIFT TOWER','FRACTURED DIMENSION','MECHANICAL CORE','VOLTAGE FACILITY','RIFT STORM','INFINITY CORE'];
-export const directorTier=y=>{const m=y*.1;return m<250?0:m<500?1:m<750?2:m<1250?3:m<2000?4:5;};
+// Six bands, 1500 m apart. Content tiers are 0, 1 and 2: stage 1 until 1500 m,
+// stage 2 from 1500 m, stage 3 from 3000 m. Later bands only reweight.
+export const DIRECTOR_BAND_M=1500;
+export const directorTier=y=>{const band=Math.floor((y*.1+1e-6)/DIRECTOR_BAND_M);return band<0?0:band>5?5:band;};
 export const zoneAt=t=>ZONES[Math.floor(t/32)%ZONES.length];
 export const stateOf=g=>({x:g.player.x,vx:g.player.vx,target:g.player.lane,dimension:g.player.dim==='B'?'blue':'red',lastDir:g.player.lastDir,impulse:g.player.dashing?'active':'idle'});
 export function accepts(contract,state) {
