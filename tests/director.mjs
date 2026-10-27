@@ -8,12 +8,45 @@ import {EndlessWorld,validateChunkBook} from '../js/endless.js';
 import {headlessGame,runReplay,checkChunkPlayability,runEndlessReplay} from '../js/playcheck.js';
 import {validateLevelData,serializeLevel} from '../js/level-data.js';
 import {CATEGORIES,compatible,RiftDirector,directorTier,accepts,stateOf,chunkFingerprint} from '../js/rift-director.js';
+import {INFINITY_MAX_HAZARD_GAP,INFINITY_MAX_HAZARD_GAP_SEC,hazardRowGap} from '../js/endless.js';
+import {CLIMB_SPEED,SIM_DT} from '../js/config.js';
+import {trapPose} from '../js/traps.js';
 const book=validateChunkBook(JSON.parse(readFileSync('assets/endless/director.json')));
 let checks=0,pairs=0,entries=0,timing=0;const test=(s,f)=>{f();checks++;console.log('PASS '+s);};
 const memory=()=>{const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),key:i=>[...m.keys()][i],get length(){return m.size;}};};
 function game(seed=37,order=null){const g=headlessGame(book.chunks[0].level);g.debug.autoplay=true;g.startEndless(book,seed,g.storage,order);return g;}
 function play(g,seconds,dt=.2){const end=Math.round(seconds*240);let guard=0;while(g.state==='playing'&&g.stats.steps<end&&guard++<end+1)g.update(Math.min(dt,(end-g.stats.steps)/240));return g;}
 test('270/90 actual spring: symmetric movement, immediate retarget, stable walls',()=>{for(const dir of [-1,1]){const p=new Player('narrow');p.impulse(dir);assert.equal(p.x,135);assert.equal(p.dim,'R');p.update(.22,0);assert.ok(Math.abs(p.x-135-dir*85.498)<.02);const x=p.x;p.impulse(-dir);assert.equal(p.x,x);assert.equal(p.dim,'B');for(let i=0;i<240;i++)p.update(1/240,i/240*260);assert.ok(Math.abs(p.x-135)<.001);for(let i=0;i<100;i++){p.impulse(dir);p.update(.05,i*13);assert.ok(p.x>=8&&p.x<=262);}assert.ok(Math.abs(p.x-(dir>0?225:45))<.001);}});
+test('Modules stay inside the climb-speed gap, use downward lasers, solid walls and durable saws',()=>{
+ assert.equal(INFINITY_MAX_HAZARD_GAP,CLIMB_SPEED*INFINITY_MAX_HAZARD_GAP_SEC);
+ assert.equal(INFINITY_MAX_HAZARD_GAP,208);
+ const lasers=[],saws=[];
+ for(const c of book.chunks){
+  const gap=hazardRowGap(c.level);
+  assert.ok(gap.max<=INFINITY_MAX_HAZARD_GAP+1e-6,c.id+' gap '+gap.max);
+  assert.ok(c.level.objects.some(o=>o.type==='obstacle'&&o.dimension==='both'),c.id);
+  const taps=c.level.replay.taps;
+  const dimBefore=t=>{let blue=true;for(const tap of taps){if(tap.t>=t)break;blue=!blue;}return blue?'blue':'red';};
+  for(const o of c.level.objects){
+   if(o.type==='hint'||o.type==='seal'||o.dimension==='both'||!o.dimension)continue;
+   const prev=taps.filter(tap=>tap.t<o.y/CLIMB_SPEED-.02);
+   if(!prev.length)continue;
+   assert.equal(o.dimension,dimBefore(prev.at(-1).t),c.id+' '+o.id+' color');
+  }
+  lasers.push(...c.level.objects.filter(o=>o.type==='laser'));
+  saws.push(...c.level.objects.filter(o=>o.type==='saw'));
+  const g=headlessGame(c.level);g.start('normal');let i=0;
+  while(g.state==='playing'&&g.y<c.level.finish.y){while(i<taps.length&&taps[i].t<=g.t+SIM_DT/2)g.press(taps[i++].dir);g.step(SIM_DT);}
+  assert.equal(g.state,'won',c.id);
+  assert.ok(g.traps.traps.filter(o=>o.type==='saw').every(o=>o.state==='idle'&&o.durable),c.id+' saw destroyed');
+ }
+ const down=lasers.filter(o=>Math.sin(o.startAngle*Math.PI/180)<0&&Math.sin(o.endAngle*Math.PI/180)<0);
+ const up=lasers.filter(o=>Math.sin(o.startAngle*Math.PI/180)>0&&Math.sin(o.endAngle*Math.PI/180)>0);
+ assert.ok(down.length>=6&&up.length>=6);
+ const beam=trapPose({...down[0],color:'B',timeOrigin:0},down[0].warnSec+down[0].activeSec/2);
+ assert.ok(Math.sin(beam.angle)<0);
+ assert.ok(saws.length>=20&&saws.every(o=>o.durable===true));
+});
 test('30 authored narrow modules / all six categories / continuous entry probes',()=>{
  assert.equal(book.chunks.length,30);
  for(const category of CATEGORIES)assert.equal(book.chunks.filter(c=>c.level.chunk.category===category).length,5);

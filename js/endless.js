@@ -5,8 +5,28 @@ import {RiftDirector,CATEGORIES,validContract,compatible,chunkFingerprint,direct
 export {METERS_PER_UNIT,worldMeters} from './world-units.js';
 export const INFINITY_TIERS=['EINFACH','MITTEL','SCHWER','SEHR SCHWER'];
 export const INFINITY_MIN_SEAM_SEC=2;
+// Inside a module, hazard rows stay within 0.8 s of climb. 0.8 × 260 u/s = 208 u.
+// That is longer than the 0.22 s lane change and shorter than an idle beat-and-a-half.
+// The 2.0 s seam between modules is the contract minimum (exit clear + entry clear), not this cap.
+export const INFINITY_MAX_HAZARD_GAP_SEC=0.8;
+export const INFINITY_MAX_HAZARD_GAP=CLIMB_SPEED*INFINITY_MAX_HAZARD_GAP_SEC;
 export const infinityTier=y=>y*.1<250?0:y*.1<750?1:y*.1<1500?2:3;
 /** Prepared rapid actions are distinct from time to read the next challenge. */
+/** Largest climb between hazard rows inside the module, excluding the seam clearances. */
+export function hazardRowGap(level) {
+ const rows=[];
+ for(const o of level.objects||[]){
+  if(o.type==='hint')continue;
+  const row=rows.find(r=>Math.abs(r-o.y)<12);
+  if(row===undefined)rows.push(o.y);
+ }
+ rows.sort((a,b)=>a-b);
+ const start=level.chunk.entry.clearSec*CLIMB_SPEED,end=level.finish.y-level.chunk.exit.clearSec*CLIMB_SPEED;
+ const marks=[start,...rows.filter(y=>y>=start-1&&y<=end+1),end];
+ let max=0;
+ for(let i=1;i<marks.length;i++)max=Math.max(max,marks[i]-marks[i-1]);
+ return {max,rows:rows.length,start,end};
+}
 export function chunkFlow(chunk) {
  const taps=chunk.level.replay.taps;let minGap=Infinity,burst=1,maxBurst=1;
  for(let i=1;i<taps.length;i++){
@@ -43,6 +63,8 @@ function validateDirectorBook(raw) {
   const taps=l.replay.taps;if(!taps.length||taps.some((p,i)=>![1,-1].includes(p.dir)||!Number.isFinite(p.t)||p.t<.2||p.t>c.length/CLIMB_SPEED-m.exit.clearSec||(i&&p.t-taps[i-1].t<.045-1e-8)))throw Error('RIFT DIRECTOR: Eingaben '+c.id);
   const config=m.validation.proof?.config,expected={simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC,arenaWidth:270,arenaStep:90};
   if(!config||Object.keys(expected).some(k=>config[k]!==expected[k]))throw Error('RIFT DIRECTOR: Physik-Zertifikat veraltet '+c.id);
+  const gap=hazardRowGap(l);
+  if(gap.max>INFINITY_MAX_HAZARD_GAP+1e-6)throw Error('RIFT DIRECTOR: Lücke '+gap.max.toFixed(1)+' u übersteigt '+INFINITY_MAX_HAZARD_GAP+' u in '+c.id);
   ids.add(c.id);
  }
  if(CATEGORIES.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<5))throw Error('RIFT DIRECTOR: Kategorien unvollständig');

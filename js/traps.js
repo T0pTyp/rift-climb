@@ -26,6 +26,8 @@ export function normalizeTrap(o,width=WORLD_W) {
  const a=clean.axis==='x'?clean.amplitude:0;
  if(clean.x-a<0||clean.x+clean.w+a>width)errors.push('Bewegung ragt seitlich aus der Arena');
  if(clean.type==='mine'&&clean.blastRadius>clean.activationRadius)errors.push('Explosion größer als Aktivierungszone');
+ // Infinity saws opt in. Campaign saws omit the field and stay pulse-destructible.
+ if(clean.type==='saw'&&o.durable===true)clean.durable=true;
  return {clean,errors};
 }
 export function makeTrap(data,timeOrigin=0) {
@@ -79,10 +81,10 @@ export class TrapField {
     }
     if(distance>pulseRadius(age)+1e-8)continue;
     o.pulseId=p.id;
-    if(o.type==='saw'){o.state='destroyed';o.deadAt=t;}
-    else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;}
-    else {o.disabledUntil=t+o.disableSec;o.epoch=o.disabledUntil+o.phase*(o.warnSec+o.activeSec+o.offSec);}
-    this.events++;onEvent?.(o,o.type==='saw'?'saw-break':o.type==='mine'?'mine-disarm':'laser-disable');
+    if(o.type==='saw'&&o.durable){/* Solid saw: the wave does not remove it. */}
+    else if(o.type==='saw'){o.state='destroyed';o.deadAt=t;this.events++;onEvent?.(o,'saw-break');}
+    else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;this.events++;onEvent?.(o,'mine-disarm');}
+    else {o.disabledUntil=t+o.disableSec;o.epoch=o.disabledUntil+o.phase*(o.warnSec+o.activeSec+o.offSec);this.events++;onEvent?.(o,'laser-disable');}
    }
    if(o.state==='destroyed'||o.state==='disarmed')continue;
    if(o.type==='mine') {
