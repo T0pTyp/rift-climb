@@ -32,7 +32,7 @@ export const LIMITS = Object.freeze({
   minH: 6,
   maxH: 520,
   bpm: [60, 200],
-  finish: [UNITS_PER_BEAT * 4, CLIMB_SPEED * 600],
+  finish: [UNITS_PER_BEAT, CLIMB_SPEED * 600],
   sealOpen: [0.3, 1.5],
   hintLen: 40,
   nameLen: 40,

@@ -1773,7 +1773,7 @@ const app = {
   S, get doc() { return doc; }, liveEdit, commitEdit, edit, toast, duplicate, deleteSelection, setToggle, playtest,
   removeTestMarker, clearReplay, markEditorState, setArenaStyle,
   validateChunk(){const l=structuredClone(doc.level);l.chunk.actions=l.replay?.taps.length||0;l.chunk.requiredSwitches=l.chunk.actions;const r=checkChunkPlayability(l);if(r.ok)edit('Chunk zertifizieren',tx=>{Object.assign(tx.touchMeta().chunk,{actions:l.chunk.actions,requiredSwitches:l.chunk.requiredSwitches,validation:r.certificate});});toast(r.message,r.ok?'ok':'error');runValidation();},
-  async prepareChunk(){if(doc.level.arenaStyle!=='narrow'||doc.level.finish.y<780||doc.level.finish.y>2080){toast('Für Chunks: 270-u-Arena und 3–8 s Länge einstellen.','warn');return;}const b=await fetchJson('../endless/director.json');edit('Chunk vorbereiten',tx=>{const m=structuredClone(b.chunks[0].level.chunk);m.validation={status:'draft'};m.actions=doc.level.replay?.taps.length||0;m.requiredSwitches=m.actions;tx.touchMeta().chunk=m;});props.render();runValidation();},
+  async prepareChunk(){if(doc.level.arenaStyle!=='narrow'||doc.level.finish.y<300||doc.level.finish.y>2080){toast('Für Chunks: 270-u-Arena und passende Länge einstellen.','warn');return;}const b=await fetchJson('../endless/director.json');edit('Chunk vorbereiten',tx=>{const m=structuredClone(b.chunks[0].level.chunk);m.validation={status:'draft'};m.actions=doc.level.replay?.taps.length||0;m.requiredSwitches=m.actions;tx.touchMeta().chunk=m;});props.render();runValidation();},
 };
 
 function bindUi() {

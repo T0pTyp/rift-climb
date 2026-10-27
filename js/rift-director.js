@@ -1,5 +1,5 @@
 // Prepared contracts, not a runtime pathfinder. Coordinates/velocities stay continuous.
-export const CATEGORIES=['FLOW','PHASE','SAW','VOLTAGE','PRECISION','COMBO'];
+export const CATEGORIES=['SLIT','PAIR','LASER','MILL','COMBO'];
 export const DIRECTOR_TIERS=['FLOW','PHASE FLOW','MECHANICAL','VOLTAGE','CONVERGENCE','INFINITY'];
 export const ZONES=['CYAN RIFT TOWER','FRACTURED DIMENSION','MECHANICAL CORE','VOLTAGE FACILITY','RIFT STORM','INFINITY CORE'];
 export const directorTier=y=>{const m=y*.1;return m<250?0:m<500?1:m<750?2:m<1250?3:m<2000?4:5;};
@@ -9,10 +9,12 @@ export function accepts(contract,state) {
  return !!contract&&!!state&&state.x>=contract.x[0]-1e-8&&state.x<=contract.x[1]+1e-8&&state.vx>=contract.vx[0]-1e-8&&state.vx<=contract.vx[1]+1e-8&&contract.target===state.target&&contract.dimension===state.dimension&&contract.lastDirs.includes(state.lastDir)&&contract.impulses.includes(state.impulse);
 }
 export function compatible(a,b) {
- return !!a&&!!b&&a.x[0]>=b.x[0]&&a.x[1]<=b.x[1]&&a.vx[0]>=b.vx[0]&&a.vx[1]<=b.vx[1]&&a.target===b.target&&a.dimension===b.dimension&&a.lastDirs.every(v=>b.lastDirs.includes(v))&&a.impulses.every(v=>b.impulses.includes(v))&&a.clearSec+b.clearSec>=2&&a.traps==='clear'&&b.traps==='local-zero';
+ // Color and lane decide the join. The combined clearance stays under a second: the next trap is the seam.
+ const seam=a&&b?a.clearSec+b.clearSec:0;
+ return !!a&&!!b&&a.x[0]>=b.x[0]-1e-8&&a.x[1]<=b.x[1]+1e-8&&a.vx[0]>=b.vx[0]-1e-8&&a.vx[1]<=b.vx[1]+1e-8&&a.target===b.target&&a.dimension===b.dimension&&a.lastDirs.every(v=>b.lastDirs.includes(v))&&a.impulses.every(v=>b.impulses.includes(v))&&seam>=.3&&seam<1&&a.traps==='clear'&&b.traps==='local-zero';
 }
 export function validContract(c,exit=false) {
- return !!c&&['x','vx'].every(k=>Array.isArray(c[k])&&c[k].length===2&&c[k].every(Number.isFinite)&&c[k][0]<=c[k][1])&&c.x[0]>=8&&c.x[1]<=262&&Number.isInteger(c.target)&&c.target>=0&&c.target<=2&&['blue','red'].includes(c.dimension)&&Array.isArray(c.lastDirs)&&c.lastDirs.length>0&&c.lastDirs.every(v=>[-1,0,1].includes(v))&&Array.isArray(c.impulses)&&c.impulses.length>0&&c.impulses.every(v=>['idle','active'].includes(v))&&Number.isFinite(c.clearSec)&&c.clearSec>=.7&&c.traps===(exit?'clear':'local-zero');
+ return !!c&&['x','vx'].every(k=>Array.isArray(c[k])&&c[k].length===2&&c[k].every(Number.isFinite)&&c[k][0]<=c[k][1])&&c.x[0]>=8&&c.x[1]<=262&&Number.isInteger(c.target)&&c.target>=0&&c.target<=2&&['blue','red'].includes(c.dimension)&&Array.isArray(c.lastDirs)&&c.lastDirs.length>0&&c.lastDirs.every(v=>[-1,0,1].includes(v))&&Array.isArray(c.impulses)&&c.impulses.length>0&&c.impulses.every(v=>['idle','active'].includes(v))&&Number.isFinite(c.clearSec)&&c.clearSec>=.15&&c.clearSec<1&&c.traps===(exit?'clear':'local-zero');
 }
 // FNV audit fingerprint: detects stale offline certificates, not an anti-cheat signature.
 export function chunkFingerprint(level) {
@@ -27,11 +29,15 @@ export class RiftDirector {
  reset(){this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;}
  select(y) {
   const tier=directorTier(y),last=this.history.at(-1),recent=this.history.slice(-3),challenge=y*.1>=this.nextChallenge;
-  const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk,ok=m.tier<=tier&&m.validation.status==='verified'&&(!this.previous||compatible(this.previous,m.entry));if(!ok)this.rejected++;return ok;});
+  if(!this.history.length){
+   const opening=this.book.chunks.find(c=>c.level.chunk.opening);
+   if(opening){const m=opening.level.chunk;this.previous=m.exit;this.history.push({id:opening.id,category:m.category,actions:m.actions,family:m.hazardFamily});return opening;}
+  }
+  const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk;if(m.opening)return false;const ok=m.tier<=tier&&m.validation.status==='verified'&&compatible(this.previous,m.entry);if(!ok)this.rejected++;return ok;});
   let pool=eligible.filter(c=>!recent.some(h=>h.id===c.id)&&(!c.level.chunk.challenge||challenge));
   if(this.history.length>=2&&this.history.at(-2).category===last?.category){const varied=pool.filter(c=>c.level.chunk.category!==last.category);if(varied.length)pool=varied;}
   if(challenge){const special=pool.filter(c=>c.level.chunk.challenge);if(special.length)pool=special;}
-  if(!pool.length){this.fallbacks++;pool=eligible.filter(c=>c.level.chunk.category==='FLOW');}
+  if(!pool.length){this.fallbacks++;pool=eligible;}
   if(!pool.length)throw Error('RIFT DIRECTOR: kein zertifizierter Übergang');
   const weights=pool.map(c=>{const m=c.level.chunk,freq=this.history.filter(h=>h.id===c.id).length;
    const difficulty=m.tier===tier?2:Math.pow(.55,tier-m.tier),recovery=last?.actions>=6&&m.actions<=4?2:1;

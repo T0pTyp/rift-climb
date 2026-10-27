@@ -1,118 +1,205 @@
-// Offline authoring/certification only. The game never searches or builds geometry.
-import {writeFileSync,mkdirSync} from 'node:fs';
-import {createEmptyLevel,validateLevelData,serializeLevel} from '../js/level-data.js';
-import {Player} from '../js/player.js';
-import {SIM_DT,CLIMB_SPEED,HIT_RADIUS} from '../js/config.js';
+// Author the Infinity book from the four Test Infinity blocks. The game only replays these modules.
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {createEmptyLevel,serializeLevel,validateLevelData} from '../js/level-data.js';
 import {runReplay} from '../js/playcheck.js';
-import {CATEGORIES,chunkFingerprint,accepts} from '../js/rift-director.js';
-import {INFINITY_MAX_HAZARD_GAP,hazardRowGap} from '../js/endless.js';
-const DURATION=8,ENTRY_CLEAR=1,EXIT_CLEAR=1;
-const patterns=[
- [[1,-1,-1,1,1,-1,-1,1],.72],
- [[-1,1,1,-1,-1,1,1,-1],.68],
- [[1,1,-1,-1,-1,1,1,-1],.7],
- [[1,-1,-1,1,1,-1,-1,1],.58],
- [[-1,1,1,-1,-1,1,1,-1],.64],
-].map(([dirs,step])=>{
- const taps=[];let t=1.15;
- for(const dir of dirs){taps.push({t:+t.toFixed(3),dir});t+=step;}
- let lane=1,blue=true;
- for(const tap of taps){lane=Math.max(0,Math.min(2,lane+tap.dir));blue=!blue;}
- if(lane!==1||!blue||taps.at(-1).t>DURATION-EXIT_CLEAR)throw Error('pattern leaves home '+JSON.stringify(taps));
- return taps;
-});
-const titles={FLOW:['Arc','Crosswind','Switchback','Left Current','Right Current'],PHASE:['Veil','Red Echo','Blue Echo','Double Shift','Phase Cascade'],SAW:['Rotor','Pendulum','Shear','Gear Weave','Saw Circuit'],VOLTAGE:['Capacitor','Discharge','Relay','Voltage Split','Overcurrent'],PRECISION:['Needle','Stagger','Chicane','Aperture','Thread'],COMBO:['Confluence','Pulse Relay','Circuit Break','Rift Storm','Infinity Knot']};
-const entry={x:[123,147],vx:[-240,240],target:1,dimension:'blue',lastDirs:[-1,0,1],impulses:['idle','active'],clearSec:ENTRY_CLEAR,traps:'local-zero'};
-const exit={x:[134.99,135.01],vx:[-.1,.1],target:1,dimension:'blue',lastDirs:[-1,1],impulses:['idle'],clearSec:EXIT_CLEAR,traps:'clear'};
-const fixtures=[{id:'center',x:135,vx:0,lastDir:0},...[-12,12].flatMap(dx=>[-240,0,240].map(vx=>({id:`x${dx}-v${vx}`,x:135+dx,vx,lastDir:vx<0?-1:1})))].map(s=>({...s,y:0,lane:1,dim:'B'}));
-const book={schema:'rift-infinity-chunks',version:2,arenaStyle:'narrow',metersPerUnit:.1,revision:'director-2',chunks:[]};
-let laserSerial=0;
-for(const category of CATEGORIES)for(let variant=0;variant<5;variant++){
- const id=`infinity-${category.toLowerCase()}-${variant+1}`,l=createEmptyLevel({id,name:titles[category][variant],arenaStyle:'narrow'});
- const taps=patterns[variant].map(tap=>({...tap})),duration=DURATION;
- l.finish.y=duration*CLIMB_SPEED;l.height=l.finish.y+260;l.theme=({FLOW:'spire',PHASE:'fracture',SAW:'gears',VOLTAGE:'voltage',PRECISION:'core',COMBO:'singularity'})[category];l.music='neon-ascent';l.bpm=120;l.description=`RIFT DIRECTOR · ${category} · ${titles[category][variant]}`;l.objects=[];l.replay={taps};
- let n=0;const add=(o)=>l.objects.push({id:`o${n++}`,...o});
- const tracks=fixtures.map(start=>{
-  const p=new Player('narrow');p.reset(1,'B',0);p.body.x=start.x;p.body.v=start.vx;p.lastDir=start.lastDir;
-  const poses=[];let ti=0;
-  for(let step=0;step<=duration/SIM_DT;step++){
-   const t=step*SIM_DT;while(ti<taps.length&&taps[ti].t<=t+SIM_DT/2)p.impulse(taps[ti++].dir);
-   poses.push({x:p.x,dim:p.dim,lane:p.lane,vx:p.vx});p.update(SIM_DT,t*CLIMB_SPEED);
-  }
-  return poses;
- });
- const at=(track,t)=>track[Math.min(track.length-1,Math.round(t/SIM_DT))];
- const span=t=>{const xs=[];for(const track of tracks)for(let u=t-.12;u<=t+.02;u+=.02)xs.push(at(track,Math.max(0,u)).x);return {lo:Math.min(...xs),hi:Math.max(...xs)};};
- const threatBefore=t=>{
-  const prev=taps.filter(tap=>tap.t<=t-.06).at(-1);
-  if(!prev)return null;
-  return at(tracks[0],prev.t-SIM_DT).dim==='B'?'blue':'red';
- };
- function blockade(t){
-  const {lo,hi}=span(t),pad=HIT_RADIUS+24,a=lo-pad,b=hi+pad;
-  if(b-a>190||a<16||b>254)return;
-  const y=t*CLIMB_SPEED;
-  if(a>=8)add({type:'obstacle',x:0,y,w:a,h:14,dimension:'both'});
-  if(270-b>=8)add({type:'obstacle',x:b,y,w:270-b,h:14,dimension:'both'});
- }
- function colorGate(t,dimension){
-  if(!dimension)return;
-  add({type:'obstacle',x:0,y:t*CLIMB_SPEED,w:270,h:14,dimension});
- }
- const activeStart=ENTRY_CLEAR+.08,activeEnd=duration-EXIT_CLEAR-.08;
- for(let i=0;i<taps.length;i++){
-  const tap=taps[i],threat=threatBefore(tap.t+.2),yTap=tap.t;
-  if(category==='PHASE'||category==='COMBO'||category==='FLOW')colorGate(yTap+.16,threat);
-  if(category==='PRECISION')blockade(yTap+.2);
-  if((category==='SAW'||category==='COMBO')&&i%2===0){
-   const x=Math.max(8,Math.min(222,at(tracks[0],yTap).x-20));
-   add({type:'saw',x,y:(yTap+.4)*CLIMB_SPEED,w:40,h:40,dimension:threat,axis:'none',amplitude:0,period:4,phase:0,spin:4,durable:true});
-  }
-  if((category==='VOLTAGE'||category==='COMBO')&&i%2===0){
-   const down=laserSerial++%2===1;
-   const type=(i/2+variant)%2===0?'mine':'laser';
-   const x=Math.max(0,Math.min(242,at(tracks[0],yTap+.3).x-14));
-   const pass=(yTap+.48);
-   if(type==='mine')add({type,x,y:pass*CLIMB_SPEED,w:28,h:28,dimension:threat,activationRadius:150,chargeSec:.9,blastRadius:80,blastSec:.2});
-   else {
-    const warn=.5,active=1.1,off=.5,cycle=warn+active+off,target=warn+active/2;
-    let phase=((target-pass)/cycle)%1;if(phase<0)phase+=1;
-    const angles=down?[-110,-70]:[70,110];
-    add({type,x:Math.max(0,Math.min(244,x)),y:(yTap+.42)*CLIMB_SPEED,w:26,h:26,dimension:threat,axis:'none',amplitude:0,period:4,phase:+phase.toFixed(4),startAngle:angles[0],endAngle:angles[1],sweepPeriod:2.4,length:78,beamWidth:8,warnSec:warn,activeSec:active,offSec:off,disableSec:1});
-   }
-  }
-  if((category==='PHASE'||category==='COMBO')&&i===taps.length-1)add({type:'seal',x:97,y:(yTap+.22)*CLIMB_SPEED,w:76,h:14,openSec:.7});
- }
- const mids=[];
- for(let i=0;i<taps.length-1;i++)mids.push((taps[i].t+taps[i+1].t)/2);
- mids.push(Math.min(activeEnd-.04,taps.at(-1).t+.5));
- const wallCount=category==='PRECISION'?0:category==='COMBO'?3:4;
- for(let k=0;k<wallCount;k++)blockade(mids[Math.round(k*(mids.length-1)/Math.max(1,wallCount-1))]);
- // One row at least every 0.8 s. Prefer a solid gap; a full-width color bar still blocks the idle.
- for(let pass=0;pass<12;pass++){
-  const rows=l.objects.map(o=>o.y).filter((y,i,a)=>a.findIndex(v=>Math.abs(v-y)<12)===i).sort((a,b)=>a-b);
-  const start=ENTRY_CLEAR*CLIMB_SPEED,end=(duration-EXIT_CLEAR)*CLIMB_SPEED;
-  const marks=[start,...rows.filter(y=>y>=start-1&&y<=end+1),end];
-  let hole=null;
-  for(let i=1;i<marks.length;i++)if(marks[i]-marks[i-1]>INFINITY_MAX_HAZARD_GAP){hole=(marks[i-1]+marks[i])/2;break;}
-  if(hole===null)break;
-  const t=hole/CLIMB_SPEED,before=l.objects.length;
-  if(l.objects.length<22)blockade(t);
-  if(l.objects.length===before)colorGate(t,threatBefore(t)||'red');
-  if(l.objects.length===before)throw Error(id+' unfilled gap at '+t.toFixed(2));
- }
- l.chunk={category,tier:({FLOW:0,PHASE:variant<2?0:1,PRECISION:1,SAW:2,VOLTAGE:3,COMBO:variant>=3?5:4})[category],hazardFamily:category==='COMBO'?'mixed':category.toLowerCase(),actions:taps.length,requiredSwitches:taps.length,rhythm:{bpm:120,subdivision:variant>=3?'eighth':'quarter'},challenge:variant===4&&['SAW','VOLTAGE','COMBO'].includes(category),entry:structuredClone(entry),exit:structuredClone(exit),fixtures:structuredClone(fixtures)};
- const gap=hazardRowGap(l);
- if(gap.max>INFINITY_MAX_HAZARD_GAP)throw Error(id+' gap '+gap.max.toFixed(1));
- let solved=runReplay(l,taps,{proof:true});let searched=1;
- if(!solved.won){for(const delta of [-.04,.04,-.08,.08]){const candidate=taps.map(tap=>({...tap,t:+(tap.t+delta).toFixed(3)}));if(candidate.some((tap,i)=>tap.t<.2||tap.t>duration-EXIT_CLEAR||(i&&tap.t-candidate[i-1].t<.045)))continue;searched++;const r=runReplay(l,candidate,{proof:true});if(r.won){l.replay.taps=candidate;solved=r;break;}}}
- if(!solved.won)throw Error(id+' fails '+JSON.stringify(solved));
- const f=solved.proof.finish;if(!accepts(exit,{x:f.x,vx:f.vx,target:1,dimension:f.dimension==='B'?'blue':'red',lastDir:l.replay.taps.at(-1).dir,impulse:'idle'}))throw Error(id+' exit '+JSON.stringify(f));
- for(const entryState of fixtures){const r=runReplay(l,l.replay.taps,{entry:entryState,proof:true});if(!r.won)throw Error(id+' fixture '+entryState.id+' '+JSON.stringify(r.killer||r));}
- const normalized=validateLevelData(l);if(!normalized.ok)throw Error(id+' schema '+JSON.stringify(normalized.issues));
- const level=JSON.parse(serializeLevel(normalized.level));
- level.chunk.validation={status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(level),fixtures:fixtures.length,searched,proof:solved.proof};
- book.chunks.push({id,length:l.finish.y,level});console.log('VERIFIED',id,'gap',hazardRowGap(level).max.toFixed(0),'objs',level.objects.length);
+import {chunkFingerprint,accepts} from '../js/rift-director.js';
+import {hazardRowGap,INFINITY_MAX_HAZARD_GAP} from '../js/endless.js';
+import {CLIMB_SPEED} from '../js/config.js';
+
+const CENTER=[45,135,225];
+const ENTRY_CLEAR=.2,EXIT_CLEAR=.22;
+const TAIL=.22;
+const wrap=d=>{const x=((d+180)%360+360)%360-180;return Math.round(x*100)/100;};
+const yOf=t=>Math.round(t*CLIMB_SPEED);
+const round3=t=>Math.round(t*1000)/1000;
+const CYCLE=2.4;
+const phaseFor=(t,pos=1.05)=>Math.round((((pos-t)%CYCLE+CYCLE)%CYCLE)/CYCLE*10000)/10000;
+const aim=(spin,t,deg)=>wrap(deg-spin*t*180/Math.PI);
+
+function contract(lane,dimension,exit=false){
+ const c=CENTER[lane],pad=exit?3:12,vpad=exit?5:40;
+ return {x:[+(c-pad).toFixed(2),+(c+pad).toFixed(2)],vx:[-vpad,vpad],target:lane,dimension,lastDirs:[-1,0,1],impulses:['idle'],clearSec:exit?EXIT_CLEAR:ENTRY_CLEAR,traps:exit?'clear':'local-zero'};
 }
-mkdirSync('assets/endless',{recursive:true});writeFileSync('assets/endless/director.json',JSON.stringify(book,null,2)+'\n');
-console.log('WROTE',book.chunks.length);
+function fixtures(lane,dimension){
+ const c=CENTER[lane],dim=dimension==='blue'?'B':'R';
+ return [{id:'center',x:c,vx:0,lastDir:0},{id:'west',x:c-1.2,vx:0,lastDir:-1},{id:'east',x:c+1.2,vx:0,lastDir:1},{id:'drift',x:c,vx:8,lastDir:1}].map(s=>({...s,y:0,lane,dim}));
+}
+function slit(id,t,lane,gap){
+ const y=yOf(t),c=CENTER[lane],half=gap/2,right=c+half;
+ return [
+  {id:id+'-l',type:'obstacle',x:0,y,w:c-half,h:14,dimension:'both'},
+  {id:id+'-r',type:'obstacle',x:right,y,w:270-right,h:14,dimension:'both'},
+ ];
+}
+function bars(id,t,dimension,gap=.32){
+ return [0,1].map(i=>({id:id+'-'+i,type:'obstacle',x:0,y:yOf(t+i*gap),w:270,h:14,dimension}));
+}
+function beam(id,t,dimension,spin,degrees,x=8,length=120){
+ return {id,type:'laser',x,y:yOf(t),w:26,h:26,dimension,axis:'none',amplitude:0,period:4,phase:phaseFor(t,.55),startAngle:aim(spin,t,degrees),endAngle:aim(spin,t,degrees),sweepPeriod:3,length,beamWidth:8,warnSec:.5,activeSec:1.5,offSec:.4,disableSec:1,spin};
+}
+function crossBeam(id,t,dimension,spin,lane){
+ const right=lane===2;
+ return beam(id,t,dimension,spin,right?180:0,right?214:8,230);
+}
+function mill(t,spin,length,safeDeg){
+ const base=aim(spin,t,safeDeg),y=yOf(t),wings=[[0,'red'],[90,'blue'],[180,'red'],[-90,'blue']];
+ return wings.map(([offset,dimension],i)=>{
+  const angle=wrap(base+offset);
+  return {id:'mill-'+i,type:'laser',x:122,y,w:26,h:26,dimension,axis:'none',amplitude:0,period:4,phase:phaseFor(t),startAngle:angle,endAngle:angle,sweepPeriod:3,length,beamWidth:8,warnSec:.5,activeSec:1.5,offSec:.4,disableSec:1,spin};
+ });
+}
+function finishAfter(last){return yOf(last+TAIL);}
+
+const modules=[];
+function add(spec){modules.push(spec);}
+
+// One short relaxed opening. The run starts lane 1 blue and leaves on the left wall, red.
+add({
+ id:'infinity-opening',name:'Anfang',category:'SLIT',tier:0,stage:0,opening:true,block:'opening',
+ entryLane:1,entryDim:'blue',exitLane:0,exitDim:'red',
+ taps:[{t:.42,dir:-1}],
+ objects:[...slit('open-0',.9,0,64),...slit('open-1',1.45,0,64)],
+ finishY:finishAfter(1.45),
+ description:'Kurzer lockerer Anfang. Danach folgt direkt die nächste Falle.',
+});
+
+const states=[[0,'blue',1],[0,'red',1],[1,'blue',2],[1,'red',2],[2,'blue',1],[2,'red',1]];
+for(const stage of [1,2]){
+ const tier=stage===1?0:2,hole=stage===1?56:40,lead=stage===1?.4:.28,spin=stage===1?1.2:2.5,millSpin=stage===1?1.05:1.6,millLen=stage===1?100:112;
+ for(const [lane,dim,dest] of states){
+  const dir=dest>lane?1:-1,wall=lane===0?-1:1,flip=dim==='blue'?'red':'blue',tag=`s${stage}-l${lane}${dim[0]}`;
+  const slitT=stage===1?.7:.56,pairT=stage===1?.72:.55,pairGap=stage===1?.34:.26;
+  if(lane!==1)add({
+   id:`infinity-${tag}-pair`,name:`Farbpaar ${stage}`,category:'PAIR',tier,stage,block:'pair',
+   entryLane:lane,entryDim:dim,exitLane:lane,exitDim:flip,
+   taps:[{t:round3(pairT-lead),dir:wall}],
+   objects:bars('pair',pairT,dim,pairGap),finishY:0,
+   description:`Stufe ${stage}: ${dim}-${dim}. Der erste Tipp entscheidet den zweiten Balken.`,
+  });
+  else add({
+   id:`infinity-${tag}-pair`,name:`Farbpaar ${stage}`,category:'PAIR',tier,stage,block:'pair',
+   entryLane:1,entryDim:dim,exitLane:0,exitDim:flip,
+   taps:[{t:round3(pairT-lead),dir:-1}],
+   objects:bars('pair',pairT,dim,pairGap),finishY:0,
+   description:`Stufe ${stage}: ${dim}-${dim}. Der erste Tipp entscheidet den zweiten Balken.`,
+  });
+  add({
+   id:`infinity-${tag}-slit`,name:`Schlitz ${stage}`,category:'SLIT',tier,stage,block:'slit',
+   entryLane:lane,entryDim:dim,exitLane:dest,exitDim:flip,
+   taps:[{t:round3(slitT-lead),dir}],
+   objects:slit('slit',slitT,dest,hole),finishY:0,
+   description:`Stufe ${stage}: ein Schlitz auf Spur ${dest}.`,
+  });
+  const pass=stage===1?.72:.58,safe=dim==='red'?90:0,far=lane===0?214:8;
+  if(lane!==1)add({
+   id:`infinity-${tag}-laser`,name:`Drehlaser ${stage}`,category:'LASER',tier,stage,block:'laser',
+   entryLane:lane,entryDim:dim,exitLane:lane,exitDim:flip,
+   taps:[{t:round3(pass-lead),dir:wall}],
+   objects:[crossBeam('spin-a0',pass,dim,spin,lane),crossBeam('spin-a1',pass+.3,dim,-spin,lane),beam('spin-b0',pass+.58,flip,spin*.6,90,far,64),beam('spin-b1',pass+.88,flip,-spin*.6,90,far,64)],
+   finishY:0,description:`Stufe ${stage}: zwei rote und zwei blaue Drehlaser.`,
+  });
+  if(lane!==1)add({
+   id:`infinity-${tag}-mill`,name:`Windmühle ${stage}`,category:'MILL',tier,stage,block:'mill',
+   entryLane:lane,entryDim:dim,exitLane:lane,exitDim:dim,taps:[],
+   objects:mill(.62,millSpin,millLen,safe),finishY:0,
+   description:`Stufe ${stage}: vier Flügel um die Mitte, ${dim==='blue'?'blau':'rot'}.`,
+  });
+ }
+}
+
+// Stage 3: slit straight into the windmill, and a color pair straight into the lasers.
+for(const [lane,dim] of [[0,'blue'],[0,'red'],[2,'blue'],[2,'red']]){
+ const other=lane===0?2:0,dir=lane===0?1:-1,wall=lane===0?-1:1,flip=dim==='blue'?'red':'blue';
+ const tag=`s3-${lane}${dim[0]}`;
+ const slitT=.76,millT=1.08,safe=dim==='red'?90:0;
+ add({
+  id:`infinity-${tag}-slit-mill`,name:'Schlitz und Mühle',category:'COMBO',tier:4,stage:3,block:'slit-mill',
+  entryLane:lane,entryDim:dim,exitLane:other,exitDim:dim,
+  taps:[{t:.22,dir},{t:.46,dir}],
+  objects:[...slit('slit',slitT,other,44),...mill(millT,1.35,100,safe)],
+  finishY:0,description:'Stufe 3: Schlitz und direkt danach die Windmühle in der erzwungenen Farbe.',
+ });
+ const pairT=.58,laserT=1.2;
+ add({
+  id:`infinity-${tag}-pair-laser`,name:'Paar und Laser',category:'COMBO',tier:4,stage:3,block:'pair-laser',
+  entryLane:lane,entryDim:dim,exitLane:lane,exitDim:flip,
+  taps:[{t:.38,dir:wall}],
+  objects:[...bars('pair',pairT,dim),crossBeam('spin-a0',laserT,dim,2.1,lane),crossBeam('spin-a1',laserT+.28,dim,-2.1,lane),beam('spin-b0',laserT+.62,flip,1.4,90,lane===0?214:8,70),beam('spin-b1',laserT+.9,flip,-1.4,90,lane===0?214:8,70)],
+  finishY:0,description:'Stufe 3: Farbpaar und direkt danach zwei rote und zwei blaue Drehlaser.',
+ });
+}
+
+function threatEnd(objects){
+ let t=0;
+ for(const o of objects){
+  const y=o.y/CLIMB_SPEED;
+  t=Math.max(t,y+(o.id?.startsWith('mill')?o.length/CLIMB_SPEED:0));
+ }
+ return t;
+}
+function materialize(spec){
+ const finishY=spec.finishY||finishAfter(threatEnd(spec.objects));
+ const l=createEmptyLevel({id:spec.id,name:spec.name,arenaStyle:'narrow'});
+ Object.assign(l,{description:spec.description,theme:'spire',music:'neon-ascent',bpm:120,height:finishY+260,finish:{y:finishY},start:{lane:spec.entryLane,dimension:spec.entryDim},objects:spec.objects,replay:{taps:spec.taps}});
+ l.chunk={category:spec.category,tier:spec.tier,stage:spec.stage,opening:!!spec.opening,block:spec.block,hazardFamily:spec.block,actions:spec.taps.length,requiredSwitches:spec.taps.length,rhythm:{bpm:120,subdivision:'quarter'},challenge:false,entry:contract(spec.entryLane,spec.entryDim),exit:contract(spec.exitLane,spec.exitDim,true),fixtures:fixtures(spec.entryLane,spec.entryDim)};
+ return l;
+}
+function shifted(taps,i,dt){return taps.map((tap,j)=>j===i?{...tap,t:round3(tap.t+dt)}:tap);}
+function prove(spec){
+ const level=materialize(spec);
+ const gap=hazardRowGap(level);
+ if(gap.max>INFINITY_MAX_HAZARD_GAP+1e-6)throw Error(spec.id+' Lücke '+gap.max.toFixed(1));
+ let solved=runReplay(level,spec.taps,{proof:true});
+ if(!solved.won)throw Error(spec.id+' stirbt an '+(solved.killer?.id||solved.error||solved.progress));
+ for(let i=0;i<spec.taps.length;i++)for(const dt of [-.02,.02]){
+  const taps=shifted(spec.taps,i,dt);
+  if(taps.some((tap,k)=>tap.t<.2||(k&&tap.t-taps[k-1].t<.045)))continue;
+  const r=runReplay(level,taps);
+  if(!r.won)throw Error(spec.id+' Toleranz Tip '+i+' '+(dt*1000)+' ms an '+(r.killer?.id||r.error));
+ }
+ const f=solved.proof.finish;
+ const exitState={x:f.x,vx:f.vx,target:spec.exitLane,dimension:f.dimension==='B'?'blue':'red',lastDir:spec.taps.at(-1)?.dir||0,impulse:Math.abs(f.x-CENTER[spec.exitLane])>2||Math.abs(f.vx)>30?'active':'idle'};
+ if(!accepts(level.chunk.exit,exitState))throw Error(spec.id+' Ausgang '+JSON.stringify(exitState));
+ if(exitState.dimension!==spec.exitDim)throw Error(spec.id+' Farbe '+exitState.dimension);
+ for(const entry of level.chunk.fixtures){
+  const r=runReplay(level,spec.taps,{entry,proof:true});
+  if(!r.won)throw Error(spec.id+' Probe '+entry.id+' '+(r.killer?.id||r.error));
+ }
+ if(spec.block==='pair'||spec.block==='pair-laser'){
+  const missed=runReplay(level,spec.taps.slice(1));
+  if(missed.won||!String(missed.killer?.id||'').startsWith('pair'))throw Error(spec.id+' ohne ersten Tipp '+JSON.stringify(missed.killer));
+  const barsY=spec.objects.filter(o=>o.id.startsWith('pair')).map(o=>o.y).sort((a,b)=>a-b);
+  const mid=round3(((barsY[0]+barsY[1])/2)/CLIMB_SPEED);
+  const extra=[...spec.taps,{t:mid,dir:spec.entryLane===0?-1:1}].sort((a,b)=>a.t-b.t);
+  const between=runReplay(level,extra);
+  if(between.won||between.killer?.id!=='pair-1')throw Error(spec.id+' Zwischentipp '+JSON.stringify(between.killer));
+ }
+ if(spec.block==='laser'){
+  const missed=runReplay(level,spec.taps.slice(1));
+  if(missed.won||!String(missed.killer?.id||'').startsWith('spin-a'))throw Error(spec.id+' ohne Farbwechsel '+JSON.stringify(missed.killer));
+ }
+ if(spec.block==='mill'||spec.block==='slit-mill'){
+  const turned=structuredClone(level);
+  for(const o of turned.objects)if(o.id.startsWith('mill')){o.startAngle=wrap(o.startAngle+90);o.endAngle=o.startAngle;}
+  const dead=runReplay(turned,spec.taps);
+  if(dead.won||!String(dead.killer?.id||'').startsWith('mill'))throw Error(spec.id+' verdreht überlebt '+JSON.stringify(dead.killer));
+ }
+ const normalized=validateLevelData(level);
+ if(!normalized.ok)throw Error(spec.id+' Schema '+normalized.issues.filter(i=>i.severity==='error').map(i=>i.message).join('; '));
+ const stored=JSON.parse(serializeLevel(normalized.level));
+ stored.chunk.validation={status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(stored),fixtures:stored.chunk.fixtures.length,proof:solved.proof};
+ return {id:spec.id,length:finishYOf(stored),level:stored};
+}
+function finishYOf(level){return level.finish.y;}
+
+const book={schema:'rift-infinity-chunks',version:2,arenaStyle:'narrow',metersPerUnit:.1,revision:'director-3',chunks:[]};
+for(const spec of modules){
+ const chunk=prove(spec);
+ book.chunks.push(chunk);
+ console.log('OK',spec.id,'stage',spec.stage,'taps',spec.taps.length,'y',chunk.length);
+}
+mkdirSync('assets/endless',{recursive:true});
+writeFileSync('assets/endless/director.json',JSON.stringify(book,null,2)+'\n');
+const by=new Map();
+for(const c of book.chunks){const s=c.level.chunk.stage;by.set(s,(by.get(s)||0)+1);}
+console.log('WROTE',book.chunks.length,JSON.stringify([...by.entries()]));

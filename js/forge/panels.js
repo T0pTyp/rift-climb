@@ -359,7 +359,7 @@ export class PropsPanel {
           this.select(`${kind} Flugrichtung`,{key:`chunk-${kind}-directions`,get:()=>L().chunk[kind].lastDirs.join(','),options:[['-1,0,1','Alle / Start'],['-1,1','Links oder rechts'],['-1','Nach links'],['0','Start'],['1','Nach rechts']],set:meta((l,v)=>{l.chunk[kind].lastDirs=v.split(',').map(Number);})}),
           this.select(`${kind} Impulszustand`,{key:`chunk-${kind}-impulses`,get:()=>L().chunk[kind].impulses.join(','),options:[['idle,active','Ruhend oder aktiv'],['idle','Ruhend'],['active','Aktiv']],set:meta((l,v)=>{l.chunk[kind].impulses=v.split(',');})}),
           this.num(`${kind} Zielindex`,{key:`chunk-${kind}-target`,get:()=>L().chunk[kind].target,min:0,max:2,step:1,set:meta((l,v)=>{l.chunk[kind].target=Math.round(v);})}),
-          this.num(`${kind} Reaktionsraum`,{key:`chunk-${kind}-clear`,get:()=>L().chunk[kind].clearSec,min:.7,max:3,step:.1,unit:'s',set:meta((l,v)=>{l.chunk[kind].clearSec=v;})}),
+          this.num(`${kind} Reaktionsraum`,{key:`chunk-${kind}-clear`,get:()=>L().chunk[kind].clearSec,min:.15,max:3,step:.05,unit:'s',set:meta((l,v)=>{l.chunk[kind].clearSec=v;})}),
         ]),
         this.select('Eintritt für Playtest',{key:'chunk-entry-fixture',get:()=>String(app.S.chunkEntry||0),options:(L().chunk.fixtures||[]).map((s,i)=>[String(i),`${s.id}: x ${s.x}, vx ${s.vx}`]),set:(tx,v)=>{app.S.chunkEntry=Number(v);}}),
         this.info('Zertifikat',()=>L().chunk.validation?.hash===chunkFingerprint(L())?'Aktuell · Stichproben bestätigt':'Veraltet / ungeprüft'),
