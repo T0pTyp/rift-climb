@@ -568,7 +568,7 @@ export class Game {
   }
 
   deathReason(o, dim) {
-    if(o.type)return {saw:'PHASE SAW war aktiv – passender Pulse zerstört sie',mine:'PULSE MINE: Explosionszone war aktiv',laser:'SWEEP LASER war aktiv – Warnlinie beachten'}[o.type]||'Rift verloren';
+    if(o.type)return {saw:'PHASE SAW war aktiv – gleiche Farbe',mine:'PULSE MINE: Explosionszone war aktiv',laser:'SWEEP LASER war aktiv – Warnlinie beachten'}[o.type]||'Rift verloren';
     if (o.color === 'W') return 'WEISS tötet immer';
     if (o.color === 'S') {
       return o.timesOpened > 0 ? 'GOLD-SIEGEL hat sich wieder geschlossen' : 'GOLD-SIEGEL war zu – tippe, wenn es aufleuchtet';

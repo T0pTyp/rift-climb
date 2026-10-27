@@ -81,8 +81,7 @@ export class TrapField {
     }
     if(distance>pulseRadius(age)+1e-8)continue;
     o.pulseId=p.id;
-    if(o.type==='saw'&&o.durable){/* Solid saw: the wave does not remove it. */}
-    else if(o.type==='saw'){o.state='destroyed';o.deadAt=t;this.events++;onEvent?.(o,'saw-break');}
+    if(o.type==='saw'){/* A pulse never destroys a saw, in campaign or Infinity. */}
     else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;this.events++;onEvent?.(o,'mine-disarm');}
     else {o.disabledUntil=t+o.disableSec;o.epoch=o.disabledUntil+o.phase*(o.warnSec+o.activeSec+o.offSec);this.events++;onEvent?.(o,'laser-disable');}
    }

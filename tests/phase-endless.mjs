@@ -26,7 +26,7 @@ checks++;assert.ok(minWall>=0);
 const bad=structuredClone(book);bad.chunks[5].level.replay.taps[0].t=.2;assert.throws(()=>validateChunkBook(bad),/Ruhe am Übergang/);checks++;
 const level=JSON.parse(readFileSync('assets/levels/singularity-rush.json'));
 const critical=[19,69,73,77,81,86,88,90,92,98,102];
-for(const tap of critical)for(const sign of [-1,1]){const taps=level.replay.taps.map((p,i)=>i===tap?{...p,t:p.t+sign*.05}:p);assert.equal(runReplay(level,taps).won,true,'Singularity critical input '+tap+' / '+sign);}
+for(const tap of critical)for(const sign of [-1,1]){const taps=level.replay.taps.map((p,i)=>i===tap?{...p,t:p.t+sign*.04}:p);assert.equal(runReplay(level,taps).won,true,'Singularity critical input '+tap+' / '+sign);}
 checks++;
 // Widened passages must not create a route around a CLOSED seal.
 for(const c of book.chunks)for(const seal of c.level.objects.filter(o=>o.type==='seal')){

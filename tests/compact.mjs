@@ -49,6 +49,6 @@ check('Narrow test crosses in two classic steps and the lab offers it',()=>{
  assert.match(html,/id="page-lab"/);assert.match(html,/class="lab-feedback" hidden/);assert.match(main,/ACTIVE_ARENA|openPage\('lab'\)/);
  assert.equal(validateLevelData(JSON.parse(readFileSync('assets/lab/compact.json','utf8'))).ok,true);
  const narrow=validateLevelData(JSON.parse(readFileSync('assets/lab/narrow.json','utf8'))).level;
- assert.equal(arenaFor(narrow).width,270);assert.equal(arenaFor(narrow).lanes,3);assert.equal(narrow.replay.taps.length,28);assert.ok(runReplay(narrow,narrow.replay.taps).won);
+ assert.equal(arenaFor(narrow).width,270);assert.equal(arenaFor(narrow).lanes,3);assert.equal(narrow.replay.taps.length,30);assert.ok(runReplay(narrow,narrow.replay.taps).won);
 });
 mkdirSync('test-results/compact',{recursive:true});writeFileSync('test-results/compact/physics.json',JSON.stringify({checks,measurements},null,2));console.log(`${checks} Compact checks passed`);
