@@ -1,0 +1,432 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "test-infinity",
+  "name": "TEST INFINITY",
+  "description": "Separater Test: nur Laser und Blockaden. Blau-Blau, Rot-Rot, enge Schlitze, vier dauerhaft drehende Laser. Kein Infinity-Rekord.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 2275,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 2015
+  },
+  "theme": "spire",
+  "music": "neon-ascent",
+  "difficulty": "extreme",
+  "arenaStyle": "narrow",
+  "objects": [
+    {
+      "id": "slit-0-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 143,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-0-r",
+      "type": "obstacle",
+      "x": 65,
+      "y": 143,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-1-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 494,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-1-r",
+      "type": "obstacle",
+      "x": 245,
+      "y": 494,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-2-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 811,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-2-r",
+      "type": "obstacle",
+      "x": 155,
+      "y": 811,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-3-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 923,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-3-r",
+      "type": "obstacle",
+      "x": 65,
+      "y": 923,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-4-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1045,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-4-r",
+      "type": "obstacle",
+      "x": 155,
+      "y": 1045,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-5-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1165,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-5-r",
+      "type": "obstacle",
+      "x": 245,
+      "y": 1165,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-6-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1287,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-6-r",
+      "type": "obstacle",
+      "x": 155,
+      "y": 1287,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-7-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1409,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-7-r",
+      "type": "obstacle",
+      "x": 65,
+      "y": 1409,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-8-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1534,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-8-r",
+      "type": "obstacle",
+      "x": 155,
+      "y": 1534,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-9-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1664,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-9-r",
+      "type": "obstacle",
+      "x": 245,
+      "y": 1664,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-10-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1794,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-10-r",
+      "type": "obstacle",
+      "x": 155,
+      "y": 1794,
+      "w": 115,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-11-l",
+      "type": "obstacle",
+      "x": 0,
+      "y": 1919,
+      "w": 25,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "slit-11-r",
+      "type": "obstacle",
+      "x": 65,
+      "y": 1919,
+      "w": 205,
+      "h": 14,
+      "dimension": "both"
+    },
+    {
+      "id": "red-a",
+      "type": "obstacle",
+      "x": 0,
+      "y": 247,
+      "w": 270,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "red-b",
+      "type": "obstacle",
+      "x": 0,
+      "y": 333,
+      "w": 270,
+      "h": 14,
+      "dimension": "red"
+    },
+    {
+      "id": "blue-a",
+      "type": "obstacle",
+      "x": 0,
+      "y": 603,
+      "w": 270,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "blue-b",
+      "type": "obstacle",
+      "x": 0,
+      "y": 686,
+      "w": 270,
+      "h": 14,
+      "dimension": "blue"
+    },
+    {
+      "id": "laser-r1",
+      "type": "laser",
+      "x": 8,
+      "y": 277,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0,
+      "startAngle": -119,
+      "endAngle": -119,
+      "sweepPeriod": 3,
+      "length": 120,
+      "beamWidth": 8,
+      "warnSec": 0.5,
+      "activeSec": 1.5,
+      "offSec": 0.4,
+      "disableSec": 1,
+      "axis": "none",
+      "spin": 4.4
+    },
+    {
+      "id": "laser-r2",
+      "type": "laser",
+      "x": 236,
+      "y": 363,
+      "w": 26,
+      "h": 26,
+      "dimension": "red",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0,
+      "startAngle": 70,
+      "endAngle": 70,
+      "sweepPeriod": 3,
+      "length": 120,
+      "beamWidth": 8,
+      "warnSec": 0.5,
+      "activeSec": 1.5,
+      "offSec": 0.4,
+      "disableSec": 1,
+      "axis": "none",
+      "spin": -5.1
+    },
+    {
+      "id": "laser-b1",
+      "type": "laser",
+      "x": 8,
+      "y": 633,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.3,
+      "startAngle": -40,
+      "endAngle": -40,
+      "sweepPeriod": 3,
+      "length": 120,
+      "beamWidth": 8,
+      "warnSec": 0.5,
+      "activeSec": 1.5,
+      "offSec": 0.4,
+      "disableSec": 1,
+      "axis": "none",
+      "spin": 3.8
+    },
+    {
+      "id": "laser-b2",
+      "type": "laser",
+      "x": 236,
+      "y": 716,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.3,
+      "startAngle": 110,
+      "endAngle": 110,
+      "sweepPeriod": 3,
+      "length": 120,
+      "beamWidth": 8,
+      "warnSec": 0.5,
+      "activeSec": 1.5,
+      "offSec": 0.4,
+      "disableSec": 1,
+      "axis": "none",
+      "spin": -4.6
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 0.3,
+        "dir": -1
+      },
+      {
+        "t": 0.74,
+        "dir": -1
+      },
+      {
+        "t": 1.42,
+        "dir": 1
+      },
+      {
+        "t": 1.64,
+        "dir": 1
+      },
+      {
+        "t": 2.08,
+        "dir": 1
+      },
+      {
+        "t": 2.86,
+        "dir": -1
+      },
+      {
+        "t": 3.3,
+        "dir": -1
+      },
+      {
+        "t": 3.78,
+        "dir": 1
+      },
+      {
+        "t": 4.22,
+        "dir": 1
+      },
+      {
+        "t": 4.7,
+        "dir": -1
+      },
+      {
+        "t": 5.18,
+        "dir": -1
+      },
+      {
+        "t": 5.66,
+        "dir": 1
+      },
+      {
+        "t": 6.14,
+        "dir": 1
+      },
+      {
+        "t": 6.64,
+        "dir": -1
+      },
+      {
+        "t": 7.14,
+        "dir": -1
+      }
+    ],
+    "recordedAt": "2026-10-27T00:00:00.000Z"
+  }
+}

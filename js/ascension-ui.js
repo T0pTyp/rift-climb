@@ -8,11 +8,12 @@ export class AscensionPanels {
  constructor(ui,h,bind){
   this.ui=ui;this.h=h;this.bind=bind;this.progression=h.progression;this.page='home';this.skin=this.progression.data.cosmetics.selectedSkinId;this.anim=new RiftlingAnimator();this.previewTime=0;this.last=0;this.thumbs=new Map();
   this.brandAnim=new RiftlingAnimator();this.resultAnim=new RiftlingAnimator();this.equippedSkin=this.skin;this.portraitAge=0;
-  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
+  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['test-infinity','test-infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
   this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
   for(const el of document.querySelectorAll('[data-lab-feedback]'))bind(el,()=>{if(h.onLabFeedback(el.dataset.labFeedback))this.renderLab();},h.onGesture);
   this.seed=h.initialSeed;
   bind($('#btn-infinity-start'),()=>h.onInfinityStart(this.seed),h.onGesture);
+  bind($('#btn-test-infinity-start'),()=>h.onTestInfinity(),h.onGesture);
   bind($('#btn-infinity-seed'),()=>{this.seed=crypto.getRandomValues(new Uint32Array(1))[0];this.renderInfinity();},h.onGesture);
   for(const el of document.querySelectorAll('[data-home]'))bind(el,()=>this.open('home'),h.onGesture);
   bind($('#btn-death-home'),()=>h.onHome(),h.onGesture);bind($('#btn-next-level'),()=>h.onNext(),h.onGesture);
@@ -28,6 +29,7 @@ export class AscensionPanels {
   $('#menu').scrollTop=0;
   if(page==='collection')this.renderCollection();if(page==='achievements')this.renderAchievements();if(page==='profile')this.renderProfile();if(page==='levels')this.ui.refreshCards();
   if(page==='infinity')this.renderInfinity();
+  if(page==='test-infinity'){const b=$('#btn-test-infinity-start'),err=$('#test-infinity-error');if(b)b.disabled=!this.h.testInfinityAvailable();if(err){err.hidden=!this.h.testInfinityError();err.textContent=this.h.testInfinityError()||'';}}
   if(page==='lab')this.renderLab();
   this.refreshWarning();
  }

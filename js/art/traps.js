@@ -40,7 +40,7 @@ export function drawTrap(ctx,o,t,screenY,dim='both') {
    if(Math.hypot(dx,dy)>1){ctx.globalAlpha=(active?1:.25)*.3;ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(dx,dy);ctx.stroke();ctx.setLineDash([]);}
    ctx.translate(dx,dy);
    ctx.globalAlpha=(active?1:.25)*.22;ctx.lineWidth=1;
-   for(const angle of [o.startAngle,o.endAngle]){const a=angle*Math.PI/180;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*o.length,-Math.sin(a)*o.length);ctx.stroke();}
+   if(!(Number.isFinite(o.spin)&&o.spin!==0))for(const angle of [o.startAngle,o.endAngle]){const a=angle*Math.PI/180;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(Math.cos(a)*o.length,-Math.sin(a)*o.length);ctx.stroke();}
    ctx.globalAlpha=active?1:.25;ctx.setLineDash([7,5]);ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(ex,ey);ctx.stroke();ctx.setLineDash([]);
    ctx.restore();
   }

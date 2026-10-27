@@ -28,6 +28,11 @@ export function normalizeTrap(o,width=WORLD_W) {
  if(clean.type==='mine'&&clean.blastRadius>clean.activationRadius)errors.push('Explosion größer als Aktivierungszone');
  // Infinity saws opt in. Campaign saws omit the field and stay pulse-destructible.
  if(clean.type==='saw'&&o.durable===true)clean.durable=true;
+ // Continuous spin is opt-in. Sweep lasers omit it and keep the sine beam.
+ if(clean.type==='laser'&&o.spin!=null&&o.spin!==0){
+  if(!Number.isFinite(o.spin)||o.spin<-12||o.spin>12)errors.push('Drehung: −12 bis 12 rad/s, nicht 0');
+  else clean.spin=o.spin;
+ }
  return {clean,errors};
 }
 export function makeTrap(data,timeOrigin=0) {
@@ -37,7 +42,11 @@ export function resetTrap(o) {
  o.state='idle';o.chargeAt=-Infinity;o.burstAt=-Infinity;o.disabledUntil=-Infinity;o.epoch=o.timeOrigin;o.deadAt=-Infinity;o.pulseId=0;
 }
 const mod=(v,n)=>(v%n+n)%n;
-function angleAt(o,t){return (o.startAngle+(o.endAngle-o.startAngle)*(.5+.5*Math.sin((t-o.timeOrigin)*Math.PI*2/o.sweepPeriod)))*Math.PI/180;}
+const spins=(o)=>o.type==='laser'&&Number.isFinite(o.spin)&&o.spin!==0;
+function angleAt(o,t){
+ if(spins(o))return o.startAngle*Math.PI/180+o.spin*(t-o.timeOrigin);
+ return (o.startAngle+(o.endAngle-o.startAngle)*(.5+.5*Math.sin((t-o.timeOrigin)*Math.PI*2/o.sweepPeriod)))*Math.PI/180;
+}
 export function trapPose(o,t,out={}) {
  const v=(t-o.timeOrigin)/(o.period||1)*Math.PI*2+(o.phase||0)*Math.PI*2;
  out.x=o.x+o.w/2+(o.axis==='x'?Math.sin(v)*o.amplitude:0);
@@ -46,7 +55,8 @@ export function trapPose(o,t,out={}) {
  if(o.type==='laser') {
   const cycle=o.warnSec+o.activeSec+o.offSec,pos=mod(t-o.epoch+o.phase*cycle,cycle);
   out.phase=t<o.disabledUntil?'disabled':pos<o.warnSec?'warning':pos<o.warnSec+o.activeSec?'active':'off';
-  out.angle=angleAt(o,out.phase==='warning'?t-pos+o.warnSec:t);
+  // Sweep lasers preview the frozen activation angle. A spinning beam keeps turning.
+  out.angle=angleAt(o,out.phase==='warning'&&!spins(o)?t-pos+o.warnSec:t);
   // Preview the complete activation ray, including a moving projector's future origin.
   const warnV=(t-pos+o.warnSec-o.timeOrigin)/o.period*Math.PI*2+o.phase*Math.PI*2;
   out.warnX=o.x+o.w/2+(o.axis==='x'?Math.sin(warnV)*o.amplitude:0);
