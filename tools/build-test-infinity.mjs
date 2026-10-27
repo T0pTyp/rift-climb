@@ -1,87 +1,117 @@
-// Authors the separate Test Infinity course and proves it with the real 240 Hz replay.
+// Baut den Test-Infinity-Kurs und prüft ihn mit dem echten 240-Hz-Replay.
+// 10 Welt-Einheiten = 1 m (METERS_PER_UNIT). Die ersten 200 m = 2000 u bleiben locker.
 import { writeFileSync } from 'node:fs';
-import { CLIMB_SPEED, HIT_RADIUS, STEER_OMEGA } from '../js/config.js';
+import { CLIMB_SPEED, HIT_RADIUS, STEER_OMEGA, SIM_DT } from '../js/config.js';
 import { serializeLevel, validateLevelData } from '../js/level-data.js';
 import { runReplay, headlessGame } from '../js/playcheck.js';
 import { makeTrap, trapPose } from '../js/traps.js';
-import { SIM_DT } from '../js/config.js';
+import { METERS_PER_UNIT } from '../js/world-units.js';
 
-const GAP = 40;
 const ARENA = 270;
 const CENTER = [45, 135, 225];
+const RELAXED_Y = 200 / METERS_PER_UNIT;
+const T0 = RELAXED_Y / CLIMB_SPEED;
+const GAP_EASY = 70;
+const GAP_HARD = 40;
+const CYCLE = 0.5 + 1.5 + 0.4;
 const yOf = (t) => Math.round(t * CLIMB_SPEED);
 const remain = (t) => (1 + STEER_OMEGA * t) * Math.exp(-STEER_OMEGA * t);
+const wrapDeg = (d) => {
+  const x = ((d + 180) % 360 + 360) % 360 - 180;
+  return Math.round(Math.max(-180, Math.min(180, x)) * 100) / 100;
+};
+const phaseFor = (t, pos) => Math.round((((pos - t) % CYCLE + CYCLE) % CYCLE) / CYCLE * 10000) / 10000;
 
-const slits = [
-  [0.55, 0],
-  [1.90, 2],
-  [3.12, 1],
-  [3.55, 0],
-  [4.02, 1],
-  [4.48, 2],
-  [4.95, 1],
-  [5.42, 0],
-  [5.90, 1],
-  [6.40, 2],
-  [6.90, 1],
-  [7.38, 0],
+const objects = [];
+const taps = [];
+
+function slit(id, y, lane, gap) {
+  const c = CENTER[lane], half = gap / 2, right = c + half;
+  objects.push(
+    { id: `${id}-l`, type: 'obstacle', x: 0, y, w: c - half, h: 14, dimension: 'both' },
+    { id: `${id}-r`, type: 'obstacle', x: right, y, w: ARENA - right, h: 14, dimension: 'both' },
+  );
+}
+
+const easy = [
+  [1.2, 0, -1],
+  [2.3, 1, 1],
+  [3.4, 2, 1],
+  [4.5, 1, -1],
+  [5.6, 0, -1],
+  [6.7, 1, 1],
+  [7.5, 1, 0],
 ];
+for (const [i, [t, lane, dir]] of easy.entries()) {
+  slit(`easy-${i}`, yOf(t), lane, GAP_EASY);
+  if (dir) taps.push({ t: Math.round((t - 0.5) * 1000) / 1000, dir });
+}
+
+const hardSlits = [
+  [0.55, 0], [1.9, 2], [3.12, 1], [3.55, 0], [4.02, 1], [4.48, 2],
+  [4.95, 1], [5.42, 0], [5.9, 1], [6.4, 2], [6.9, 1], [7.38, 0],
+];
+for (const [i, [t, lane]] of hardSlits.entries()) slit(`slit-${i}`, RELAXED_Y + yOf(t), lane, GAP_HARD);
+
 const bars = [
   ['red-a', 0.95, 'red'],
   ['red-b', 1.28, 'red'],
   ['blue-a', 2.32, 'blue'],
   ['blue-b', 2.64, 'blue'],
 ];
-const lasers = [
-  ['laser-r1', 0.95, 'red', 8, 4.4, 0, -119],
-  ['laser-r2', 1.28, 'red', 236, -5.1, 0, 70],
-  ['laser-b1', 2.32, 'blue', 8, 3.8, 0.3, -40],
-  ['laser-b2', 2.64, 'blue', 236, -4.6, 0.3, 110],
-];
-const taps = [
-  { t: 0.30, dir: -1 },
-  { t: 0.74, dir: -1 },
-  { t: 1.42, dir: 1 },
-  { t: 1.64, dir: 1 },
-  { t: 2.08, dir: 1 },
-  { t: 2.86, dir: -1 },
-  { t: 3.30, dir: -1 },
-  { t: 3.78, dir: 1 },
-  { t: 4.22, dir: 1 },
-  { t: 4.70, dir: -1 },
-  { t: 5.18, dir: -1 },
-  { t: 5.66, dir: 1 },
-  { t: 6.14, dir: 1 },
-  { t: 6.64, dir: -1 },
-  { t: 7.14, dir: -1 },
-];
-
-const objects = [];
-for (const [i, [t, lane]] of slits.entries()) {
-  const y = yOf(t), c = CENTER[lane], half = GAP / 2, right = c + half;
-  objects.push(
-    { id: `slit-${i}-l`, type: 'obstacle', x: 0, y, w: c - half, h: 14, dimension: 'both' },
-    { id: `slit-${i}-r`, type: 'obstacle', x: right, y, w: ARENA - right, h: 14, dimension: 'both' },
-  );
-}
 for (const [id, t, dimension] of bars) {
-  objects.push({ id, type: 'obstacle', x: 0, y: yOf(t), w: ARENA, h: 14, dimension });
+  objects.push({ id, type: 'obstacle', x: 0, y: RELAXED_Y + yOf(t), w: ARENA, h: 14, dimension });
 }
-for (const [id, t, dimension, x, spin, phase, startAngle] of lasers) {
+
+const spinLasers = [
+  ['laser-r1', 0.95, 'red', 8, 4.4, 0.95, -119],
+  ['laser-r2', 1.28, 'red', 236, -5.1, 1.28, 70],
+  ['laser-b1', 2.32, 'blue', 8, 3.8, 0.64, -40],
+  ['laser-b2', 2.64, 'blue', 236, -4.6, 0.96, 110],
+];
+for (const [id, t, dimension, x, spin, pos, start] of spinLasers) {
+  const tNew = T0 + t;
+  const startNew = wrapDeg(start + spin * (t - tNew) * 180 / Math.PI);
   objects.push({
-    id, type: 'laser', x, y: yOf(t) + 30, w: 26, h: 26, dimension, axis: 'none',
-    amplitude: 0, period: 4, phase, startAngle, endAngle: startAngle, sweepPeriod: 3,
-    length: 120, beamWidth: 8, warnSec: 0.5, activeSec: 1.5, offSec: 0.4, disableSec: 1, spin,
+    id, type: 'laser', x, y: RELAXED_Y + yOf(t) + 30, w: 26, h: 26, dimension, axis: 'none',
+    amplitude: 0, period: 4, phase: phaseFor(tNew, pos), startAngle: startNew, endAngle: startNew,
+    sweepPeriod: 3, length: 120, beamWidth: 8, warnSec: 0.5, activeSec: 1.5, offSec: 0.4, disableSec: 1, spin,
   });
 }
 
-const finishY = yOf(7.75);
+const hardTaps = [
+  [0.3, -1], [0.74, -1], [1.42, 1], [1.64, 1], [2.08, 1], [2.86, -1], [3.3, -1],
+  [3.78, 1], [4.22, 1], [4.7, -1], [5.18, -1], [5.66, 1], [6.14, 1], [6.64, -1], [7.14, -1],
+];
+for (const [t, dir] of hardTaps) taps.push({ t: Math.round((T0 + t) * 1000) / 1000, dir });
+
+const Yc = RELAXED_Y + yOf(7.38) + yOf(1.2);
+const tWest = Yc / CLIMB_SPEED;
+const tEast = (Yc + 90) / CLIMB_SPEED;
+taps.push(
+  { t: Math.round((tWest - 0.17) * 1000) / 1000, dir: 1 },
+  { t: Math.round((tEast - 0.19) * 1000) / 1000, dir: -1 },
+);
+
+function laser(id, x, y, dimension, angle, length, tPass) {
+  objects.push({
+    id, type: 'laser', x, y, w: 26, h: 26, dimension, axis: 'none',
+    amplitude: 0, period: 4, phase: phaseFor(tPass, 1.15), startAngle: angle, endAngle: angle,
+    sweepPeriod: 3, length, beamWidth: 8, warnSec: 0.5, activeSec: 1.5, offSec: 0.4, disableSec: 1,
+  });
+}
+laser('cross-s', 32, Yc - 180, 'blue', 90, 100, (Yc - 120) / CLIMB_SPEED);
+laser('cross-w', 4, Yc, 'red', 0, 250, tWest);
+laser('cross-e', 240, Yc + 90, 'blue', 180, 250, tEast);
+laser('cross-n', 212, Yc + 160, 'red', -90, 180, tEast);
+
+const finishY = Yc + 240;
 const level = {
   schema: 'rift-climb-level',
   version: 1,
   id: 'test-infinity',
   name: 'TEST INFINITY',
-  description: 'Separater Test: nur Laser und Blockaden. Blau-Blau, Rot-Rot, enge Schlitze, vier dauerhaft drehende Laser. Kein Infinity-Rekord.',
+  description: 'Test: erste 200 m (10 u = 1 m, also 2000 u) mit weiten Schlitzen. Danach enge Schlitze, Blau-Blau, Rot-Rot, Drehlaser und eine Vier-Seiten-Falle. Kein Rekord.',
   bpm: 120,
   beatsPerBar: 4,
   height: finishY + 260,
@@ -101,6 +131,7 @@ if (!validated.ok) {
   process.exit(1);
 }
 const play = runReplay(validated.level, taps);
+console.log('relaxedY', RELAXED_Y, 'T0', T0.toFixed(3), 'Yc', Yc, 'finish', finishY, 'seconds', (finishY / CLIMB_SPEED).toFixed(2));
 console.log('replay', play);
 
 const g = headlessGame(validated.level);
@@ -115,22 +146,20 @@ while (g.state === 'playing' && g.t < finishY / CLIMB_SPEED + 0.2) {
     if (seen.has(y) || g.y < y) continue;
     seen.add(y);
     const row = validated.level.objects.filter((o) => o.type === 'obstacle' && o.y === y);
-    console.log('pass', y, 't', g.t.toFixed(3), 'x', g.player.x.toFixed(2), 'lane', g.player.lane, 'dim', g.player.dim, 'ids', row.map((o) => o.id + ':' + o.dimension).join(','));
+    console.log('pass', y, 'm', (y * METERS_PER_UNIT).toFixed(1), 't', g.t.toFixed(3), 'x', g.player.x.toFixed(1), 'dim', g.player.dim, row.map((o) => o.id).join(','));
+  }
+  for (const laser of validated.level.objects.filter((o) => o.id.startsWith('cross-'))) {
+    if (seen.has(laser.id) || Math.abs(g.y - laser.y) > 8) continue;
+    seen.add(laser.id);
+    const pose = trapPose(makeTrap(laser), g.t);
+    console.log('cross', laser.id, laser.dimension, 'phase', pose.phase, 'angle', pose.angle.toFixed(2), 'x', g.player.x.toFixed(1), 'dim', g.player.dim, 'disabled', g.traps.traps.find((o) => o.id === laser.id).disabledUntil > g.t);
   }
 }
-if (g.state !== 'won') console.log('died', g.t.toFixed(3), g.killer?.o?.id, g.killer?.reason, 'x', g.player.x.toFixed(2), 'dim', g.player.dim);
+if (g.state !== 'won') console.log('died', g.t.toFixed(3), g.y.toFixed(1), g.killer?.o?.id, g.player.dim, g.player.x.toFixed(1));
 
-for (const [t, lane] of slits) {
+for (const [t, lane] of easy) {
   const lead = Math.min(...taps.filter((tap) => tap.t < t).map((tap) => t - tap.t));
-  const safe = GAP / 2 - HIT_RADIUS;
-  const err = remain(Math.max(0, lead - 13 / CLIMB_SPEED)) * 90;
-  console.log('slit', t, 'lane', lane, 'lead', lead.toFixed(3), 'err', err.toFixed(2), 'safe', safe);
-}
-
-for (const laser of validated.level.objects.filter((o) => o.type === 'laser')) {
-  const o = makeTrap(laser);
-  const a = trapPose(o, 0.2), b = trapPose(o, 0.3);
-  console.log(laser.id, laser.dimension, 'spin', laser.spin, 'dadt', ((b.angle - a.angle) / 0.1).toFixed(4), 'phase@pass', trapPose(o, (laser.y - 30) / CLIMB_SPEED).phase);
+  console.log('easy', t, 'lane', lane, 'lead', lead.toFixed(3), 'err', (remain(Math.max(0, lead - 13 / CLIMB_SPEED)) * 90).toFixed(2), 'safe', GAP_EASY / 2 - HIT_RADIUS);
 }
 
 if (play.won) writeFileSync('assets/test/test-infinity.json', serializeLevel(validated.level));
