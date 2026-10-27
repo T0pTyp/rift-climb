@@ -15,8 +15,8 @@ assert.equal(serializeLevel(level), readFileSync('assets/test/test-infinity.json
 const taps = level.replay.taps;
 const obstacles = level.objects.filter((o) => o.type === 'obstacle');
 const lasers = level.objects.filter((o) => o.type === 'laser');
-const spins = lasers.filter((o) => o.spin);
-const crosses = lasers.filter((o) => o.id.startsWith('cross-'));
+const spins = lasers.filter((o) => o.id.startsWith('laser-'));
+const mills = lasers.filter((o) => o.id.startsWith('mill-'));
 const rows = [...new Set(obstacles.map((o) => o.y))].sort((a, b) => a - b);
 
 assert.equal(METERS_PER_UNIT, 0.1);
@@ -40,10 +40,14 @@ assert.equal(spins.length, 4);
 assert.equal(spins.filter((o) => o.dimension === 'blue').length, 2);
 assert.equal(spins.filter((o) => o.dimension === 'red').length, 2);
 assert.ok(spins.every((o) => Math.abs(o.spin) >= 3 && Math.abs(o.spin) <= 12));
-assert.deepEqual(crosses.map((o) => o.id), ['cross-s', 'cross-w', 'cross-e', 'cross-n']);
-assert.equal(crosses.filter((o) => o.dimension === 'red').length, 2);
-assert.equal(crosses.filter((o) => o.dimension === 'blue').length, 2);
-assert.ok(crosses.every((o) => o.spin == null));
+assert.deepEqual(mills.map((o) => o.id), ['mill-0', 'mill-1', 'mill-2', 'mill-3']);
+assert.equal(mills.filter((o) => o.dimension === 'red').length, 2);
+assert.equal(mills.filter((o) => o.dimension === 'blue').length, 2);
+assert.equal(new Set(mills.map((o) => o.x)).size, 1);
+assert.equal(new Set(mills.map((o) => o.y)).size, 1);
+assert.equal(new Set(mills.map((o) => o.spin)).size, 1);
+assert.equal(new Set(mills.map((o) => o.phase)).size, 1);
+assert.ok(mills.every((o) => o.length >= 90));
 
 const html = readFileSync('index.html', 'utf8');
 const main = readFileSync('js/main.js', 'utf8');
@@ -61,30 +65,36 @@ assert.match(handler, /start\('normal'\)/);
 assert.match(handler, /save\(\)\{\}/);
 assert.doesNotMatch(handler, /startEndless|infinityStorage|setLabStyle/);
 
-const aim = { 'cross-w': 0, 'cross-e': Math.PI, 'cross-n': -Math.PI / 2, 'cross-s': Math.PI / 2 };
-for (const laser of crosses) {
-  const o = makeTrap(laser);
-  const pass = laser.id === 'cross-s' ? (laser.y + 60) / CLIMB_SPEED : laser.y / CLIMB_SPEED;
-  const pose = trapPose(o, pass);
-  assert.equal(pose.phase, 'active', laser.id);
-  assert.ok(Math.abs(pose.angle - aim[laser.id]) < 1e-9, laser.id);
-  assert.ok(Math.abs(trapPose(o, pass + 0.4).angle - pose.angle) < 1e-9, laser.id);
-  if (laser.id === 'cross-w') assert.ok(pose.endX > pose.x + 200);
-  if (laser.id === 'cross-e') assert.ok(pose.endX < pose.x - 200);
-  if (laser.id === 'cross-n') assert.ok(pose.endY < pose.y - 100);
-  if (laser.id === 'cross-s') assert.ok(pose.endY > pose.y + 80);
-  const rider = { x: (pose.x + pose.endX) / 2, y: (pose.y + pose.endY) / 2, dim: o.color };
-  const live = makeTrap(laser);
-  assert.equal(new TrapField([live]).step(pass, SIM_DT, rider, rider.x, rider.y, []), live);
-  const aside = Math.abs(Math.cos(pose.angle)) > 0.5 ? { ...rider, y: rider.y + 40 } : { ...rider, x: rider.x + 40 };
-  assert.equal(new TrapField([makeTrap(laser)]).step(pass, SIM_DT, aside, aside.x, aside.y, []), null);
-  const ghost = { ...rider, dim: o.color === 'B' ? 'R' : 'B' };
-  assert.equal(new TrapField([makeTrap(laser)]).step(pass, SIM_DT, ghost, ghost.x, ghost.y, []), null);
+const hubT = mills[0].y / CLIMB_SPEED;
+const hubPoses = mills.map((laser) => trapPose(makeTrap(laser), hubT));
+assert.ok(hubPoses.every((pose) => pose.phase === 'active'));
+assert.equal(new Set(hubPoses.map((pose) => pose.x.toFixed(3))).size, 1);
+assert.equal(new Set(hubPoses.map((pose) => pose.y.toFixed(3))).size, 1);
+for (let i = 0; i < 4; i++) {
+  const gap = Math.atan2(Math.sin(hubPoses[(i + 1) % 4].angle - hubPoses[i].angle), Math.cos(hubPoses[(i + 1) % 4].angle - hubPoses[i].angle));
+  assert.ok(Math.abs(Math.abs(gap) - Math.PI / 2) < 1e-9, mills[i].id);
 }
-assert.ok(crosses.find((o) => o.id === 'cross-w').x < 20);
-assert.ok(crosses.find((o) => o.id === 'cross-e').x > 220);
-assert.ok(crosses.find((o) => o.id === 'cross-n').y > crosses.find((o) => o.id === 'cross-w').y);
-assert.ok(crosses.find((o) => o.id === 'cross-s').y < crosses.find((o) => o.id === 'cross-w').y);
+const quarter = (Math.PI / 2) / mills[0].spin;
+const sample = hubT - 0.5;
+const before = trapPose(makeTrap(mills[0]), sample);
+const after = trapPose(makeTrap(mills[0]), sample + quarter);
+assert.equal(before.phase, 'active');
+assert.equal(after.phase, 'active');
+assert.ok(Math.abs((after.angle - before.angle) - Math.PI / 2) < 1e-9);
+const rider = { x: (before.x + before.endX) / 2, y: (before.y + before.endY) / 2, dim: 'R' };
+{
+  const live = makeTrap(mills[0]);
+  assert.equal(new TrapField([live]).step(sample, SIM_DT, rider, rider.x, rider.y, []), live);
+  assert.equal(new TrapField([makeTrap(mills[0])]).step(sample + quarter, SIM_DT, rider, rider.x, rider.y, []), null);
+  const arrived = makeTrap(mills[3]);
+  assert.equal(new TrapField([arrived]).step(sample + quarter, SIM_DT, { ...rider, dim: arrived.color }, rider.x, rider.y, []), arrived);
+}
+const quarterTurned = structuredClone(level);
+for (const o of quarterTurned.objects) if (o.id.startsWith('mill-')) {
+  o.startAngle = ((o.startAngle + 90 + 180) % 360 + 360) % 360 - 180;
+  o.endAngle = o.startAngle;
+}
+assert.ok(runReplay(quarterTurned, taps).killer.id.startsWith('mill-'));
 
 for (const laser of spins) {
   const o = makeTrap(laser);
@@ -187,8 +197,6 @@ assert.equal(omitLastBefore('red-a').killer.id, 'red-a');
 assert.equal(addAt(reds[0].y, reds[1].y, -1).killer.id, 'red-b');
 assert.equal(omitLastBefore('blue-a').killer.id, 'blue-a');
 assert.equal(addAt(blues[0].y, blues[1].y, 1).killer.id, 'blue-b');
-assert.equal(omitLastBefore('cross-w').killer.id, 'cross-w');
-assert.equal(omitLastBefore('cross-e').killer.id, 'cross-e');
 const slitT = level.objects.find((o) => o.id === 'slit-0-l').y / CLIMB_SPEED;
 const aimTap = taps.filter((tap) => tap.t < slitT).at(-1);
 const late = taps.map((tap) => tap === aimTap ? { t: Math.round((slitT - 0.12) * 1000) / 1000, dir: tap.dir } : tap);

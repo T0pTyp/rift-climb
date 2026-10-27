@@ -86,24 +86,19 @@ const hardTaps = [
 for (const [t, dir] of hardTaps) taps.push({ t: Math.round((T0 + t) * 1000) / 1000, dir });
 
 const Yc = RELAXED_Y + yOf(7.38) + yOf(1.2);
-const tWest = Yc / CLIMB_SPEED;
-const tEast = (Yc + 90) / CLIMB_SPEED;
-taps.push(
-  { t: Math.round((tWest - 0.17) * 1000) / 1000, dir: 1 },
-  { t: Math.round((tEast - 0.19) * 1000) / 1000, dir: -1 },
-);
-
-function laser(id, x, y, dimension, angle, length, tPass) {
+// Four wings on one hub. Opposite wings share a color, neighbors sit 90° apart, and one spin turns the whole cross.
+const MILL_SPIN = 1.8;
+const MILL_LENGTH = 110;
+const millPhase = phaseFor(Yc / CLIMB_SPEED, 1.15);
+for (const [i, offset, dimension] of [[0, 0, 'red'], [1, 90, 'blue'], [2, 180, 'red'], [3, -90, 'blue']]) {
+  const angle = wrapDeg(30 + offset);
   objects.push({
-    id, type: 'laser', x, y, w: 26, h: 26, dimension, axis: 'none',
-    amplitude: 0, period: 4, phase: phaseFor(tPass, 1.15), startAngle: angle, endAngle: angle,
-    sweepPeriod: 3, length, beamWidth: 8, warnSec: 0.5, activeSec: 1.5, offSec: 0.4, disableSec: 1,
+    id: `mill-${i}`, type: 'laser', x: 122, y: Yc, w: 26, h: 26, dimension, axis: 'none',
+    amplitude: 0, period: 4, phase: millPhase, startAngle: angle, endAngle: angle,
+    sweepPeriod: 3, length: MILL_LENGTH, beamWidth: 8, warnSec: 0.5, activeSec: 1.5, offSec: 0.4, disableSec: 1,
+    spin: MILL_SPIN,
   });
 }
-laser('cross-s', 32, Yc - 180, 'blue', 90, 100, (Yc - 120) / CLIMB_SPEED);
-laser('cross-w', 4, Yc, 'red', 0, 250, tWest);
-laser('cross-e', 240, Yc + 90, 'blue', 180, 250, tEast);
-laser('cross-n', 212, Yc + 160, 'red', -90, 180, tEast);
 
 const finishY = Yc + 240;
 const level = {
@@ -111,7 +106,7 @@ const level = {
   version: 1,
   id: 'test-infinity',
   name: 'TEST INFINITY',
-  description: 'Test: erste 200 m (10 u = 1 m, also 2000 u) mit weiten Schlitzen. Danach enge Schlitze, Blau-Blau, Rot-Rot, Drehlaser und eine Vier-Seiten-Falle. Kein Rekord.',
+  description: 'Test: erste 200 m (10 u = 1 m, also 2000 u) mit weiten Schlitzen. Danach enge Schlitze, Blau-Blau, Rot-Rot, Drehlaser und eine Windmühle aus vier Strahlen. Kein Rekord.',
   bpm: 120,
   beatsPerBar: 4,
   height: finishY + 260,
@@ -148,11 +143,11 @@ while (g.state === 'playing' && g.t < finishY / CLIMB_SPEED + 0.2) {
     const row = validated.level.objects.filter((o) => o.type === 'obstacle' && o.y === y);
     console.log('pass', y, 'm', (y * METERS_PER_UNIT).toFixed(1), 't', g.t.toFixed(3), 'x', g.player.x.toFixed(1), 'dim', g.player.dim, row.map((o) => o.id).join(','));
   }
-  for (const laser of validated.level.objects.filter((o) => o.id.startsWith('cross-'))) {
+  for (const laser of validated.level.objects.filter((o) => o.id.startsWith('mill-'))) {
     if (seen.has(laser.id) || Math.abs(g.y - laser.y) > 8) continue;
     seen.add(laser.id);
     const pose = trapPose(makeTrap(laser), g.t);
-    console.log('cross', laser.id, laser.dimension, 'phase', pose.phase, 'angle', pose.angle.toFixed(2), 'x', g.player.x.toFixed(1), 'dim', g.player.dim, 'disabled', g.traps.traps.find((o) => o.id === laser.id).disabledUntil > g.t);
+    console.log('mill', laser.id, laser.dimension, 'phase', pose.phase, 'angle', pose.angle.toFixed(2), 'x', g.player.x.toFixed(1), 'dim', g.player.dim, 'disabled', g.traps.traps.find((o) => o.id === laser.id).disabledUntil > g.t);
   }
 }
 if (g.state !== 'won') console.log('died', g.t.toFixed(3), g.y.toFixed(1), g.killer?.o?.id, g.player.dim, g.player.x.toFixed(1));
