@@ -1,6 +1,17 @@
 Original prompt: RIFT CLIMB: PULSE – M6: PULSE ENGINE. Bestehendes Repository analysieren und vollständig um Musik, feste Beat-Timeline, Dimensions-Layer, Action-SFX, Audio-Einstellungen, mobile Lifecycle-Behandlung und LEVEL FORGE erweitern; testen, dokumentieren, committen und auf den vorhandenen Pages-Branch main pushen.
 
 
+## M8.1 – Rift Momentum (2026-10-28)
+- Anhang 0eaed5c9 vollständig gelesen. main95ea46c sauber; vorhandene39 zertifizierte Varianten und gemeinsameEndlessWorld/Progression/Replays. Keine AGENTS.md, keineSubagents. Develop-web-game-Schleife wird weiterverwendet; Physik/Input/Hitbox/Arena/Assets und alleLeveldaten bleiben unberührt.
+- Ausgangsprüfungen:20 Directorgruppen (351Eintritte,1482Paare,4×10000m) und24 Progressionchecks bestanden. VorhandenerSave enthält keine belastbare abgeschlossene Run-Historie: weder Bestwert noch letzteHöhe als alteRuns erfinden.
+- Umsetzung inArbeit:versionierte Momentum-Evidenz im bestehendenv2-Save, letzte6 echteRuns, Vergleichskohorte/Median, Stufen0–2 mit Zweitod-Hysterese; feste Momentaufnahme jeStart/Retry. Reine C1-Kurve mit geschütztem Warm-up und monotonerRückkehr bei provenHeight, keine freienMeter.
+- Core abgeschlossen:53 neue Prüfgruppen, A–H/216018Kurvenpunkte,6 reguläre adaptive10001m-Runs mitM1/M2und3Seeds, tatsächlicherAufbau über3 vollständigeGame-Runs plus4natürliche Frühtode. 40Seeds×60Auswahlen proStufe/Höhe belegen frühere bekannte Schwierigkeit und gleicheGewichte abP. Replayv2 mitGenerator/Configsignatur/Startpose; M8-v1 nur bei unveränderterBasis. Nach erstemInput keine irreführendeAufnahme. Mode-/Teilstart-Isolation zusätzlich abgesichert.
+- Speicherung:versionierteEvidence im vorhandenenSave, PB/Levels/alteFreischaltungen unverändert. Backup darf Demotion nicht hochsetzen; unbekannte zukünftigeMomentumversion bleibtread-onlymitHinweis. Momentaufnahme gegen Profiländerungen eingefroren, Replay-/Manualtests liefern keine Evidenz. Nur echteMeter fürScores.
+- Browser111Momentumchecks(3Stufen×Pixel7/WebKit-iPhone/320px),75InfinityRegression,51Audio,50MobileForge bestanden. Screenshots vonM2Gameplay/Debug und Kurvenvergleich tatsächlich geöffnet. Skillclient unverändert ausgeführt und Screenshot angesehen. Native104smitM2/P1210:JS p95.4ms/Ø.21ms,Chunkmax8/Objekte54/Cache2,Quellen28→0nachPause,Drift p9548.33ms/3Resyncs,Heap-Enddelta3.5MB. Kein physischerGerätebenchmark oder Lecknachweis.
+- Vollständiges npm test nochmals mit allen53Momentgruppen bestanden; fokussierteDirector20undProgression24ebenfalls. Alle Assets/39Chunks/6Levels/Player/Input/Physik/Arena/Kollisionen/Pulse unverändert. README, docs/M8.1-RIFT-MOMENTUM.md, Produktionskurven-SVG und ehrlicheJSON-Testnachweise erstellt.
+- Verbleibend:Review, angeforderterCommit/Pushmain und Pages-/Liveprüfung. Keine physischen Smartphones verfügbar; WindowsWebKit ohneWebAudio prüftFallback. Kein menschlicherSpaß-/Retentionnachweis.
+
+
 ## M8 – INFINITY FIRST (2026-10-28)
 - Aktueller Auftrag ersetzt die frühere Ascension-Produktstrategie: öffentlicher Einstieg nur Infinity; vorhandene Level-/Kosmetik-/Achievement-Daten bleiben erhalten. Start main 1e18082, sauber nach angefordertem Pull. Develop-web-game-Skill gelesen, keine Subagents, keine neue Engine.
 - Ausgang: 49 kurze Schlitz-/Farbpaar-/Laser-/Mühlen-Varianten, harte Tierwechsel, unbeschränkte Beschleunigung oberhalb8000m. Jetzt bestehender Director mit20 Aufgaben/39 offline einzeln geprüften Varianten, sieben Kategorien und kontinuierlicher Auswahl bei0/150/400/900/1600/2400/3500m, feste Obergrenze4400m.

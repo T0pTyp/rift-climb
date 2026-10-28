@@ -6,7 +6,42 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
-## M8 – INFINITY FIRST (aktueller Release)
+## M8.1 – RIFT MOMENTUM (aktueller Release)
+
+Infinity erkennt wiederholt erreichte Höhen und führt erfahrene Spieler schneller
+an bekannte Herausforderungen zurück. **Alle Runs starten weiter bei 0 m.**
+Geschwindigkeit, Arena270, Zielversatz90, Hitbox, Eingaben und Pulse bleiben identisch.
+
+Zwei vergleichbare hohe Runs innerhalb der letzten sechs regulären Versuche
+aktivieren Momentum1; drei aktivieren Momentum2. Qualifiziert: mindestens 400 m,
+mindestens 65 % des Bestwerts und höchstens 20 % Abstand innerhalb einer Kohorte.
+Der Median dieser Runs ergibt `provenHeight`, niemals der Rekord allein.
+Zwei aufeinanderfolgende sehr frühe Tode senken eine Stufe. Für eine erneute
+Hochstufung werden neue Nachweise benötigt. Es gibt keine öffentliche Einstellung.
+
+Eine feste Momentaufnahme pro Run steuert ausschließlich die Chunk-Gewichtung.
+Die virtuelle Schwierigkeit steigt nach kurzem Warm-up schneller, bleibt innerhalb
+des bewiesenen Bereichs und läuft spätestens bei `provenHeight` monoton und glatt
+in die unveränderte M8-Kurve zurück. Highscores verwenden nur echte Meter.
+Beispiel: bei 1.400 m Rekord und Runs1180/1240/1210 ist die nachgewiesene Höhe1210 m;
+Momentum2 erreicht bei 600 m ungefähr die normale Auswahl für936m.
+
+Die Erweiterung liegt im vorhandenen v2-Spielstand mit eigener Momentum-Version.
+Alte Rekorde bleiben erhalten; alte Run-Verläufe werden nicht erfunden. Replays v2
+enthalten Momentum, Startzustand und eine Konfigurationssignatur. Die unveränderte
+M8-Basis unterstützt weiterhin ihre alten v1-Replays. Debug zeigt echte und effektive
+Höhe getrennt. Keine neuen Levels, Fallen, Skins oder Grafikoptionen.
+
+```sh
+npm run test:momentum       # Profile A–H, Kurven, Migration, Replays, echte Simulationsläufe
+npm run test:momentum:e2e   # HTTP-Server und Playwright; optional BASE_URL
+node tools/plot-momentum.mjs
+```
+
+[Regeln, Formel, Testnachweise und Grenzen](docs/M8.1-RIFT-MOMENTUM.md) ·
+[Vergleich der drei Kurven](docs/M8.1-MOMENTUM-CURVES.svg).
+
+## M8 – INFINITY FIRST (Basis)
 
 **PLAY startet sofort RIFT INFINITY.** Der öffentliche Einstieg zeigt Riftling,
 Höhenrekord, letzten Aufstieg und Sound/Hilfe. Keine vorgeschaltete Modusauswahl.

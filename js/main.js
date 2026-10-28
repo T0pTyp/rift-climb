@@ -13,6 +13,7 @@ import { Progression } from './progression.js';
 import { riftlingArt } from './art/riftling.js';
 import {validateChunkBook,worldMeters} from './endless.js';
 import {trapPose,trapReach} from './traps.js';
+import {qualifyingRuns} from './momentum.js';
 
 const LEVEL_DIR = 'assets/levels/';
 export const PLAYTEST_KEY = 'riftforge.playtest';
@@ -135,7 +136,7 @@ async function boot() {
     },
     initialSeed:params.has('seed')?Number(params.get('seed'))>>>0:Date.now()>>>0,
     infinityAvailable:()=>!!infinityBook,infinityError:()=>infinityError,
-    onInfinityStart:seed=>{if(!infinityBook||playtest||game.state!=='menu')return;const tutorial=!progression.data.endless.tutorialSeen;storage=progression.infinityStorage(seed);storage.muted=audio.muted;game.startEndless(infinityBook,seed,storage);if(tutorial){ui.showTutorial();progression.data.endless.tutorialSeen=true;progression.persist();}const q=new URLSearchParams(location.search);q.delete('lab');q.delete('test');q.set('endless','1');q.set('seed',String(seed));history.replaceState(null,'',location.pathname+'?'+q);},
+    onInfinityStart:seed=>{if(!infinityBook||playtest||game.state!=='menu')return;const tutorial=!progression.data.endless.tutorialSeen;storage=progression.infinityStorage(seed,{momentumEligible:!debug.autoplay&&!debug.manual});storage.muted=audio.muted;game.startEndless(infinityBook,seed,storage);if(tutorial){ui.showTutorial();progression.data.endless.tutorialSeen=true;progression.persist();}const q=new URLSearchParams(location.search);q.delete('lab');q.delete('test');q.set('endless','1');q.set('seed',String(seed));history.replaceState(null,'',location.pathname+'?'+q);},
     testInfinityAvailable:()=>!!testInfinity,testInfinityError:()=>testInfinityError,
     onTestInfinity:()=>{
       if(!testInfinity||playtest||!game)return;
@@ -219,12 +220,12 @@ async function boot() {
   ui.updateVolumes(audio.settings);
   window.render_game_to_text = () => JSON.stringify({
     coordinates: 'x right, y up, world units; y = simulation seconds * 260; 10 units = 1 m',
-    ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog,phaseFlow:phaseFlowState(game)}}:{}),
+    ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog,phaseFlow:phaseFlowState(game),momentum:{nextTier:progression.data.endless.momentum.tier,earlyDeaths:progression.data.endless.momentum.consecutiveEarlyDeaths,qualifyingHeights:qualifyingRuns(progression.data.endless.momentum.recentRuns,progression.data.endless.bestHeight).map(r=>r.height)}}}:{}),
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
     character:{id:'riftling',design:'classic-blob',ready:riftlingArt.ready,animation:game.anim.state,blend:game.anim.pose.blend,pulse:game.anim.pose.pulse||0,hitRadius:game.player.hitRadius},
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
-    infinity:game.endless?{seed:game.endless.seed,revision:game.endless.book.revision,height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index,category:c.category,challenge:c.challenge})),generated:game.endless.generated,...(debug.hitboxes||debug.trace?{rejected:game.endless.director?.rejected,fallbacks:game.endless.director?.fallbacks,current:game.endless.chunks.find(c=>game.y>=c.origin&&game.y<c.end)?.id,heapBytes:performance.memory?.usedJSHeapSize}:{} )}:null,
+    infinity:game.endless?{seed:game.endless.seed,revision:game.endless.book.revision,momentum:{...game.endless.momentum,effectiveDifficultyHeight:game.endless.director?.difficultyHeight(game.y*.1)},height:worldMeters(game.y),best:progression.data.endless.bestHeight,chunks:game.endless.chunks.map(c=>({id:c.id,index:c.index,category:c.category,tier:c.tier,challenge:c.challenge})),generated:game.endless.generated,...(debug.hitboxes||debug.trace?{rejected:game.endless.director?.rejected,fallbacks:game.endless.director?.fallbacks,current:game.endless.chunks.find(c=>game.y>=c.origin&&game.y<c.end)?.id,heapBytes:performance.memory?.usedJSHeapSize}:{} )}:null,
     traps:game.traps.traps.filter(o=>Math.abs(o.y-game.y)<trapReach(o)+game.lookaheadSec*260).map(o=>({id:o.id,type:o.type,dimension:o.color,state:o.state,...trapPose(o,game.t)})),
     player: { x: game.player.x, y: game.y, vx: game.player.vx, lane: game.player.lane, dimension: game.player.dim },
     timeline: audio.timeline.at(game.t), audio: audio.status(), checkpoint: game.checkpoint ? { t:game.checkpoint.t, lane:game.checkpoint.lane, dim:game.checkpoint.dim, beat:game.checkpoint.beat } : null,

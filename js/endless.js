@@ -4,6 +4,7 @@ import {CLIMB_SPEED,MIN_PRESS_INTERVAL_MS,START_GRACE_MS,SIM_DT,STEER_OMEGA,HIT_
 import {RiftDirector,CATEGORIES,validContract,compatible,chunkFingerprint,directorTier} from './rift-director.js';
 import {infinityClimbTime,infinitySpaceScale} from './world-units.js';
 import {INFINITY_BALANCE} from './infinity-balance.js';
+import {momentumSnapshot} from './momentum.js';
 export {METERS_PER_UNIT,worldMeters,infinityClimbY,infinityClimbSpeed,infinityClimbTime,infinitySpaceScale,INFINITY_SPEED_MARK_M,INFINITY_SPEED_RAMP_M} from './world-units.js';
 export const INFINITY_TIERS=['EINFACH','MITTEL','SCHWER','SEHR SCHWER'];
 export const INFINITY_MIN_SEAM_SEC=2;
@@ -76,16 +77,17 @@ function validateDirectorBook(raw) {
 }
 /** Seeded selection of proven modules. No geometry depends on rendering/audio. */
 export class EndlessWorld {
- constructor(book,seed,order=null){
+ constructor(book,seed,order=null,momentum){
   this.book=validateChunkBook(book);this.order=order;this.seed=seed>>>0;
-  this.director=book.version===2?new RiftDirector(book,()=>this.random()):null;
+  this.initialMomentum=momentumSnapshot(momentum);this.momentum=this.initialMomentum;
+  this.director=book.version===2?new RiftDirector(book,()=>this.random(),this.momentum):null;
   if(order&&(!order.length||order.some(i=>!Number.isInteger(i)||!book.chunks[i])))throw Error('Infinity: ungültige Testreihenfolge');
   this.pools=[0,1,2,3].map(tier=>book.chunks.filter(c=>c.tier===tier).map(source=>{
    const types=new Set(source.level.objects.map(o=>o.type)),family=types.has('mine')&&types.has('saw')?'mixed':types.has('laser')?'laser':types.has('seal')?'pulse':types.has('saw')?'saw':'precision';
    return {source,family,actions:source.level.replay.taps.length,burst:chunkFlow(source).maxBurst};
   }));this.reset();
  }
- reset(){this.rng=this.seed||0x6d2b79f5;this.director?.reset();this.chunks=[];this.history=[];this.nextIndex=0;this.nextY=0;this.generated=0;this.maxObjects=0;this.ensure(0);}
+ reset(momentum=this.momentum){this.momentum=momentumSnapshot(momentum);this.rng=this.seed||0x6d2b79f5;this.director?.reset(this.momentum);this.chunks=[];this.history=[];this.nextIndex=0;this.nextY=0;this.generated=0;this.maxObjects=0;this.ensure(0);}
  random(){let x=this.rng;x^=x<<13;x^=x>>>17;x^=x<<5;this.rng=x>>>0;return this.rng/4294967296;}
  select(tier) {
   const pool=this.pools[tier],last=this.history.at(-1),recent=this.history.slice(-2);
@@ -127,7 +129,7 @@ export class EndlessWorld {
   if(game.audio.timeline&&this.director)game.audio.timeline.director=chunks.map(c=>({start:c.t0,end:infinityClimbTime(c.end),tier:c.tier,category:c.category,challenge:c.challenge}));
  }
  tapsAfter(t,last=-Infinity){return this.chunks.flatMap(c=>c.taps).filter(p=>p.t>=t-1/480&&p.t>last+1e-8);}
- tierAt(y){return this.director?directorTier(y):infinityTier(y);}
+ tierAt(y){return this.director?directorTier(this.director.difficultyHeight(y*.1)*10):infinityTier(y);}
 }
 /** Optional entry recovery uses ordinary wall taps, never hidden input correction. */
 export function entryTaps(lane,dim) {

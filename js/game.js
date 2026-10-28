@@ -21,8 +21,9 @@ import { BeatEffects } from './pulse/effects.js';
 import { TrapField,makeTrap,trapReach } from './traps.js';
 import { drawTrap } from './art/traps.js';
 import {EndlessWorld,worldMeters,INFINITY_TIERS,infinityClimbY,infinityClimbSpeed} from './endless.js';
-import {DIRECTOR_TIERS,zoneAt,directorSignature} from './rift-director.js';
+import {DIRECTOR_TIERS,zoneAt,directorSignature,GENERATOR_VERSION} from './rift-director.js';
 import {phaseFlowState} from './phase-flow.js';
+import {qualifyingRuns} from './momentum.js';
 import {currentInputEventTime} from './input-time.js';
 
 const K = PARTICLE_KIND;
@@ -191,9 +192,9 @@ export class Game {
     this.restart();
   }
 
-  startEndless(book,seed,storage,order=null) {
+  startEndless(book,seed,storage,order=null,momentum) {
     const data=createEmptyLevel({id:'rift-infinity',name:'RIFT INFINITY',arenaStyle:book.arenaStyle});
-    this.setLevelData(data,storage);this.endless=new EndlessWorld(book,seed,order);
+    this.setLevelData(data,storage);this.endless=new EndlessWorld(book,seed,order,momentum);
     this.level.endless=true;this.level.finishY=Infinity;this.level.music='rift-infinity';this.level.theme='infinity';
     this.audio.setLevel?.(this.level);this.beatEffects=new BeatEffects(this.level);
     const v=this.view;this.backdrop.configure(v.cssW,v.cssH,v.dpr,'infinity');
@@ -219,7 +220,7 @@ export class Game {
     const st = from || this.level.start;
     this.t = from ? from.y / CLIMB_SPEED : 0;
     this.lastAutoT=-Infinity;
-    if(this.endless){this.endless.reset();this.endless.apply(this);}
+    if(this.endless){this.endless.reset(this.run?.momentum||this.endless.initialMomentum);this.endless.apply(this);}
     this.acc = 0;
     this.player.reset(st.lane, st.dim, this.y);
     // Declared chunk entry fixtures use the same continuous body, only at run start.
@@ -326,7 +327,8 @@ export class Game {
   /** Spielfeld-Eingabe (Tipp oder Taste). Bedeutung hängt vom Zustand ab. */
   recordEndlessInputs() {
     if(!this.endless?.director||this.t!==0||this.state!=='playing'||!(this.debug.hitboxes||this.debug.trace))return false;
-    this.endlessRecording={schema:'rift-infinity-replay',version:1,seed:this.endless.seed,revision:this.endless.book.revision,signature:directorSignature(this.endless.book),simulation:'spring-240-v1',arenaWidth:270,arenaStep:90,taps:[],truncated:false};return true;
+    if(this.player.x!==135||this.player.vx!==0||this.player.lane!==1||this.player.dim!=='B'||this.stats.impulses!==0)return false;
+    this.endlessRecording={schema:'rift-infinity-replay',version:2,generator:GENERATOR_VERSION,momentum:this.endless.momentum,start:{x:this.player.x,y:this.y,vx:this.player.vx,target:this.player.lane,dimension:this.player.dim,lastDir:this.player.lastDir},seed:this.endless.seed,revision:this.endless.book.revision,signature:directorSignature(this.endless.book),simulation:'spring-240-v1',arenaWidth:270,arenaStep:90,taps:[],truncated:false};return true;
   }
   exportEndlessReplay(){return this.endlessRecording?structuredClone({...this.endlessRecording,duration:this.t,outcome:this.state}):null;}
 
@@ -1090,6 +1092,7 @@ export class Game {
       `Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];
     if(this.endless?.director){const e=this.endless,c=e.chunks.find(c=>this.y>=c.origin&&this.y<c.end);lines.push(`Seed ${e.seed} · ${c?.id} · ${c?.category}`,`Director ${DIRECTOR_TIERS[e.tierAt(this.y)]} · geprüft ${c?.validation?.status}`,`Chunks ${e.chunks.length} / erzeugt ${e.generated} · verworfen ${e.director.rejected} · Fallback ${e.director.fallbacks}`,`Objekte ${this.obstacles.length+this.traps.traps.length} · Fallen ${this.traps.traps.length}`);}
+    if(this.endless?.director){const e=this.endless,s=this.storage.progression?.data.endless.momentum,q=s?qualifyingRuns(s.recentRuns,this.storage.stats.best):[];lines.push(`Momentum ${e.momentum.tier} · bewiesen ${e.momentum.provenHeight} m · Best ${this.storage.stats.best} m`,`Höhe ${(this.y*.1).toFixed(1)} m · effektiv ${e.director.difficultyHeight(this.y*.1).toFixed(1)} m`,`Frühe Tode ${s?.consecutiveEarlyDeaths||0} · nächster Run M${s?.tier||0}`,`Letzte qualifizierte Höhen ${q.map(r=>r.height).join('/')||'–'}`);}
     ctx.font = '600 10px ui-monospace, monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';

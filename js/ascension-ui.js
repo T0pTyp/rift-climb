@@ -54,7 +54,7 @@ export class AscensionPanels {
   for(const b of document.querySelectorAll('[data-lab-feedback]'))b.setAttribute('aria-pressed',String(b.dataset.labFeedback===l.feedback));
   $('#btn-lab-start').textContent=`${titles[l.style]||l.style.toUpperCase()} · TEST-RUN STARTEN`;$('#btn-lab-start').disabled=!this.h.labAvailable();$('#lab-error').hidden=!this.h.labError();$('#lab-error').textContent=this.h.labError();
  }
- renderInfinity(){const e=this.progression.data.endless;$('#infinity-best').textContent=e.bestHeight+' m';$('#infinity-attempts').textContent=e.attempts;$('#infinity-last').textContent='Letzter Aufstieg: '+e.lastHeight+' m';$('#infinity-seed').textContent='SEED '+this.seed+' · RETRY = GLEICHE WELT';$('#btn-infinity-start').disabled=!this.h.infinityAvailable();$('#infinity-error').hidden=!this.h.infinityError();$('#infinity-error').textContent=this.h.infinityError();}
+ renderInfinity(){const e=this.progression.data.endless;$('#infinity-best').textContent=e.bestHeight+' m';$('#infinity-attempts').textContent=e.attempts;$('#infinity-last').textContent='Letzter Aufstieg: '+e.lastHeight+' m';$('#infinity-seed').textContent='SEED '+this.seed+' · SEED + MOMENTUM = WELT';$('#btn-infinity-start').disabled=!this.h.infinityAvailable();$('#infinity-error').hidden=!this.h.infinityError();$('#infinity-error').textContent=this.h.infinityError();}
  buildCards(levels,current,catalog){
   this.ui.current=current;this.ui.cards=new Map();const pick=$('#level-pick');pick.replaceChildren();
   for(const [i,l] of levels.entries()) {

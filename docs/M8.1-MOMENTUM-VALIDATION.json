@@ -1,0 +1,1374 @@
+{
+  "evidenceType": "Automated synthetic-profile and regular-input simulation tests; not human play",
+  "groups": 53,
+  "profiles": {
+    "A": {
+      "version": 1,
+      "tier": 0,
+      "provenHeight": 0,
+      "recentRuns": [
+        {
+          "id": 1,
+          "height": 40,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 2,
+          "height": 55,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 3,
+          "height": 120,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 4,
+          "height": 40,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 5,
+          "height": 40,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 0,
+        "heights": []
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 0,
+      "sequence": 5
+    },
+    "B": {
+      "version": 1,
+      "tier": 0,
+      "provenHeight": 0,
+      "recentRuns": [
+        {
+          "id": 1,
+          "height": 40,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 2,
+          "height": 1200,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 3,
+          "height": 80,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 4,
+          "height": 60,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 0,
+        "heights": []
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 0,
+      "sequence": 4
+    },
+    "C": {
+      "version": 1,
+      "tier": 1,
+      "provenHeight": 1210,
+      "recentRuns": [
+        {
+          "id": 1,
+          "height": 1180,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 2,
+          "height": 1240,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 1400,
+        "heights": [
+          1180,
+          1240
+        ]
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 0,
+      "sequence": 2
+    },
+    "D": {
+      "version": 1,
+      "tier": 2,
+      "provenHeight": 1190,
+      "recentRuns": [
+        {
+          "id": 1,
+          "height": 1160,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 2,
+          "height": 1240,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 3,
+          "height": 1190,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 1,
+            "provenHeight": 1200
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 1400,
+        "heights": [
+          1160,
+          1190,
+          1240
+        ]
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 0,
+      "sequence": 3
+    },
+    "E": {
+      "version": 1,
+      "tier": 1,
+      "provenHeight": 1210,
+      "recentRuns": [
+        {
+          "id": 1,
+          "height": 1180,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 2,
+          "height": 1240,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 3,
+          "height": 1210,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 1,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 4,
+          "height": 40,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 2,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 5,
+          "height": 80,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 2,
+            "provenHeight": 1210
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 1400,
+        "heights": [
+          1180,
+          1210,
+          1240
+        ]
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 5,
+      "sequence": 5
+    },
+    "F": {
+      "record": 1650,
+      "used": {
+        "version": 1,
+        "tier": 2,
+        "provenHeight": 1210
+      },
+      "next": {
+        "version": 1,
+        "tier": 2,
+        "provenHeight": 1210,
+        "recentRuns": [
+          {
+            "id": 1,
+            "height": 1180,
+            "outcome": "death",
+            "seed": 37,
+            "momentum": {
+              "version": 1,
+              "tier": 0,
+              "provenHeight": 0
+            }
+          },
+          {
+            "id": 2,
+            "height": 1240,
+            "outcome": "death",
+            "seed": 37,
+            "momentum": {
+              "version": 1,
+              "tier": 0,
+              "provenHeight": 0
+            }
+          },
+          {
+            "id": 3,
+            "height": 1210,
+            "outcome": "death",
+            "seed": 37,
+            "momentum": {
+              "version": 1,
+              "tier": 1,
+              "provenHeight": 1210
+            }
+          },
+          {
+            "id": 4,
+            "height": 1650,
+            "outcome": "death",
+            "seed": 1,
+            "momentum": {
+              "version": 1,
+              "tier": 2,
+              "provenHeight": 1210
+            }
+          }
+        ],
+        "proof": {
+          "bestHeight": 1650,
+          "heights": [
+            1180,
+            1210,
+            1240
+          ]
+        },
+        "consecutiveEarlyDeaths": 0,
+        "promotionAfterId": 0,
+        "sequence": 4
+      }
+    },
+    "G": {
+      "version": 1,
+      "tier": 0,
+      "provenHeight": 0,
+      "recentRuns": [],
+      "proof": {
+        "bestHeight": 0,
+        "heights": []
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 0,
+      "sequence": 0
+    },
+    "H": "identical seeds + fixed snapshots verified"
+  },
+  "curves": [
+    {
+      "tier": 0,
+      "provenHeight": 500,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 125,
+          "effective": 125
+        },
+        {
+          "actual": 225,
+          "effective": 225
+        },
+        {
+          "actual": 250,
+          "effective": 250
+        },
+        {
+          "actual": 375,
+          "effective": 375
+        },
+        {
+          "actual": 500,
+          "effective": 500
+        },
+        {
+          "actual": 600,
+          "effective": 600
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 500,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 125,
+          "effective": 128.021240234375
+        },
+        {
+          "actual": 225,
+          "effective": 265.618896484375
+        },
+        {
+          "actual": 250,
+          "effective": 298.33984375
+        },
+        {
+          "actual": 375,
+          "effective": 415.618896484375
+        },
+        {
+          "actual": 500,
+          "effective": 500
+        },
+        {
+          "actual": 600,
+          "effective": 600
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 500,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 125,
+          "effective": 144.84093506754522
+        },
+        {
+          "actual": 225,
+          "effective": 329.3767912495844
+        },
+        {
+          "actual": 250,
+          "effective": 368.0975248806916
+        },
+        {
+          "actual": 375,
+          "effective": 463.0312379343642
+        },
+        {
+          "actual": 500,
+          "effective": 500
+        },
+        {
+          "actual": 600,
+          "effective": 600
+        }
+      ]
+    },
+    {
+      "tier": 0,
+      "provenHeight": 900,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 225,
+          "effective": 225
+        },
+        {
+          "actual": 405,
+          "effective": 405
+        },
+        {
+          "actual": 450,
+          "effective": 450
+        },
+        {
+          "actual": 675,
+          "effective": 675
+        },
+        {
+          "actual": 900,
+          "effective": 900
+        },
+        {
+          "actual": 1080,
+          "effective": 1080
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 900,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 225,
+          "effective": 255.59005737304688
+        },
+        {
+          "actual": 405,
+          "effective": 502.9406081542969
+        },
+        {
+          "actual": 450,
+          "effective": 556.58935546875
+        },
+        {
+          "actual": 675,
+          "effective": 746.9206237792969
+        },
+        {
+          "actual": 900,
+          "effective": 900
+        },
+        {
+          "actual": 1080,
+          "effective": 1080
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 900,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 225,
+          "effective": 310.0879381399598
+        },
+        {
+          "actual": 405,
+          "effective": 631.4288119911969
+        },
+        {
+          "actual": 450,
+          "effective": 692.1791173751717
+        },
+        {
+          "actual": 675,
+          "effective": 830.9335202128996
+        },
+        {
+          "actual": 900,
+          "effective": 900
+        },
+        {
+          "actual": 1080,
+          "effective": 1080
+        }
+      ]
+    },
+    {
+      "tier": 0,
+      "provenHeight": 1200,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 300,
+          "effective": 300
+        },
+        {
+          "actual": 540,
+          "effective": 540
+        },
+        {
+          "actual": 600,
+          "effective": 600
+        },
+        {
+          "actual": 900,
+          "effective": 900
+        },
+        {
+          "actual": 1200,
+          "effective": 1200
+        },
+        {
+          "actual": 1440,
+          "effective": 1440
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 1200,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 300,
+          "effective": 353.55371900826447
+        },
+        {
+          "actual": 540,
+          "effective": 679.392
+        },
+        {
+          "actual": 600,
+          "effective": 748.7603305785124
+        },
+        {
+          "actual": 900,
+          "effective": 995.2066115702479
+        },
+        {
+          "actual": 1200,
+          "effective": 1200
+        },
+        {
+          "actual": 1440,
+          "effective": 1440
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 1200,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 300,
+          "effective": 435.66056903264814
+        },
+        {
+          "actual": 540,
+          "effective": 855.9617341746387
+        },
+        {
+          "actual": 600,
+          "effective": 933.3543858479388
+        },
+        {
+          "actual": 900,
+          "effective": 1106.6563769315617
+        },
+        {
+          "actual": 1200,
+          "effective": 1200
+        },
+        {
+          "actual": 1440,
+          "effective": 1440
+        }
+      ]
+    },
+    {
+      "tier": 0,
+      "provenHeight": 1800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 450,
+          "effective": 450
+        },
+        {
+          "actual": 810,
+          "effective": 810
+        },
+        {
+          "actual": 900,
+          "effective": 900
+        },
+        {
+          "actual": 1350,
+          "effective": 1350
+        },
+        {
+          "actual": 1800,
+          "effective": 1800
+        },
+        {
+          "actual": 2160,
+          "effective": 2160
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 1800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 450,
+          "effective": 549.9722674536943
+        },
+        {
+          "actual": 810,
+          "effective": 1031.239670669652
+        },
+        {
+          "actual": 900,
+          "effective": 1132.13515163851
+        },
+        {
+          "actual": 1350,
+          "effective": 1491.684052513739
+        },
+        {
+          "actual": 1800,
+          "effective": 1800
+        },
+        {
+          "actual": 2160,
+          "effective": 2160
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 1800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 450,
+          "effective": 687.080160608104
+        },
+        {
+          "actual": 810,
+          "effective": 1303.6672845062012
+        },
+        {
+          "actual": 900,
+          "effective": 1414.4823140771769
+        },
+        {
+          "actual": 1350,
+          "effective": 1657.9931419346349
+        },
+        {
+          "actual": 1800,
+          "effective": 1800
+        },
+        {
+          "actual": 2160,
+          "effective": 2160
+        }
+      ]
+    },
+    {
+      "tier": 0,
+      "provenHeight": 2800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 700,
+          "effective": 700
+        },
+        {
+          "actual": 1260,
+          "effective": 1260
+        },
+        {
+          "actual": 1400,
+          "effective": 1400
+        },
+        {
+          "actual": 2100,
+          "effective": 2100
+        },
+        {
+          "actual": 2800,
+          "effective": 2800
+        },
+        {
+          "actual": 3360,
+          "effective": 3360
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 2800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 700,
+          "effective": 877.448559670782
+        },
+        {
+          "actual": 1260,
+          "effective": 1616.6882544327593
+        },
+        {
+          "actual": 1400,
+          "effective": 1770.2321800538537
+        },
+        {
+          "actual": 2100,
+          "effective": 2319.072295889854
+        },
+        {
+          "actual": 2800,
+          "effective": 2800
+        },
+        {
+          "actual": 3360,
+          "effective": 3360
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 2800,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 700,
+          "effective": 1106.0656317854518
+        },
+        {
+          "actual": 1260,
+          "effective": 2048.5936388496207
+        },
+        {
+          "actual": 1400,
+          "effective": 2215.259477858222
+        },
+        {
+          "actual": 2100,
+          "effective": 2576.798913744088
+        },
+        {
+          "actual": 2800,
+          "effective": 2800
+        },
+        {
+          "actual": 3360,
+          "effective": 3360
+        }
+      ]
+    },
+    {
+      "tier": 0,
+      "provenHeight": 4000,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 1000,
+          "effective": 1000
+        },
+        {
+          "actual": 1800,
+          "effective": 1800
+        },
+        {
+          "actual": 2000,
+          "effective": 2000
+        },
+        {
+          "actual": 3000,
+          "effective": 3000
+        },
+        {
+          "actual": 4000,
+          "effective": 4000
+        },
+        {
+          "actual": 4800,
+          "effective": 4800
+        }
+      ]
+    },
+    {
+      "tier": 1,
+      "provenHeight": 4000,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 1000,
+          "effective": 1270.368684569868
+        },
+        {
+          "actual": 1800,
+          "effective": 2318.766668352467
+        },
+        {
+          "actual": 2000,
+          "effective": 2535.5451035924407
+        },
+        {
+          "actual": 3000,
+          "effective": 3311.906808948229
+        },
+        {
+          "actual": 4000,
+          "effective": 4000
+        },
+        {
+          "actual": 4800,
+          "effective": 4800
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "provenHeight": 4000,
+      "samples": [
+        {
+          "actual": 0,
+          "effective": 0
+        },
+        {
+          "actual": 1000,
+          "effective": 1608.7273583677252
+        },
+        {
+          "actual": 1800,
+          "effective": 2941.90539618171
+        },
+        {
+          "actual": 2000,
+          "effective": 3175.6694344498665
+        },
+        {
+          "actual": 3000,
+          "effective": 3679.3270258314005
+        },
+        {
+          "actual": 4000,
+          "effective": 4000
+        },
+        {
+          "actual": 4800,
+          "effective": 4800
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "tier": 1,
+      "seed": 1,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 74,
+      "loaded": 6
+    },
+    {
+      "tier": 1,
+      "seed": 37,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 72,
+      "loaded": 6
+    },
+    {
+      "tier": 1,
+      "seed": 12345,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 74,
+      "loaded": 6
+    },
+    {
+      "tier": 2,
+      "seed": 1,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 74,
+      "loaded": 5
+    },
+    {
+      "tier": 2,
+      "seed": 37,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 72,
+      "loaded": 5
+    },
+    {
+      "tier": 2,
+      "seed": 12345,
+      "actualHeight": 10001,
+      "t": 384.654166666399,
+      "maxObjects": 70,
+      "loaded": 5
+    }
+  ],
+  "distribution": [
+    {
+      "actual": 350,
+      "tier": 0,
+      "effective": 350,
+      "meanTier": 0.5016666666666667,
+      "categories": {
+        "PHASE": 1204,
+        "FLOW": 1196
+      },
+      "count": 2400
+    },
+    {
+      "actual": 350,
+      "tier": 1,
+      "effective": 424.63842975206614,
+      "meanTier": 0.5058333333333334,
+      "categories": {
+        "PHASE": 1214,
+        "FLOW": 1186
+      },
+      "count": 2400
+    },
+    {
+      "actual": 350,
+      "tier": 2,
+      "effective": 531.651222973537,
+      "meanTier": 0.73625,
+      "categories": {
+        "PHASE": 1047,
+        "FLOW": 993,
+        "PULSE": 246,
+        "SAW": 114
+      },
+      "count": 2400
+    },
+    {
+      "actual": 540,
+      "tier": 0,
+      "effective": 540,
+      "meanTier": 0.7575,
+      "categories": {
+        "PHASE": 1030,
+        "FLOW": 976,
+        "PULSE": 270,
+        "SAW": 124
+      },
+      "count": 2400
+    },
+    {
+      "actual": 540,
+      "tier": 1,
+      "effective": 679.392,
+      "meanTier": 0.9779166666666667,
+      "categories": {
+        "PHASE": 843,
+        "PULSE": 501,
+        "FLOW": 805,
+        "SAW": 251
+      },
+      "count": 2400
+    },
+    {
+      "actual": 540,
+      "tier": 2,
+      "effective": 855.9617341746387,
+      "meanTier": 1.05375,
+      "categories": {
+        "PHASE": 787,
+        "PULSE": 566,
+        "FLOW": 742,
+        "SAW": 305
+      },
+      "count": 2400
+    },
+    {
+      "actual": 700,
+      "tier": 0,
+      "effective": 700,
+      "meanTier": 0.9941666666666666,
+      "categories": {
+        "PHASE": 834,
+        "PULSE": 519,
+        "FLOW": 790,
+        "SAW": 257
+      },
+      "count": 2400
+    },
+    {
+      "actual": 700,
+      "tier": 1,
+      "effective": 848.7603305785124,
+      "meanTier": 1.05375,
+      "categories": {
+        "PHASE": 789,
+        "PULSE": 564,
+        "FLOW": 741,
+        "SAW": 306
+      },
+      "count": 2400
+    },
+    {
+      "actual": 700,
+      "tier": 2,
+      "effective": 1028.6876941357464,
+      "meanTier": 1.1070833333333334,
+      "categories": {
+        "PHASE": 756,
+        "PULSE": 550,
+        "SAW": 321,
+        "FLOW": 729,
+        "VOLTAGE": 44
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1000,
+      "tier": 0,
+      "effective": 1000,
+      "meanTier": 1.075,
+      "categories": {
+        "PHASE": 762,
+        "PULSE": 559,
+        "FLOW": 744,
+        "SAW": 317,
+        "VOLTAGE": 18
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1000,
+      "tier": 1,
+      "effective": 1053.5537190082644,
+      "meanTier": 1.1433333333333333,
+      "categories": {
+        "PHASE": 743,
+        "PULSE": 532,
+        "SAW": 330,
+        "FLOW": 718,
+        "VOLTAGE": 77
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1000,
+      "tier": 2,
+      "effective": 1115.553871354387,
+      "meanTier": 1.2533333333333334,
+      "categories": {
+        "PHASE": 683,
+        "PULSE": 511,
+        "SAW": 347,
+        "FLOW": 684,
+        "VOLTAGE": 175
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1200,
+      "tier": 0,
+      "effective": 1200,
+      "meanTier": 1.3883333333333334,
+      "categories": {
+        "PHASE": 623,
+        "PULSE": 449,
+        "SAW": 393,
+        "FLOW": 643,
+        "VOLTAGE": 292
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1200,
+      "tier": 1,
+      "effective": 1200,
+      "meanTier": 1.3883333333333334,
+      "categories": {
+        "PHASE": 623,
+        "PULSE": 449,
+        "SAW": 393,
+        "FLOW": 643,
+        "VOLTAGE": 292
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1200,
+      "tier": 2,
+      "effective": 1200,
+      "meanTier": 1.3883333333333334,
+      "categories": {
+        "PHASE": 623,
+        "PULSE": 449,
+        "SAW": 393,
+        "FLOW": 643,
+        "VOLTAGE": 292
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1650,
+      "tier": 0,
+      "effective": 1650,
+      "meanTier": 1.565,
+      "categories": {
+        "PHASE": 531,
+        "PULSE": 407,
+        "SAW": 422,
+        "VOLTAGE": 447,
+        "FLOW": 593
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1650,
+      "tier": 1,
+      "effective": 1650,
+      "meanTier": 1.565,
+      "categories": {
+        "PHASE": 531,
+        "PULSE": 407,
+        "SAW": 422,
+        "VOLTAGE": 447,
+        "FLOW": 593
+      },
+      "count": 2400
+    },
+    {
+      "actual": 1650,
+      "tier": 2,
+      "effective": 1650,
+      "meanTier": 1.565,
+      "categories": {
+        "PHASE": 531,
+        "PULSE": 407,
+        "SAW": 422,
+        "VOLTAGE": 447,
+        "FLOW": 593
+      },
+      "count": 2400
+    }
+  ],
+  "actualProfile": {
+    "momentum": {
+      "version": 1,
+      "tier": 0,
+      "provenHeight": 1210,
+      "recentRuns": [
+        {
+          "id": 2,
+          "height": 1240,
+          "outcome": "quit",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 0,
+            "provenHeight": 0
+          }
+        },
+        {
+          "id": 3,
+          "height": 1210,
+          "outcome": "quit",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 1,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 4,
+          "height": 90,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 2,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 5,
+          "height": 90,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 2,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 6,
+          "height": 90,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 1,
+            "provenHeight": 1210
+          }
+        },
+        {
+          "id": 7,
+          "height": 90,
+          "outcome": "death",
+          "seed": 37,
+          "momentum": {
+            "version": 1,
+            "tier": 1,
+            "provenHeight": 1210
+          }
+        }
+      ],
+      "proof": {
+        "bestHeight": 1400,
+        "heights": [
+          1180,
+          1210,
+          1240
+        ]
+      },
+      "consecutiveEarlyDeaths": 0,
+      "promotionAfterId": 7,
+      "sequence": 7
+    },
+    "best": 1400,
+    "attempts": 7
+  }
+}

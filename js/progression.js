@@ -4,13 +4,14 @@ import { ACHIEVEMENTS, SKINS, medalFor } from './rewards.js';
 import { STORAGE_KEY, readJson } from './storage.js';
 import {CLIMB_SPEED} from './config.js';
 import {worldMeters,infinityClimbY} from './world-units.js';
+import {blankMomentum,cleanMomentum,momentumSnapshot,observeMomentum,validMomentumSnapshot,MOMENTUM_VERSION} from './momentum.js';
 export const ASCENSION_KEY='riftclimb.ascension.v2';
 export const BACKUP_KEY=ASCENSION_KEY+'.backup';
 const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const integer=(v,max=Number.MAX_SAFE_INTEGER)=>Number.isFinite(v)?Math.min(max,Math.max(0,Math.floor(v))):0;
 const date=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))?v:null;
 const safeId=id=>/^[a-z0-9][a-z0-9-]{0,39}$/.test(id);
-const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,deaths:0,tutorialSeen:false,recordAt:null,lastSeed:null},lab:blankLab()});
+const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,deaths:0,tutorialSeen:false,recordAt:null,lastSeed:null,momentum:blankMomentum(),recordMomentum:null},lab:blankLab()});
 function cleanLevel(id,raw) {
  const r=object(raw),clears=integer(r.clears),completed=r.completed===true||clears>0||integer(r.best,100)===100;
  const best=completed?100:integer(r.best,99);
@@ -19,6 +20,8 @@ function cleanLevel(id,raw) {
 function normalize(raw) {
  const s=blank(),r=object(raw);s.lab=cleanLab(r.lab);s.profile.activePlaytimeMs=integer(r.profile?.activePlaytimeMs);s.profile.historyIncomplete=!!r.profile?.historyIncomplete;
  s.endless={bestHeight:integer(r.endless?.bestHeight),attempts:integer(r.endless?.attempts),lastHeight:integer(r.endless?.lastHeight),deaths:integer(r.endless?.deaths),tutorialSeen:r.endless?.tutorialSeen===true,recordAt:date(r.endless?.recordAt),lastSeed:Number.isInteger(r.endless?.lastSeed)?r.endless.lastSeed>>>0:null};
+ s.endless.momentum=cleanMomentum(r.endless?.momentum,s.endless.bestHeight);
+ s.endless.recordMomentum=validMomentumSnapshot(r.endless?.recordMomentum)&&r.endless.recordMomentum.provenHeight<=s.endless.bestHeight?{...momentumSnapshot(r.endless.recordMomentum)}:null;
  for(const [id,l] of Object.entries(object(r.levels)))if(safeId(id))s.levels[id]=cleanLevel(id,l);
  for(const a of ACHIEVEMENTS)if(r.achievements?.[a.id]?.unlocked===true)s.achievements[a.id]={unlocked:true,unlockedAt:date(r.achievements[a.id].unlockedAt)};
  const unlocked=r.cosmetics?.unlockedSkinIds;
@@ -37,6 +40,7 @@ export class Progression {
    try{raw=JSON.parse(this.storage?.getItem(ASCENSION_KEY)||'null');}catch{this.warning='Spielstand beschädigt. Verfügbare Sicherung und frühere Bestwerte werden wiederhergestellt.';}
    try{backup=JSON.parse(this.storage?.getItem(BACKUP_KEY)||'null');}catch{/* Sources recover independently. */}
    if(raw?.schemaVersion>2){this.readOnly=true;this.warning='Spielstand aus einer neueren Version. Neue Ergebnisse bleiben in dieser Sitzung.';}
+   if(raw?.endless?.momentum?.version>MOMENTUM_VERSION||backup?.endless?.momentum?.version>MOMENTUM_VERSION){this.readOnly=true;this.warning='Momentum-Spielstand aus einer neueren Version. Neue Ergebnisse bleiben in dieser Sitzung.';}
    const source=raw?.schemaVersion===2?raw:backup?.schemaVersion===2?backup:null;
    if(source)this.data=normalize(source);
    // Recover monotonic evidence even when individual fields of the primary are damaged.
@@ -50,9 +54,13 @@ export class Progression {
     this.data.profile.historyIncomplete ||= b.profile.historyIncomplete;
     for(const [id,a] of Object.entries(b.achievements))this.data.achievements[id] ||= a;
     this.data.cosmetics.unlockedSkinIds=[...new Set([...this.data.cosmetics.unlockedSkinIds,...b.cosmetics.unlockedSkinIds])];
-    if(b.endless.bestHeight>this.data.endless.bestHeight){this.data.endless.bestHeight=b.endless.bestHeight;this.data.endless.recordAt=b.endless.recordAt;}
+    if(b.endless.bestHeight>this.data.endless.bestHeight){this.data.endless.bestHeight=b.endless.bestHeight;this.data.endless.recordAt=b.endless.recordAt;this.data.endless.recordMomentum=b.endless.recordMomentum;}
     this.data.endless.attempts=Math.max(this.data.endless.attempts,b.endless.attempts);
     this.data.endless.deaths=Math.max(this.data.endless.deaths,b.endless.deaths);this.data.endless.tutorialSeen ||= b.endless.tutorialSeen;
+    // Momentum is not monotonic: never restore an older, higher tier over a demotion.
+    const current=this.data.endless.momentum,other=b.endless.momentum;
+    if((other.recentRuns.at(-1)?.id||0)>(current.recentRuns.at(-1)?.id||0))this.data.endless.momentum=other;
+    this.data.endless.momentum.sequence=Math.max(current.sequence,other.sequence);
    }
    this.migrateLegacy();this.evaluate(true);this.persist();
   }
@@ -103,7 +111,12 @@ export class Progression {
  }
  finish(run,t,best,outcome) {
   if(run?.kind==='lab')return finishLab(this,run,t,best,outcome);
-  if(run?.kind==='endless'){if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;if(outcome==='death')this.data.endless.deaths++;this.persist();return true;}
+  if(run?.kind==='endless'){
+   if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;const e=this.data.endless;
+   if(outcome==='death')e.deaths++;
+   if(run.momentumEligible)e.momentum=observeMomentum(e.momentum,{id:run.sequence,height:e.lastHeight,outcome,seed:run.seed,momentum:run.momentum},e.bestHeight);
+   this.persist();return true;
+  }
   if(!run?.eligible||run.closed)return false;
   this.report(run,t,best);run.closed=true;const l=this.level(run.id);
   if(outcome==='death')l.deaths++;
@@ -117,16 +130,16 @@ export class Progression {
  equip(id){if(!this.data.cosmetics.unlockedSkinIds.includes(id))return false;this.data.cosmetics.selectedSkinId=id;this.persist();return true;}
  reportEndless(run,t,force=false) {
   if(!run.eligible||run.closed)return false;const e=this.data.endless,h=worldMeters(run.ramp?infinityClimbY(t):t*CLIMB_SPEED),record=h>e.bestHeight;
-  e.lastHeight=h;if(record){e.bestHeight=h;run.record=true;}
+  e.lastHeight=h;if(record){e.bestHeight=h;run.record=true;e.recordMomentum={...run.momentum};}
   if(force||t-(run.savedT||0)>=1){if(run.record)e.recordAt=this.now();run.savedT=t;this.persist();}return record;
  }
  labStorage(style){return labStorage(this,style);}
  setLabStyle(style){if(!LAB_STYLES.includes(style))return false;this.data.lab.style=style;this.persist();return true;}
  setLabFeedback(value){if(!LAB_FEEDBACK.includes(value))return false;this.data.lab.feedback=value;this.persist();return true;}
- infinityStorage(seed) {
+ infinityStorage(seed,{momentumEligible=true}={}) {
   const p=this,e=p.data.endless;
   return {progression:p,muted:false,stats:{get best(){return e.bestHeight;},get attempts(){return e.attempts;},clears:0},save(){p.persist();},
-   beginRun(){const run={id:'rift-infinity',kind:'endless',eligible:!p.isolated,closed:false,rewards:[],record:false,savedT:0};if(run.eligible){e.attempts++;e.lastHeight=0;e.lastSeed=seed>>>0;p.persist();}return run;},
+   beginRun(eligible=true,mode='endless'){const allowed=!!eligible&&!p.isolated&&mode==='endless',run={id:'rift-infinity',kind:'endless',eligible:allowed,closed:false,rewards:[],record:false,savedT:0,seed:seed>>>0,momentum:momentumSnapshot(allowed?e.momentum:blankMomentum()),momentumEligible:momentumEligible&&allowed};if(run.eligible){e.attempts++;e.lastHeight=0;e.lastSeed=seed>>>0;if(run.momentumEligible)run.sequence=++e.momentum.sequence;p.persist();}return run;},
    report:(run,t,pct,force)=>p.report(run,t,pct,force),finish:(run,t,pct,outcome)=>p.finish(run,t,pct,outcome)};
  }
  summary() {

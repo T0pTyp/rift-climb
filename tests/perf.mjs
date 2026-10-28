@@ -3,10 +3,18 @@
 // Aufruf: node tests/perf.mjs   (Headless ohne GPU: Werte sind ein grober Anhaltspunkt, kein Geräte-Ersatz)
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { chromium, devices } from 'playwright';
+import {Progression,ASCENSION_KEY} from '../js/progression.js';
 
 const BASE = process.env.BASE_URL || 'http://localhost:8080/';
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ ...devices['Pixel 7'] });
+// Optional synthetic prior-run fixture for an adaptive benchmark, never a human result.
+const momentumTier=Number(process.env.MOMENTUM_TIER||0);
+if(momentumTier===1||momentumTier===2){
+  const p=new Progression({storage:{getItem(){return null;},setItem(){}}});p.data.endless.bestHeight=1400;p.data.endless.tutorialSeen=true;
+  for(const h of [1180,1240,1210].slice(0,momentumTier===1?2:3)){const a=p.infinityStorage(37),r=a.beginRun();a.finish(r,h/26,0,'death');}
+  await ctx.addInitScript(({key,data})=>localStorage.setItem(key,JSON.stringify(data)),{key:ASCENSION_KEY,data:p.data});
+}
 const page = await ctx.newPage();
 const cdp = await ctx.newCDPSession(page);
 await cdp.send('Emulation.setCPUThrottlingRate', { rate: Number(process.env.THROTTLE || 4) });
@@ -46,7 +54,7 @@ const r = await page.evaluate(() => {
   const heap1 = performance.memory ? performance.memory.usedJSHeapSize : 0;
   return {
     audio: window.__RIFT.audio.status(), sourcesMax: m.sourcesMax, driftP95: q(m.drift, .95),
-    seconds:__RIFT.t,seed:__RIFT.endless?.seed,generated:__RIFT.endless?.generated,chunksMax:m.chunksMax,cacheMax:m.cacheMax,seekCalls:m.seekCalls,maxObjects:__RIFT.endless?.maxObjects,
+    seconds:__RIFT.t,seed:__RIFT.endless?.seed,momentum:__RIFT.endless?.momentum,generated:__RIFT.endless?.generated,chunksMax:m.chunksMax,cacheMax:m.cacheMax,seekCalls:m.seekCalls,maxObjects:__RIFT.endless?.maxObjects,
     frames: m.js.length, jsAvg: avg(m.js), jsP95: q(m.js, 0.95), jsP99: q(m.js, 0.99),
     fps: 1000 / avg(m.gaps), gapP95: q(m.gaps, 0.95), longFrames: m.gaps.filter((g) => g > 25).length,
     heapKB: (heap1 - m.heap0) / 1024,

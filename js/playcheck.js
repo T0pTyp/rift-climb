@@ -5,7 +5,9 @@ import { Game } from './game.js';
 import { SIM_DT, CLIMB_SPEED, START_LANE, UNITS_PER_BEAT, MIN_PRESS_INTERVAL_MS, START_GRACE_MS, STEER_OMEGA, HIT_RADIUS, PULSE_RADIUS, PULSE_GROW_SEC } from './config.js';
 import { laneRows, START_DIMENSIONS } from './level-data.js';
 import { validateLevel } from './level.js';
-import {accepts,chunkFingerprint,directorSignature} from './rift-director.js';
+import {accepts,chunkFingerprint,directorSignature,legacyDirectorSignature,GENERATOR_VERSION} from './rift-director.js';
+import {momentumSnapshot,validMomentumSnapshot} from './momentum.js';
+import {INFINITY_BALANCE} from './infinity-balance.js';
 
 const noop = () => {};
 
@@ -104,8 +106,12 @@ export function runEndlessReplay(book,replay) {
  const taps=replay?.taps;
  // Accepted physical contacts may share a simulation tick after a browser stall.
  const invalidInput=(p,i)=>{const prev=taps[i-1],gap=prev&&(Number.isFinite(p.inputMs)&&Number.isFinite(prev.inputMs)?(p.inputMs-prev.inputMs)/1000:p.t-prev.t);return ![1,-1].includes(p.dir)||!Number.isFinite(p.t)||p.t<0||p.t>replay.duration||(i&&(p.t<prev.t||gap<.045-1e-8));};
- if(replay?.schema!=='rift-infinity-replay'||replay.version!==1||replay.truncated||replay.simulation!=='spring-240-v1'||replay.signature!==directorSignature(book)||replay.revision!==book.revision||replay.arenaWidth!==270||replay.arenaStep!==90||!Number.isInteger(replay.seed)||replay.seed<0||replay.seed>0xffffffff||!Number.isFinite(replay.duration)||replay.duration<0||replay.duration>3600||!Array.isArray(taps)||taps.length>16000||taps.some(invalidInput))return {ok:false,error:'Ungültiger, veralteter oder abgeschnittener Infinity-Replay.'};
- const g=headlessGame(book.chunks[0].level);g.startEndless(book,replay.seed,g.storage);let i=0;
+ // v1 did not record balancing parameters: accept only the known, unchanged M8 baseline.
+ const legacy=replay?.version===1&&replay.momentum===undefined&&replay.signature===legacyDirectorSignature(book)&&chunkFingerprint(INFINITY_BALANCE)==='cde63176';
+ const start=replay?.start,canonicalStart=start?.x===135&&start.y===0&&start.vx===0&&start.target===1&&start.dimension==='B'&&start.lastDir===0;
+ const current=replay?.version===2&&canonicalStart&&replay.generator===GENERATOR_VERSION&&validMomentumSnapshot(replay.momentum)&&replay.signature===directorSignature(book);
+ if(replay?.schema!=='rift-infinity-replay'||(!legacy&&!current)||replay.truncated||replay.simulation!=='spring-240-v1'||replay.revision!==book.revision||replay.arenaWidth!==270||replay.arenaStep!==90||!Number.isInteger(replay.seed)||replay.seed<0||replay.seed>0xffffffff||!Number.isFinite(replay.duration)||replay.duration<0||replay.duration>3600||!Array.isArray(taps)||taps.length>16000||taps.some(invalidInput))return {ok:false,error:'Ungültiger, veralteter oder abgeschnittener Infinity-Replay.'};
+ const g=headlessGame(book.chunks[0].level);g.startEndless(book,replay.seed,g.storage,null,momentumSnapshot(current?replay.momentum:undefined));let i=0;
  const steps=Math.round(replay.duration/SIM_DT);
  for(let n=0;n<steps&&g.state==='playing';n++){
   if(g.endless.ensure(g.y))g.endless.apply(g);

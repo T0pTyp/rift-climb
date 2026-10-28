@@ -1,5 +1,7 @@
 // Prepared contracts, not a runtime pathfinder. Coordinates/velocities stay continuous.
 import {INFINITY_BALANCE,difficultyAt,difficultyWeight} from './infinity-balance.js';
+import {MOMENTUM_CONFIG,momentumSnapshot,effectiveDifficultyHeight} from './momentum.js';
+export const GENERATOR_VERSION='rift-director-momentum-1';
 export const CATEGORIES=['FLOW','PHASE','PULSE','SAW','VOLTAGE','PRECISION','COMBO','SLIT','PAIR','LASER','MILL'];
 export const DIRECTOR_TIERS=INFINITY_BALANCE.labels;
 export const ZONES=['CYAN RIFT TOWER','FRACTURED DIMENSION','MECHANICAL CORE','VOLTAGE FACILITY','RIFT STORM','INFINITY CORE'];
@@ -26,10 +28,12 @@ export function chunkFingerprint(level) {
  const text=JSON.stringify({...level,chunk:meta},(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).sort(([a],[b])=>a<b?-1:a>b?1:0)):v);let h=2166136261;
  for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return(h>>>0).toString(16).padStart(8,'0');
 }
-export const directorSignature=book=>chunkFingerprint({revision:book.revision,chunks:book.chunks.map(c=>({id:c.id,hash:chunkFingerprint(c.level)}))});
+export const legacyDirectorSignature=book=>chunkFingerprint({revision:book.revision,chunks:book.chunks.map(c=>({id:c.id,hash:chunkFingerprint(c.level)}))});
+export const directorSignature=book=>chunkFingerprint({generator:GENERATOR_VERSION,book:legacyDirectorSignature(book),balance:INFINITY_BALANCE,momentum:MOMENTUM_CONFIG});
 export class RiftDirector {
- constructor(book,random){this.book=book;this.random=random;this.reset();}
- reset(){this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;this.sinceRecovery=0;}
+ constructor(book,random,momentum){this.book=book;this.random=random;this.reset(momentum);}
+ reset(momentum=this.momentum){this.momentum=momentumSnapshot(momentum);this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;this.sinceRecovery=0;}
+ difficultyHeight(meters){return effectiveDifficultyHeight(meters,this.momentum);}
  select(y) {
   if(this.book.balance==='infinity-first')return this.selectInfinity(y);
   const tier=directorTier(y),last=this.history.at(-1),recent=this.history.slice(-3),challenge=y*.1>=this.nextChallenge;
@@ -54,7 +58,7 @@ export class RiftDirector {
   return chosen;
  }
  selectInfinity(y){
-  const meters=y*.1,last=this.history.at(-1),recent=this.history.slice(-INFINITY_BALANCE.recentPatterns);
+  const meters=this.difficultyHeight(y*.1),last=this.history.at(-1),recent=this.history.slice(-INFINITY_BALANCE.recentPatterns);
   if(!this.history.length){const c=this.book.chunks.find(c=>c.level.chunk.opening);this.remember(c);return c;}
   const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk,ok=!m.opening&&m.validation.status==='verified'&&compatible(this.previous,m.entry)&&difficultyWeight(m.tier,meters)>0;if(!ok)this.rejected++;return ok;});
   const recovery=this.sinceRecovery>=INFINITY_BALANCE.recoveryEvery;
