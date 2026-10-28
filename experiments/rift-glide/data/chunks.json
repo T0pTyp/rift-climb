@@ -1,0 +1,3240 @@
+{
+  "schema": "rift-glide-chunks",
+  "version": 1,
+  "config": {
+    "arenaWidth": 270,
+    "horizontalTravelPerTap": 75,
+    "relativeFlapImpulse": 65,
+    "gravity": 520,
+    "maxUpwardVelocity": 320,
+    "maxFallVelocity": 220,
+    "verticalDrag": 0,
+    "flapCooldownMs": 80,
+    "velocityHandling": "set",
+    "cameraDeadZone": 45,
+    "cameraResponse": 8,
+    "fallDistance": 200,
+    "flapVelocity": 260,
+    "units": "u, s; y increases upward",
+    "baselineClimbSpeed": 260
+  },
+  "chunks": [
+    {
+      "id": "glide-free",
+      "category": "FLOW",
+      "tier": 0,
+      "opening": true,
+      "length": 487.5,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-free",
+        "name": "glide-free",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1007.5,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 487.5
+        },
+        "objects": [],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.75,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.75,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 135,
+          "y": 0,
+          "vx": 0,
+          "vy": 0,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          427.5,
+          547.5
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "c6e02055",
+        "fixtures": 1,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 487.50000000000114,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-wide-turn",
+      "category": "FLOW",
+      "tier": 0,
+      "opening": false,
+      "length": 520,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-wide-turn",
+        "name": "glide-wide-turn",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1040,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 520
+        },
+        "objects": [
+          {
+            "id": "left-fin",
+            "type": "obstacle",
+            "x": 0,
+            "w": 75,
+            "h": 14,
+            "y": 140.4000000000002,
+            "dimension": "both"
+          },
+          {
+            "id": "right-fin",
+            "type": "obstacle",
+            "x": 245,
+            "w": 25,
+            "h": 14,
+            "y": 335.40000000000066,
+            "dimension": "both"
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.75,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.75,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          460,
+          580
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "fe7a0f95",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270257,
+            "y": 520.000000000001,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-ledge",
+      "category": "PRECISION",
+      "tier": 1,
+      "opening": false,
+      "length": 520,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-ledge",
+        "name": "glide-ledge",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1040,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 520
+        },
+        "objects": [
+          {
+            "id": "rise-ledge",
+            "type": "obstacle",
+            "x": 105,
+            "w": 165,
+            "h": 14,
+            "y": 195.0000000000003,
+            "dimension": "both"
+          },
+          {
+            "id": "return-ledge",
+            "type": "obstacle",
+            "x": 0,
+            "w": 90,
+            "h": 14,
+            "y": 260.0000000000004,
+            "dimension": "both"
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": -1
+            },
+            {
+              "t": 0.75,
+              "dir": 1
+            },
+            {
+              "t": 1.25,
+              "dir": -1
+            },
+            {
+              "t": 1.75,
+              "dir": 1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": -1
+        },
+        {
+          "t": 0.75,
+          "dir": 1
+        },
+        {
+          "t": 1.25,
+          "dir": -1
+        },
+        {
+          "t": 1.75,
+          "dir": 1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          460,
+          580
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "ee873e08",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 520.000000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-red-window",
+      "category": "PHASE",
+      "tier": 1,
+      "opening": false,
+      "length": 514.8,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-red-window",
+        "name": "glide-red-window",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1034.8,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 514.8
+        },
+        "objects": [
+          {
+            "id": "red-gate",
+            "type": "obstacle",
+            "x": 0,
+            "w": 270,
+            "h": 14,
+            "y": 120.25000000000013,
+            "dimension": "red"
+          },
+          {
+            "id": "left-spur",
+            "type": "obstacle",
+            "x": 0,
+            "w": 60,
+            "h": 14,
+            "y": 265.20000000000056,
+            "dimension": "both"
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.65,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.65,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          454.79999999999995,
+          574.8
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "3227d72b",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 514.8000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-blue-window",
+      "category": "PHASE",
+      "tier": 1,
+      "opening": false,
+      "length": 514.8,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-blue-window",
+        "name": "glide-blue-window",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1034.8,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 514.8
+        },
+        "objects": [
+          {
+            "id": "blue-gate",
+            "type": "obstacle",
+            "x": 0,
+            "w": 270,
+            "h": 14,
+            "y": 182.65000000000032,
+            "dimension": "blue"
+          },
+          {
+            "id": "right-spur",
+            "type": "obstacle",
+            "x": 245,
+            "w": 25,
+            "h": 14,
+            "y": 330.2000000000007,
+            "dimension": "both"
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.85,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.85,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          454.79999999999995,
+          574.8
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "8926728c",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 514.8000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-seal",
+      "category": "PULSE",
+      "tier": 1,
+      "opening": false,
+      "length": 514.8,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-seal",
+        "name": "glide-seal",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1034.8,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 514.8
+        },
+        "objects": [
+          {
+            "id": "seal",
+            "type": "seal",
+            "x": 0,
+            "w": 270,
+            "h": 14,
+            "y": 202.80000000000032,
+            "openSec": 0.8
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.75,
+              "dir": -1
+            },
+            {
+              "t": 1.15,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.75,
+          "dir": -1
+        },
+        {
+          "t": 1.15,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          454.79999999999995,
+          574.8
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "d90bffce",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270257,
+            "y": 514.8000000000011,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 507.30000000000115,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 512.3000000000011,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270257,
+            "y": 522.3000000000011,
+            "vx": -39.73526692448994,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-saw",
+      "category": "SAW",
+      "tier": 2,
+      "opening": false,
+      "length": 520,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-saw",
+        "name": "glide-saw",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1040,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 520
+        },
+        "objects": [
+          {
+            "id": "saw",
+            "type": "saw",
+            "x": 68,
+            "y": 195.0000000000003,
+            "w": 32,
+            "h": 32,
+            "dimension": "red",
+            "axis": "x",
+            "amplitude": 12,
+            "period": 4,
+            "phase": 0.5,
+            "spin": 4,
+            "pulseBreakable": true
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": -1
+            },
+            {
+              "t": 0.75,
+              "dir": 1
+            },
+            {
+              "t": 1.25,
+              "dir": -1
+            },
+            {
+              "t": 1.75,
+              "dir": 1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": -1
+        },
+        {
+          "t": 0.75,
+          "dir": 1
+        },
+        {
+          "t": 1.25,
+          "dir": -1
+        },
+        {
+          "t": 1.75,
+          "dir": 1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          460,
+          580
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "54b50cc6",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 520.000000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-mine",
+      "category": "VOLTAGE",
+      "tier": 2,
+      "opening": false,
+      "length": 514.8,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-mine",
+        "name": "glide-mine",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1034.8,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 514.8
+        },
+        "objects": [
+          {
+            "id": "mine",
+            "type": "mine",
+            "x": 190,
+            "y": 205.40000000000035,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "activationRadius": 110,
+            "chargeSec": 1.2,
+            "blastRadius": 65,
+            "blastSec": 0.22
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.75,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.85,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.75,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.85,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          454.79999999999995,
+          574.8
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "afaf6b80",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 514.8000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000126,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 507.30000000000126,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.3000000000012,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-laser",
+      "category": "VOLTAGE",
+      "tier": 2,
+      "opening": false,
+      "length": 520,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-laser",
+        "name": "glide-laser",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1040,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 520
+        },
+        "objects": [
+          {
+            "id": "laser",
+            "type": "laser",
+            "x": 159,
+            "y": 270.4000000000005,
+            "w": 26,
+            "h": 26,
+            "dimension": "blue",
+            "axis": "none",
+            "amplitude": 0,
+            "period": 4,
+            "phase": 0,
+            "startAngle": 180,
+            "endAngle": 165,
+            "sweepPeriod": 3,
+            "length": 160,
+            "beamWidth": 10,
+            "warnSec": 1.2,
+            "activeSec": 0.3,
+            "offSec": 2,
+            "disableSec": 1
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": -1
+            },
+            {
+              "t": 0.75,
+              "dir": 1
+            },
+            {
+              "t": 1.25,
+              "dir": -1
+            },
+            {
+              "t": 1.75,
+              "dir": 1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.75,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": -1
+        },
+        {
+          "t": 0.75,
+          "dir": 1
+        },
+        {
+          "t": 1.25,
+          "dir": -1
+        },
+        {
+          "t": 1.75,
+          "dir": 1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.75,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          460,
+          580
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "05bbdf0b",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452787270255,
+            "y": 520.000000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 512.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 517.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 522.500000000001,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452787270255,
+            "y": 527.5000000000011,
+            "vx": -39.73526692448964,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    },
+    {
+      "id": "glide-relay",
+      "category": "COMBO",
+      "tier": 3,
+      "opening": false,
+      "length": 514.8,
+      "duration": 4,
+      "level": {
+        "schema": "rift-climb-level",
+        "version": 1,
+        "arenaStyle": "narrow",
+        "id": "glide-relay",
+        "name": "glide-relay",
+        "description": "",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "height": 1034.8,
+        "start": {
+          "lane": 1,
+          "dimension": "blue"
+        },
+        "finish": {
+          "y": 514.8
+        },
+        "objects": [
+          {
+            "id": "seal",
+            "type": "seal",
+            "x": 0,
+            "w": 270,
+            "h": 14,
+            "y": 195.0000000000003,
+            "openSec": 0.8
+          },
+          {
+            "id": "saw",
+            "type": "saw",
+            "x": 190,
+            "y": 335.40000000000066,
+            "w": 28,
+            "h": 28,
+            "dimension": "red",
+            "axis": "none",
+            "amplitude": 0,
+            "period": 3,
+            "phase": 0,
+            "spin": 4,
+            "pulseBreakable": true
+          },
+          {
+            "id": "exit-fin",
+            "type": "obstacle",
+            "x": 0,
+            "w": 75,
+            "h": 14,
+            "y": 403.0000000000009,
+            "dimension": "both"
+          }
+        ],
+        "theme": "core",
+        "music": "first-pulse",
+        "replay": {
+          "taps": [
+            {
+              "t": 0.25,
+              "dir": 1
+            },
+            {
+              "t": 0.75,
+              "dir": -1
+            },
+            {
+              "t": 1.25,
+              "dir": 1
+            },
+            {
+              "t": 1.75,
+              "dir": -1
+            },
+            {
+              "t": 2.25,
+              "dir": 1
+            },
+            {
+              "t": 2.65,
+              "dir": -1
+            },
+            {
+              "t": 3.25,
+              "dir": 1
+            },
+            {
+              "t": 3.75,
+              "dir": -1
+            }
+          ]
+        }
+      },
+      "taps": [
+        {
+          "t": 0.25,
+          "dir": 1
+        },
+        {
+          "t": 0.75,
+          "dir": -1
+        },
+        {
+          "t": 1.25,
+          "dir": 1
+        },
+        {
+          "t": 1.75,
+          "dir": -1
+        },
+        {
+          "t": 2.25,
+          "dir": 1
+        },
+        {
+          "t": 2.65,
+          "dir": -1
+        },
+        {
+          "t": 3.25,
+          "dir": 1
+        },
+        {
+          "t": 3.75,
+          "dir": -1
+        }
+      ],
+      "fixtures": [
+        {
+          "x": 137.18,
+          "y": 0,
+          "vx": -39.5,
+          "vy": 130,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": -5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 130,
+          "y": 5,
+          "vx": 40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": -5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 120,
+          "target": 135,
+          "dimension": "B"
+        },
+        {
+          "x": 140,
+          "y": 5,
+          "vx": -40,
+          "vy": 140,
+          "target": 135,
+          "dimension": "B"
+        }
+      ],
+      "entry": {
+        "x": [
+          125,
+          145
+        ],
+        "vx": [
+          -50,
+          50
+        ],
+        "y": [
+          -60,
+          60
+        ],
+        "vy": [
+          90,
+          170
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "exit": {
+        "x": [
+          130,
+          145
+        ],
+        "vx": [
+          -50,
+          0
+        ],
+        "y": [
+          454.79999999999995,
+          574.8
+        ],
+        "vy": [
+          129,
+          131
+        ],
+        "target": 135,
+        "dimension": "B"
+      },
+      "validation": {
+        "status": "verified",
+        "physics": {
+          "arenaWidth": 270,
+          "horizontalTravelPerTap": 75,
+          "relativeFlapImpulse": 65,
+          "gravity": 520,
+          "maxUpwardVelocity": 320,
+          "maxFallVelocity": 220,
+          "verticalDrag": 0,
+          "flapCooldownMs": 80,
+          "velocityHandling": "set",
+          "cameraDeadZone": 45,
+          "cameraResponse": 8,
+          "fallDistance": 200,
+          "flapVelocity": 260,
+          "units": "u, s; y increases upward",
+          "baselineClimbSpeed": 260
+        },
+        "hash": "d0c857a3",
+        "fixtures": 9,
+        "results": [
+          {
+            "x": 137.18452786909288,
+            "y": 514.8000000000012,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 507.30000000000126,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 512.3000000000012,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 517.3000000000013,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 522.3000000000012,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 507.30000000000126,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 512.3000000000012,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 517.3000000000013,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          },
+          {
+            "x": 137.18452786909288,
+            "y": 522.3000000000012,
+            "vx": -39.735266849464004,
+            "vy": 130.00000000000054,
+            "target": 135,
+            "dimension": "B",
+            "t": 4.000000000000093
+          }
+        ]
+      }
+    }
+  ]
+}

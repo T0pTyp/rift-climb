@@ -8,6 +8,8 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 ## M8.1 – RIFT MOMENTUM (aktueller Release)
 
+**Separates M8.2-Experiment:** Auf `experiment/m8.2-rift-glide` liegt ein interner Vergleich von Auto-Climb, aktivem RIFT GLIDE und Glide Endless. Kein Merge und kein Produktionsdeployment. Lokal `python -m http.server 8080 --bind 0.0.0.0` starten und `/experiments/rift-glide/` öffnen; auf dem Smartphone dieselbe URL mit der WLAN-IP des PCs verwenden. Parameter, Replay-Nachweise, getrennte Teststatistik und Grenzen: [M8.2-RIFT-GLIDE.md](docs/M8.2-RIFT-GLIDE.md).
+
 Infinity erkennt wiederholt erreichte Höhen und führt erfahrene Spieler schneller
 an bekannte Herausforderungen zurück. **Alle Runs starten weiter bei 0 m.**
 Geschwindigkeit, Arena270, Zielversatz90, Hitbox, Eingaben und Pulse bleiben identisch.

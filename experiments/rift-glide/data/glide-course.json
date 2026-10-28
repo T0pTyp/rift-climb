@@ -1,0 +1,510 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "arenaStyle": "narrow",
+  "id": "flap-glide",
+  "name": "RIFT GLIDE · VERGLEICH",
+  "description": "",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 5661.5,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 5141.5
+  },
+  "objects": [
+    {
+      "id": "part1-left-fin",
+      "type": "obstacle",
+      "x": 0,
+      "w": 75,
+      "h": 14,
+      "y": 627.9000000000002,
+      "dimension": "both"
+    },
+    {
+      "id": "part1-right-fin",
+      "type": "obstacle",
+      "x": 245,
+      "w": 25,
+      "h": 14,
+      "y": 822.9000000000007,
+      "dimension": "both"
+    },
+    {
+      "id": "part2-rise-ledge",
+      "type": "obstacle",
+      "x": 105,
+      "w": 165,
+      "h": 14,
+      "y": 1202.5000000000002,
+      "dimension": "both"
+    },
+    {
+      "id": "part2-return-ledge",
+      "type": "obstacle",
+      "x": 0,
+      "w": 90,
+      "h": 14,
+      "y": 1267.5000000000005,
+      "dimension": "both"
+    },
+    {
+      "id": "part3-red-gate",
+      "type": "obstacle",
+      "x": 0,
+      "w": 270,
+      "h": 14,
+      "y": 1647.7500000000002,
+      "dimension": "red"
+    },
+    {
+      "id": "part3-left-spur",
+      "type": "obstacle",
+      "x": 0,
+      "w": 60,
+      "h": 14,
+      "y": 1792.7000000000005,
+      "dimension": "both"
+    },
+    {
+      "id": "part4-blue-gate",
+      "type": "obstacle",
+      "x": 0,
+      "w": 270,
+      "h": 14,
+      "y": 2224.9500000000003,
+      "dimension": "blue"
+    },
+    {
+      "id": "part4-right-spur",
+      "type": "obstacle",
+      "x": 245,
+      "w": 25,
+      "h": 14,
+      "y": 2372.500000000001,
+      "dimension": "both"
+    },
+    {
+      "id": "part5-seal",
+      "type": "seal",
+      "x": 0,
+      "w": 270,
+      "h": 14,
+      "y": 2759.9,
+      "openSec": 0.8
+    },
+    {
+      "id": "part6-saw",
+      "type": "saw",
+      "x": 68,
+      "y": 3266.9,
+      "w": 32,
+      "h": 32,
+      "dimension": "red",
+      "axis": "x",
+      "amplitude": 12,
+      "period": 4,
+      "phase": 0.5,
+      "spin": 4,
+      "pulseBreakable": true
+    },
+    {
+      "id": "part7-mine",
+      "type": "mine",
+      "x": 190,
+      "y": 3797.3,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "activationRadius": 110,
+      "chargeSec": 1.2,
+      "blastRadius": 65,
+      "blastSec": 0.22
+    },
+    {
+      "id": "part8-laser",
+      "type": "laser",
+      "x": 159,
+      "y": 4377.1,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "axis": "none",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0,
+      "startAngle": 180,
+      "endAngle": 165,
+      "sweepPeriod": 3,
+      "length": 160,
+      "beamWidth": 10,
+      "warnSec": 1.2,
+      "activeSec": 0.3,
+      "offSec": 2,
+      "disableSec": 1
+    },
+    {
+      "id": "part9-seal",
+      "type": "seal",
+      "x": 0,
+      "w": 270,
+      "h": 14,
+      "y": 4821.7,
+      "openSec": 0.8
+    },
+    {
+      "id": "part9-saw",
+      "type": "saw",
+      "x": 190,
+      "y": 4962.1,
+      "w": 28,
+      "h": 28,
+      "dimension": "red",
+      "axis": "none",
+      "amplitude": 0,
+      "period": 3,
+      "phase": 0,
+      "spin": 4,
+      "pulseBreakable": true
+    },
+    {
+      "id": "part9-exit-fin",
+      "type": "obstacle",
+      "x": 0,
+      "w": 75,
+      "h": 14,
+      "y": 5029.700000000001,
+      "dimension": "both"
+    }
+  ],
+  "theme": "core",
+  "music": "first-pulse",
+  "replay": {
+    "taps": [
+      {
+        "t": 0.25,
+        "dir": 1
+      },
+      {
+        "t": 0.75,
+        "dir": -1
+      },
+      {
+        "t": 1.25,
+        "dir": 1
+      },
+      {
+        "t": 1.75,
+        "dir": -1
+      },
+      {
+        "t": 2.25,
+        "dir": 1
+      },
+      {
+        "t": 2.75,
+        "dir": -1
+      },
+      {
+        "t": 3.25,
+        "dir": 1
+      },
+      {
+        "t": 3.75,
+        "dir": -1
+      },
+      {
+        "t": 4.25,
+        "dir": 1
+      },
+      {
+        "t": 4.75,
+        "dir": -1
+      },
+      {
+        "t": 5.25,
+        "dir": 1
+      },
+      {
+        "t": 5.75,
+        "dir": -1
+      },
+      {
+        "t": 6.25,
+        "dir": 1
+      },
+      {
+        "t": 6.75,
+        "dir": -1
+      },
+      {
+        "t": 7.25,
+        "dir": 1
+      },
+      {
+        "t": 7.75,
+        "dir": -1
+      },
+      {
+        "t": 8.25,
+        "dir": -1
+      },
+      {
+        "t": 8.75,
+        "dir": 1
+      },
+      {
+        "t": 9.25,
+        "dir": -1
+      },
+      {
+        "t": 9.75,
+        "dir": 1
+      },
+      {
+        "t": 10.25,
+        "dir": 1
+      },
+      {
+        "t": 10.75,
+        "dir": -1
+      },
+      {
+        "t": 11.25,
+        "dir": 1
+      },
+      {
+        "t": 11.75,
+        "dir": -1
+      },
+      {
+        "t": 12.25,
+        "dir": 1
+      },
+      {
+        "t": 12.65,
+        "dir": -1
+      },
+      {
+        "t": 13.25,
+        "dir": 1
+      },
+      {
+        "t": 13.75,
+        "dir": -1
+      },
+      {
+        "t": 14.25,
+        "dir": 1
+      },
+      {
+        "t": 14.75,
+        "dir": -1
+      },
+      {
+        "t": 15.25,
+        "dir": 1
+      },
+      {
+        "t": 15.75,
+        "dir": -1
+      },
+      {
+        "t": 16.25,
+        "dir": 1
+      },
+      {
+        "t": 16.85,
+        "dir": -1
+      },
+      {
+        "t": 17.25,
+        "dir": 1
+      },
+      {
+        "t": 17.75,
+        "dir": -1
+      },
+      {
+        "t": 18.25,
+        "dir": 1
+      },
+      {
+        "t": 18.75,
+        "dir": -1
+      },
+      {
+        "t": 19.25,
+        "dir": 1
+      },
+      {
+        "t": 19.75,
+        "dir": -1
+      },
+      {
+        "t": 20.25,
+        "dir": 1
+      },
+      {
+        "t": 20.75,
+        "dir": -1
+      },
+      {
+        "t": 21.15,
+        "dir": 1
+      },
+      {
+        "t": 21.75,
+        "dir": -1
+      },
+      {
+        "t": 22.25,
+        "dir": 1
+      },
+      {
+        "t": 22.75,
+        "dir": -1
+      },
+      {
+        "t": 23.25,
+        "dir": 1
+      },
+      {
+        "t": 23.75,
+        "dir": -1
+      },
+      {
+        "t": 24.25,
+        "dir": -1
+      },
+      {
+        "t": 24.75,
+        "dir": 1
+      },
+      {
+        "t": 25.25,
+        "dir": -1
+      },
+      {
+        "t": 25.75,
+        "dir": 1
+      },
+      {
+        "t": 26.25,
+        "dir": 1
+      },
+      {
+        "t": 26.75,
+        "dir": -1
+      },
+      {
+        "t": 27.25,
+        "dir": 1
+      },
+      {
+        "t": 27.75,
+        "dir": -1
+      },
+      {
+        "t": 28.25,
+        "dir": 1
+      },
+      {
+        "t": 28.75,
+        "dir": -1
+      },
+      {
+        "t": 29.25,
+        "dir": 1
+      },
+      {
+        "t": 29.85,
+        "dir": -1
+      },
+      {
+        "t": 30.25,
+        "dir": 1
+      },
+      {
+        "t": 30.75,
+        "dir": -1
+      },
+      {
+        "t": 31.25,
+        "dir": 1
+      },
+      {
+        "t": 31.75,
+        "dir": -1
+      },
+      {
+        "t": 32.25,
+        "dir": -1
+      },
+      {
+        "t": 32.75,
+        "dir": 1
+      },
+      {
+        "t": 33.25,
+        "dir": -1
+      },
+      {
+        "t": 33.75,
+        "dir": 1
+      },
+      {
+        "t": 34.25,
+        "dir": 1
+      },
+      {
+        "t": 34.75,
+        "dir": -1
+      },
+      {
+        "t": 35.25,
+        "dir": 1
+      },
+      {
+        "t": 35.75,
+        "dir": -1
+      },
+      {
+        "t": 36.25,
+        "dir": 1
+      },
+      {
+        "t": 36.75,
+        "dir": -1
+      },
+      {
+        "t": 37.25,
+        "dir": 1
+      },
+      {
+        "t": 37.75,
+        "dir": -1
+      },
+      {
+        "t": 38.25,
+        "dir": 1
+      },
+      {
+        "t": 38.65,
+        "dir": -1
+      },
+      {
+        "t": 39.25,
+        "dir": 1
+      },
+      {
+        "t": 39.75,
+        "dir": -1
+      }
+    ]
+  }
+}
