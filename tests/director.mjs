@@ -1,132 +1,35 @@
 import assert from 'node:assert/strict';
-import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
-import {performance} from 'node:perf_hooks';
-import {Progression} from '../js/progression.js';
-import {Player} from '../js/player.js';
-import {withInputEvent} from '../js/input-time.js';
-import {EndlessWorld,validateChunkBook,hazardRowGap,INFINITY_MAX_HAZARD_GAP,INFINITY_MAX_HAZARD_GAP_SEC,worldMeters} from '../js/endless.js';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {headlessGame,runReplay,checkChunkPlayability,runEndlessReplay} from '../js/playcheck.js';
+import {validateChunkBook,EndlessWorld,worldMeters,hazardRowGap,INFINITY_MAX_HAZARD_GAP} from '../js/endless.js';
+import {compatible,RiftDirector,directorTier,chunkFingerprint,stateOf,accepts} from '../js/rift-director.js';
+import {INFINITY_BALANCE,difficultyAt,difficultyWeight} from '../js/infinity-balance.js';
+import {infinityClimbY,infinityClimbSpeed,infinityClimbTime,infinitySpaceScale} from '../js/world-units.js';
 import {validateLevelData,serializeLevel} from '../js/level-data.js';
-import {CATEGORIES,compatible,RiftDirector,directorTier,DIRECTOR_BAND_M,accepts,stateOf,chunkFingerprint} from '../js/rift-director.js';
-import {CLIMB_SPEED,SIM_DT} from '../js/config.js';
-import {infinityClimbY,infinityClimbSpeed,infinityClimbTime,infinitySpaceScale,INFINITY_SPEED_MARK_M,METERS_PER_UNIT} from '../js/world-units.js';
-import {makeTrap,trapPose} from '../js/traps.js';
-const book=validateChunkBook(JSON.parse(readFileSync('assets/endless/director.json')));
-let checks=0,pairs=0,entries=0,timing=0;const test=(s,f)=>{f();checks++;console.log('PASS '+s);};
-const memory=()=>{const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),key:i=>[...m.keys()][i],get length(){return m.size;}};};
+import {Progression,ASCENSION_KEY} from '../js/progression.js';
+import {Player} from '../js/player.js';
+import {TrapField,makeTrap,TRAP_DEFAULTS} from '../js/traps.js';
+import {RiftField} from '../js/rift.js';
+const book=validateChunkBook(JSON.parse(readFileSync('assets/endless/director.json'))),report={checks:0,entries:0,timing:0,pairs:0,runs:[],distribution:[]};
+const test=(name,fn)=>{fn();report.checks++;console.log('PASS '+name);};
 function game(seed=37,order=null){const g=headlessGame(book.chunks[0].level);g.debug.autoplay=true;g.startEndless(book,seed,g.storage,order);return g;}
 function play(g,seconds,dt=.2){const end=Math.round(seconds*240);let guard=0;while(g.state==='playing'&&g.stats.steps<end&&guard++<end+1)g.update(Math.min(dt,(end-g.stats.steps)/240));return g;}
-const stageCount=stage=>book.chunks.filter(c=>c.level.chunk.stage===stage).length;
-function threatEnd(level){let t=0;for(const o of level.objects){const y=o.y/CLIMB_SPEED;t=Math.max(t,y+(String(o.id).includes('mill')?o.length/CLIMB_SPEED:0));}return t;}
-function firstHazard(level){return Math.min(...level.objects.map(o=>o.y))/CLIMB_SPEED;}
-test('270/90 actual spring: symmetric movement, immediate retarget, stable walls',()=>{for(const dir of [-1,1]){const p=new Player('narrow');p.impulse(dir);assert.equal(p.x,135);assert.equal(p.dim,'R');p.update(.22,0);assert.ok(Math.abs(p.x-135-dir*85.498)<.02);const x=p.x;p.impulse(-dir);assert.equal(p.x,x);assert.equal(p.dim,'B');for(let i=0;i<240;i++)p.update(1/240,i/240*260);assert.ok(Math.abs(p.x-135)<.001);for(let i=0;i<100;i++){p.impulse(dir);p.update(.05,i*13);assert.ok(p.x>=8&&p.x<=262);}assert.ok(Math.abs(p.x-(dir>0?225:45))<.001);}});
-test('Four blocks, three stages, only lasers and blockades',()=>{
- assert.deepEqual(CATEGORIES,['SLIT','PAIR','LASER','MILL','COMBO']);
- assert.equal(stageCount(0),1);assert.equal(stageCount(1),20);assert.equal(stageCount(2),20);assert.equal(stageCount(3),8);
- assert.equal(book.chunks.filter(c=>c.level.chunk.opening).length,1);
- for(const c of book.chunks){
-  assert.ok(c.level.objects.every(o=>o.type==='obstacle'||o.type==='laser'),c.id);
-  assert.equal(hazardRowGap(c.level).max<=INFINITY_MAX_HAZARD_GAP+1e-6,true,c.id);
-  const times=c.level.objects.map(o=>o.y/CLIMB_SPEED).sort((a,b)=>a-b);
-  for(let i=1;i<times.length;i++)assert.ok(times[i]-times[i-1]<1,c.id);
- }
- assert.equal(INFINITY_MAX_HAZARD_GAP,CLIMB_SPEED*INFINITY_MAX_HAZARD_GAP_SEC);
- const lasers=book.chunks.filter(c=>c.level.chunk.block==='laser'||c.level.chunk.block==='pair-laser');
- for(const c of lasers){const ls=c.level.objects.filter(o=>o.type==='laser');assert.equal(ls.filter(o=>o.dimension==='red').length,2,c.id);assert.equal(ls.filter(o=>o.dimension==='blue').length,2,c.id);assert.ok(ls.every(o=>o.spin),c.id);}
- for(const c of book.chunks.filter(x=>x.level.chunk.block==='mill'||x.level.chunk.block==='slit-mill')){
-  const wings=c.level.objects.filter(o=>String(o.id).includes('mill'));
-  assert.equal(wings.length,4,c.id);assert.equal(new Set(wings.map(o=>o.spin)).size,1);assert.equal(new Set(wings.map(o=>o.y)).size,1);assert.equal(new Set(wings.map(o=>o.x)).size,1);
-  const poses=wings.map(o=>trapPose(makeTrap(o),wings[0].y/CLIMB_SPEED));
-  for(let i=0;i<4;i++){const gap=Math.atan2(Math.sin(poses[(i+1)%4].angle-poses[i].angle),Math.cos(poses[(i+1)%4].angle-poses[i].angle));assert.ok(Math.abs(Math.abs(gap)-Math.PI/2)<1e-6,c.id);}
- }
-});
-test('Every module is certified and every tap keeps a 20 ms corridor',()=>{
- for(const c of book.chunks){const l=c.level,v=validateLevelData(l);assert.ok(v.ok,c.id);assert.deepEqual(JSON.parse(serializeLevel(v.level)),l);const proof=checkChunkPlayability(l);assert.ok(proof.ok,c.id+' '+proof.message);entries+=l.chunk.fixtures.length;assert.equal(proof.certificate.hash,l.chunk.validation.hash);assert.ok(runReplay(l,l.replay.taps).won,c.id);
-  for(let i=0;i<l.replay.taps.length;i++)for(const sign of [-1,1]){const taps=l.replay.taps.map((t,j)=>({...t,t:t.t+(i===j?sign*.02:0)}));if(taps.some((tap,k)=>tap.t<.2||(k&&tap.t-taps[k-1].t<.045)))continue;timing++;assert.ok(runReplay(l,taps).won,c.id+' tap '+i+' '+sign);}}
-});
-test('Joins follow color and the gap after the opening stays under a second',()=>{
- const opening=book.chunks.find(c=>c.level.chunk.opening);
- assert.equal(game().endless.chunks[0].id,opening.id);
- let worst=0;
- for(const a of book.chunks)for(const b of book.chunks){
-  if(a.id===b.id||b.level.chunk.opening)continue;
-  const matches=compatible(a.level.chunk.exit,b.level.chunk.entry);
-  if(!matches){assert.ok(a.level.chunk.exit.dimension!==b.level.chunk.entry.dimension||a.level.chunk.exit.target!==b.level.chunk.entry.target);continue;}
-  assert.equal(a.level.chunk.exit.dimension,b.level.chunk.entry.dimension);
-  const gap=(a.length/CLIMB_SPEED-threatEnd(a.level))+firstHazard(b.level);
-  worst=Math.max(worst,gap);assert.ok(gap<1,`${a.id} → ${b.id} ${gap.toFixed(3)}s`);
-  const g=game(1,[book.chunks.indexOf(a),book.chunks.indexOf(b)]);
-  const entry=a.level.chunk.entry;g.player.reset(entry.target,entry.dimension==='blue'?'B':'R',0);g.player.body.x=(entry.x[0]+entry.x[1])/2;g.player.body.v=0;
-  play(g,(a.length+b.length)/CLIMB_SPEED+.25);assert.equal(g.state,'playing',`${a.id} → ${b.id} ${g.killer?.o?.id||''}`);pairs++;
- }
- assert.ok(worst<.99);
-});
-test('Contracts reject a different color, lane or clearance and still accept a real join',()=>{
- const pair=book.chunks.find(c=>c.level.chunk.block==='pair'),next=book.chunks.find(c=>c.id!==pair.id&&compatible(pair.level.chunk.exit,c.level.chunk.entry));
- assert.ok(compatible(pair.level.chunk.exit,next.level.chunk.entry));
- assert.equal(compatible(pair.level.chunk.exit,{...next.level.chunk.entry,dimension:pair.level.chunk.exit.dimension==='blue'?'red':'blue'}),false);
- assert.equal(compatible(pair.level.chunk.exit,{...next.level.chunk.entry,target:pair.level.chunk.exit.target===0?2:0}),false);
- assert.equal(compatible({...pair.level.chunk.exit,clearSec:.9},next.level.chunk.entry),false);
-});
-test('Certificates survive normalized JSON roundtrips; stale definitions fail',()=>{for(const c of book.chunks)assert.equal(chunkFingerprint(JSON.parse(serializeLevel(validateLevelData(c.level).level))),c.level.chunk.validation.hash);const b=structuredClone(book);b.chunks[0].level.objects[0].x++;assert.throws(()=>validateChunkBook(b));});
-test('A repeated recent module falls back to another module of the same color',()=>{const entrants=book.chunks.filter(c=>!c.level.chunk.opening&&c.level.chunk.entry.dimension==='red'&&c.level.chunk.entry.target===0);const source=book.chunks.find(c=>c.level.chunk.exit.dimension==='red'&&c.level.chunk.exit.target===0);const pool=entrants.slice(0,3);const d=new RiftDirector({chunks:pool},()=>.2);d.history=pool.map(c=>({id:c.id,category:c.level.chunk.category}));d.previous=source.level.chunk.exit;const chosen=d.select(0);assert.equal(chosen.level.chunk.entry.dimension,'red');assert.equal(d.fallbacks,1);});
-test('Stage 1 holds through 1499 m, stage 2 opens at 1500 m, stage 3 at 3000 m',()=>{
- const yOf=m=>m/METERS_PER_UNIT;
- const stages=m=>[...new Set(book.chunks.filter(c=>!c.level.chunk.opening&&c.level.chunk.tier<=directorTier(yOf(m))).map(c=>c.level.chunk.stage))].sort((a,b)=>a-b);
- assert.equal(DIRECTOR_BAND_M,1500);
- assert.deepEqual(stages(1499),[1]);
- assert.deepEqual(stages(1499.9),[1]);
- assert.deepEqual(stages(1500),[1,2]);
- assert.deepEqual(stages(2999),[1,2]);
- assert.deepEqual(stages(3000),[1,2,3]);
- assert.deepEqual([0,1499,1500,3000,4500,6000,7500,1e9].map(m=>directorTier(yOf(m))),[0,0,1,2,3,4,5,5]);
- const d=new RiftDirector(book,()=>.17);d.select(0);
- for(let i=0;i<24;i++)assert.ok(d.select(yOf(1499)).level.chunk.stage<2);
- const late=new RiftDirector(book,()=>.99);late.select(0);assert.equal(late.select(yOf(1500)).level.chunk.stage,2);
- const combo=new RiftDirector(book,()=>.99);combo.select(0);assert.equal(combo.select(yOf(3000)).level.chunk.stage,3);
- assert.ok(book.chunks.some(c=>c.level.chunk.stage===1&&c.level.chunk.tier<=directorTier(yOf(3000))));
-});
-test('Climb speed is exact under 8000 m and rises continuously after, with reaction time held',()=>{
- assert.equal(CLIMB_SPEED,260);assert.equal(CLIMB_SPEED*METERS_PER_UNIT,26);assert.equal(INFINITY_SPEED_MARK_M,8000);
- const under=7999/METERS_PER_UNIT;
- assert.equal(infinityClimbSpeed(under),CLIMB_SPEED);assert.equal(infinitySpaceScale(under),1);
- assert.equal(infinityClimbY(under/CLIMB_SPEED),under);assert.equal(infinityClimbTime(under),under/CLIMB_SPEED);
- assert.equal(infinityClimbSpeed(INFINITY_SPEED_MARK_M/METERS_PER_UNIT),CLIMB_SPEED);
- const tMark=(INFINITY_SPEED_MARK_M/METERS_PER_UNIT)/CLIMB_SPEED;
- assert.equal(infinityClimbY(tMark),tMark*CLIMB_SPEED);
- const dt=1/240,v0=(infinityClimbY(tMark+dt)-infinityClimbY(tMark))/dt;
- assert.ok(Math.abs(v0-CLIMB_SPEED)<.05);
- const tOver=tMark+40,yOver=infinityClimbY(tOver);
- assert.ok(yOver>tOver*CLIMB_SPEED);assert.ok(infinityClimbSpeed(yOver)>CLIMB_SPEED);
- assert.ok(Math.abs(infinityClimbTime(yOver)-tOver)<1e-9);
- const plain=game(1);play(plain,30);assert.equal(plain.y,plain.t*CLIMB_SPEED);
- const high=new EndlessWorld(book,11);const earlyChunk=high.chunks.find(c=>c.origin<80000);
- const src=book.chunks.find(c=>c.id===earlyChunk.id);
- assert.equal(earlyChunk.end-earlyChunk.origin,src.length);
- high.nextY=100000;high.ensure(100000);
- const scaled=high.chunks.filter(c=>c.origin>=100000);
- assert.ok(scaled.length>0);
- for(const c of scaled){const authored=book.chunks.find(s=>s.id===c.id),factor=infinitySpaceScale(c.origin);
-  assert.ok(Math.abs((c.end-c.origin)-authored.length*factor)<1e-6,c.id);
-  assert.ok(Math.abs((infinityClimbTime(c.end)-c.t0)-authored.length/CLIMB_SPEED)<.002,c.id);
- }
- const live=game(1),store=memory(),progress=new Progression({storage:store});live.storage=progress.infinityStorage(1);live.restart();play(live,tMark+12);assert.equal(live.state,'playing',live.killer?.o?.id||'');
- assert.ok(live.y>live.t*CLIMB_SPEED);assert.ok(worldMeters(live.y)>8000);
- assert.equal(progress.data.endless.bestHeight,worldMeters(live.y));
- assert.ok(progress.data.endless.bestHeight>worldMeters(live.t*CLIMB_SPEED));
- const climbed=live.endless.chunks.find(c=>c.origin>80000);
- assert.ok(climbed);assert.ok(climbed.end-climbed.origin>book.chunks.find(s=>s.id===climbed.id).length);
-});
-test('Opt-in complete seed/input replay reproduces real continuous state; bad records fail',()=>{const g=game();g.debug.trace=true;assert.equal(g.recordEndlessInputs(),true);play(g,24);const record=g.exportEndlessReplay(),r=runEndlessReplay(book,record);assert.ok(r.ok);assert.equal(r.state,'playing');assert.equal(r.t,g.t);assert.equal(r.x,g.player.x);assert.equal(r.dimension,g.player.dim);assert.equal(g.recordEndlessInputs(),false);assert.equal(runEndlessReplay(book,{...record,truncated:true}).ok,false);g.restart();assert.equal(g.exportEndlessReplay(),null);});
-test('Accepted event times preserve queued contacts in one simulation tick',()=>{const g=game();g.debug.trace=true;g.recordEndlessInputs();const now=performance.now();withInputEvent(now-80,()=>g.press(1));withInputEvent(now-20,()=>g.press(-1));play(g,.3);const record=g.exportEndlessReplay(),r=runEndlessReplay(book,record);assert.equal(record.taps[0].t,record.taps[1].t);assert.ok(r.ok);assert.equal(r.pulses,2);});
-for(const seed of [1,37])test('Regular-input climb stays alive for seed '+seed,()=>{const g=game(seed);play(g,80);assert.equal(g.state,'playing',JSON.stringify({seed,t:g.t,killer:g.killer?.o?.id}));assert.ok(g.y*.1>1800);});
-test('5/30/60/144 FPS have identical simulated states and ordered generation',()=>{let ref;for(const fps of [5,30,60,144]){const g=game(37);play(g,36,1/fps);assert.equal(g.state,'playing');const state={x:g.player.x,vx:g.player.vx,dim:g.player.dim,t:g.t,impulses:g.stats.impulses,ids:g.endless.director.history.map(c=>c.id)};if(ref)assert.deepEqual(state,ref);else ref=state;}});
-test('Generation stays seeded and does not repeat a module three times',()=>{
- const a=new EndlessWorld(book,37),b=new EndlessWorld(book,37);const seen=new Set();let repeat=0,last=null,maxChunks=0;
- for(let i=0;i<4000;i++){a.ensure(i*700);b.ensure(i*700);assert.deepEqual(a.chunks.map(c=>c.id),b.chunks.map(c=>c.id));maxChunks=Math.max(maxChunks,a.chunks.length);for(const c of a.chunks)if(!seen.has(c.index)){seen.add(c.index);repeat=c.id===last?repeat+1:1;assert.ok(repeat<3,c.id);last=c.id;}}
- assert.ok(maxChunks<=30);
-});
-test('Pause/retry clears inputs, traps, waves, time; same seed restarts exactly',()=>{const g=game();play(g,12);const old=g.t;g.pause();g.update(.2);assert.equal(g.t,old);g.resume();g.restart();assert.equal(g.t,0);assert.equal(g.player.dim,'B');assert.equal(g.rift.emitted,0);assert.deepEqual(g.endless.chunks.map(c=>c.id),game().endless.chunks.map(c=>c.id));});
-test('Central storage persists heights / isolates normal and editor statistics',()=>{const store=memory(),p=new Progression({storage:store}),g=game();g.storage=p.infinityStorage(37);g.restart();play(g,20);g.saveProgress(true);const height=p.data.endless.bestHeight;assert.ok(height>=500);assert.equal(p.data.endless.attempts,1);assert.equal(p.summary().totalNormalAttempts,0);assert.equal(p.summary().goldMedals,0);assert.equal(new Progression({storage:store}).data.endless.bestHeight,height);const before=JSON.stringify(p.data),isolated=new Progression({storage:store,isolated:true}),i=game();i.storage=isolated.infinityStorage(37);i.restart();play(i,20);i.saveProgress(true);assert.equal(JSON.stringify(new Progression({storage:store}).data),before);});
-mkdirSync('test-results/m79',{recursive:true});writeFileSync('test-results/m79/director.json',JSON.stringify({checks,pairs,entries,timing,stages:{opening:stageCount(0),easy:stageCount(1),tight:stageCount(2),combo:stageCount(3)}},null,2));
-console.log(JSON.stringify({checks,pairs,entries,timing,stages:{opening:stageCount(0),easy:stageCount(1),tight:stageCount(2),combo:stageCount(3)}}));
+const memory=()=>{const m=new Map();return{getItem:k=>m.get(k)||null,setItem:(k,v)=>m.set(k,v),key:i=>[...m.keys()][i],get length(){return m.size;}};};
+test('270/90 continuous spring unchanged: mirrored input, stable walls, radius 8',()=>{for(const dir of [-1,1]){const p=new Player('narrow');assert.equal(p.arena.width,270);assert.equal(p.hitRadius,8);p.impulse(dir);assert.equal(p.x,135);assert.equal(p.dim,'R');p.update(.22,0);assert.ok(Math.abs(p.x-135-dir*85.498)<.02);p.update(1,260);assert.ok(Math.abs(p.x-135-dir*90)<.001);for(let i=0;i<100;i++){p.impulse(dir);p.update(.05,0);assert.ok(p.x>=8&&p.x<=262);}}});
+test('20 authored tasks / 39 proven variants / seven categories / no new trap types',()=>{assert.equal(new Set(book.chunks.map(c=>c.level.chunk.pattern)).size,20);assert.equal(book.chunks.length,39);assert.equal(new Set(book.chunks.map(c=>c.level.chunk.category)).size,7);assert.equal(book.chunks.filter(c=>c.level.chunk.opening).length,1);for(const c of book.chunks){assert.ok(c.level.objects.every(o=>['obstacle','seal','saw','mine','laser'].includes(o.type)));assert.ok(hazardRowGap(c.level).max<=INFINITY_MAX_HAZARD_GAP+1e-6);}});
+test('Every variant: nine actual continuous entry fixtures, roundtrip, ±40ms per tap',()=>{for(const c of book.chunks){const l=c.level,v=validateLevelData(l);assert.ok(v.ok,c.id);assert.deepEqual(JSON.parse(serializeLevel(v.level)),l);assert.equal(chunkFingerprint(l),l.chunk.validation.hash);const p=checkChunkPlayability(l);assert.ok(p.ok,c.id+' '+p.message);report.entries+=l.chunk.fixtures.length;for(let i=0;i<l.replay.taps.length;i++)for(const sign of [-1,1]){const taps=l.replay.taps.map((t,j)=>({...t,t:t.t+(j===i?sign*.04:0)}));assert.ok(runReplay(l,taps).won,c.id+' input '+i);report.timing++;}}});
+test('Every ordered certified join uses real physics and collisions; no reset at seams',()=>{for(let a=0;a<book.chunks.length;a++)for(let b=0;b<book.chunks.length;b++){if(book.chunks[b].level.chunk.opening)continue;assert.ok(compatible(book.chunks[a].level.chunk.exit,book.chunks[b].level.chunk.entry));const g=game(1,[a,b]);play(g,(book.chunks[a].length+book.chunks[b].length)/260+.1);assert.equal(g.state,'playing',`${a}->${b}: ${g.killer?.o?.id}`);report.pairs++;}});
+test('No-input run dies on an understandable hazard; Pulse hits are real',()=>{const g=game();g.debug.autoplay=false;g.autoplayQueue=[];play(g,30);assert.equal(g.state,'dying');assert.ok(g.killer);for(const c of book.chunks.filter(c=>c.level.chunk.category==='PULSE'))assert.equal(runReplay(c.level,[]).won,false);});
+test('Opening permits actual exploratory taps on either half without surprise death',()=>{const l=book.chunks.find(c=>c.level.chunk.opening).level;for(const t of [.2,.4,.6,1.2,1.6])for(const dir of [-1,1])for(const n of [1,2])assert.ok(runReplay(l,Array.from({length:n},(_,i)=>({t:t+i*.15,dir}))).won);});
+test('New Infinity saws break once only in correct dimension, legacy behavior preserved',()=>{for(const dim of ['B','R']){const o=makeTrap({id:'pulse-saw',type:'saw',x:82,y:100,w:36,h:36,...TRAP_DEFAULTS.saw,axis:'none',dimension:'blue',pulseBreakable:true}),f=new TrapField([o]),r=new RiftField([]);r.emit(106,60,0,'#fff',dim);f.step(.1,1/240,{x:200,y:100,dim:'R'},200,100,r.pulses);assert.equal(o.state,dim==='B'?'destroyed':'idle');assert.equal(f.events,dim==='B'?1:0);f.step(.11,1/240,{x:106,y:100,dim:'B'},106,100,r.pulses);assert.equal(f.events,dim==='B'?1:0);f.reset();assert.equal(o.state,'idle');}});
+test('Continuous seven-zone curve: exact boundaries, zero discontinuity, fixed ceiling',()=>{assert.deepEqual(INFINITY_BALANCE.zones,[0,150,400,900,1600,2400,3500]);for(const [i,m] of INFINITY_BALANCE.zones.entries()){assert.equal(directorTier(m*10),i);assert.ok(Math.abs(difficultyAt(m-.001)-difficultyAt(m+.001))<.0001);if(i)assert.equal(difficultyWeight(i,m),0);}assert.equal(difficultyAt(4400),7);assert.equal(difficultyAt(1e9),7);assert.equal(infinityClimbSpeed(1e10),260);assert.equal(infinitySpaceScale(1e10),1);for(const t of [0,60,400,1000])assert.equal(infinityClimbTime(infinityClimbY(t)),t);});
+test('Selection distribution over 40 seeds at every zone boundary is smooth',()=>{for(const height of [0,149,150,151,399,400,401,899,900,901,1599,1600,1601,2399,2400,2401,3499,3500,3501,4400,10000]){let sum=0,n=0,dynamic=0;const categories={};for(let seed=1;seed<=40;seed++){const w=new EndlessWorld(book,seed),d=w.director;d.reset();d.select(0);for(let i=0;i<60;i++){const c=d.select(height*10),m=c.level.chunk;assert.ok(difficultyWeight(m.tier,height)>0);assert.ok(!(height<=400&&['saw','mine','laser'].some(type=>c.level.objects.some(o=>o.type===type))));sum+=m.tier;n++;dynamic+=c.level.objects.some(o=>['saw','mine','laser'].includes(o.type));categories[m.category]=(categories[m.category]||0)+1;}}report.distribution.push({height,n,meanTier:sum/n,dynamicRate:dynamic/n,categories});}for(const m of [150,400,900,1600,2400,3500]){const a=report.distribution.find(x=>x.height===m-1),b=report.distribution.find(x=>x.height===m+1);assert.ok(Math.abs(a.meanTier-b.meanTier)<.035,JSON.stringify({a,b}));}});
+test('Bounded history prevents repeated tasks; recovery occurs after four non-FLOW tasks',()=>{const w=new EndlessWorld(book,37),d=w.director;d.reset();d.select(0);let nonFlow=0;for(let i=0;i<1000;i++){const before=d.history.slice(-3),c=d.select(100000),m=c.level.chunk;assert.ok(!before.some(h=>h.pattern===m.pattern));nonFlow=m.category==='FLOW'?0:nonFlow+1;assert.ok(nonFlow<=4);}assert.equal(d.history.length,12);});
+test('Safe FLOW fallback handles a fully recent compatible pool',()=>{const flow=book.chunks.filter(c=>c.level.chunk.category==='FLOW'&&!c.level.chunk.opening).slice(0,2),d=new RiftDirector({...book,chunks:flow},()=>.4);d.previous=flow[0].level.chunk.exit;d.history=flow.map(c=>({id:c.id,pattern:c.level.chunk.pattern,category:'FLOW'}));const c=d.select(0);assert.equal(c.level.chunk.category,'FLOW');assert.equal(d.fallbacks,1);});
+test('Stale geometry or physics certificate rejected before run',()=>{for(const change of [b=>b.chunks[0].level.objects[0].x++,b=>b.chunks[0].level.chunk.validation.proof.config.arenaStep++,b=>b.chunks.shift()]){const b=structuredClone(book);change(b);assert.throws(()=>validateChunkBook(b));}const m=book.chunks[0].level.chunk;assert.equal(compatible({...m.exit,dimension:'red'},m.entry),false);assert.equal(accepts(m.entry,{...stateOf(game()),vx:100}),false);});
+for(const seed of [1,37,12345,0xffffffff])test('Real regular-input 10000m survival, seed '+seed,()=>{const g=game(seed),milestones=[];for(const height of [500,1000,2500,5000,10000]){play(g,(height+1)/26);assert.equal(g.state,'playing',g.killer?.o?.id);assert.ok(worldMeters(g.y)>=height);milestones.push({height:worldMeters(g.y),t:g.t,generated:g.endless.generated,loaded:g.endless.chunks.length,objects:g.endless.maxObjects});assert.ok(g.endless.chunks.length<=9);assert.ok(g.endless.maxObjects<160);}report.runs.push({seed,milestones});});
+test('5/30/60/144 FPS produce identical states, dimensions, pulse counts and chunks',()=>{let ref;for(const fps of [5,30,60,144]){const g=game(37);play(g,80,1/fps);assert.equal(g.state,'playing');const s={x:g.player.x,vx:g.player.vx,t:g.t,dim:g.player.dim,pulses:g.rift.emitted,chunks:g.endless.chunks.map(c=>c.id)};if(ref)assert.deepEqual(s,ref);else ref=s;}});
+test('Technical generator stress: 10000 chunks, deterministic seeds, bounded live objects',()=>{const a=new EndlessWorld(book,1),b=new EndlessWorld(book,1);let max=0;while(a.generated<10000){a.ensure(a.nextY);b.ensure(b.nextY);assert.deepEqual(a.chunks.map(c=>c.id),b.chunks.map(c=>c.id));max=Math.max(max,a.chunks.length);}assert.ok(max<=9);report.generatorStress={generated:a.generated,maxLoaded:max,note:'Generation only, not gameplay survival'};});
+test('Seed/input replay replays actual continuous run; retry and pause reset safely',()=>{const g=game();g.debug.trace=true;g.recordEndlessInputs();play(g,30);const r=runEndlessReplay(book,g.exportEndlessReplay());assert.ok(r.ok&&r.state==='playing');assert.equal(r.x,g.player.x);g.pause();const t=g.t;g.update(.2);assert.equal(g.t,t);g.resume();g.restart();assert.equal(g.t,0);assert.equal(g.rift.emitted,0);assert.equal(g.player.dim,'B');assert.equal(g.player.x,135);assert.ok(g.traps.traps.every(o=>o.state==='idle'));});
+test('Existing heights/campaign preserved; deaths once; reload; isolation; blocked storage',()=>{const storage=memory();storage.setItem(ASCENSION_KEY,JSON.stringify({schemaVersion:2,endless:{bestHeight:12345,attempts:8,lastHeight:99},levels:{'first-pulse':{best:75,attempts:12}},cosmetics:{selectedSkinId:'original'}}));const p=new Progression({storage}),g=game();assert.equal(p.data.endless.bestHeight,12345);assert.equal(p.data.endless.deaths,0);g.storage=p.infinityStorage(37);g.restart();play(g,20);g.die(g.obstacles[0]);g.die(g.obstacles[0]);assert.equal(p.data.endless.attempts,9);assert.equal(p.data.endless.deaths,1);assert.equal(p.data.endless.bestHeight,12345);assert.equal(p.level('first-pulse').best,75);const restored=new Progression({storage});assert.equal(restored.data.endless.deaths,1);const saved=JSON.stringify(p.data),isolated=new Progression({storage,isolated:true});const run=isolated.infinityStorage(1).beginRun();isolated.finish(run,20,0,'death');assert.equal(JSON.stringify(new Progression({storage}).data),saved);const bad=new Progression({storage:{getItem(){throw Error('blocked');},setItem(){throw Error('blocked');}}});assert.ok(bad.warning);});
+mkdirSync('test-results/m8',{recursive:true});writeFileSync('test-results/m8/director.json',JSON.stringify(report,null,2));console.log(JSON.stringify({...report,distribution:report.distribution.map(({height,meanTier,dynamicRate})=>({height,meanTier,dynamicRate}))}));

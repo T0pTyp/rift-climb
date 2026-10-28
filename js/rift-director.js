@@ -1,11 +1,11 @@
 // Prepared contracts, not a runtime pathfinder. Coordinates/velocities stay continuous.
-export const CATEGORIES=['SLIT','PAIR','LASER','MILL','COMBO'];
-export const DIRECTOR_TIERS=['FLOW','PHASE FLOW','MECHANICAL','VOLTAGE','CONVERGENCE','INFINITY'];
+import {INFINITY_BALANCE,difficultyAt,difficultyWeight} from './infinity-balance.js';
+export const CATEGORIES=['FLOW','PHASE','PULSE','SAW','VOLTAGE','PRECISION','COMBO','SLIT','PAIR','LASER','MILL'];
+export const DIRECTOR_TIERS=INFINITY_BALANCE.labels;
 export const ZONES=['CYAN RIFT TOWER','FRACTURED DIMENSION','MECHANICAL CORE','VOLTAGE FACILITY','RIFT STORM','INFINITY CORE'];
-// Six bands, 1500 m apart. Content tiers are 0, 1 and 2: stage 1 until 1500 m,
-// stage 2 from 1500 m, stage 3 from 3000 m. Later bands only reweight.
+// Retained legacy export for external tools. Active heights live in infinity-balance.js.
 export const DIRECTOR_BAND_M=1500;
-export const directorTier=y=>{const band=Math.floor((y*.1+1e-6)/DIRECTOR_BAND_M);return band<0?0:band>5?5:band;};
+export const directorTier=y=>Math.min(6,Math.floor(difficultyAt(Math.max(0,y*.1))));
 export const zoneAt=t=>ZONES[Math.floor(t/32)%ZONES.length];
 export const stateOf=g=>({x:g.player.x,vx:g.player.vx,target:g.player.lane,dimension:g.player.dim==='B'?'blue':'red',lastDir:g.player.lastDir,impulse:g.player.dashing?'active':'idle'});
 export function accepts(contract,state) {
@@ -29,8 +29,9 @@ export function chunkFingerprint(level) {
 export const directorSignature=book=>chunkFingerprint({revision:book.revision,chunks:book.chunks.map(c=>({id:c.id,hash:chunkFingerprint(c.level)}))});
 export class RiftDirector {
  constructor(book,random){this.book=book;this.random=random;this.reset();}
- reset(){this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;}
+ reset(){this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;this.sinceRecovery=0;}
  select(y) {
+  if(this.book.balance==='infinity-first')return this.selectInfinity(y);
   const tier=directorTier(y),last=this.history.at(-1),recent=this.history.slice(-3),challenge=y*.1>=this.nextChallenge;
   if(!this.history.length){
    const opening=this.book.chunks.find(c=>c.level.chunk.opening);
@@ -52,4 +53,18 @@ export class RiftDirector {
   if(m.challenge)this.nextChallenge=y*.1+450+this.random()*400;
   return chosen;
  }
+ selectInfinity(y){
+  const meters=y*.1,last=this.history.at(-1),recent=this.history.slice(-INFINITY_BALANCE.recentPatterns);
+  if(!this.history.length){const c=this.book.chunks.find(c=>c.level.chunk.opening);this.remember(c);return c;}
+  const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk,ok=!m.opening&&m.validation.status==='verified'&&compatible(this.previous,m.entry)&&difficultyWeight(m.tier,meters)>0;if(!ok)this.rejected++;return ok;});
+  const recovery=this.sinceRecovery>=INFINITY_BALANCE.recoveryEvery;
+  let pool=eligible.filter(c=>!recent.some(h=>h.pattern===c.level.chunk.pattern)&&(!recovery||c.level.chunk.category==='FLOW'));
+  if(!pool.length){this.fallbacks++;pool=eligible.filter(c=>c.level.chunk.category==='FLOW');}
+  if(!pool.length)throw Error('RIFT DIRECTOR: kein zertifizierter FLOW-Anschluss');
+  const weights=pool.map(c=>{const m=c.level.chunk,freq=this.history.filter(h=>h.pattern===m.pattern).length;return difficultyWeight(m.tier,meters)/(1+freq*2)*(last?.category===m.category ? .55 : 1);});
+  let roll=this.random()*weights.reduce((a,b)=>a+b,0),chosen=pool.at(-1);
+  for(let i=0;i<pool.length;i++){roll-=weights[i];if(roll<0){chosen=pool[i];break;}}
+  this.remember(chosen);return chosen;
+ }
+ remember(c){const m=c.level.chunk;this.previous=m.exit;this.history.push({id:c.id,pattern:m.pattern,category:m.category,actions:m.actions,family:m.hazardFamily});if(this.history.length>12)this.history.shift();this.sinceRecovery=m.category==='FLOW'?0:this.sinceRecovery+1;}
 }

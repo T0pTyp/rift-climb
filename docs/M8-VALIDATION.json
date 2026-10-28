@@ -1,0 +1,433 @@
+{
+  "checks": 20,
+  "entries": 351,
+  "timing": 288,
+  "pairs": 1482,
+  "runs": [
+    {
+      "seed": 1,
+      "milestones": [
+        {
+          "height": 501,
+          "t": 19.27083333333256,
+          "generated": 10,
+          "loaded": 6,
+          "objects": 38
+        },
+        {
+          "height": 1001,
+          "t": 38.50000000000367,
+          "generated": 16,
+          "loaded": 7,
+          "objects": 42
+        },
+        {
+          "height": 2500,
+          "t": 96.19166666666135,
+          "generated": 30,
+          "loaded": 6,
+          "objects": 50
+        },
+        {
+          "height": 5000,
+          "t": 192.34583333324056,
+          "generated": 53,
+          "loaded": 5,
+          "objects": 65
+        },
+        {
+          "height": 10001,
+          "t": 384.654166666399,
+          "generated": 98,
+          "loaded": 7,
+          "objects": 74
+        }
+      ]
+    },
+    {
+      "seed": 37,
+      "milestones": [
+        {
+          "height": 501,
+          "t": 19.27083333333256,
+          "generated": 11,
+          "loaded": 7,
+          "objects": 41
+        },
+        {
+          "height": 1001,
+          "t": 38.50000000000367,
+          "generated": 15,
+          "loaded": 5,
+          "objects": 41
+        },
+        {
+          "height": 2500,
+          "t": 96.19166666666135,
+          "generated": 29,
+          "loaded": 5,
+          "objects": 53
+        },
+        {
+          "height": 5000,
+          "t": 192.34583333324056,
+          "generated": 53,
+          "loaded": 6,
+          "objects": 72
+        },
+        {
+          "height": 10001,
+          "t": 384.654166666399,
+          "generated": 97,
+          "loaded": 6,
+          "objects": 72
+        }
+      ]
+    },
+    {
+      "seed": 12345,
+      "milestones": [
+        {
+          "height": 501,
+          "t": 19.27083333333256,
+          "generated": 11,
+          "loaded": 7,
+          "objects": 44
+        },
+        {
+          "height": 1001,
+          "t": 38.50000000000367,
+          "generated": 15,
+          "loaded": 6,
+          "objects": 47
+        },
+        {
+          "height": 2500,
+          "t": 96.19166666666135,
+          "generated": 30,
+          "loaded": 5,
+          "objects": 58
+        },
+        {
+          "height": 5000,
+          "t": 192.34583333324056,
+          "generated": 53,
+          "loaded": 5,
+          "objects": 65
+        },
+        {
+          "height": 10001,
+          "t": 384.654166666399,
+          "generated": 98,
+          "loaded": 5,
+          "objects": 72
+        }
+      ]
+    },
+    {
+      "seed": 4294967295,
+      "milestones": [
+        {
+          "height": 501,
+          "t": 19.27083333333256,
+          "generated": 11,
+          "loaded": 7,
+          "objects": 41
+        },
+        {
+          "height": 1001,
+          "t": 38.50000000000367,
+          "generated": 16,
+          "loaded": 6,
+          "objects": 46
+        },
+        {
+          "height": 2500,
+          "t": 96.19166666666135,
+          "generated": 31,
+          "loaded": 7,
+          "objects": 56
+        },
+        {
+          "height": 5000,
+          "t": 192.34583333324056,
+          "generated": 53,
+          "loaded": 5,
+          "objects": 66
+        },
+        {
+          "height": 10001,
+          "t": 384.654166666399,
+          "generated": 96,
+          "loaded": 4,
+          "objects": 69
+        }
+      ]
+    }
+  ],
+  "distribution": [
+    {
+      "height": 0,
+      "n": 2400,
+      "meanTier": 0,
+      "dynamicRate": 0,
+      "categories": {
+        "FLOW": 2400
+      }
+    },
+    {
+      "height": 149,
+      "n": 2400,
+      "meanTier": 0,
+      "dynamicRate": 0,
+      "categories": {
+        "FLOW": 2400
+      }
+    },
+    {
+      "height": 150,
+      "n": 2400,
+      "meanTier": 0,
+      "dynamicRate": 0,
+      "categories": {
+        "FLOW": 2400
+      }
+    },
+    {
+      "height": 151,
+      "n": 2400,
+      "meanTier": 0,
+      "dynamicRate": 0,
+      "categories": {
+        "FLOW": 2400
+      }
+    },
+    {
+      "height": 399,
+      "n": 2400,
+      "meanTier": 0.5075,
+      "dynamicRate": 0,
+      "categories": {
+        "PHASE": 1218,
+        "FLOW": 1182
+      }
+    },
+    {
+      "height": 400,
+      "n": 2400,
+      "meanTier": 0.5075,
+      "dynamicRate": 0,
+      "categories": {
+        "PHASE": 1218,
+        "FLOW": 1182
+      }
+    },
+    {
+      "height": 401,
+      "n": 2400,
+      "meanTier": 0.5075,
+      "dynamicRate": 0,
+      "categories": {
+        "PHASE": 1218,
+        "FLOW": 1182
+      }
+    },
+    {
+      "height": 899,
+      "n": 2400,
+      "meanTier": 1.05625,
+      "dynamicRate": 0.12458333333333334,
+      "categories": {
+        "PULSE": 581,
+        "FLOW": 745,
+        "PHASE": 775,
+        "SAW": 299
+      }
+    },
+    {
+      "height": 900,
+      "n": 2400,
+      "meanTier": 1.05625,
+      "dynamicRate": 0.12458333333333334,
+      "categories": {
+        "PULSE": 581,
+        "FLOW": 745,
+        "PHASE": 775,
+        "SAW": 299
+      }
+    },
+    {
+      "height": 901,
+      "n": 2400,
+      "meanTier": 1.05625,
+      "dynamicRate": 0.12458333333333334,
+      "categories": {
+        "PULSE": 581,
+        "FLOW": 745,
+        "PHASE": 775,
+        "SAW": 299
+      }
+    },
+    {
+      "height": 1599,
+      "n": 2400,
+      "meanTier": 1.5620833333333333,
+      "dynamicRate": 0.36333333333333334,
+      "categories": {
+        "SAW": 421,
+        "PHASE": 523,
+        "FLOW": 596,
+        "VOLTAGE": 451,
+        "PULSE": 409
+      }
+    },
+    {
+      "height": 1600,
+      "n": 2400,
+      "meanTier": 1.5620833333333333,
+      "dynamicRate": 0.36333333333333334,
+      "categories": {
+        "SAW": 421,
+        "PHASE": 523,
+        "FLOW": 596,
+        "VOLTAGE": 451,
+        "PULSE": 409
+      }
+    },
+    {
+      "height": 1601,
+      "n": 2400,
+      "meanTier": 1.5620833333333333,
+      "dynamicRate": 0.36333333333333334,
+      "categories": {
+        "SAW": 421,
+        "PHASE": 523,
+        "FLOW": 596,
+        "VOLTAGE": 451,
+        "PULSE": 409
+      }
+    },
+    {
+      "height": 2399,
+      "n": 2400,
+      "meanTier": 2.004583333333333,
+      "dynamicRate": 0.38916666666666666,
+      "categories": {
+        "VOLTAGE": 570,
+        "PHASE": 369,
+        "PULSE": 329,
+        "FLOW": 533,
+        "SAW": 364,
+        "PRECISION": 235
+      }
+    },
+    {
+      "height": 2400,
+      "n": 2400,
+      "meanTier": 2.004583333333333,
+      "dynamicRate": 0.38916666666666666,
+      "categories": {
+        "VOLTAGE": 570,
+        "PHASE": 369,
+        "PULSE": 329,
+        "FLOW": 533,
+        "SAW": 364,
+        "PRECISION": 235
+      }
+    },
+    {
+      "height": 2401,
+      "n": 2400,
+      "meanTier": 2.004583333333333,
+      "dynamicRate": 0.38916666666666666,
+      "categories": {
+        "VOLTAGE": 570,
+        "PHASE": 369,
+        "PULSE": 329,
+        "FLOW": 533,
+        "SAW": 364,
+        "PRECISION": 235
+      }
+    },
+    {
+      "height": 3499,
+      "n": 2400,
+      "meanTier": 2.5725,
+      "dynamicRate": 0.5245833333333333,
+      "categories": {
+        "VOLTAGE": 527,
+        "PULSE": 246,
+        "SAW": 286,
+        "PHASE": 206,
+        "FLOW": 502,
+        "PRECISION": 404,
+        "COMBO": 229
+      }
+    },
+    {
+      "height": 3500,
+      "n": 2400,
+      "meanTier": 2.5725,
+      "dynamicRate": 0.5245833333333333,
+      "categories": {
+        "VOLTAGE": 527,
+        "PULSE": 246,
+        "SAW": 286,
+        "PHASE": 206,
+        "FLOW": 502,
+        "PRECISION": 404,
+        "COMBO": 229
+      }
+    },
+    {
+      "height": 3501,
+      "n": 2400,
+      "meanTier": 2.5725,
+      "dynamicRate": 0.5245833333333333,
+      "categories": {
+        "VOLTAGE": 527,
+        "PULSE": 246,
+        "SAW": 286,
+        "PHASE": 206,
+        "FLOW": 502,
+        "PRECISION": 404,
+        "COMBO": 229
+      }
+    },
+    {
+      "height": 4400,
+      "n": 2400,
+      "meanTier": 3.11375,
+      "dynamicRate": 0.5883333333333334,
+      "categories": {
+        "PRECISION": 359,
+        "SAW": 196,
+        "PULSE": 131,
+        "PHASE": 191,
+        "FLOW": 504,
+        "COMBO": 609,
+        "VOLTAGE": 410
+      }
+    },
+    {
+      "height": 10000,
+      "n": 2400,
+      "meanTier": 3.11375,
+      "dynamicRate": 0.5883333333333334,
+      "categories": {
+        "PRECISION": 359,
+        "SAW": 196,
+        "PULSE": 131,
+        "PHASE": 191,
+        "FLOW": 504,
+        "COMBO": 609,
+        "VOLTAGE": 410
+      }
+    }
+  ],
+  "generatorStress": {
+    "generated": 10002,
+    "maxLoaded": 7,
+    "note": "Generation only, not gameplay survival"
+  }
+}

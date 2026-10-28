@@ -45,7 +45,7 @@ check('Narrow test crosses in two classic steps and the lab offers it',()=>{
  const lab=html.slice(html.indexOf('<button id="nav-lab"'), html.indexOf('>', html.indexOf('<button id="nav-lab"')));
  const play=html.slice(html.indexOf('<button id="nav-play"'), html.indexOf('>', html.indexOf('<button id="nav-play"')));
  const infinity=html.slice(html.indexOf('<button id="nav-infinity"'), html.indexOf('>', html.indexOf('<button id="nav-infinity"')));
- assert.match(lab,/(?:^|\s)hidden(?:\s|$)/);assert.doesNotMatch(infinity,/(?:^|\s)hidden(?:\s|$)/);assert.doesNotMatch(play,/(?:^|\s)hidden(?:\s|$)/);assert.match(html,/id="nav-play"[\s\S]{0,220}ZWEI TIPPS/);
+ assert.match(lab,/(?:^|\s)hidden(?:\s|$)/);assert.match(infinity,/(?:^|\s)hidden(?:\s|$)/);assert.doesNotMatch(play,/(?:^|\s)hidden(?:\s|$)/);assert.match(html,/id="nav-play"[\s\S]{0,220}PLAY/);
  assert.match(html,/id="page-lab"/);assert.match(html,/class="lab-feedback" hidden/);assert.match(main,/ACTIVE_ARENA|openPage\('lab'\)/);
  assert.equal(validateLevelData(JSON.parse(readFileSync('assets/lab/compact.json','utf8'))).ok,true);
  const narrow=validateLevelData(JSON.parse(readFileSync('assets/lab/narrow.json','utf8'))).level;

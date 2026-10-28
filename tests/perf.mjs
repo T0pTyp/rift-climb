@@ -36,7 +36,7 @@ await page.evaluate(() => {
   const update = g.update.bind(g);
   g.update = (dt) => { const t0 = performance.now(); update(dt); m.updMs = (m.updMs || 0) + performance.now() - t0; };
 });
-await page.tap(lab?'#btn-lab-start':endless?'#btn-infinity-start':'#btn-start');
+await page.tap(lab?'#btn-lab-start':endless?'#nav-play':'#btn-start');
 try {await page.waitForFunction(({endless,duration}) => endless?__RIFT.t>=duration:__RIFT.state==='won', {endless,duration}, { timeout: (endless?duration+45:120)*1000 });}
 catch(error){const out=process.env.PERF_DIR||'test-results/m7';mkdirSync(out,{recursive:true});writeFileSync(`${out}/failure.json`,JSON.stringify(await page.evaluate(()=>({state:__RIFT.state,t:__RIFT.t,killer:__RIFT.killer?.reason,audio:__RIFT.audio.status(),frames:__PERF.js.length,lastJs:__PERF.js.slice(-10),gaps:__PERF.gaps.slice(-10)})),null,2));await page.screenshot({path:`${out}/failure.png`});await browser.close();throw error;}
 const r = await page.evaluate(() => {
@@ -53,7 +53,7 @@ const r = await page.evaluate(() => {
   };
 });
 if(await page.isVisible('#btn-pause')&&await page.evaluate(()=>__RIFT.state==='playing'))await page.tap('#btn-pause');await page.waitForTimeout(50);
-if(endless) {r.sourcesAfterPause=await page.evaluate(()=>__RIFT.audio.voices.size);if(r.chunksMax>5||r.cacheMax>2||r.seekCalls!==1||r.sourcesAfterPause!==0)throw Error('Infinity lifetime bound failed: '+JSON.stringify(r));}
+if(endless) {r.sourcesAfterPause=await page.evaluate(()=>__RIFT.audio.voices.size);if(r.chunksMax>9||r.cacheMax>2||r.seekCalls!==1||r.sourcesAfterPause!==0)throw Error('Infinity lifetime bound failed: '+JSON.stringify(r));}
 console.log(`Level: ${level}, feste hochwertige Darstellung`);
 console.log(`Frames ${r.frames}, Ø-FPS ${r.fps.toFixed(1)}, Frame-Intervall p95 ${r.gapP95.toFixed(1)} ms, Frames > 25 ms: ${r.longFrames}`);
 console.log(`JS pro Frame (update+render): Ø ${r.jsAvg.toFixed(2)} ms, p95 ${r.jsP95.toFixed(2)} ms, p99 ${r.jsP99.toFixed(2)} ms; Heap-Δ ${r.heapKB.toFixed(0)} KB`);

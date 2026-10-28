@@ -242,7 +242,8 @@ export class PropsPanel {
         o.type!=='mine'?this.select('Bewegungsachse',{key:'axis',get:get('axis'),options:[['none','Stationär'],['x','Horizontal'],['y','Vertikal']],hint:o.type==='saw'?'Richtung, in die sich die Säge bewegt.':'Richtung, in die sich der Laserprojektor bewegt.',set:this.objSetter(id,(x,v)=>{x.axis=v;})}):null,
         ...Object.entries(TRAP_FIELDS[o.type]).map(([key,[min,max]])=>this.num(labels[key],{key,get:get(key),min,max,step:max<=12?.05:1,hint:({period:o.type==='saw'?'Geschwindigkeit der Sägebewegung. Kleinere Periode = schneller.':'Geschwindigkeit der Projektorbewegung, zusammen mit der Bewegungsachse.',sweepPeriod:'Geschwindigkeit des Laserschwenks. Kleinere Periode = schneller.',startAngle:'Richtung des Strahls. 0° zeigt nach rechts, 90° nach oben.',endAngle:'Zweites Ende des Schwenks. Gleicher Winkel hält die Richtung fest.',spin:'Drehgeschwindigkeit der Säge in rad/s.',disableSec:'Abschaltdauer nach einem passenden Pulse am Projektor. Anschließend beginnt eine vollständige neue Warnphase.'})[key],set:this.objSetter(id,(x,v)=>{x[key]=v;})})),
         this.info('Uhr',()=> 'Deterministische Simulationszeit · Pause friert ein'),
-        this.info('Pulse',()=>o.type==='mine'?'Passende Dimension: dauerhaft entschärfen':o.type==='saw'?'Säge bleibt aktiv – Pulse zerstört sie nicht':'Passende Dimension: Projektor vorübergehend abschalten, danach volle Warnphase'),
+        o.type==='saw'?this.select('Pulse-Zerstörung',{key:'pulseBreakable',get:()=>o.pulseBreakable?'yes':'no',options:[['no','Archiv: unzerstörbar'],['yes','Passende Dimension zerstört']],set:this.objSetter(id,(x,v)=>{if(v==='yes')x.pulseBreakable=true;else delete x.pulseBreakable;})}):null,
+        this.info('Pulse',()=>o.type==='mine'?'Passende Dimension: dauerhaft entschärfen':o.type==='saw'?(o.pulseBreakable?'Passende Dimension: Säge zerstören':'Archiv: Pulse zerstört diese Säge nicht'):'Passende Dimension: Projektor vorübergehend abschalten, danach volle Warnphase'),
       ));
     }
     if (o.type === 'seal') {
@@ -352,7 +353,7 @@ export class PropsPanel {
     return [
       ...(L().chunk?[this.group('RIFT DIRECTOR',
         this.select('Kategorie',{key:'chunk-category',get:()=>L().chunk.category,options:CATEGORIES.map(k=>[k,k]),set:meta((l,v)=>{l.chunk.category=v;})}),
-        this.num('Director-Stufe',{key:'chunk-tier',get:()=>L().chunk.tier,min:0,max:5,step:1,set:meta((l,v)=>{l.chunk.tier=Math.round(v);})}),
+        this.num('Director-Stufe',{key:'chunk-tier',get:()=>L().chunk.tier,min:0,max:6,step:1,set:meta((l,v)=>{l.chunk.tier=Math.round(v);})}),
         ...['entry','exit'].flatMap(kind=>[
           ...['x','vx'].flatMap(k=>[0,1].map(i=>this.num(`${kind} ${k} ${i?'max':'min'}`,{key:`chunk-${kind}-${k}-${i}`,get:()=>L().chunk[kind][k][i],min:k==='x'?8:-1000,max:k==='x'?262:1000,step:1,set:meta((l,v)=>{l.chunk[kind][k][i]=v;})}))),
           this.select(`${kind} Dimension`,{key:`chunk-${kind}-dimension`,get:()=>L().chunk[kind].dimension,options:START_DIM_OPTIONS,set:meta((l,v)=>{l.chunk[kind].dimension=v;})}),

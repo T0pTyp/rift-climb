@@ -6,6 +6,50 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
+## M8 – INFINITY FIRST (aktueller Release)
+
+**PLAY startet sofort RIFT INFINITY.** Der öffentliche Einstieg zeigt Riftling,
+Höhenrekord, letzten Aufstieg und Sound/Hilfe. Keine vorgeschaltete Modusauswahl.
+Nach einem Tod startet RETRY oder ein freier Tipp sofort denselben Seed neu;
+PLAY aus dem Menü beginnt eine neue Welt. Ein gespeichertes kurzes Tutorial
+erklärt die umgekehrte Touch-Steuerung. Kampagne, Collection, Achievements und
+Editor-Verknüpfung sind öffentlich ausgeblendet, ihre Daten bleiben erhalten.
+Entwicklungszugang: `?dev=1` bzw. `?level=first-pulse`; Forge bleibt direkt verfügbar.
+Das ist keine Zugriffssperre und kein Online-Dienst.
+
+Der bestehende RIFT DIRECTOR kombiniert **20 handgestaltete Aufgaben / 39 einzeln
+validierte Varianten** aus FLOW, PHASE, PULSE, SAW, VOLTAGE, PRECISION und COMBO.
+Gewichtete Auswahl berücksichtigt Höhe, letzte Aufgaben und Erholung nach
+höchstens vier anspruchsvolleren Abschnitten. Neutrale Durchgänge, Farbwechsel,
+Siegel, bewegliche Sägen, Minen und Sweep Lasers führen die Mechaniken schrittweise ein.
+
+Sieben fließende Bereiche: **0 / 150 / 400 / 900 / 1.600 / 2.400 / 3.500 m**.
+Die Auswahl erreicht bei 4.400 m ihre Obergrenze; Geschwindigkeit und Öffnungen
+werden danach nicht weiter verschärft. **270 u Breite, 90 u Zielversatz pro Tipp,
+260 u/s, 240 Hz, Hitboxradius 8 u**. Die frühere Beschleunigung ab 8.000 m entfällt.
+10 u bleiben 1 m; bestehende Höhenrekorde bleiben numerisch erhalten.
+
+Lokale Infinity-Statistik: Rekord, Versuche, letzter Aufstieg, Todesfälle seit
+diesem Update. Das vorhandene versionierte Speichersystem bleibt zuständig;
+historische Todesfälle werden nicht erfunden. Keine neuen Skins, Medaillen oder
+Achievements. Compact bleibt verborgen, die hohe Grafik bleibt dauerhaft aktiv.
+
+Prüfungen: **351 Eintrittsproben, 288 Timingvariationen (±40 ms), 1.482 echte
+Paar-Durchläufe und vier 10.000-m-Spieler-Replays**. Separate Generierungsprüfung
+über 10.000 Chunks; kein Ersatz für Gameplay-Nachweise. Browserprüfungen umfassen
+Android-Emulation, Windows-WebKit mit iPhone-Profil und 320-px-Hochformat.
+Keine Garantie beliebiger Eintrittszustände und keine physischen Smartphone-Tests.
+
+```sh
+npm test
+npm run test:infinity:first
+npm run test:infinity:first:e2e   # lokalen HTTP-Server starten; optional BASE_URL
+npm run build:infinity          # Bibliothek mit echter Simulation neu zertifizieren
+```
+
+[Produktstruktur, Balancing, Chunk-Verträge und Testgrenzen](docs/M8-INFINITY-FIRST.md).
+Die folgenden Meilensteinbeschreibungen dokumentieren frühere Entwicklungsstände.
+
 ## M7.10 – Official Riftling
 
 Der ausgewählte **CLASSIC BLOB** aus der vorhandenen Konzeptgrafik ist jetzt die

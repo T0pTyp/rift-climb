@@ -26,8 +26,9 @@ export function normalizeTrap(o,width=WORLD_W) {
  const a=clean.axis==='x'?clean.amplitude:0;
  if(clean.x-a<0||clean.x+clean.w+a>width)errors.push('Bewegung ragt seitlich aus der Arena');
  if(clean.type==='mine'&&clean.blastRadius>clean.activationRadius)errors.push('Explosion größer als Aktivierungszone');
- // Infinity saws opt in. Campaign saws omit the field and stay pulse-destructible.
+ // Preserve archive behavior. New Infinity saws explicitly opt into Pulse destruction.
  if(clean.type==='saw'&&o.durable===true)clean.durable=true;
+ if(clean.type==='saw'&&o.pulseBreakable===true)clean.pulseBreakable=true;
  // Continuous spin is opt-in. Sweep lasers omit it and keep the sine beam.
  if(clean.type==='laser'&&o.spin!=null&&o.spin!==0){
   if(!Number.isFinite(o.spin)||o.spin<-12||o.spin>12)errors.push('Drehung: −12 bis 12 rad/s, nicht 0');
@@ -91,7 +92,8 @@ export class TrapField {
     }
     if(distance>pulseRadius(age)+1e-8)continue;
     o.pulseId=p.id;
-    if(o.type==='saw'){/* A pulse never destroys a saw, in campaign or Infinity. */}
+    if(o.type==='saw'&&o.pulseBreakable&&!o.durable){o.state='destroyed';o.deadAt=t;this.events++;onEvent?.(o,'saw-break');}
+    else if(o.type==='saw'){/* Explicit durable editor hazards remain indestructible. */}
     else if(o.type==='mine'){o.state='disarmed';o.deadAt=t;this.events++;onEvent?.(o,'mine-disarm');}
     else {o.disabledUntil=t+o.disableSec;o.epoch=o.disabledUntil+o.phase*(o.warnSec+o.activeSec+o.offSec);this.events++;onEvent?.(o,'laser-disable');}
    }

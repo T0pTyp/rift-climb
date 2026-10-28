@@ -125,6 +125,7 @@ export class UI {
   }
 
   show(name) {
+    const tutorial=$('#infinity-tutorial');if(tutorial)tutorial.hidden=true;
     for (const [key, el] of Object.entries(this.screens)) el.hidden = key !== name;
     const inGame = name !== 'menu';
     this.hud.hidden = !inGame;
@@ -201,19 +202,21 @@ export class UI {
   setArena(style,mode){
     const lab=mode==='lab',el=$('#hud-arena');el.hidden=!lab&&style!=='compact'&&style!=='narrow';el.textContent=(lab?'LAB · ':'')+(ARENAS[style]?.label||String(style||'').toUpperCase());
     document.body.dataset.arena=style;
-    if(!this.playtest)for(const id of ['pause','death','win'])$('#btn-'+id+'-menu').textContent=lab?'ARENA LAB':'Levelauswahl';
+    if(!this.playtest)for(const id of ['pause','death','win'])$('#btn-'+id+'-menu').textContent=!this.h.development?'MENÜ':lab?'ARENA LAB':'Levelauswahl';
+    $('#btn-death-home').hidden=!this.h.development;
   }
   updateEndlessHud(height,best,tier,dim,attempts,zone='') {
     const key=`infinity|${height}|${best}|${tier}|${dim}|${attempts}|${zone}`;
     if(this.lastHud===key)return;this.lastHud=key;this.el.bar.parentElement.hidden=true;this.el.pct.textContent=height+' m';
     const label=$('#hud-infinity');label.hidden=false;label.textContent=`REKORD ${best} m · ${tier}`;label.title=zone;
-    if(zone){const arena=$('#hud-arena');arena.hidden=false;arena.textContent=zone;}
+    if(zone){const arena=$('#hud-arena');arena.hidden=!this.h.development;arena.textContent=zone;}
     this.el.dim.textContent=COLORS[dim].name;this.el.dim.dataset.dim=dim;this.el.attempts.textContent='Versuch '+attempts;this.el.mode.hidden=true;document.body.dataset.dim=dim;
   }
   setSkin(id) {
     this.panels.equippedSkin=id;
   }
-  animate(now,state) { this.panels.animate(now,state); }
+  showTutorial(){this.tutorialUntil=performance.now()+6500;$('#infinity-tutorial').hidden=false;}
+  animate(now,state) { if(this.tutorialUntil&&now>this.tutorialUntil)$('#infinity-tutorial').hidden=true;this.panels.animate(now,state); }
 
   toast(text) {
     const el = this.el.checkpoint;

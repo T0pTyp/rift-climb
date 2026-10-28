@@ -10,7 +10,7 @@ const object=v=>v&&typeof v==='object'&&!Array.isArray(v)?v:{};
 const integer=(v,max=Number.MAX_SAFE_INTEGER)=>Number.isFinite(v)?Math.min(max,Math.max(0,Math.floor(v))):0;
 const date=v=>typeof v==='string'&&Number.isFinite(Date.parse(v))?v:null;
 const safeId=id=>/^[a-z0-9][a-z0-9-]{0,39}$/.test(id);
-const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,recordAt:null,lastSeed:null},lab:blankLab()});
+const blank=()=>({schemaVersion:2,profile:{activePlaytimeMs:0,historyIncomplete:false},levels:{},achievements:{},cosmetics:{selectedSkinId:'original',unlockedSkinIds:['original']},endless:{bestHeight:0,attempts:0,lastHeight:0,deaths:0,tutorialSeen:false,recordAt:null,lastSeed:null},lab:blankLab()});
 function cleanLevel(id,raw) {
  const r=object(raw),clears=integer(r.clears),completed=r.completed===true||clears>0||integer(r.best,100)===100;
  const best=completed?100:integer(r.best,99);
@@ -18,7 +18,7 @@ function cleanLevel(id,raw) {
 }
 function normalize(raw) {
  const s=blank(),r=object(raw);s.lab=cleanLab(r.lab);s.profile.activePlaytimeMs=integer(r.profile?.activePlaytimeMs);s.profile.historyIncomplete=!!r.profile?.historyIncomplete;
- s.endless={bestHeight:integer(r.endless?.bestHeight),attempts:integer(r.endless?.attempts),lastHeight:integer(r.endless?.lastHeight),recordAt:date(r.endless?.recordAt),lastSeed:Number.isInteger(r.endless?.lastSeed)?r.endless.lastSeed>>>0:null};
+ s.endless={bestHeight:integer(r.endless?.bestHeight),attempts:integer(r.endless?.attempts),lastHeight:integer(r.endless?.lastHeight),deaths:integer(r.endless?.deaths),tutorialSeen:r.endless?.tutorialSeen===true,recordAt:date(r.endless?.recordAt),lastSeed:Number.isInteger(r.endless?.lastSeed)?r.endless.lastSeed>>>0:null};
  for(const [id,l] of Object.entries(object(r.levels)))if(safeId(id))s.levels[id]=cleanLevel(id,l);
  for(const a of ACHIEVEMENTS)if(r.achievements?.[a.id]?.unlocked===true)s.achievements[a.id]={unlocked:true,unlockedAt:date(r.achievements[a.id].unlockedAt)};
  const unlocked=r.cosmetics?.unlockedSkinIds;
@@ -52,6 +52,7 @@ export class Progression {
     this.data.cosmetics.unlockedSkinIds=[...new Set([...this.data.cosmetics.unlockedSkinIds,...b.cosmetics.unlockedSkinIds])];
     if(b.endless.bestHeight>this.data.endless.bestHeight){this.data.endless.bestHeight=b.endless.bestHeight;this.data.endless.recordAt=b.endless.recordAt;}
     this.data.endless.attempts=Math.max(this.data.endless.attempts,b.endless.attempts);
+    this.data.endless.deaths=Math.max(this.data.endless.deaths,b.endless.deaths);this.data.endless.tutorialSeen ||= b.endless.tutorialSeen;
    }
    this.migrateLegacy();this.evaluate(true);this.persist();
   }
@@ -102,7 +103,7 @@ export class Progression {
  }
  finish(run,t,best,outcome) {
   if(run?.kind==='lab')return finishLab(this,run,t,best,outcome);
-  if(run?.kind==='endless'){if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;this.persist();return true;}
+  if(run?.kind==='endless'){if(run.closed||!run.eligible)return false;this.reportEndless(run,t,true);run.closed=true;if(outcome==='death')this.data.endless.deaths++;this.persist();return true;}
   if(!run?.eligible||run.closed)return false;
   this.report(run,t,best);run.closed=true;const l=this.level(run.id);
   if(outcome==='death')l.deaths++;

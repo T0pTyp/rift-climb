@@ -262,7 +262,7 @@ export function validateLevelData(raw) {
   }
   if(raw.chunk!==undefined){
     const m=raw.chunk;
-    if(!m||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>5||!validContract(m.entry)||!validContract(m.exit,true)||level.arenaStyle!=='narrow')err('chunk','Chunk: Kategorie, Schwierigkeit oder Bewegungsvertrag ungültig.');
+    if(!m||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>6||!validContract(m.entry)||!validContract(m.exit,true)||level.arenaStyle!=='narrow')err('chunk','Chunk: Kategorie, Schwierigkeit oder Bewegungsvertrag ungültig.');
     else level.chunk=JSON.parse(JSON.stringify(m));
   }
   if (raw.replay !== undefined) {

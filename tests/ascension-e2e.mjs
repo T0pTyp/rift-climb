@@ -8,7 +8,7 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  const b=await type.launch(),c=await b.newContext(device),p=await c.newPage(),errors=[];
  p.on('pageerror',e=>errors.push(e.message));const click=selector=>device.isMobile?p.tap(selector):p.click(selector);
  const snap=name=>p.screenshot({path:`test-results/m8/browser/${label}-${name}.png`});
- await p.goto(BASE+'?manual=1');await p.waitForFunction(()=>window.__RIFT);
+ await p.goto(BASE+'?dev=1&manual=1');await p.waitForFunction(()=>window.__RIFT);
  check(label+' six active home destinations including Infinity',await p.locator('.nav-tile:visible').count()===6);await snap('home');
  await click('#nav-collection');check(label+' five skins, original equipped',await p.evaluate(()=>document.querySelectorAll('.skin-card').length===5&&__ASCENSION.data.cosmetics.selectedSkinId==='original'));
  await click('[data-skin="golden"]');check(label+' locked preview cannot equip',await p.isDisabled('#btn-equip'));await p.waitForTimeout(200);await snap('locked-golden');
@@ -36,10 +36,10 @@ for(const [type,device,label] of [[chromium,devices['Pixel 7'],'touch'],[webkit,
  await p.evaluate(()=>__RIFT.ui.openPage('levels'));await click('[data-level="first-pulse"]');await click('#btn-practice');const before=await p.evaluate(()=>JSON.stringify(__ASCENSION.data));
  await p.evaluate(()=>{__RIFT.debug.autoplay=true;__RIFT.setupAutoplay();advanceTime(41000);});check(label+' Practice win leaves progression unchanged',await p.evaluate(s=>__RIFT.state==='won'&&JSON.stringify(__ASCENSION.data)===s,before));
  await click('#btn-next-level');check(label+' Practice Next remains isolated Practice',await p.evaluate(()=>__RIFT.level.id==='fractured-rhythm'&&__RIFT.mode==='practice'&&__ASCENSION.summary().totalNormalAttempts===3));
- await click('#btn-pause');await click('#btn-pause-menu');await click('[data-level="first-pulse"]');await click('#btn-start');await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(2000);});
+ await click('#btn-pause');await click('#btn-pause-menu');await click('[data-level="first-pulse"]');await click('#btn-start');await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(60000);});
  check(label+' death counted once, Retry immediately visible',await p.evaluate(()=>['dying','dead'].includes(__RIFT.state)&&__ASCENSION.level('first-pulse').deaths===1&&!document.querySelector('#death').hidden));
  await click('#btn-death-restart');check(label+' Retry starts exactly one attempt',await p.evaluate(()=>__RIFT.state==='playing'&&__RIFT.t===0&&__RIFT.player.dim==='B'&&__ASCENSION.level('first-pulse').deaths===1&&__ASCENSION.level('first-pulse').attempts===3));
- await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(2200);});await snap('death');await click('#btn-death-home');await click('#nav-achievements');
+ await p.evaluate(()=>{__RIFT.debug.autoplay=false;__RIFT.autoplayQueue=[];advanceTime(60000);});await snap('death');await click('#btn-death-home');await click('#nav-achievements');
  check(label+' all eight achievement cards',await p.locator('.achievement-card').count()===8);await snap('achievements');await click('#page-achievements [data-home]');await click('#nav-profile');
  check(label+' profile contains measured stats and per-level records',await p.locator('#profile-stats .stat-card').count()===8&&await p.locator('.profile-level').count()===6);await snap('profile');
  await click('#page-profile [data-home]');await click('#nav-settings');await click('#btn-sound');check(label+' mute saved in audio preferences',await p.evaluate(()=>JSON.parse(localStorage.getItem('riftclimb.audio.v1')).muted===true));

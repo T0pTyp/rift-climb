@@ -3,12 +3,13 @@ import {makeTrap} from './traps.js';
 import {CLIMB_SPEED,MIN_PRESS_INTERVAL_MS,START_GRACE_MS,SIM_DT,STEER_OMEGA,HIT_RADIUS,PULSE_RADIUS,PULSE_GROW_SEC} from './config.js';
 import {RiftDirector,CATEGORIES,validContract,compatible,chunkFingerprint,directorTier} from './rift-director.js';
 import {infinityClimbTime,infinitySpaceScale} from './world-units.js';
+import {INFINITY_BALANCE} from './infinity-balance.js';
 export {METERS_PER_UNIT,worldMeters,infinityClimbY,infinityClimbSpeed,infinityClimbTime,infinitySpaceScale,INFINITY_SPEED_MARK_M,INFINITY_SPEED_RAMP_M} from './world-units.js';
 export const INFINITY_TIERS=['EINFACH','MITTEL','SCHWER','SEHR SCHWER'];
 export const INFINITY_MIN_SEAM_SEC=2;
-// Inside a module, hazard rows stay under a second of climb. 0.95 × 260 u/s = 247 u.
-// The join itself is the next trap: entry and exit clearances add up to less than 1 s.
-export const INFINITY_MAX_HAZARD_GAP_SEC=0.95;
+// Bound empty space inside a phrase; release pacing lives in infinity-balance.js.
+// Entry and exit clearances remain part of the certified seam.
+export const INFINITY_MAX_HAZARD_GAP_SEC=INFINITY_BALANCE.maxHazardGapSec;
 export const INFINITY_MAX_HAZARD_GAP=CLIMB_SPEED*INFINITY_MAX_HAZARD_GAP_SEC;
 export const infinityTier=y=>y*.1<250?0:y*.1<750?1:y*.1<1500?2:3;
 /** Prepared rapid actions are distinct from time to read the next challenge. */
@@ -56,10 +57,11 @@ export function validateChunkBook(raw) {
  return raw;
 }
 function validateDirectorBook(raw) {
- if(raw.schema!=='rift-infinity-chunks'||raw.arenaStyle!=='narrow'||raw.metersPerUnit!==.1||!Array.isArray(raw.chunks)||raw.chunks.length<30)throw Error('RIFT DIRECTOR: ungültiges Modulbuch');
+ if(raw.schema!=='rift-infinity-chunks'||raw.arenaStyle!=='narrow'||raw.metersPerUnit!==.1||!Array.isArray(raw.chunks)||raw.chunks.length<15)throw Error('RIFT DIRECTOR: ungültiges Modulbuch');
+ if(raw.balance==='infinity-first'&&raw.chunks.filter(c=>c.level?.chunk?.opening).length!==1)throw Error('RIFT DIRECTOR: genau eine Eröffnung erforderlich');
  const ids=new Set();
  for(const c of raw.chunks){const l=c.level,m=l?.chunk,v=validateLevelData(l);
-  if(!v.ok||!m||c.id!==l.id||ids.has(c.id)||l.arenaStyle!=='narrow'||c.length!==l.finish.y||c.length<180||c.length>2080||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>5||!validContract(m.entry)||!validContract(m.exit,true)||!Array.isArray(l.replay?.taps)||m.actions!==l.replay.taps.length||m.validation?.status!=='verified'||m.validation.hash!==chunkFingerprint(l)||m.validation.physics!=='spring-240-v1')throw Error('RIFT DIRECTOR: ungültiges / veraltetes Zertifikat '+c.id);
+  if(!v.ok||!m||c.id!==l.id||ids.has(c.id)||l.arenaStyle!=='narrow'||c.length!==l.finish.y||c.length<180||c.length>2080||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>6||!validContract(m.entry)||!validContract(m.exit,true)||!Array.isArray(l.replay?.taps)||m.actions!==l.replay.taps.length||m.validation?.status!=='verified'||m.validation.hash!==chunkFingerprint(l)||m.validation.physics!=='spring-240-v1')throw Error('RIFT DIRECTOR: ungültiges / veraltetes Zertifikat '+c.id);
   const taps=l.replay.taps;if(taps.some((p,i)=>![1,-1].includes(p.dir)||!Number.isFinite(p.t)||p.t<.2||p.t>c.length/CLIMB_SPEED-m.exit.clearSec+1e-8||(i&&p.t-taps[i-1].t<.045-1e-8)))throw Error('RIFT DIRECTOR: Eingaben '+c.id);
   const config=m.validation.proof?.config,expected={simDt:SIM_DT,climbSpeed:CLIMB_SPEED,steerOmega:STEER_OMEGA,hitRadius:HIT_RADIUS,pulseRadius:PULSE_RADIUS,pulseGrowSec:PULSE_GROW_SEC,arenaWidth:270,arenaStep:90};
   if(!config||Object.keys(expected).some(k=>config[k]!==expected[k]))throw Error('RIFT DIRECTOR: Physik-Zertifikat veraltet '+c.id);
@@ -67,7 +69,8 @@ function validateDirectorBook(raw) {
   if(gap.max>INFINITY_MAX_HAZARD_GAP+1e-6)throw Error('RIFT DIRECTOR: Lücke '+gap.max.toFixed(1)+' u übersteigt '+INFINITY_MAX_HAZARD_GAP+' u in '+c.id);
   ids.add(c.id);
  }
- if(CATEGORIES.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<4))throw Error('RIFT DIRECTOR: Kategorien unvollständig');
+ const categories=raw.balance==='infinity-first'?CATEGORIES.slice(0,7):CATEGORIES.slice(7);
+ if(categories.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<4))throw Error('RIFT DIRECTOR: Kategorien unvollständig');
  for(const a of raw.chunks)if(!raw.chunks.some(b=>b.id!==a.id&&!b.level.chunk.opening&&compatible(a.level.chunk.exit,b.level.chunk.entry)))throw Error('RIFT DIRECTOR: kein farbiger Anschluss für '+a.id);
  return raw;
 }
@@ -107,7 +110,7 @@ export class EndlessWorld {
    const index=this.nextIndex++,origin=this.nextY,scale=this.director?infinitySpaceScale(origin):1,span=source.length*scale,t0=this.director?infinityClimbTime(origin):origin/260,prefix=`c${index}-`;
    const level={...source.level,objects:source.level.objects.map(o=>({...o,id:prefix+o.id,y:o.y*scale+origin})),finish:{y:origin+span},height:origin+span+260};
    const rt=buildLevelRuntime(level);rt.traps=rt.traps.map(o=>makeTrap(o,t0));
-   this.chunks.push({index,id:source.id,tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+span,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
+   this.chunks.push({index,id:source.id,tier:source.level.chunk?.tier??tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+span,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
    this.nextY+=span;this.generated++;changed=true;
   }
   while(this.chunks.length&&this.chunks[0].end<y-520){this.chunks.shift();changed=true;}
@@ -116,7 +119,7 @@ export class EndlessWorld {
  apply(game) {
   const chunks=this.chunks,rt=game.level;
   const names={SLIT:'SCHLITZ',PAIR:'FARBPAAR',LASER:'DREHLASER',MILL:'WINDMÜHLE',COMBO:'KOMBI'};
-  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=chunks.map(c=>[c.origin+(this.director?40*infinitySpaceScale(c.origin):40),this.director?(c.opening?'ANFANG':names[c.category]||c.category):'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
+  rt.obstacles=chunks.flatMap(c=>c.rt.obstacles);rt.seals=chunks.flatMap(c=>c.rt.seals);rt.hints=this.book.balance==='infinity-first'?[]:chunks.map(c=>[c.origin+40,this.director?(c.opening?'ANFANG':names[c.category]||c.category):'RUHEZONE · SPUR 2 / BLAU']);rt.traps=chunks.flatMap(c=>c.rt.traps);
   game.obstacles=rt.obstacles;game.seals=rt.seals;game.traps.traps=rt.traps;game.rift.seals=rt.seals;game.rift.maxHh=20;game.obsLo=0;
   rt.maxChh=6;rt.maxHh=8;game.collideRange=16;
   this.maxObjects=Math.max(this.maxObjects,rt.obstacles.length+rt.traps.length);
@@ -124,7 +127,7 @@ export class EndlessWorld {
   if(game.audio.timeline&&this.director)game.audio.timeline.director=chunks.map(c=>({start:c.t0,end:infinityClimbTime(c.end),tier:c.tier,category:c.category,challenge:c.challenge}));
  }
  tapsAfter(t,last=-Infinity){return this.chunks.flatMap(c=>c.taps).filter(p=>p.t>=t-1/480&&p.t>last+1e-8);}
- tierAt(y){return this.chunks.find(c=>y>=c.origin&&y<c.end)?.tier??(this.director?directorTier(y):infinityTier(y));}
+ tierAt(y){return this.director?directorTier(y):infinityTier(y);}
 }
 /** Optional entry recovery uses ordinary wall taps, never hidden input correction. */
 export function entryTaps(lane,dim) {

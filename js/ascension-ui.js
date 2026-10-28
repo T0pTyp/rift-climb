@@ -8,7 +8,9 @@ export class AscensionPanels {
  constructor(ui,h,bind){
   this.ui=ui;this.h=h;this.bind=bind;this.progression=h.progression;this.page='home';this.skin=this.progression.data.cosmetics.selectedSkinId;this.anim=new RiftlingAnimator();this.previewTime=0;this.last=0;this.thumbs=new Map();
   this.brandAnim=new RiftlingAnimator();this.resultAnim=new RiftlingAnimator();this.equippedSkin=this.skin;this.portraitAge=0;
-  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['test-infinity','test-infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>this.open(page),h.onGesture);
+  document.body.dataset.development=String(!!h.development);
+  if(h.development){for(const el of document.querySelectorAll('[data-archive-nav],#forge-link'))el.hidden=false;}
+  for(const [id,page] of [['play','levels'],['lab','lab'],['infinity','infinity'],['test-infinity','test-infinity'],['collection','collection'],['achievements','achievements'],['profile','profile'],['settings','settings']])bind($('#nav-'+id),()=>{if(id==='play'&&!h.development){h.onInfinityStart(h.chooseInfinitySeed());}else this.open(page);},h.onGesture);
   this.buildLab();bind($('#btn-lab-start'),()=>h.onLabStart(),h.onGesture);
   for(const el of document.querySelectorAll('[data-lab-feedback]'))bind(el,()=>{if(h.onLabFeedback(el.dataset.labFeedback))this.renderLab();},h.onGesture);
   this.seed=h.initialSeed;
@@ -23,6 +25,7 @@ export class AscensionPanels {
   this.startBtn=$('#btn-start');this.practiceBtn=$('#btn-practice');
  }
  open(page){
+  if(!this.h.development&&!['home','settings'].includes(page))page='home';
   this.page=page;document.body.dataset.menu=page;
   for(const el of document.querySelectorAll('.menu-page'))el.hidden=el.id!=='page-'+page;
   $('#menu .brand-row').hidden=page!=='home';$('#menu .tagline').hidden=page!=='home';
@@ -32,6 +35,7 @@ export class AscensionPanels {
   if(page==='test-infinity'){const b=$('#btn-test-infinity-start'),err=$('#test-infinity-error');if(b)b.disabled=!this.h.testInfinityAvailable();if(err){err.hidden=!this.h.testInfinityError();err.textContent=this.h.testInfinityError()||'';}}
   if(page==='lab')this.renderLab();
   this.refreshWarning();
+  if(page==='home'){const e=this.progression.data.endless;$('#home-best').textContent=e.bestHeight+' m';$('#home-stats').textContent=`${e.attempts} VERSUCHE · ${e.deaths} TODE SEIT INFINITY FIRST`;$('#home-last').textContent=`LETZTER AUFSTIEG ${e.lastHeight} m`;$('#nav-play').disabled=!this.h.infinityAvailable();$('#home-error').textContent=this.h.infinityError();}
  }
  refreshWarning(){const el=$('#save-notice');el.hidden=!this.progression.warning;el.textContent=this.progression.warning;}
  buildLab(){
@@ -129,6 +133,7 @@ export class AscensionPanels {
    $('#preview-dimension').textContent=blend?'ROT':'BLAU';$('#preview-dimension').dataset.dim=blend?'R':'B';
   }
   const notice=$('#reward-notice'),safe=['menu','dead','won'].includes(state);
+  if(!this.h.development){notice.hidden=true;return;}
   if(!safe){notice.hidden=true;return;}
   if(this.currentNotice){this.noticeAge+=dt;if(this.noticeAge>=2.5){this.currentNotice=null;notice.hidden=true;}}
   if(!this.currentNotice&&this.progression.queue.length){

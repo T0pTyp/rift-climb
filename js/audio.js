@@ -240,6 +240,9 @@ export class AudioEngine {
   sfx(name, dim, atWall) {
     if (!this.ready || this.muted || this.settings.sfx === 0) return;
     this.metrics.sfx[name] = (this.metrics.sfx[name] || 0) + 1;
+    // Virtual-time developer replays can advance minutes in one browser task.
+    // Count feedback, but do not enqueue minutes of SFX at the real audio clock.
+    if(this.simulationOnly)return;
     const t = this.ctx.currentTime;
     const note = (f, gain = .09, length = .1, offset = 0, type = 'air') => this.voice(type, t + offset, f, gain, length);
     if (name === 'flight') note(atWall ? 150 : 240, .045, .065, 0, 'fall');
