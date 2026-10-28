@@ -1,0 +1,330 @@
+{
+  "date": "2026-10-28",
+  "base": "52adbc6",
+  "branch": "experiment/m8.2-rift-glide",
+  "scope": "Automated technical results; no physical smartphones or human fun ratings",
+  "core": {
+    "entries": 82,
+    "pairs": 738,
+    "phaseRuns": 32,
+    "fps": [
+      {
+        "model": "auto",
+        "fps": 30,
+        "x": 137.62143344291144,
+        "y": 10400.000000001266,
+        "vx": -47.682320219356725,
+        "vy": 260,
+        "target": 1,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 10400.000000001266,
+        "pulses": 80
+      },
+      {
+        "model": "auto",
+        "fps": 60,
+        "x": 137.62143344291144,
+        "y": 10400.000000001266,
+        "vx": -47.682320219356725,
+        "vy": 260,
+        "target": 1,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 10400.000000001266,
+        "pulses": 80
+      },
+      {
+        "model": "auto",
+        "fps": 120,
+        "x": 137.62143344291144,
+        "y": 10400.000000001266,
+        "vx": -47.682320219356725,
+        "vy": 260,
+        "target": 1,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 10400.000000001266,
+        "pulses": 80
+      },
+      {
+        "model": "glide",
+        "fps": 30,
+        "x": 137.18452786909288,
+        "y": 5141.500000000013,
+        "vx": -39.735266849464004,
+        "vy": 130.00000000000054,
+        "target": 135,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 5141.500000000013,
+        "pulses": 80
+      },
+      {
+        "model": "glide",
+        "fps": 60,
+        "x": 137.18452786909288,
+        "y": 5141.500000000013,
+        "vx": -39.735266849464004,
+        "vy": 130.00000000000054,
+        "target": 135,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 5141.500000000013,
+        "pulses": 80
+      },
+      {
+        "model": "glide",
+        "fps": 120,
+        "x": 137.18452786909288,
+        "y": 5141.500000000013,
+        "vx": -39.735266849464004,
+        "vy": 130.00000000000054,
+        "target": 135,
+        "dimension": "B",
+        "t": 40.00000000000487,
+        "maxY": 5141.500000000013,
+        "pulses": 80
+      }
+    ],
+    "endless": [
+      {
+        "seed": 1,
+        "t": 119.99999999997303,
+        "maxHeight": 1550.510000000001,
+        "chunks": 33,
+        "loaded": 5,
+        "maxObjects": 11
+      },
+      {
+        "seed": 37,
+        "t": 119.99999999997303,
+        "maxHeight": 1549.4700000000012,
+        "chunks": 33,
+        "loaded": 5,
+        "maxObjects": 12
+      },
+      {
+        "seed": 12345,
+        "t": 119.99999999997303,
+        "maxHeight": 1549.9900000000016,
+        "chunks": 33,
+        "loaded": 5,
+        "maxObjects": 10
+      }
+    ],
+    "autoCourse": {
+      "duration": 40.00000000000487,
+      "maxY": 10400.000000001266,
+      "impulses": 80,
+      "pulses": 80,
+      "sealOpens": 4,
+      "trapInteractions": 3
+    },
+    "glideCourse": {
+      "duration": 40.00000000000487,
+      "maxY": 5141.500000000013,
+      "impulses": 80,
+      "pulses": 80,
+      "sealOpens": 8,
+      "trapInteractions": 5
+    },
+    "groups": 29
+  },
+  "baseline": {
+    "comparedSteps": 67200,
+    "protectedPaths": [
+      "js/player.js",
+      "js/config.js",
+      "js/arena.js",
+      "js/input.js",
+      "js/physics.js",
+      "js/rift.js",
+      "js/traps.js",
+      "js/endless.js",
+      "js/rift-director.js",
+      "js/infinity-balance.js",
+      "js/momentum.js",
+      "js/main.js",
+      "index.html",
+      "assets/levels",
+      "assets/endless",
+      "assets/characters",
+      "js/forge",
+      ".github/workflows"
+    ],
+    "scenarios": [
+      {
+        "mode": "course",
+        "t": 40.00000000000487,
+        "y": 10400.000000001266,
+        "x": 137.62143344291144,
+        "vx": -47.682320219356725,
+        "dim": "B",
+        "pulses": 80,
+        "state": "won"
+      },
+      {
+        "mode": 0,
+        "t": 80.00000000000941,
+        "y": 20800.000000002445,
+        "x": 135.0588217747946,
+        "vx": -1.1499085160401157,
+        "dim": "B",
+        "pulses": 64,
+        "state": "playing"
+      },
+      {
+        "mode": 1,
+        "t": 80.00000000000941,
+        "y": 20800.000000002445,
+        "x": 135.00110554876164,
+        "vx": -0.02225207328277014,
+        "dim": "B",
+        "pulses": 62,
+        "state": "playing"
+      },
+      {
+        "mode": 2,
+        "t": 80.00000000000941,
+        "y": 20800.000000002445,
+        "x": 135.0000024528285,
+        "vx": -0.00005043014829595017,
+        "dim": "B",
+        "pulses": 62,
+        "state": "playing"
+      }
+    ]
+  },
+  "browser": {
+    "checks": 99,
+    "report": [
+      {
+        "label": "android",
+        "errors": [],
+        "savedCount": 13
+      },
+      {
+        "label": "webkit",
+        "errors": [],
+        "savedCount": 13
+      },
+      {
+        "label": "small",
+        "errors": [],
+        "savedCount": 13
+      }
+    ]
+  },
+  "nativeAudio": {
+    "samples": [
+      {
+        "t": 4.99583333333337,
+        "state": "playing",
+        "pulses": 10,
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 4.99583333333337,
+          "nextStep": 41,
+          "sources": 9,
+          "dimension": "B",
+          "settings": {
+            "music": 0.65,
+            "sfx": 0.7,
+            "muted": false
+          },
+          "scheduled": 43,
+          "resyncs": 2,
+          "drift": 0.013333333333370057,
+          "maxDrift": 0.06249999999999999,
+          "sfx": {
+            "flight": 10,
+            "switch": 10,
+            "pulse": 10
+          }
+        },
+        "maxVoices": 14
+      },
+      {
+        "t": 20.995833333332463,
+        "state": "playing",
+        "pulses": 42,
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 20.995833333332463,
+          "nextStep": 169,
+          "sources": 18,
+          "dimension": "B",
+          "settings": {
+            "music": 0.65,
+            "sfx": 0.7,
+            "muted": false
+          },
+          "scheduled": 171,
+          "resyncs": 2,
+          "drift": 0.01333333333246145,
+          "maxDrift": 0.06249999999999999,
+          "sfx": {
+            "flight": 42,
+            "switch": 42,
+            "pulse": 42,
+            "seal": 1
+          }
+        },
+        "maxVoices": 21
+      },
+      {
+        "t": 35.0125000000009,
+        "state": "playing",
+        "pulses": 70,
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 35.0125000000009,
+          "nextStep": 281,
+          "sources": 17,
+          "dimension": "B",
+          "settings": {
+            "music": 0.65,
+            "sfx": 0.7,
+            "muted": false
+          },
+          "scheduled": 283,
+          "resyncs": 2,
+          "drift": 0.01933333333423093,
+          "maxDrift": 0.06249999999999999,
+          "sfx": {
+            "flight": 70,
+            "switch": 70,
+            "pulse": 70,
+            "seal": 1,
+            "seal-close": 1,
+            "saw-break": 1,
+            "mine-warn": 1,
+            "mine-disarm": 1,
+            "laser-disable": 2
+          }
+        },
+        "maxVoices": 23
+      }
+    ],
+    "errors": []
+  },
+  "regression": {
+    "npmTest": {
+      "suites": 18,
+      "exitCode": 0
+    },
+    "momentumBrowserChecks": 111,
+    "audioBrowserChecks": 51,
+    "mobileForgeChecks": 50
+  },
+  "limits": [
+    "Only declared discrete entry samples and their joins validated",
+    "No physical iOS/Android performance or audio-latency test",
+    "Custom parameters uncertified; experimental Endless requires defaults",
+    "No separate hosted preview; production workflow unchanged"
+  ]
+}

@@ -109,6 +109,10 @@ export class Game {
     return this.endless?.director ? infinityClimbY(this.t) : this.t * CLIMB_SPEED;
   }
 
+  // Extension points for isolated developer simulations; defaults preserve Auto-Climb.
+  advanceWorld(h) { this.t += h; }
+  get cameraY() { return this.y; }
+
   /** Reuse the running app, input handlers and AudioContext for a menu selection. */
   setLevelData(data, storage) {
     this.endless=null;
@@ -457,7 +461,7 @@ export class Game {
       const tap=this.autoplayQueue.shift();this.lastAutoT=tap.t;this.press(tap.dir);
     }
     const previousX=this.player.x,previousY=this.y;
-    this.t += h;
+    this.advanceWorld(h);
     this.stats.steps++;
     const p = this.player;
     const y = this.y;
@@ -716,7 +720,7 @@ export class Game {
   render() {
     const { ctx } = this;
     const v = this.view;
-    const camY = this.state === 'menu' ? this.menuT * CLIMB_SPEED * 0.35 : this.y;
+    const camY = this.state === 'menu' ? this.menuT * CLIMB_SPEED * 0.35 : this.cameraY;
     const blend = this.dimBlend;
     const H = v.viewH;
     const psy = v.playerSY;
@@ -811,8 +815,8 @@ export class Game {
 
     this.renderObstacles(ctx, camY, psy, H, dim);
     for(const o of this.traps.traps)if(Math.abs(o.y-camY)<H+trapReach(o))drawTrap(ctx,o,this.t,psy-(o.y-camY),dim);
-    this.renderPlayer(ctx, psy);
-    if (this.state === 'won') this.renderClear(ctx, psy);
+    this.renderPlayer(ctx, psy - (this.y - camY));
+    if (this.state === 'won') this.renderClear(ctx, psy - (this.y - camY));
     this.renderDeath(ctx, camY, psy);
     if (this.debug.hitboxes) this.renderDebug(ctx, camY, psy, H);
     if(this.arena.width<WORLD_W)ctx.restore();

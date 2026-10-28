@@ -5,6 +5,10 @@
   "type": "module",
   "description": "RIFT CLIMB: PULSE – Rhythm-based vertical climber (HTML5 Canvas)",
   "scripts": {
+    "test:glide": "node tests/glide.mjs",
+    "test:glide:e2e": "node tests/glide-e2e.mjs",
+    "test:glide:audio": "node tests/glide-audio.mjs",
+    "build:glide": "node tools/build-glide.mjs",
     "start": "python3 -m http.server 8080",
     "test:level": "node tests/validate-level.mjs",
     "test:physics": "node tests/physics.mjs",
