@@ -4,12 +4,12 @@
 body[data-menu=home] #menu .panel {max-width:400px;}
 #menu .home-copy {text-align:center;color:#c1d2e6;margin:0 0 3px;font-size:13px;letter-spacing:.08em;}
 .main-nav {display:grid;gap:9px;}
-.nav-tile {position:relative;overflow:hidden;display:grid;gap:5px;text-align:left;min-height:64px;padding:13px 42px 13px 17px;border:1px solid #324b66;border-radius:12px;background:linear-gradient(110deg,#153145b8,#0d1126);color:#ecf8ff;font:700 14px system-ui;cursor:pointer;touch-action:manipulation;box-shadow:inset 3px 0 #56dcff70;transition:transform .12s,border-color .12s;}
+.nav-tile {position:relative;overflow:hidden;display:grid;gap:5px;text-align:left;min-height:64px;padding:13px 42px 13px 17px;border:1px solid #324b66;border-radius:12px;background:linear-gradient(110deg,#153145b8,#0d1126);color:#ecf8ff;font:700 14px system-ui;cursor:pointer;touch-action:manipulation;text-decoration:none;box-shadow:inset 3px 0 #56dcff70;transition:transform .12s,border-color .12s;}
 .nav-tile:first-child {min-height:76px;background:linear-gradient(105deg,#137695a0,#37306290);border-color:#4dd8f2;box-shadow:inset 3px 0 #77efff,0 0 20px #32d7ff19;}
 .nav-tile:nth-child(2) {box-shadow:inset 3px 0 #f161ac80;}.nav-tile:nth-child(3){box-shadow:inset 3px 0 #ffcf6d90;}
 .nav-tile small {font-size:9px;letter-spacing:.12em;color:#9eb6d0;font-weight:500;}.nav-tile b{position:absolute;right:16px;top:18px;font-size:23px;color:#67deef;}
 .nav-tile:active,.btn:active,.skin-card:active {transform:scale(.985);}
-button:focus-visible {outline:2px solid #e8fbff;outline-offset:3px;}
+button:focus-visible, a.nav-tile:focus-visible {outline:2px solid #e8fbff;outline-offset:3px;}
 .page-head {display:flex;gap:12px;align-items:center;text-align:left;}.page-head h2{font-size:19px;letter-spacing:.035em;margin:3px 0;}.eyebrow{font:600 9px ui-monospace,monospace;letter-spacing:.23em;color:#7acbdd;margin:0;}
 .back-btn {flex:none;width:44px;height:44px;border:1px solid #3c5575;border-radius:12px;background:#152238;color:#c8ecff;font:28px system-ui;cursor:pointer;touch-action:manipulation;}
 .page-intro {font-size:11px;line-height:1.65;color:#b2c5dc;margin:0;text-align:left;}

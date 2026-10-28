@@ -27,7 +27,7 @@ jobs:
       - name: Statische Seite zusammenstellen
         run: |
           mkdir -p _site
-          cp -r index.html css js assets _site/
+          cp -r index.html css js assets experiments _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
         with:
