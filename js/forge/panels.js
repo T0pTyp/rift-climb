@@ -1,5 +1,6 @@
 import {arenaFor,arenaCenter,ARENA_OPTIONS} from '../arena.js';
-import {CATEGORIES,chunkFingerprint} from '../rift-director.js';
+import {CATEGORIES} from '../rift-director.js';
+import {patternStatus} from '../pattern-library.js';
 // LEVEL FORGE: Eigenschaftenleiste und Prüfliste.
 // Eingaben wirken sofort (live), ein abgeschlossenes Feld ergibt genau einen Undo-Schritt.
 import { CLIMB_SPEED, PULSE_RADIUS, SEAL_OPEN_SEC, BAR_INSET_X, BAR_THICKNESS, UNITS_PER_BEAT } from '../config.js';
@@ -352,6 +353,10 @@ export class PropsPanel {
     const meta = (fn) => (tx, v) => fn(tx.touchMeta(), v);
     return [
       ...(L().chunk?[this.group('RIFT DIRECTOR',
+        this.text('Muster-ID',{key:'chunk-pattern',get:()=>L().chunk.pattern||L().id,maxLength:40,validate:v=>/^[A-Za-z0-9-]{1,40}$/.test(v),set:meta((l,v)=>{l.chunk.pattern=v;})}),
+        this.num('Musterversion',{key:'chunk-version',get:()=>L().chunk.patternVersion||1,min:1,max:9999,step:1,set:meta((l,v)=>{l.chunk.patternVersion=Math.round(v);})}),
+        this.check('Im Generator aktiviert',{key:'chunk-enabled',get:()=>L().chunk.enabled!==false,set:v=>app.edit('Muster aktivieren',tx=>{tx.touchMeta().chunk.enabled=v;}),hint:'Nur mit gültigem Nachweis. Öffentlich wirksam nach Export und Veröffentlichung.'}),
+        this.num('Mustergewicht',{key:'chunk-weight',get:()=>L().chunk.weight??1,min:0,max:10,step:.25,set:meta((l,v)=>{l.chunk.weight=v;}),hint:'0 = ausgeschlossen · 0,5 = selten · 1 = normal · 2 = häufig'}),
         this.select('Kategorie',{key:'chunk-category',get:()=>L().chunk.category,options:CATEGORIES.map(k=>[k,k]),set:meta((l,v)=>{l.chunk.category=v;})}),
         this.num('Director-Stufe',{key:'chunk-tier',get:()=>L().chunk.tier,min:0,max:6,step:1,set:meta((l,v)=>{l.chunk.tier=Math.round(v);})}),
         ...['entry','exit'].flatMap(kind=>[
@@ -363,8 +368,9 @@ export class PropsPanel {
           this.num(`${kind} Reaktionsraum`,{key:`chunk-${kind}-clear`,get:()=>L().chunk[kind].clearSec,min:.15,max:3,step:.05,unit:'s',set:meta((l,v)=>{l.chunk[kind].clearSec=v;})}),
         ]),
         this.select('Eintritt für Playtest',{key:'chunk-entry-fixture',get:()=>String(app.S.chunkEntry||0),options:(L().chunk.fixtures||[]).map((s,i)=>[String(i),`${s.id}: x ${s.x}, vx ${s.vx}`]),set:(tx,v)=>{app.S.chunkEntry=Number(v);}}),
-        this.info('Zertifikat',()=>L().chunk.validation?.hash===chunkFingerprint(L())?'Aktuell · Stichproben bestätigt':'Veraltet / ungeprüft'),
+        this.info('Validierungsstatus',()=>patternStatus(L())),
         this.buttons(['Chunk validieren',()=>app.validateChunk(),'primary'],['Eintritt testen',()=>app.playtest(false)]),
+        this.buttons(['Manuelle Prüfung bestätigen',()=>app.reviewChunk()]),
       )]:[this.buttons(['Als Director-Chunk vorbereiten',()=>app.prepareChunk()])]),
       this.group('Level',
         this.text('Name', { key: 'name', get: () => L().name, maxLength: LIMITS.nameLen, validate: (v) => v.trim().length > 0, set: meta((l, v) => { l.name = v; }) }),

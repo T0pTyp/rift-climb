@@ -1,0 +1,1100 @@
+[
+  {
+    "id": "infinity-opening",
+    "length": 663,
+    "level": {
+      "schema": "rift-climb-level",
+      "version": 1,
+      "id": "infinity-opening",
+      "name": "First breath",
+      "description": "FLOW: flow / flow. Gespiegelte Geometrie separat geprüft.",
+      "bpm": 120,
+      "beatsPerBar": 4,
+      "height": 923,
+      "start": {
+        "lane": 1,
+        "dimension": "blue"
+      },
+      "finish": {
+        "y": 663
+      },
+      "theme": "spire",
+      "music": "neon-ascent",
+      "arenaStyle": "narrow",
+      "chunk": {
+        "pattern": "opening",
+        "mirrored": false,
+        "category": "FLOW",
+        "tier": 0,
+        "stage": 0,
+        "opening": true,
+        "hazardFamily": "FLOW",
+        "actions": 0,
+        "requiredSwitches": 0,
+        "interactions": [],
+        "rhythm": {
+          "bpm": 120,
+          "subdivision": "quarter"
+        },
+        "challenge": false,
+        "entry": {
+          "x": [
+            133.5,
+            136.5
+          ],
+          "vx": [
+            -12,
+            12
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.5,
+          "traps": "local-zero"
+        },
+        "exit": {
+          "x": [
+            134.85,
+            135.15
+          ],
+          "vx": [
+            -1,
+            1
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.45,
+          "traps": "clear"
+        },
+        "fixtures": [
+          {
+            "id": "x-1.5v-12",
+            "x": 133.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x-1.5v0",
+            "x": 133.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x-1.5v12",
+            "x": 133.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x0v-12",
+            "x": 135,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x0v0",
+            "x": 135,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x0v12",
+            "x": 135,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x1.5v-12",
+            "x": 136.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x1.5v0",
+            "x": 136.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x1.5v12",
+            "x": 136.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          }
+        ],
+        "validation": {
+          "status": "verified",
+          "physics": "spring-240-v1",
+          "hash": "d976e4e6",
+          "fixtures": 9,
+          "proof": {
+            "schema": "rift-replay-proof",
+            "version": 1,
+            "levelId": "infinity-opening",
+            "levelHash": "ce186a0a",
+            "inputHash": "741638a5",
+            "seed": null,
+            "config": {
+              "simDt": 0.004166666666666667,
+              "climbSpeed": 260,
+              "steerOmega": 21.563636363636363,
+              "hitRadius": 8,
+              "pulseRadius": 120,
+              "pulseGrowSec": 0.15,
+              "arenaWidth": 270,
+              "arenaStep": 90
+            },
+            "start": {
+              "t": 0,
+              "x": 136.5,
+              "y": 0,
+              "vx": 12,
+              "lane": 1,
+              "dimension": "B"
+            },
+            "finish": {
+              "won": true,
+              "t": 2.5500000000000216,
+              "y": 663.0000000000056,
+              "progress": 100,
+              "tapsUsed": 0,
+              "killer": null,
+              "x": 135.0000000000001,
+              "vx": -1.1980164492735033e-12,
+              "target": 1,
+              "lastDir": 1,
+              "impulse": "idle",
+              "dimension": "B",
+              "steps": 612,
+              "pulses": 0
+            }
+          }
+        }
+      },
+      "objects": [
+        {
+          "id": "welcome-0-0",
+          "type": "obstacle",
+          "x": 0,
+          "y": 234,
+          "w": 20,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "welcome-0-250",
+          "type": "obstacle",
+          "x": 250,
+          "y": 234,
+          "w": 20,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "welcome-1-0",
+          "type": "obstacle",
+          "x": 0,
+          "y": 494,
+          "w": 20,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "welcome-1-250",
+          "type": "obstacle",
+          "x": 250,
+          "y": 494,
+          "w": 20,
+          "h": 12,
+          "dimension": "both"
+        }
+      ],
+      "replay": {
+        "taps": []
+      }
+    }
+  },
+  {
+    "id": "infinity-wide-arc",
+    "length": 728,
+    "level": {
+      "schema": "rift-climb-level",
+      "version": 1,
+      "id": "infinity-wide-arc",
+      "name": "wide-arc",
+      "description": "FLOW: flow / flow. Gespiegelte Geometrie separat geprüft.",
+      "bpm": 120,
+      "beatsPerBar": 4,
+      "height": 988,
+      "start": {
+        "lane": 1,
+        "dimension": "blue"
+      },
+      "finish": {
+        "y": 728
+      },
+      "theme": "spire",
+      "music": "neon-ascent",
+      "arenaStyle": "narrow",
+      "chunk": {
+        "pattern": "wide-arc",
+        "mirrored": false,
+        "category": "FLOW",
+        "tier": 0,
+        "stage": 0,
+        "opening": false,
+        "hazardFamily": "FLOW",
+        "actions": 2,
+        "requiredSwitches": 2,
+        "interactions": [],
+        "rhythm": {
+          "bpm": 120,
+          "subdivision": "quarter"
+        },
+        "challenge": false,
+        "entry": {
+          "x": [
+            133.5,
+            136.5
+          ],
+          "vx": [
+            -12,
+            12
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.5,
+          "traps": "local-zero"
+        },
+        "exit": {
+          "x": [
+            134.85,
+            135.15
+          ],
+          "vx": [
+            -1,
+            1
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.45,
+          "traps": "clear"
+        },
+        "fixtures": [
+          {
+            "id": "x-1.5v-12",
+            "x": 133.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x-1.5v0",
+            "x": 133.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x-1.5v12",
+            "x": 133.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x0v-12",
+            "x": 135,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x0v0",
+            "x": 135,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x0v12",
+            "x": 135,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x1.5v-12",
+            "x": 136.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x1.5v0",
+            "x": 136.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x1.5v12",
+            "x": 136.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          }
+        ],
+        "validation": {
+          "status": "verified",
+          "physics": "spring-240-v1",
+          "hash": "944ae3b2",
+          "fixtures": 9,
+          "proof": {
+            "schema": "rift-replay-proof",
+            "version": 1,
+            "levelId": "infinity-wide-arc",
+            "levelHash": "46b613bc",
+            "inputHash": "a8dbf386",
+            "seed": null,
+            "config": {
+              "simDt": 0.004166666666666667,
+              "climbSpeed": 260,
+              "steerOmega": 21.563636363636363,
+              "hitRadius": 8,
+              "pulseRadius": 120,
+              "pulseGrowSec": 0.15,
+              "arenaWidth": 270,
+              "arenaStep": 90
+            },
+            "start": {
+              "t": 0,
+              "x": 136.5,
+              "y": 0,
+              "vx": 12,
+              "lane": 1,
+              "dimension": "B"
+            },
+            "finish": {
+              "won": true,
+              "t": 2.800000000000034,
+              "y": 728.0000000000089,
+              "progress": 100,
+              "tapsUsed": 2,
+              "killer": null,
+              "x": 135.0000000394564,
+              "vx": -8.178442603865983e-7,
+              "target": 1,
+              "lastDir": -1,
+              "impulse": "idle",
+              "dimension": "B",
+              "steps": 672,
+              "pulses": 2
+            }
+          }
+        }
+      },
+      "objects": [
+        {
+          "id": "r0-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 252.2,
+          "w": 169,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 538.1999999999999,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-r",
+          "type": "obstacle",
+          "x": 191,
+          "y": 538.1999999999999,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        }
+      ],
+      "replay": {
+        "taps": [
+          {
+            "t": 0.55,
+            "dir": 1
+          },
+          {
+            "t": 1.65,
+            "dir": -1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "infinity-double-arc",
+    "length": 1222,
+    "level": {
+      "schema": "rift-climb-level",
+      "version": 1,
+      "id": "infinity-double-arc",
+      "name": "double-arc",
+      "description": "FLOW: flow / flow / flow / flow. Gespiegelte Geometrie separat geprüft.",
+      "bpm": 120,
+      "beatsPerBar": 4,
+      "height": 1482,
+      "start": {
+        "lane": 1,
+        "dimension": "blue"
+      },
+      "finish": {
+        "y": 1222
+      },
+      "theme": "spire",
+      "music": "neon-ascent",
+      "arenaStyle": "narrow",
+      "chunk": {
+        "pattern": "double-arc",
+        "mirrored": false,
+        "category": "FLOW",
+        "tier": 0,
+        "stage": 0,
+        "opening": false,
+        "hazardFamily": "FLOW",
+        "actions": 4,
+        "requiredSwitches": 4,
+        "interactions": [],
+        "rhythm": {
+          "bpm": 120,
+          "subdivision": "quarter"
+        },
+        "challenge": false,
+        "entry": {
+          "x": [
+            133.5,
+            136.5
+          ],
+          "vx": [
+            -12,
+            12
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.5,
+          "traps": "local-zero"
+        },
+        "exit": {
+          "x": [
+            134.85,
+            135.15
+          ],
+          "vx": [
+            -1,
+            1
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.45,
+          "traps": "clear"
+        },
+        "fixtures": [
+          {
+            "id": "x-1.5v-12",
+            "x": 133.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x-1.5v0",
+            "x": 133.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x-1.5v12",
+            "x": 133.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x0v-12",
+            "x": 135,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x0v0",
+            "x": 135,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x0v12",
+            "x": 135,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x1.5v-12",
+            "x": 136.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x1.5v0",
+            "x": 136.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x1.5v12",
+            "x": 136.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          }
+        ],
+        "validation": {
+          "status": "verified",
+          "physics": "spring-240-v1",
+          "hash": "f1e86631",
+          "fixtures": 9,
+          "proof": {
+            "schema": "rift-replay-proof",
+            "version": 1,
+            "levelId": "infinity-double-arc",
+            "levelHash": "5c7f81ef",
+            "inputHash": "7ec26c8d",
+            "seed": null,
+            "config": {
+              "simDt": 0.004166666666666667,
+              "climbSpeed": 260,
+              "steerOmega": 21.563636363636363,
+              "hitRadius": 8,
+              "pulseRadius": 120,
+              "pulseGrowSec": 0.15,
+              "arenaWidth": 270,
+              "arenaStep": 90
+            },
+            "start": {
+              "t": 0,
+              "x": 136.5,
+              "y": 0,
+              "vx": 12,
+              "lane": 1,
+              "dimension": "B"
+            },
+            "finish": {
+              "won": true,
+              "t": 4.7000000000000535,
+              "y": 1222.0000000000139,
+              "progress": 100,
+              "tapsUsed": 4,
+              "killer": null,
+              "x": 134.9999999605436,
+              "vx": 8.178442603865017e-7,
+              "target": 1,
+              "lastDir": 1,
+              "impulse": "idle",
+              "dimension": "B",
+              "steps": 1128,
+              "pulses": 4
+            }
+          }
+        }
+      },
+      "objects": [
+        {
+          "id": "r0-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 252.2,
+          "w": 169,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 512.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-r",
+          "type": "obstacle",
+          "x": 191,
+          "y": 512.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r2-r",
+          "type": "obstacle",
+          "x": 101,
+          "y": 772.2,
+          "w": 169,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r3-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 1032.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r3-r",
+          "type": "obstacle",
+          "x": 191,
+          "y": 1032.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        }
+      ],
+      "replay": {
+        "taps": [
+          {
+            "t": 0.55,
+            "dir": 1
+          },
+          {
+            "t": 1.55,
+            "dir": -1
+          },
+          {
+            "t": 2.55,
+            "dir": -1
+          },
+          {
+            "t": 3.55,
+            "dir": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "infinity-echo",
+    "length": 1339,
+    "level": {
+      "schema": "rift-climb-level",
+      "version": 1,
+      "id": "infinity-echo",
+      "name": "echo",
+      "description": "FLOW: flow / flow / flow / flow. Gespiegelte Geometrie separat geprüft.",
+      "bpm": 120,
+      "beatsPerBar": 4,
+      "height": 1599,
+      "start": {
+        "lane": 1,
+        "dimension": "blue"
+      },
+      "finish": {
+        "y": 1339
+      },
+      "theme": "spire",
+      "music": "neon-ascent",
+      "arenaStyle": "narrow",
+      "chunk": {
+        "pattern": "echo",
+        "mirrored": false,
+        "category": "FLOW",
+        "tier": 0,
+        "stage": 0,
+        "opening": false,
+        "hazardFamily": "FLOW",
+        "actions": 4,
+        "requiredSwitches": 4,
+        "interactions": [],
+        "rhythm": {
+          "bpm": 120,
+          "subdivision": "quarter"
+        },
+        "challenge": false,
+        "entry": {
+          "x": [
+            133.5,
+            136.5
+          ],
+          "vx": [
+            -12,
+            12
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.5,
+          "traps": "local-zero"
+        },
+        "exit": {
+          "x": [
+            134.85,
+            135.15
+          ],
+          "vx": [
+            -1,
+            1
+          ],
+          "target": 1,
+          "dimension": "blue",
+          "lastDirs": [
+            -1,
+            0,
+            1
+          ],
+          "impulses": [
+            "idle"
+          ],
+          "clearSec": 0.45,
+          "traps": "clear"
+        },
+        "fixtures": [
+          {
+            "id": "x-1.5v-12",
+            "x": 133.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x-1.5v0",
+            "x": 133.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x-1.5v12",
+            "x": 133.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x0v-12",
+            "x": 135,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x0v0",
+            "x": 135,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x0v12",
+            "x": 135,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          },
+          {
+            "id": "x1.5v-12",
+            "x": 136.5,
+            "vx": -12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": -1
+          },
+          {
+            "id": "x1.5v0",
+            "x": 136.5,
+            "vx": 0,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 0
+          },
+          {
+            "id": "x1.5v12",
+            "x": 136.5,
+            "vx": 12,
+            "y": 0,
+            "lane": 1,
+            "dim": "B",
+            "lastDir": 1
+          }
+        ],
+        "validation": {
+          "status": "verified",
+          "physics": "spring-240-v1",
+          "hash": "ba7e8d8e",
+          "fixtures": 9,
+          "proof": {
+            "schema": "rift-replay-proof",
+            "version": 1,
+            "levelId": "infinity-echo",
+            "levelHash": "bb8d2ec4",
+            "inputHash": "f877de9c",
+            "seed": null,
+            "config": {
+              "simDt": 0.004166666666666667,
+              "climbSpeed": 260,
+              "steerOmega": 21.563636363636363,
+              "hitRadius": 8,
+              "pulseRadius": 120,
+              "pulseGrowSec": 0.15,
+              "arenaWidth": 270,
+              "arenaStep": 90
+            },
+            "start": {
+              "t": 0,
+              "x": 136.5,
+              "y": 0,
+              "vx": 12,
+              "lane": 1,
+              "dimension": "B"
+            },
+            "finish": {
+              "won": true,
+              "t": 5.150000000000028,
+              "y": 1339.0000000000073,
+              "progress": 100,
+              "tapsUsed": 4,
+              "killer": null,
+              "x": 134.9999999605436,
+              "vx": 8.178442603899287e-7,
+              "target": 1,
+              "lastDir": 1,
+              "impulse": "idle",
+              "dimension": "B",
+              "steps": 1236,
+              "pulses": 4
+            }
+          }
+        }
+      },
+      "objects": [
+        {
+          "id": "r0-r",
+          "type": "obstacle",
+          "x": 101,
+          "y": 252.2,
+          "w": 169,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 551.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r1-r",
+          "type": "obstacle",
+          "x": 191,
+          "y": 551.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r2-r",
+          "type": "obstacle",
+          "x": 101,
+          "y": 850.2,
+          "w": 169,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r3-l",
+          "type": "obstacle",
+          "x": 0,
+          "y": 1149.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        },
+        {
+          "id": "r3-r",
+          "type": "obstacle",
+          "x": 191,
+          "y": 1149.2,
+          "w": 79,
+          "h": 12,
+          "dimension": "both"
+        }
+      ],
+      "replay": {
+        "taps": [
+          {
+            "t": 0.55,
+            "dir": -1
+          },
+          {
+            "t": 1.7,
+            "dir": 1
+          },
+          {
+            "t": 2.85,
+            "dir": -1
+          },
+          {
+            "t": 4,
+            "dir": 1
+          }
+        ]
+      }
+    }
+  }
+]

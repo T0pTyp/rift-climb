@@ -1,0 +1,514 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "pattern-p08",
+  "name": "Crossfire",
+  "description": "Zwei Strahlen kreuzen ihre Räume, zeitversetzte Farbfenster bleiben offen.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 1385.8,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 1125.8
+  },
+  "theme": "core",
+  "music": "neon-ascent",
+  "arenaStyle": "narrow",
+  "chunk": {
+    "pattern": "P08",
+    "patternVersion": 1,
+    "category": "VOLTAGE",
+    "tier": 4,
+    "stage": 4,
+    "enabled": true,
+    "weight": 1,
+    "idea": "Zwei Strahlen kreuzen ihre Räume, zeitversetzte Farbfenster bleiben offen.",
+    "opening": false,
+    "hazardFamily": "VOLTAGE",
+    "actions": 4,
+    "requiredSwitches": 4,
+    "interactions": [
+      {
+        "target": "p08-1",
+        "kind": "laser"
+      },
+      {
+        "target": "p08-2",
+        "kind": "laser"
+      },
+      {
+        "target": "p08-3",
+        "kind": "laser"
+      }
+    ],
+    "rhythm": {
+      "bpm": 120,
+      "subdivision": "quarter"
+    },
+    "challenge": false,
+    "entry": {
+      "x": [
+        133.5,
+        136.5
+      ],
+      "vx": [
+        -12,
+        12
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.5,
+      "traps": "local-zero"
+    },
+    "exit": {
+      "x": [
+        134.85,
+        135.15
+      ],
+      "vx": [
+        -1,
+        1
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.45,
+      "traps": "clear"
+    },
+    "fixtures": [
+      {
+        "id": "x-1.5v-12",
+        "x": 133.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x-1.5v0",
+        "x": 133.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x-1.5v12",
+        "x": 133.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x0v-12",
+        "x": 135,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x0v0",
+        "x": 135,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x0v12",
+        "x": 135,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x1.5v-12",
+        "x": 136.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x1.5v0",
+        "x": 136.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x1.5v12",
+        "x": 136.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      }
+    ],
+    "validation": {
+      "status": "verified",
+      "physics": "spring-240-v1",
+      "hash": "afa514d0",
+      "fixtures": 9,
+      "entries": [
+        {
+          "id": "x-1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v0",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v-12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v0",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v0",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.00000010194847,
+            "vx": -0.0000021097711349447757,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 4.333333333333408
+          },
+          "dynamicTimeOrigin": 0
+        }
+      ],
+      "proof": {
+        "schema": "rift-replay-proof",
+        "version": 1,
+        "levelId": "pattern-p08",
+        "levelHash": "63731210",
+        "inputHash": "e3f75903",
+        "seed": null,
+        "config": {
+          "simDt": 0.004166666666666667,
+          "climbSpeed": 260,
+          "steerOmega": 21.563636363636363,
+          "hitRadius": 8,
+          "pulseRadius": 120,
+          "pulseGrowSec": 0.15,
+          "arenaWidth": 270,
+          "arenaStep": 90
+        },
+        "start": {
+          "t": 0,
+          "x": 136.5,
+          "y": 0,
+          "vx": 12,
+          "lane": 1,
+          "dimension": "B"
+        },
+        "finish": {
+          "won": true,
+          "t": 4.333333333333408,
+          "y": 1126.666666666686,
+          "progress": 100,
+          "tapsUsed": 4,
+          "killer": null,
+          "x": 135.00000010194847,
+          "vx": -0.0000021097711349447757,
+          "target": 1,
+          "lastDir": -1,
+          "impulse": "idle",
+          "dimension": "B",
+          "steps": 1040,
+          "pulses": 4
+        }
+      },
+      "timing": {
+        "perInputMs": [
+          -40,
+          40
+        ],
+        "runs": 8
+      }
+    }
+  },
+  "objects": [
+    {
+      "id": "p08-1",
+      "type": "laser",
+      "x": 0,
+      "y": 280.8,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.008889,
+      "startAngle": -14,
+      "endAngle": 14,
+      "sweepPeriod": 3.4,
+      "length": 244,
+      "beamWidth": 7,
+      "warnSec": 0.9,
+      "activeSec": 0.55,
+      "offSec": 0.8,
+      "disableSec": 1.2,
+      "axis": "none"
+    },
+    {
+      "id": "p08-2",
+      "type": "laser",
+      "x": 244,
+      "y": 319.8,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.942222,
+      "startAngle": 162,
+      "endAngle": 180,
+      "sweepPeriod": 3.4,
+      "length": 244,
+      "beamWidth": 7,
+      "warnSec": 0.9,
+      "activeSec": 0.55,
+      "offSec": 0.8,
+      "disableSec": 1.2,
+      "axis": "none"
+    },
+    {
+      "id": "p08-3",
+      "type": "laser",
+      "x": 244,
+      "y": 728,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.244444,
+      "startAngle": 168,
+      "endAngle": 180,
+      "sweepPeriod": 3.4,
+      "length": 244,
+      "beamWidth": 7,
+      "warnSec": 0.9,
+      "activeSec": 0.55,
+      "offSec": 0.8,
+      "disableSec": 1.2,
+      "axis": "none"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 0.65,
+        "dir": -1
+      },
+      {
+        "t": 1.51,
+        "dir": 1
+      },
+      {
+        "t": 2.37,
+        "dir": 1
+      },
+      {
+        "t": 3.23,
+        "dir": -1
+      }
+    ]
+  }
+}

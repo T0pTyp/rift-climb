@@ -1,0 +1,454 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "pattern-p13",
+  "name": "Single Mine",
+  "description": "Eine ladende Mine hinter sich lassen; Warnkreis lesen.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 1006.2,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 746.2
+  },
+  "theme": "voltage",
+  "music": "neon-ascent",
+  "arenaStyle": "narrow",
+  "chunk": {
+    "pattern": "P13",
+    "patternVersion": 1,
+    "category": "VOLTAGE",
+    "tier": 2,
+    "stage": 2,
+    "enabled": true,
+    "weight": 1,
+    "idea": "Eine ladende Mine hinter sich lassen; Warnkreis lesen.",
+    "opening": false,
+    "hazardFamily": "VOLTAGE",
+    "actions": 2,
+    "requiredSwitches": 2,
+    "interactions": [
+      {
+        "target": "p13-1",
+        "kind": "mine"
+      }
+    ],
+    "rhythm": {
+      "bpm": 120,
+      "subdivision": "quarter"
+    },
+    "challenge": false,
+    "entry": {
+      "x": [
+        133.5,
+        136.5
+      ],
+      "vx": [
+        -12,
+        12
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.5,
+      "traps": "local-zero"
+    },
+    "exit": {
+      "x": [
+        134.85,
+        135.15
+      ],
+      "vx": [
+        -1,
+        1
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.45,
+      "traps": "clear"
+    },
+    "fixtures": [
+      {
+        "id": "x-1.5v-12",
+        "x": 133.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x-1.5v0",
+        "x": 133.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x-1.5v12",
+        "x": 133.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x0v-12",
+        "x": 135,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x0v0",
+        "x": 135,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x0v12",
+        "x": 135,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x1.5v-12",
+        "x": 136.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x1.5v0",
+        "x": 136.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x1.5v12",
+        "x": 136.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      }
+    ],
+    "validation": {
+      "status": "verified",
+      "physics": "spring-240-v1",
+      "hash": "ea1b7105",
+      "fixtures": 9,
+      "entries": [
+        {
+          "id": "x-1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v0",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v-12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v0",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v0",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 135.0000001111286,
+            "vx": -0.0000022993977636358287,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": -1,
+            "impulse": "idle",
+            "t": 2.870833333333371
+          },
+          "dynamicTimeOrigin": 0
+        }
+      ],
+      "proof": {
+        "schema": "rift-replay-proof",
+        "version": 1,
+        "levelId": "pattern-p13",
+        "levelHash": "96c3805d",
+        "inputHash": "ff898ac4",
+        "seed": null,
+        "config": {
+          "simDt": 0.004166666666666667,
+          "climbSpeed": 260,
+          "steerOmega": 21.563636363636363,
+          "hitRadius": 8,
+          "pulseRadius": 120,
+          "pulseGrowSec": 0.15,
+          "arenaWidth": 270,
+          "arenaStep": 90
+        },
+        "start": {
+          "t": 0,
+          "x": 136.5,
+          "y": 0,
+          "vx": 12,
+          "lane": 1,
+          "dimension": "B"
+        },
+        "finish": {
+          "won": true,
+          "t": 2.870833333333371,
+          "y": 746.4166666666764,
+          "progress": 100,
+          "tapsUsed": 2,
+          "killer": null,
+          "x": 135.0000001111286,
+          "vx": -0.0000022993977636358287,
+          "target": 1,
+          "lastDir": -1,
+          "impulse": "idle",
+          "dimension": "B",
+          "steps": 689,
+          "pulses": 2
+        }
+      },
+      "timing": {
+        "perInputMs": [
+          -40,
+          40
+        ],
+        "runs": 4
+      }
+    }
+  },
+  "objects": [
+    {
+      "id": "p13-1",
+      "type": "mine",
+      "x": 121,
+      "y": 262.6,
+      "w": 28,
+      "h": 28,
+      "dimension": "blue",
+      "activationRadius": 120,
+      "chargeSec": 0.75,
+      "blastRadius": 72,
+      "blastSec": 0.2
+    },
+    {
+      "id": "p13-2",
+      "type": "obstacle",
+      "x": 0,
+      "y": 564.2,
+      "w": 270,
+      "h": 12,
+      "dimension": "red"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 0.65,
+        "dir": 1
+      },
+      {
+        "t": 1.77,
+        "dir": -1
+      }
+    ]
+  }
+}

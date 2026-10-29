@@ -2,7 +2,7 @@
 export const MOMENTUM_CONFIG=Object.freeze({
   version:1,historySize:6,minHeight:400,bestRatio:.65,comparableRatio:.8,
   tier1Runs:2,tier2Runs:3,earlyRatio:.3,earlyFloor:120,earlyDeathsToReduce:2,
-  warmupMeters:Object.freeze([0,100,78]),strength:Object.freeze([0,2.2,4.8]),
+  warmupMeters:Object.freeze([0,75,65]),strength:Object.freeze([0,1.1,2.4]),
 });
 export const MOMENTUM_VERSION=1;
 const integer=v=>Number.isSafeInteger(v)&&v>=0?v:0;
@@ -55,7 +55,7 @@ export function observeMomentum(state,record,bestHeight){
  if(candidate>0&&candidate>=s.tier){s.tier=candidate;s.proof={bestHeight,heights:group.map(r=>r.height)};s.provenHeight=Math.min(bestHeight,median(s.proof.heights));}
  return s;
 }
-/** C1 warp: derivative >= 1-a/(3*sqrt(3)) > 0 for a<=4.8. */
+/** M8.3: half the former bonus, protected warmup, bounded by measured proof. */
 export function effectiveDifficultyHeight(actualHeight,snapshot){
  const x=Number.isFinite(actualHeight)?Math.max(0,actualHeight):0,tier=snapshot?.tier||0,p=snapshot?.provenHeight||0;
  if(![1,2].includes(tier)||!Number.isFinite(p)||p<MOMENTUM_CONFIG.minHeight||x>=p)return x;

@@ -1,8 +1,8 @@
 // Release balancing: heights are meters (10 world units), never a physics clock.
 export const INFINITY_BALANCE=Object.freeze({
-  zones:[0,150,400,900,1600,2400,3500],
+  zones:[0,75,200,450,800,1200,1750],
   labels:['SEHR EINFACH','EINFACH','MITTEL','FORTGESCHRITTEN','SCHWER','SEHR SCHWER','EXTREM'],
-  ceiling:4400,recoveryEvery:4,recentPatterns:3,maxHazardGapSec:1.65,
+  ceiling:2200,recoveryEvery:4,recentPatterns:3,maxHazardGapSec:1.65,
 });
 const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 export function difficultyAt(meters){

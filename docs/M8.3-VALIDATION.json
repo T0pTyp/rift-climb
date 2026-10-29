@@ -1,0 +1,1474 @@
+{
+  "milestone": "M8.3 Rift Pattern Forge",
+  "date": "2026-10-29",
+  "baseCommit": "744ab5e",
+  "bookRevision": "pattern-forge-1",
+  "bookHash": "575ca6a8",
+  "replaySignature": "a1d0c183",
+  "physics": {
+    "arenaWidth": 270,
+    "targetTravelPerTap": 90,
+    "verticalUnitsPerSecond": 260,
+    "simulationHz": 240,
+    "hitRadius": 8,
+    "unchangedFiles": [
+      "js/player.js",
+      "js/input.js",
+      "js/physics.js",
+      "js/config.js",
+      "js/traps.js",
+      "js/rift.js",
+      "js/art/",
+      "assets/levels/",
+      "experiments/"
+    ]
+  },
+  "patterns": {
+    "implemented": 24,
+    "verified": 24,
+    "reviewed": 0,
+    "disabled": [],
+    "services": 4,
+    "details": [
+      {
+        "id": "P01",
+        "name": "Single Shift",
+        "tier": 0,
+        "objects": 1,
+        "inputs": 2,
+        "duration": 2.87,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P02",
+        "name": "Side Step",
+        "tier": 1,
+        "objects": 1,
+        "inputs": 2,
+        "duration": 2.83,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P03",
+        "name": "Double Shift",
+        "tier": 1,
+        "objects": 3,
+        "inputs": 4,
+        "duration": 4.57,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P04",
+        "name": "Pulse Opening",
+        "tier": 2,
+        "objects": 2,
+        "inputs": 2,
+        "duration": 2.77,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P05",
+        "name": "Laser Gate",
+        "tier": 1,
+        "objects": 1,
+        "inputs": 2,
+        "duration": 2.81,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P06",
+        "name": "Laser Sweep",
+        "tier": 2,
+        "objects": 3,
+        "inputs": 4,
+        "duration": 4.63,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P07",
+        "name": "Double Laser",
+        "tier": 3,
+        "objects": 3,
+        "inputs": 4,
+        "duration": 4.45,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P08",
+        "name": "Crossfire",
+        "tier": 4,
+        "objects": 3,
+        "inputs": 4,
+        "duration": 4.33,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P09",
+        "name": "Single Saw",
+        "tier": 2,
+        "objects": 2,
+        "inputs": 2,
+        "duration": 2.79,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P10",
+        "name": "Twin Saws",
+        "tier": 3,
+        "objects": 6,
+        "inputs": 4,
+        "duration": 4.51,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P11",
+        "name": "Opposing Saws",
+        "tier": 4,
+        "objects": 7,
+        "inputs": 4,
+        "duration": 4.39,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P12",
+        "name": "Saw Gauntlet",
+        "tier": 5,
+        "objects": 6,
+        "inputs": 6,
+        "duration": 5.75,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P13",
+        "name": "Single Mine",
+        "tier": 2,
+        "objects": 2,
+        "inputs": 2,
+        "duration": 2.87,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 4
+      },
+      {
+        "id": "P14",
+        "name": "Mine Escape",
+        "tier": 3,
+        "objects": 3,
+        "inputs": 4,
+        "duration": 4.51,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P15",
+        "name": "Double Mines",
+        "tier": 4,
+        "objects": 4,
+        "inputs": 4,
+        "duration": 4.45,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P16",
+        "name": "Mine Chain",
+        "tier": 5,
+        "objects": 3,
+        "inputs": 6,
+        "duration": 5.85,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P17",
+        "name": "Saw & Laser",
+        "tier": 4,
+        "objects": 4,
+        "inputs": 4,
+        "duration": 4.45,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P18",
+        "name": "Pulse Break",
+        "tier": 4,
+        "objects": 5,
+        "inputs": 4,
+        "duration": 4.39,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 8
+      },
+      {
+        "id": "P19",
+        "name": "Voltage Trap",
+        "tier": 5,
+        "objects": 5,
+        "inputs": 6,
+        "duration": 5.85,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P20",
+        "name": "Phase Chaos",
+        "tier": 5,
+        "objects": 8,
+        "inputs": 6,
+        "duration": 5.55,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P21",
+        "name": "Triple Saw",
+        "tier": 6,
+        "objects": 8,
+        "inputs": 6,
+        "duration": 5.55,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P22",
+        "name": "Laser Maze",
+        "tier": 6,
+        "objects": 5,
+        "inputs": 6,
+        "duration": 5.65,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P23",
+        "name": "Rift Cascade",
+        "tier": 6,
+        "objects": 6,
+        "inputs": 6,
+        "duration": 5.45,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 12
+      },
+      {
+        "id": "P24",
+        "name": "Infinity Trial",
+        "tier": 6,
+        "objects": 9,
+        "inputs": 8,
+        "duration": 6.79,
+        "status": "VERIFIED",
+        "fixtures": 9,
+        "timing": 16
+      }
+    ]
+  },
+  "node": {
+    "fullCommand": "npm test",
+    "exitCode": 0,
+    "passLines": 480,
+    "focusedGroups": {
+      "director": 20,
+      "momentum": 53,
+      "patterns": 12
+    },
+    "entries": 252,
+    "timingVariations": 224,
+    "pairTransitions": 756,
+    "actualGameplayRuns": [
+      {
+        "seed": 1,
+        "milestones": [
+          {
+            "height": 501,
+            "t": 19.27083333333256,
+            "generated": 11,
+            "loaded": 7,
+            "objects": 23
+          },
+          {
+            "height": 1001,
+            "t": 38.50000000000367,
+            "generated": 16,
+            "loaded": 6,
+            "objects": 24
+          },
+          {
+            "height": 2500,
+            "t": 96.19166666666135,
+            "generated": 28,
+            "loaded": 6,
+            "objects": 28
+          },
+          {
+            "height": 5000,
+            "t": 192.34583333324056,
+            "generated": 48,
+            "loaded": 5,
+            "objects": 38
+          },
+          {
+            "height": 10001,
+            "t": 384.654166666399,
+            "generated": 90,
+            "loaded": 6,
+            "objects": 38
+          }
+        ]
+      },
+      {
+        "seed": 37,
+        "milestones": [
+          {
+            "height": 501,
+            "t": 19.27083333333256,
+            "generated": 11,
+            "loaded": 6,
+            "objects": 21
+          },
+          {
+            "height": 1001,
+            "t": 38.50000000000367,
+            "generated": 17,
+            "loaded": 7,
+            "objects": 21
+          },
+          {
+            "height": 2500,
+            "t": 96.19166666666135,
+            "generated": 29,
+            "loaded": 5,
+            "objects": 38
+          },
+          {
+            "height": 5000,
+            "t": 192.34583333324056,
+            "generated": 51,
+            "loaded": 6,
+            "objects": 38
+          },
+          {
+            "height": 10001,
+            "t": 384.654166666399,
+            "generated": 91,
+            "loaded": 5,
+            "objects": 38
+          }
+        ]
+      },
+      {
+        "seed": 12345,
+        "milestones": [
+          {
+            "height": 501,
+            "t": 19.27083333333256,
+            "generated": 11,
+            "loaded": 6,
+            "objects": 23
+          },
+          {
+            "height": 1001,
+            "t": 38.50000000000367,
+            "generated": 16,
+            "loaded": 6,
+            "objects": 26
+          },
+          {
+            "height": 2500,
+            "t": 96.19166666666135,
+            "generated": 29,
+            "loaded": 5,
+            "objects": 28
+          },
+          {
+            "height": 5000,
+            "t": 192.34583333324056,
+            "generated": 48,
+            "loaded": 5,
+            "objects": 36
+          },
+          {
+            "height": 10001,
+            "t": 384.654166666399,
+            "generated": 89,
+            "loaded": 5,
+            "objects": 36
+          }
+        ]
+      },
+      {
+        "seed": 4294967295,
+        "milestones": [
+          {
+            "height": 501,
+            "t": 19.27083333333256,
+            "generated": 11,
+            "loaded": 6,
+            "objects": 22
+          },
+          {
+            "height": 1001,
+            "t": 38.50000000000367,
+            "generated": 16,
+            "loaded": 6,
+            "objects": 27
+          },
+          {
+            "height": 2500,
+            "t": 96.19166666666135,
+            "generated": 27,
+            "loaded": 5,
+            "objects": 35
+          },
+          {
+            "height": 5000,
+            "t": 192.34583333324056,
+            "generated": 47,
+            "loaded": 5,
+            "objects": 38
+          },
+          {
+            "height": 10001,
+            "t": 384.654166666399,
+            "generated": 89,
+            "loaded": 5,
+            "objects": 38
+          }
+        ]
+      }
+    ],
+    "additionalGameplayRuns": [
+      {
+        "seed": 3,
+        "tier": 0,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 174,
+        "pulses": 174,
+        "loaded": 5,
+        "maxObjects": 33,
+        "type": "actual-Game-input-replay"
+      },
+      {
+        "seed": 53,
+        "tier": 0,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 176,
+        "pulses": 176,
+        "loaded": 6,
+        "maxObjects": 32,
+        "type": "actual-Game-input-replay"
+      },
+      {
+        "seed": 991,
+        "tier": 0,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 170,
+        "pulses": 170,
+        "loaded": 6,
+        "maxObjects": 37,
+        "type": "actual-Game-input-replay"
+      },
+      {
+        "seed": 3,
+        "tier": 2,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 172,
+        "pulses": 172,
+        "loaded": 6,
+        "maxObjects": 37,
+        "type": "actual-Game-input-replay"
+      },
+      {
+        "seed": 53,
+        "tier": 2,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 178,
+        "pulses": 178,
+        "loaded": 5,
+        "maxObjects": 34,
+        "type": "actual-Game-input-replay"
+      },
+      {
+        "seed": 991,
+        "tier": 2,
+        "meters": 5001.099999997588,
+        "seconds": 192.34999999990723,
+        "inputs": 172,
+        "pulses": 172,
+        "loaded": 5,
+        "maxObjects": 38,
+        "type": "actual-Game-input-replay"
+      }
+    ],
+    "adaptiveGameplayRuns": [
+      {
+        "tier": 1,
+        "seed": 1,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 35,
+        "loaded": 6
+      },
+      {
+        "tier": 1,
+        "seed": 37,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 38,
+        "loaded": 5
+      },
+      {
+        "tier": 1,
+        "seed": 12345,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 35,
+        "loaded": 4
+      },
+      {
+        "tier": 2,
+        "seed": 1,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 36,
+        "loaded": 5
+      },
+      {
+        "tier": 2,
+        "seed": 37,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 37,
+        "loaded": 5
+      },
+      {
+        "tier": 2,
+        "seed": 12345,
+        "actualHeight": 10001,
+        "t": 384.654166666399,
+        "maxObjects": 35,
+        "loaded": 4
+      }
+    ],
+    "generatorStress": {
+      "generated": 10001,
+      "maxLoaded": 7,
+      "note": "Generation only, not gameplay survival"
+    },
+    "generationOnly": [
+      {
+        "seed": 1,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 8,
+        "maxObjects": 38,
+        "type": "generation-only"
+      },
+      {
+        "seed": 2,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 34,
+        "type": "generation-only"
+      },
+      {
+        "seed": 3,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 33,
+        "type": "generation-only"
+      },
+      {
+        "seed": 4,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 35,
+        "type": "generation-only"
+      },
+      {
+        "seed": 5,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 35,
+        "type": "generation-only"
+      },
+      {
+        "seed": 6,
+        "meters": 5000,
+        "generated": 47,
+        "maxLoaded": 7,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 7,
+        "meters": 5000,
+        "generated": 46,
+        "maxLoaded": 7,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 8,
+        "meters": 5000,
+        "generated": 49,
+        "maxLoaded": 7,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 9,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 35,
+        "type": "generation-only"
+      },
+      {
+        "seed": 10,
+        "meters": 5000,
+        "generated": 49,
+        "maxLoaded": 8,
+        "maxObjects": 34,
+        "type": "generation-only"
+      },
+      {
+        "seed": 11,
+        "meters": 5000,
+        "generated": 49,
+        "maxLoaded": 8,
+        "maxObjects": 35,
+        "type": "generation-only"
+      },
+      {
+        "seed": 12,
+        "meters": 5000,
+        "generated": 51,
+        "maxLoaded": 8,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 13,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 32,
+        "type": "generation-only"
+      },
+      {
+        "seed": 14,
+        "meters": 5000,
+        "generated": 47,
+        "maxLoaded": 7,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 15,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 8,
+        "maxObjects": 34,
+        "type": "generation-only"
+      },
+      {
+        "seed": 16,
+        "meters": 5000,
+        "generated": 47,
+        "maxLoaded": 7,
+        "maxObjects": 37,
+        "type": "generation-only"
+      },
+      {
+        "seed": 17,
+        "meters": 5000,
+        "generated": 48,
+        "maxLoaded": 7,
+        "maxObjects": 35,
+        "type": "generation-only"
+      },
+      {
+        "seed": 18,
+        "meters": 5000,
+        "generated": 49,
+        "maxLoaded": 7,
+        "maxObjects": 34,
+        "type": "generation-only"
+      },
+      {
+        "seed": 19,
+        "meters": 5000,
+        "generated": 51,
+        "maxLoaded": 8,
+        "maxObjects": 36,
+        "type": "generation-only"
+      },
+      {
+        "seed": 20,
+        "meters": 5000,
+        "generated": 49,
+        "maxLoaded": 7,
+        "maxObjects": 33,
+        "type": "generation-only"
+      }
+    ],
+    "distribution": [
+      {
+        "height": 0,
+        "choices": 3200,
+        "meanTier": 0,
+        "expertRate": 0,
+        "counts": {
+          "wide-arc": 800,
+          "echo": 800,
+          "P01": 800,
+          "double-arc": 800
+        }
+      },
+      {
+        "height": 74,
+        "choices": 3200,
+        "meanTier": 0,
+        "expertRate": 0,
+        "counts": {
+          "wide-arc": 800,
+          "echo": 800,
+          "P01": 800,
+          "double-arc": 800
+        }
+      },
+      {
+        "height": 75,
+        "choices": 3200,
+        "meanTier": 0,
+        "expertRate": 0,
+        "counts": {
+          "wide-arc": 800,
+          "echo": 800,
+          "P01": 800,
+          "double-arc": 800
+        }
+      },
+      {
+        "height": 76,
+        "choices": 3200,
+        "meanTier": 0,
+        "expertRate": 0,
+        "counts": {
+          "wide-arc": 800,
+          "echo": 800,
+          "P01": 800,
+          "double-arc": 800
+        }
+      },
+      {
+        "height": 199,
+        "choices": 3200,
+        "meanTier": 0.553125,
+        "expertRate": 0,
+        "counts": {
+          "P02": 492,
+          "P03": 636,
+          "P01": 354,
+          "P05": 642,
+          "wide-arc": 371,
+          "echo": 358,
+          "double-arc": 347
+        }
+      },
+      {
+        "height": 200,
+        "choices": 3200,
+        "meanTier": 0.553125,
+        "expertRate": 0,
+        "counts": {
+          "P02": 492,
+          "P03": 636,
+          "P01": 354,
+          "P05": 642,
+          "wide-arc": 371,
+          "echo": 358,
+          "double-arc": 347
+        }
+      },
+      {
+        "height": 201,
+        "choices": 3200,
+        "meanTier": 0.553125,
+        "expertRate": 0,
+        "counts": {
+          "P02": 492,
+          "P03": 636,
+          "P01": 354,
+          "P05": 642,
+          "wide-arc": 371,
+          "echo": 358,
+          "double-arc": 347
+        }
+      },
+      {
+        "height": 449,
+        "choices": 3200,
+        "meanTier": 1.196875,
+        "expertRate": 0,
+        "counts": {
+          "P04": 392,
+          "P03": 336,
+          "P06": 331,
+          "P09": 373,
+          "wide-arc": 199,
+          "P13": 349,
+          "P02": 310,
+          "P05": 294,
+          "echo": 203,
+          "P01": 205,
+          "double-arc": 208
+        }
+      },
+      {
+        "height": 450,
+        "choices": 3200,
+        "meanTier": 1.196875,
+        "expertRate": 0,
+        "counts": {
+          "P04": 392,
+          "P03": 336,
+          "P06": 331,
+          "P09": 373,
+          "wide-arc": 199,
+          "P13": 349,
+          "P02": 310,
+          "P05": 294,
+          "echo": 203,
+          "P01": 205,
+          "double-arc": 208
+        }
+      },
+      {
+        "height": 451,
+        "choices": 3200,
+        "meanTier": 1.196875,
+        "expertRate": 0,
+        "counts": {
+          "P04": 392,
+          "P03": 336,
+          "P06": 331,
+          "P09": 373,
+          "wide-arc": 199,
+          "P13": 349,
+          "P02": 310,
+          "P05": 294,
+          "echo": 203,
+          "P01": 205,
+          "double-arc": 208
+        }
+      },
+      {
+        "height": 799,
+        "choices": 3200,
+        "meanTier": 1.6334375,
+        "expertRate": 0,
+        "counts": {
+          "P05": 227,
+          "P04": 275,
+          "P07": 257,
+          "P10": 295,
+          "wide-arc": 155,
+          "P06": 231,
+          "P09": 259,
+          "P13": 258,
+          "P02": 271,
+          "P03": 226,
+          "P14": 267,
+          "double-arc": 154,
+          "echo": 159,
+          "P01": 166
+        }
+      },
+      {
+        "height": 800,
+        "choices": 3200,
+        "meanTier": 1.6334375,
+        "expertRate": 0,
+        "counts": {
+          "P05": 227,
+          "P04": 275,
+          "P07": 257,
+          "P10": 295,
+          "wide-arc": 155,
+          "P06": 231,
+          "P09": 259,
+          "P13": 258,
+          "P02": 271,
+          "P03": 226,
+          "P14": 267,
+          "double-arc": 154,
+          "echo": 159,
+          "P01": 166
+        }
+      },
+      {
+        "height": 801,
+        "choices": 3200,
+        "meanTier": 1.6334375,
+        "expertRate": 0,
+        "counts": {
+          "P05": 227,
+          "P04": 275,
+          "P07": 257,
+          "P10": 295,
+          "wide-arc": 155,
+          "P06": 231,
+          "P09": 259,
+          "P13": 258,
+          "P02": 271,
+          "P03": 226,
+          "P14": 267,
+          "double-arc": 154,
+          "echo": 159,
+          "P01": 166
+        }
+      },
+      {
+        "height": 1199,
+        "choices": 3200,
+        "meanTier": 2.4225,
+        "expertRate": 0,
+        "counts": {
+          "P07": 203,
+          "P09": 160,
+          "P13": 128,
+          "P17": 245,
+          "wide-arc": 122,
+          "P08": 196,
+          "P15": 200,
+          "P11": 219,
+          "double-arc": 112,
+          "P14": 164,
+          "P04": 179,
+          "P02": 254,
+          "P06": 142,
+          "P18": 236,
+          "P01": 102,
+          "P10": 188,
+          "P05": 96,
+          "P03": 135,
+          "echo": 119
+        }
+      },
+      {
+        "height": 1200,
+        "choices": 3200,
+        "meanTier": 2.4225,
+        "expertRate": 0,
+        "counts": {
+          "P07": 203,
+          "P09": 160,
+          "P13": 128,
+          "P17": 245,
+          "wide-arc": 122,
+          "P08": 196,
+          "P15": 200,
+          "P11": 219,
+          "double-arc": 112,
+          "P14": 164,
+          "P04": 179,
+          "P02": 254,
+          "P06": 142,
+          "P18": 236,
+          "P01": 102,
+          "P10": 188,
+          "P05": 96,
+          "P03": 135,
+          "echo": 119
+        }
+      },
+      {
+        "height": 1201,
+        "choices": 3200,
+        "meanTier": 2.4225,
+        "expertRate": 0,
+        "counts": {
+          "P07": 203,
+          "P09": 160,
+          "P13": 128,
+          "P17": 245,
+          "wide-arc": 122,
+          "P08": 196,
+          "P15": 200,
+          "P11": 219,
+          "double-arc": 112,
+          "P14": 164,
+          "P04": 179,
+          "P02": 254,
+          "P06": 142,
+          "P18": 236,
+          "P01": 102,
+          "P10": 188,
+          "P05": 96,
+          "P03": 135,
+          "echo": 119
+        }
+      },
+      {
+        "height": 1499,
+        "choices": 3200,
+        "meanTier": 2.825625,
+        "expertRate": 0,
+        "counts": {
+          "P08": 192,
+          "P11": 190,
+          "P14": 133,
+          "P17": 205,
+          "wide-arc": 128,
+          "P10": 157,
+          "P18": 200,
+          "P13": 101,
+          "double-arc": 103,
+          "P15": 166,
+          "P07": 152,
+          "P02": 219,
+          "P20": 139,
+          "P01": 101,
+          "P12": 139,
+          "P06": 122,
+          "P04": 142,
+          "P03": 67,
+          "echo": 113,
+          "P16": 111,
+          "P19": 125,
+          "P09": 123,
+          "P05": 72
+        }
+      },
+      {
+        "height": 1500,
+        "choices": 3200,
+        "meanTier": 2.825625,
+        "expertRate": 0,
+        "counts": {
+          "P08": 184,
+          "P11": 191,
+          "P14": 143,
+          "P17": 199,
+          "wide-arc": 130,
+          "P10": 166,
+          "P18": 201,
+          "P13": 93,
+          "double-arc": 101,
+          "P15": 163,
+          "P07": 153,
+          "P02": 217,
+          "P20": 138,
+          "P01": 102,
+          "P12": 136,
+          "P06": 119,
+          "P04": 141,
+          "P03": 67,
+          "echo": 113,
+          "P16": 116,
+          "P19": 128,
+          "P09": 125,
+          "P05": 74
+        }
+      },
+      {
+        "height": 1501,
+        "choices": 3200,
+        "meanTier": 2.8265625,
+        "expertRate": 0,
+        "counts": {
+          "P08": 185,
+          "P11": 191,
+          "P14": 140,
+          "P17": 200,
+          "wide-arc": 128,
+          "P10": 164,
+          "P18": 202,
+          "P13": 95,
+          "double-arc": 102,
+          "P15": 163,
+          "P07": 151,
+          "P02": 219,
+          "P20": 139,
+          "P01": 101,
+          "P12": 135,
+          "P06": 119,
+          "P04": 142,
+          "P03": 65,
+          "echo": 115,
+          "P16": 116,
+          "P19": 129,
+          "P09": 126,
+          "P05": 73
+        }
+      },
+      {
+        "height": 1749,
+        "choices": 3200,
+        "meanTier": 2.9565625,
+        "expertRate": 0,
+        "counts": {
+          "P09": 132,
+          "P12": 172,
+          "P14": 132,
+          "P18": 199,
+          "wide-arc": 135,
+          "P11": 186,
+          "P17": 185,
+          "double-arc": 112,
+          "P15": 163,
+          "P08": 162,
+          "P16": 151,
+          "P02": 188,
+          "P07": 147,
+          "P20": 184,
+          "P19": 180,
+          "P01": 113,
+          "P13": 80,
+          "P10": 146,
+          "P04": 127,
+          "P05": 44,
+          "P06": 110,
+          "echo": 111,
+          "P03": 41
+        }
+      },
+      {
+        "height": 1750,
+        "choices": 3200,
+        "meanTier": 2.9565625,
+        "expertRate": 0,
+        "counts": {
+          "P09": 132,
+          "P12": 172,
+          "P14": 132,
+          "P18": 199,
+          "wide-arc": 135,
+          "P11": 186,
+          "P17": 185,
+          "double-arc": 112,
+          "P15": 163,
+          "P08": 162,
+          "P16": 151,
+          "P02": 188,
+          "P07": 147,
+          "P20": 184,
+          "P19": 180,
+          "P01": 113,
+          "P13": 80,
+          "P10": 146,
+          "P04": 127,
+          "P05": 44,
+          "P06": 110,
+          "echo": 111,
+          "P03": 41
+        }
+      },
+      {
+        "height": 1751,
+        "choices": 3200,
+        "meanTier": 2.9565625,
+        "expertRate": 0,
+        "counts": {
+          "P09": 132,
+          "P12": 172,
+          "P14": 132,
+          "P18": 199,
+          "wide-arc": 135,
+          "P11": 186,
+          "P17": 185,
+          "double-arc": 112,
+          "P15": 163,
+          "P08": 162,
+          "P16": 151,
+          "P02": 188,
+          "P07": 147,
+          "P20": 184,
+          "P19": 180,
+          "P01": 113,
+          "P13": 80,
+          "P10": 146,
+          "P04": 127,
+          "P05": 44,
+          "P06": 110,
+          "echo": 111,
+          "P03": 41
+        }
+      },
+      {
+        "height": 2200,
+        "choices": 3200,
+        "meanTier": 3.5671875,
+        "expertRate": 0.2184375,
+        "counts": {
+          "P11": 157,
+          "P15": 130,
+          "P19": 138,
+          "P21": 176,
+          "wide-arc": 135,
+          "P14": 93,
+          "P23": 182,
+          "P17": 138,
+          "echo": 112,
+          "P09": 46,
+          "P20": 148,
+          "P02": 187,
+          "P10": 91,
+          "P24": 170,
+          "P22": 171,
+          "P12": 160,
+          "P01": 113,
+          "P16": 123,
+          "P05": 50,
+          "P03": 36,
+          "double-arc": 113,
+          "P08": 158,
+          "P18": 140,
+          "P07": 101,
+          "P04": 44,
+          "P06": 49,
+          "P13": 39
+        }
+      },
+      {
+        "height": 5000,
+        "choices": 3200,
+        "meanTier": 3.5671875,
+        "expertRate": 0.2184375,
+        "counts": {
+          "P11": 157,
+          "P15": 130,
+          "P19": 138,
+          "P21": 176,
+          "wide-arc": 135,
+          "P14": 93,
+          "P23": 182,
+          "P17": 138,
+          "echo": 112,
+          "P09": 46,
+          "P20": 148,
+          "P02": 187,
+          "P10": 91,
+          "P24": 170,
+          "P22": 171,
+          "P12": 160,
+          "P01": 113,
+          "P16": 123,
+          "P05": 50,
+          "P03": 36,
+          "double-arc": 113,
+          "P08": 158,
+          "P18": 140,
+          "P07": 101,
+          "P04": 44,
+          "P06": 49,
+          "P13": 39
+        }
+      }
+    ]
+  },
+  "browser": {
+    "patternForge": {
+      "checks": 104,
+      "report": [
+        {
+          "label": "android",
+          "checks": 26,
+          "errors": []
+        },
+        {
+          "label": "webkit",
+          "checks": 52,
+          "errors": []
+        },
+        {
+          "label": "small",
+          "checks": 78,
+          "errors": []
+        },
+        {
+          "label": "desktop",
+          "checks": 104,
+          "errors": []
+        }
+      ],
+      "physicalDevices": false
+    },
+    "infinityFirst": 75,
+    "momentum": 111,
+    "mobileForge": 50,
+    "audio": 51,
+    "physicalSmartphones": false,
+    "screenshotsActuallyViewed": true,
+    "skillClientExecuted": true
+  },
+  "performance": {
+    "final": {
+      "cpuThrottle": 1,
+      "audio": {
+        "state": "running",
+        "active": true,
+        "songTime": 104.01249999998757,
+        "nextStep": 833,
+        "sources": 14,
+        "dimension": "R",
+        "settings": {
+          "music": 0.65,
+          "sfx": 0.7,
+          "muted": false
+        },
+        "scheduled": 833,
+        "resyncs": 3,
+        "drift": 0.023833333320894212,
+        "maxDrift": 0.1833333333333335,
+        "sfx": {
+          "checkpoint": 1,
+          "flight": 89,
+          "switch": 89,
+          "pulse": 89,
+          "mine-warn": 3,
+          "mine-blast": 3,
+          "saw-break": 3,
+          "seal": 6,
+          "seal-close": 6,
+          "laser-disable": 2,
+          "mine-disarm": 1
+        }
+      },
+      "sourcesMax": 28,
+      "driftP95": 0.031833333349752024,
+      "seconds": 104.01249999998757,
+      "seed": 37,
+      "momentum": {
+        "version": 1,
+        "tier": 0,
+        "provenHeight": 0
+      },
+      "generated": 31,
+      "chunksMax": 8,
+      "cacheMax": 2,
+      "seekCalls": 1,
+      "maxObjects": 38,
+      "frames": 6072,
+      "jsAvg": 0.8187911714646813,
+      "jsP95": 0.7000000476837158,
+      "jsP99": 13.099999904632568,
+      "fps": 58.45926002965405,
+      "gapP95": 21.09999990463257,
+      "longFrames": 22,
+      "heapKB": 0,
+      "sourcesAfterPause": 0
+    },
+    "earlierStress": {
+      "cpuThrottle": 4,
+      "audio": {
+        "state": "running",
+        "active": true,
+        "songTime": 104.02916666665422,
+        "nextStep": 833,
+        "sources": 12,
+        "dimension": "R",
+        "settings": {
+          "music": 0.65,
+          "sfx": 0.7,
+          "muted": false
+        },
+        "scheduled": 835,
+        "resyncs": 6,
+        "drift": 0.005333333308172428,
+        "maxDrift": 0.11516666666666703,
+        "sfx": {
+          "checkpoint": 1,
+          "flight": 89,
+          "switch": 89,
+          "pulse": 89,
+          "mine-warn": 3,
+          "mine-blast": 3,
+          "saw-break": 3,
+          "seal": 6,
+          "seal-close": 6,
+          "laser-disable": 2,
+          "mine-disarm": 1
+        }
+      },
+      "sourcesMax": 28,
+      "driftP95": 0.020000000019926745,
+      "seconds": 104.02916666665422,
+      "seed": 37,
+      "momentum": {
+        "version": 1,
+        "tier": 0,
+        "provenHeight": 0
+      },
+      "generated": 31,
+      "chunksMax": 8,
+      "cacheMax": 2,
+      "seekCalls": 1,
+      "maxObjects": 38,
+      "frames": 1660,
+      "jsAvg": 3.1932530108704626,
+      "jsP95": 4.099999904632568,
+      "jsP99": 59.10000014305115,
+      "fps": 15.964863827114081,
+      "gapP95": 99.60000014305115,
+      "longFrames": 1659,
+      "heapKB": 0,
+      "sourcesAfterPause": 0
+    },
+    "heapDeltaReliable": false,
+    "note": "Local Windows headless browser emulation. Earlier stress run predates the final spacing polish. Not physical smartphone measurements."
+  },
+  "limits": [
+    "No human fun or fairness results; VERIFIED is a simulation status, not REVIEWED.",
+    "Entry fixtures and ordered pair replays do not prove every continuous state.",
+    "Each chunk uses its declared local-zero clock and its signed dynamic phases.",
+    "4x CPU stress did not sustain 60 FPS.",
+    "No reliable heap measurement or proof of leak-free operation.",
+    "Local library changes require JSON export/build/commit to affect the public game.",
+    "Old generator/balance replay signatures are intentionally rejected; heights and saved profiles are retained."
+  ]
+}

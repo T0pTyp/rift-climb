@@ -91,14 +91,15 @@ export function checkPlayability(level) {
 export function checkChunkPlayability(level) {
  const m=level.chunk,taps=level.replay?.taps,fixtures=m?.fixtures;
  if(!taps||!Array.isArray(fixtures)||!fixtures.length||fixtures.length>64)return {method:'replay',ok:false,message:'Chunk braucht 1–64 explizite Eintrittsproben und eine Eingabefolge.'};
- let replay;
+ let replay;const entries=[];
  for(const s of fixtures){
   const state={x:s.x,vx:s.vx,target:s.lane,dimension:s.dim==='B'?'blue':'red',lastDir:s.lastDir,impulse:Math.abs(s.x-(45+90*s.lane))>2||Math.abs(s.vx)>30?'active':'idle'};
   if(s.y!==0||!accepts(m.entry,state))return {method:'replay',ok:false,message:'Eintrittsprobe außerhalb des Vertrags: '+s.id};
   replay=runReplay(level,taps,{entry:s,proof:true});const f=replay.proof?.finish;
   if(!replay.won||!accepts(m.exit,{...f,dimension:f?.dimension==='B'?'blue':'red'}))return {method:'replay',ok:false,message:`Probe ${s.id}: Tod oder ungültiger Ausgang.`,replay};
+  entries.push({id:s.id,start:replay.proof.start,finish:{x:f.x,vx:f.vx,target:f.target,dimension:f.dimension,lastDir:f.lastDir,impulse:f.impulse,t:f.t},dynamicTimeOrigin:0});
  }
- return {method:'replay',ok:true,replay,message:`${fixtures.length} reale Eintrittsproben → Ausgang bestätigt. Zwischenwerte sind keine mathematische Garantie.`,certificate:{status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(level),fixtures:fixtures.length,proof:replay.proof}};
+ return {method:'replay',ok:true,replay,message:`${fixtures.length} reale Eintrittsproben → Ausgang bestätigt. Zwischenwerte sind keine mathematische Garantie.`,certificate:{status:'verified',physics:'spring-240-v1',hash:chunkFingerprint(level),fixtures:fixtures.length,entries,proof:replay.proof}};
 }
 
 /** Developer replay: shared Game, real inputs, no renderer/audio dependency. */

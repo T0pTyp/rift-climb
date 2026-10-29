@@ -6,13 +6,16 @@ import { CLIMB_SPEED, SEAL_OPEN_SEC, BAR_THICKNESS } from '../config.js';
 import {
   validateLevelData, parseLevelText, serializeLevel, createEmptyLevel, unitsPerBeat, validateIndex, LIMITS,
 } from '../level-data.js';
-import { checkPlayability,checkChunkPlayability } from '../playcheck.js';
+import { checkPlayability } from '../playcheck.js';
 import { LevelDoc } from './history.js';
 import { ForgeView, objRect, fmt, ZOOM_MIN, ZOOM_MAX } from './view.js';
 import { ForgeStore } from './store.js';
 import { PropsPanel, renderIssues } from './panels.js';
 import { riftlingArt } from '../art/riftling.js';
 import { TouchGestures } from './touch.js';
+import {PatternLibrary} from './patterns.js';
+import {patternStatus} from '../pattern-library.js';
+import {validateChunkBook} from '../endless.js';
 import { AudioEngine } from '../audio.js';
 import { buildLevelRuntime } from '../level-data.js';
 import { BeatTimeline } from '../pulse/timeline.js';
@@ -242,7 +245,7 @@ function loadDocument(level, { sourceId = null, clean = true, message } = {}) {
   S.selection.clear();
   S.sealOpen.clear();
   S.testMarker = null;
-  S.chunkEntry = 0;
+  S.chunkEntry = Math.max(0,level.chunk?.fixtures?.findIndex(s=>s.x===135&&s.vx===0&&s.dim==='B'&&s.lane===1&&!s.lastDir)??0);
   S.hover = null;
   S.sourceId = sourceId || level.id;
   S.cleanJson = clean ? JSON.stringify(doc.level) : '';
@@ -1255,6 +1258,7 @@ function stripReplay(level) {
 
 function playtest(fromHere = false) {
   commitEdit();
+  $('#toast').classList.remove('show');
   if (S.rhythm) stopRhythm();
   const res = runValidation();
   if (!res.ok) {
@@ -1300,6 +1304,20 @@ function closePlaytest() {
   requestRender();
 }
 
+async function playPatternBook(patterns,prepared=null){
+  try{
+    $('#toast').classList.remove('show');
+    const book=prepared||await fetchJson('../endless/director.json');
+    if(!prepared)book.chunks=[...book.chunks.filter(c=>book.serviceIds?.includes(c.id)),...patterns.filter(l=>l.chunk.enabled!==false&&(l.chunk.weight??1)>0&&['VERIFIED','REVIEWED'].includes(patternStatus(l))).map(level=>({id:level.id,length:level.finish.y,level}))];
+    validateChunkBook(book);
+    localStorage.setItem(PLAYTEST_KEY,JSON.stringify({level:book.chunks[0].level,book,seed:37,mode:'endless',debug:$('#pt-debug').checked}));
+    stopRhythm();closeSheets();S.playtest={book,mode:'endless',from:null};
+    $('#pt-title').textContent='PATTERN LIBRARY · INFINITY · SEED 37 · ISOLIERTER TEST';
+    $('#playtest').hidden=false;$('#pt-frame').src=`${GAME_URL}?playtest=1&r=${Date.now()}`;
+    return true;
+  }catch(e){toast('Sammlungstest nicht möglich: '+e.message,'error');return false;}
+}
+
 function onMessage(e) {
   if (e.origin !== location.origin || e.source !== $('#pt-frame').contentWindow) return;
   const m = e.data || {};
@@ -1312,7 +1330,8 @@ function onMessage(e) {
     closePlaytest();
   } else if (m.type === 'forge:result' && m.won) {
     const pt = S.playtest;
-    if (pt && !m.from && m.mode === 'normal' && m.replay && Array.isArray(m.replay.taps) && stripReplay(doc.level) === pt.levelJson) {
+    const declaredEntry=pt?.from&&pt.from.y===0&&doc.level.chunk?.fixtures?.some(s=>JSON.stringify(s)===JSON.stringify(pt.from));
+    if (pt && (!m.from||declaredEntry) && m.mode === 'normal' && m.replay && Array.isArray(m.replay.taps) && stripReplay(doc.level) === pt.levelJson) {
       edit('Testlauf aufzeichnen', (tx) => {
         tx.touchMeta().replay = { taps: m.replay.taps.map((t) => ({ t: t.t, dir: t.dir })), recordedAt: new Date().toISOString() };
       });
@@ -1772,11 +1791,21 @@ function bindMobile() {
 const app = {
   S, get doc() { return doc; }, liveEdit, commitEdit, edit, toast, duplicate, deleteSelection, setToggle, playtest,
   removeTestMarker, clearReplay, markEditorState, setArenaStyle,
-  validateChunk(){const l=structuredClone(doc.level);l.chunk.actions=l.replay?.taps.length||0;l.chunk.requiredSwitches=l.chunk.actions;const r=checkChunkPlayability(l);if(r.ok)edit('Chunk zertifizieren',tx=>{Object.assign(tx.touchMeta().chunk,{actions:l.chunk.actions,requiredSwitches:l.chunk.requiredSwitches,validation:r.certificate});});toast(r.message,r.ok?'ok':'error');runValidation();},
-  async prepareChunk(){if(doc.level.arenaStyle!=='narrow'||doc.level.finish.y<300||doc.level.finish.y>2080){toast('Für Chunks: 270-u-Arena und passende Länge einstellen.','warn');return;}const b=await fetchJson('../endless/director.json');edit('Chunk vorbereiten',tx=>{const m=structuredClone(b.chunks[0].level.chunk);m.validation={status:'draft'};m.actions=doc.level.replay?.taps.length||0;m.requiredSwitches=m.actions;tx.touchMeta().chunk=m;});props.render();runValidation();},
+  validateChunk(){const result=patternLibrary.validate();runValidation();return result;},
+  reviewChunk(){return patternLibrary.review();},
+  async prepareChunk(){if(doc.level.arenaStyle!=='narrow'||doc.level.finish.y<300||doc.level.finish.y>2080){toast('Für Chunks: 270-u-Arena und passende Länge einstellen.','warn');return;}const b=await fetchJson('../endless/director.json');edit('Chunk vorbereiten',tx=>{const m=structuredClone(b.chunks[0].level.chunk);Object.assign(m,{pattern:doc.level.id,patternVersion:1,opening:false,category:'FLOW',hazardFamily:'FLOW',tier:0,stage:0,weight:1,enabled:false,validation:{status:'unverified'}});m.actions=doc.level.replay?.taps.length||0;m.requiredSwitches=m.actions;tx.touchMeta().chunk=m;});props.render();runValidation();},
 };
 
+const patternLibrary=new PatternLibrary({
+ onOpen:()=>$('#toast').classList.remove('show'),
+ store,fetch:fetchJson,modal,toast,download:(name,text)=>shareOrDownload(name,text),
+ current:()=>doc.level,confirmDiscard,edit,
+ open:l=>loadDocument(l,{message:'Muster geöffnet: '+l.chunk.pattern}),play:()=>playtest(false),testBook:playPatternBook,
+ confirm:text=>modal('Bestätigen',text,[['Abbrechen',false],['Bestätigen',true,'primary']]),
+});
+
 function bindUi() {
+  $('#btn-patterns').addEventListener('click',()=>patternLibrary.open());
   const cv = view.canvas;
   cv.addEventListener('pointerdown', onPointerDown);
   cv.addEventListener('pointermove', onPointerMove);
@@ -1827,7 +1856,7 @@ function bindUi() {
   $('#btn-playfrom').addEventListener('click', () => playtest(true));
   $('#btn-zoom-reset').addEventListener('click', () => { view.resetZoom(); view.clampCamera(doc.level.height); requestRender(); });
   $('#pt-exit').addEventListener('click', closePlaytest);
-  $('#pt-restart').addEventListener('click', () => { const from = S.playtest && S.playtest.from; closePlaytest(); playtest(!!from); });
+  $('#pt-restart').addEventListener('click', () => { const from = S.playtest && S.playtest.from,book=S.playtest?.book; closePlaytest(); if(book)playPatternBook(null,book);else playtest(!!from); });
 
   const pop = $('#grid-pop');
   const popBtn = $('#btn-grid-settings');
@@ -1904,7 +1933,7 @@ async function boot() {
 }
 
 window.__FORGE = {
-  S, view, store, app, previewAudio,
+  S, view, store, app, previewAudio,patternLibrary,
   get doc() { return doc; },
   actions: { requestRender, loadDocument, setSelection, placeAt, exportText, importText, playtest, closePlaytest, saveLocal, newLevel, duplicate, copy, paste, deleteSelection, runValidation, setTool, setKind, setDimMode, setGrid, startRhythm, stopRhythm, openGameLevel, gameLevels },
   ready: boot(),

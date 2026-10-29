@@ -1,0 +1,102 @@
+{
+  "schema": "rift-pattern-library",
+  "version": 1,
+  "patterns": [
+    {
+      "id": "P01",
+      "file": "p01.json"
+    },
+    {
+      "id": "P02",
+      "file": "p02.json"
+    },
+    {
+      "id": "P03",
+      "file": "p03.json"
+    },
+    {
+      "id": "P04",
+      "file": "p04.json"
+    },
+    {
+      "id": "P05",
+      "file": "p05.json"
+    },
+    {
+      "id": "P06",
+      "file": "p06.json"
+    },
+    {
+      "id": "P07",
+      "file": "p07.json"
+    },
+    {
+      "id": "P08",
+      "file": "p08.json"
+    },
+    {
+      "id": "P09",
+      "file": "p09.json"
+    },
+    {
+      "id": "P10",
+      "file": "p10.json"
+    },
+    {
+      "id": "P11",
+      "file": "p11.json"
+    },
+    {
+      "id": "P12",
+      "file": "p12.json"
+    },
+    {
+      "id": "P13",
+      "file": "p13.json"
+    },
+    {
+      "id": "P14",
+      "file": "p14.json"
+    },
+    {
+      "id": "P15",
+      "file": "p15.json"
+    },
+    {
+      "id": "P16",
+      "file": "p16.json"
+    },
+    {
+      "id": "P17",
+      "file": "p17.json"
+    },
+    {
+      "id": "P18",
+      "file": "p18.json"
+    },
+    {
+      "id": "P19",
+      "file": "p19.json"
+    },
+    {
+      "id": "P20",
+      "file": "p20.json"
+    },
+    {
+      "id": "P21",
+      "file": "p21.json"
+    },
+    {
+      "id": "P22",
+      "file": "p22.json"
+    },
+    {
+      "id": "P23",
+      "file": "p23.json"
+    },
+    {
+      "id": "P24",
+      "file": "p24.json"
+    }
+  ]
+}

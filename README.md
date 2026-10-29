@@ -6,9 +6,53 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
-## M8.1 – RIFT MOMENTUM (aktueller Release)
+## M8.3 – RIFT PATTERN FORGE (aktueller Release)
 
-**Isoliertes M8.2-Experiment:** Der auf `experiment/m8.2-rift-glide` entwickelte Vergleich von Auto-Climb, aktivem RIFT GLIDE und Glide Endless ist nach ausdrücklichem Folgeauftrag in `main` integriert. Der öffentliche Spielmodus bleibt Auto-Climb; der unveränderte Pages-Workflow nimmt `experiments/` nicht ins veröffentlichte Paket auf. Lokal `python -m http.server 8080 --bind 0.0.0.0` starten und `/experiments/rift-glide/` öffnen; auf dem Smartphone dieselbe URL mit der WLAN-IP des PCs verwenden. Parameter, Replay-Nachweise, getrennte Teststatistik und Grenzen: [M8.2-RIFT-GLIDE.md](docs/M8.2-RIFT-GLIDE.md).
+**Auto-Climb bleibt die endgültige Flugmechanik.** PLAY startet direkt RIFT INFINITY.
+Arena **270 u**, Zielversatz **90 u pro Touch**, **260 u/s**, 240-Hz-Simulation,
+Hitbox und Rift Pulse bleiben unverändert. Compact und Glide sind im öffentlichen
+Menü ausgeblendet. Die sechs Kampagnenlevel und das bestehende Glide-Experiment
+bleiben erhalten. Es gibt genau eine hohe Grafikdarstellung.
+
+Die Schwierigkeit steigt jetzt doppelt so schnell: **0 / 75 / 200 / 450 / 800 /
+1.200 / 1.750 m**, Obergrenze bei **2.200 m**. Der Auswahlparameter bei 1.500 m
+entspricht exakt der früheren Kurve bei 3.000 m. Die Geschwindigkeit steigt nicht.
+Momentum behält seine Leistungsnachweise, reduziert den zusätzlichen Bonus auf
+die Hälfte und bleibt unterhalb der bewiesenen Höhe. Rekorde bleiben erhalten.
+
+**24 neue handgestaltete JSON-Muster**: eigenständige Wandlaser ohne Pflichtbalken,
+zwei oder drei gleichzeitig bewegliche Sägen, Minenketten, Farbfolgen, Siegel und
+kombinierte Pulse-Aufgaben. Alle 24 haben einen echten Simulationsnachweis. Dazu
+bleiben die geprüfte Eröffnung und drei FLOW-Serviceabschnitte erhalten.
+
+**LEVEL FORGE → Pattern Library** (mobil im Menü): Vorschau, Suche, Öffnen,
+Bearbeiten, Duplizieren, Aktivieren/Deaktivieren, lokale Speicherung und JSON-
+Import/Export. Einzelmuster und gespeicherte Sammlungen lassen sich mit der
+echten Spielsimulation testen, ohne öffentliche Scores oder Momentum zu verändern.
+Öffentlich werden lokale Änderungen erst durch Export, Build und Commit/Deployment.
+
+Quellen: `assets/endless/patterns/p01.json` bis `p24.json`; gemeinsame Level-/
+Chunk-Daten statt zweiter Architektur. Geometrieänderungen machen Zertifikate
+ungültig. VERIFIED bedeutet erfolgreiche Simulation; REVIEWED erfordert eine
+ausdrücklich bestätigte menschliche Prüfung. Alte Replay-Signaturen mit anderer
+Kurve werden abgelehnt; Highscores bleiben erhalten.
+
+```sh
+npm run build:infinity       # JSON-Quellen prüfen und Director-Buch bauen
+npm test                    # vollständige Node-Regression
+npm run test:patterns:e2e    # HTTP-Server auf localhost:8080 vorausgesetzt
+python -m http.server 8080 --bind 0.0.0.0
+```
+
+[Bedienung, alle 24 Muster, Architektur und Grenzen](docs/M8.3-PATTERN-FORGE.md) ·
+[Maschinenlesbare Testresultate](docs/M8.3-VALIDATION.json).
+
+Die folgenden Abschnitte dokumentieren **historische Entwicklungsstände**.
+M8.1-Momentum ist weiter aktiv, jetzt mit Faktoren 1,1/2,4 und Warm-up 75/65 m.
+
+## M8.1 – RIFT MOMENTUM (historischer Stand)
+
+**Abgeschlossenes M8.2-Experiment:** Dateien und Branch bleiben erhalten. Die bereits veröffentlichte direkte Entwicklungs-URL bleibt erreichbar, die öffentliche Menüverknüpfung ist seit M8.3 ausgeblendet. Glide wird nicht weiterentwickelt und ersetzt Auto-Climb nicht. Historische Parameter und Testnachweise: [M8.2-RIFT-GLIDE.md](docs/M8.2-RIFT-GLIDE.md).
 
 Infinity erkennt wiederholt erreichte Höhen und führt erfahrene Spieler schneller
 an bekannte Herausforderungen zurück. **Alle Runs starten weiter bei 0 m.**

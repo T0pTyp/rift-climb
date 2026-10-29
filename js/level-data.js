@@ -263,7 +263,12 @@ export function validateLevelData(raw) {
   if(raw.chunk!==undefined){
     const m=raw.chunk;
     if(!m||!CATEGORIES.includes(m.category)||!Number.isInteger(m.tier)||m.tier<0||m.tier>6||!validContract(m.entry)||!validContract(m.exit,true)||level.arenaStyle!=='narrow')err('chunk','Chunk: Kategorie, Schwierigkeit oder Bewegungsvertrag ungültig.');
-    else level.chunk=JSON.parse(JSON.stringify(m));
+    else {
+      if(m.weight!==undefined&&(!Number.isFinite(m.weight)||m.weight<0||m.weight>10))err('chunk','Mustergewicht muss zwischen 0 und 10 liegen.');
+      if(m.enabled!==undefined&&typeof m.enabled!=='boolean')err('chunk','Musteraktivierung muss ein Wahrheitswert sein.');
+      if(m.patternVersion!==undefined&&(!Number.isSafeInteger(m.patternVersion)||m.patternVersion<1))err('chunk','Musterversion muss eine positive Ganzzahl sein.');
+      level.chunk=JSON.parse(JSON.stringify(m));
+    }
   }
   if (raw.replay !== undefined) {
     const r = raw.replay;

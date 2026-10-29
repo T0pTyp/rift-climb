@@ -1,7 +1,7 @@
 // Prepared contracts, not a runtime pathfinder. Coordinates/velocities stay continuous.
 import {INFINITY_BALANCE,difficultyAt,difficultyWeight} from './infinity-balance.js';
 import {MOMENTUM_CONFIG,momentumSnapshot,effectiveDifficultyHeight} from './momentum.js';
-export const GENERATOR_VERSION='rift-director-momentum-1';
+export const GENERATOR_VERSION='rift-pattern-forge-1';
 export const CATEGORIES=['FLOW','PHASE','PULSE','SAW','VOLTAGE','PRECISION','COMBO','SLIT','PAIR','LASER','MILL'];
 export const DIRECTOR_TIERS=INFINITY_BALANCE.labels;
 export const ZONES=['CYAN RIFT TOWER','FRACTURED DIMENSION','MECHANICAL CORE','VOLTAGE FACILITY','RIFT STORM','INFINITY CORE'];
@@ -23,13 +23,13 @@ export function validContract(c,exit=false) {
 }
 // FNV audit fingerprint: detects stale offline certificates, not an anti-cheat signature.
 export function chunkFingerprint(level) {
- const {validation,...meta}=level.chunk||{};
+ const {validation,enabled,weight,...meta}=level.chunk||{};
  // Editor normalization and JSON export may reorder keys. Sign semantic data.
  const text=JSON.stringify({...level,chunk:meta},(_,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.fromEntries(Object.entries(v).sort(([a],[b])=>a<b?-1:a>b?1:0)):v);let h=2166136261;
  for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return(h>>>0).toString(16).padStart(8,'0');
 }
 export const legacyDirectorSignature=book=>chunkFingerprint({revision:book.revision,chunks:book.chunks.map(c=>({id:c.id,hash:chunkFingerprint(c.level)}))});
-export const directorSignature=book=>chunkFingerprint({generator:GENERATOR_VERSION,book:legacyDirectorSignature(book),balance:INFINITY_BALANCE,momentum:MOMENTUM_CONFIG});
+export const directorSignature=book=>chunkFingerprint({generator:GENERATOR_VERSION,book:legacyDirectorSignature(book),controls:book.chunks.map(c=>({id:c.id,enabled:c.level.chunk.enabled!==false,weight:c.level.chunk.weight??1})),balance:INFINITY_BALANCE,momentum:MOMENTUM_CONFIG});
 export class RiftDirector {
  constructor(book,random,momentum){this.book=book;this.random=random;this.reset(momentum);}
  reset(momentum=this.momentum){this.momentum=momentumSnapshot(momentum);this.history=[];this.rejected=0;this.fallbacks=0;this.nextChallenge=600;this.previous=null;this.sinceRecovery=0;}
@@ -60,12 +60,16 @@ export class RiftDirector {
  selectInfinity(y){
   const meters=this.difficultyHeight(y*.1),last=this.history.at(-1),recent=this.history.slice(-INFINITY_BALANCE.recentPatterns);
   if(!this.history.length){const c=this.book.chunks.find(c=>c.level.chunk.opening);this.remember(c);return c;}
-  const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk,ok=!m.opening&&m.validation.status==='verified'&&compatible(this.previous,m.entry)&&difficultyWeight(m.tier,meters)>0;if(!ok)this.rejected++;return ok;});
+  const eligible=this.book.chunks.filter(c=>{const m=c.level.chunk,ok=!m.opening&&m.enabled!==false&&(m.weight??1)>0&&m.validation.status==='verified'&&compatible(this.previous,m.entry)&&difficultyWeight(m.tier,meters)>0;if(!ok)this.rejected++;return ok;});
   const recovery=this.sinceRecovery>=INFINITY_BALANCE.recoveryEvery;
   let pool=eligible.filter(c=>!recent.some(h=>h.pattern===c.level.chunk.pattern)&&(!recovery||c.level.chunk.category==='FLOW'));
-  if(!pool.length){this.fallbacks++;pool=eligible.filter(c=>c.level.chunk.category==='FLOW');}
+  if(!pool.length){this.fallbacks++;pool=eligible.filter(c=>c.level.chunk.category==='FLOW');const alternatives=pool.filter(c=>c.level.chunk.pattern!==last?.pattern);if(alternatives.length)pool=alternatives;}
   if(!pool.length)throw Error('RIFT DIRECTOR: kein zertifizierter FLOW-Anschluss');
-  const weights=pool.map(c=>{const m=c.level.chunk,freq=this.history.filter(h=>h.pattern===m.pattern).length;return difficultyWeight(m.tier,meters)/(1+freq*2)*(last?.category===m.category ? .55 : 1);});
+  const weights=pool.map(c=>{
+   const m=c.level.chunk,freq=this.history.filter(h=>h.pattern===m.pattern).length;
+   const repeat=last?.family===m.hazardFamily?(this.history.at(-2)?.family===m.hazardFamily ? .35 : .65):1;
+   return (m.weight??1)*difficultyWeight(m.tier,meters)/(1+freq*2)*(last?.category===m.category ? .55 : 1)*repeat;
+  });
   let roll=this.random()*weights.reduce((a,b)=>a+b,0),chosen=pool.at(-1);
   for(let i=0;i<pool.length;i++){roll-=weights[i];if(roll<0){chosen=pool[i];break;}}
   this.remember(chosen);return chosen;

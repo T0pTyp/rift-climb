@@ -595,7 +595,7 @@ export class Game {
     this.killer = { o, x: p.x, y, dim: p.dim, reason: this.deathReason(o, p.dim) };
     if (this.debug.hitboxes || this.debug.trace) {
       const chunk=this.endless?.chunks.find(c=>y>=c.origin&&y<c.end);
-      this.deathLog.push({type:o.type|| (o.color==='S'?'seal':'obstacle'),id:o.id,x:p.x,y,vx:p.vx,dimension:p.dim,t:this.t,level:this.level.id,chunk:chunk?.id,chunkIndex:chunk?.index,seed:this.endless?.seed,reason:this.killer.reason,inputs:(this.recentInputs||[]).filter(i=>this.t-i.t<=6)});
+      this.deathLog.push({type:o.type|| (o.color==='S'?'seal':'obstacle'),id:o.id,x:p.x,y,height:worldMeters(y),vx:p.vx,dimension:p.dim,t:this.t,level:this.level.id,pattern:chunk?.pattern||this.levelData.chunk?.pattern,chunk:chunk?.id,chunkIndex:chunk?.index,seed:this.endless?.seed,reason:this.killer.reason,inputs:(this.recentInputs||[]).filter(i=>this.t-i.t<=6)});
       if(this.deathLog.length>32)this.deathLog.shift();
     }
     this.sealStreak = 0;
@@ -1096,6 +1096,8 @@ export class Game {
       `Partikel ${this.particles.count}/${this.particles.cap}  Riftling ${this.anim.state}`,
     ];
     if(this.endless?.director){const e=this.endless,c=e.chunks.find(c=>this.y>=c.origin&&this.y<c.end);lines.push(`Seed ${e.seed} · ${c?.id} · ${c?.category}`,`Director ${DIRECTOR_TIERS[e.tierAt(this.y)]} · geprüft ${c?.validation?.status}`,`Chunks ${e.chunks.length} / erzeugt ${e.generated} · verworfen ${e.director.rejected} · Fallback ${e.director.fallbacks}`,`Objekte ${this.obstacles.length+this.traps.traps.length} · Fallen ${this.traps.traps.length}`);}
+    const currentPattern=this.endless?.chunks.find(c=>this.y>=c.origin&&this.y<c.end)||this.levelData.chunk;
+    if(currentPattern)lines.push(`Muster ${currentPattern.pattern} · Gewicht ${currentPattern.weight??1} · ${currentPattern.validation?.status}`,`Eintritt x ${currentPattern.entry?.x?.join('–')} · ${currentPattern.entry?.dimension}`);
     if(this.endless?.director){const e=this.endless,s=this.storage.progression?.data.endless.momentum,q=s?qualifyingRuns(s.recentRuns,this.storage.stats.best):[];lines.push(`Momentum ${e.momentum.tier} · bewiesen ${e.momentum.provenHeight} m · Best ${this.storage.stats.best} m`,`Höhe ${(this.y*.1).toFixed(1)} m · effektiv ${e.director.difficultyHeight(this.y*.1).toFixed(1)} m`,`Frühe Tode ${s?.consecutiveEarlyDeaths||0} · nächster Run M${s?.tier||0}`,`Letzte qualifizierte Höhen ${q.map(r=>r.height).join('/')||'–'}`);}
     ctx.font = '600 10px ui-monospace, monospace';
     ctx.textAlign = 'left';

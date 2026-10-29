@@ -1,0 +1,509 @@
+{
+  "schema": "rift-climb-level",
+  "version": 1,
+  "id": "pattern-p17",
+  "name": "Saw & Laser",
+  "description": "Säge räumlich umgehen, Wandlaser über die Dimension passieren.",
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "height": 1417,
+  "start": {
+    "lane": 1,
+    "dimension": "blue"
+  },
+  "finish": {
+    "y": 1157
+  },
+  "theme": "core",
+  "music": "neon-ascent",
+  "arenaStyle": "narrow",
+  "chunk": {
+    "pattern": "P17",
+    "patternVersion": 1,
+    "category": "COMBO",
+    "tier": 4,
+    "stage": 4,
+    "enabled": true,
+    "weight": 1,
+    "idea": "Säge räumlich umgehen, Wandlaser über die Dimension passieren.",
+    "opening": false,
+    "hazardFamily": "COMBO",
+    "actions": 4,
+    "requiredSwitches": 4,
+    "interactions": [
+      {
+        "target": "p17-1",
+        "kind": "saw"
+      },
+      {
+        "target": "p17-2",
+        "kind": "saw"
+      },
+      {
+        "target": "p17-3",
+        "kind": "laser"
+      }
+    ],
+    "rhythm": {
+      "bpm": 120,
+      "subdivision": "quarter"
+    },
+    "challenge": false,
+    "entry": {
+      "x": [
+        133.5,
+        136.5
+      ],
+      "vx": [
+        -12,
+        12
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.5,
+      "traps": "local-zero"
+    },
+    "exit": {
+      "x": [
+        134.85,
+        135.15
+      ],
+      "vx": [
+        -1,
+        1
+      ],
+      "target": 1,
+      "dimension": "blue",
+      "lastDirs": [
+        -1,
+        0,
+        1
+      ],
+      "impulses": [
+        "idle"
+      ],
+      "clearSec": 0.45,
+      "traps": "clear"
+    },
+    "fixtures": [
+      {
+        "id": "x-1.5v-12",
+        "x": 133.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x-1.5v0",
+        "x": 133.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x-1.5v12",
+        "x": 133.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x0v-12",
+        "x": 135,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x0v0",
+        "x": 135,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x0v12",
+        "x": 135,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      },
+      {
+        "id": "x1.5v-12",
+        "x": 136.5,
+        "vx": -12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": -1
+      },
+      {
+        "id": "x1.5v0",
+        "x": 136.5,
+        "vx": 0,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 0
+      },
+      {
+        "id": "x1.5v12",
+        "x": 136.5,
+        "vx": 12,
+        "y": 0,
+        "lane": 1,
+        "dim": "B",
+        "lastDir": 1
+      }
+    ],
+    "validation": {
+      "status": "verified",
+      "physics": "spring-240-v1",
+      "hash": "be70524b",
+      "fixtures": 9,
+      "entries": [
+        {
+          "id": "x-1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v0",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x-1.5v12",
+          "start": {
+            "t": 0,
+            "x": 133.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v-12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v0",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x0v12",
+          "start": {
+            "t": 0,
+            "x": 135,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v-12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": -12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v0",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 0,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        },
+        {
+          "id": "x1.5v12",
+          "start": {
+            "t": 0,
+            "x": 136.5,
+            "y": 0,
+            "vx": 12,
+            "lane": 1,
+            "dimension": "B"
+          },
+          "finish": {
+            "x": 134.9999998888714,
+            "vx": 0.000002299397763384402,
+            "target": 1,
+            "dimension": "B",
+            "lastDir": 1,
+            "impulse": "idle",
+            "t": 4.450000000000068
+          },
+          "dynamicTimeOrigin": 0
+        }
+      ],
+      "proof": {
+        "schema": "rift-replay-proof",
+        "version": 1,
+        "levelId": "pattern-p17",
+        "levelHash": "72402840",
+        "inputHash": "27ae64b3",
+        "seed": null,
+        "config": {
+          "simDt": 0.004166666666666667,
+          "climbSpeed": 260,
+          "steerOmega": 21.563636363636363,
+          "hitRadius": 8,
+          "pulseRadius": 120,
+          "pulseGrowSec": 0.15,
+          "arenaWidth": 270,
+          "arenaStep": 90
+        },
+        "start": {
+          "t": 0,
+          "x": 136.5,
+          "y": 0,
+          "vx": 12,
+          "lane": 1,
+          "dimension": "B"
+        },
+        "finish": {
+          "won": true,
+          "t": 4.450000000000068,
+          "y": 1157.0000000000175,
+          "progress": 100,
+          "tapsUsed": 4,
+          "killer": null,
+          "x": 134.9999998888714,
+          "vx": 0.000002299397763384402,
+          "target": 1,
+          "lastDir": 1,
+          "impulse": "idle",
+          "dimension": "B",
+          "steps": 1068,
+          "pulses": 4
+        }
+      },
+      "timing": {
+        "perInputMs": [
+          -40,
+          40
+        ],
+        "runs": 8
+      }
+    }
+  },
+  "objects": [
+    {
+      "id": "p17-1",
+      "type": "saw",
+      "x": 72,
+      "y": 325,
+      "w": 36,
+      "h": 36,
+      "dimension": "red",
+      "amplitude": 24,
+      "period": 3.2,
+      "phase": 0,
+      "spin": 3.4,
+      "axis": "x",
+      "pulseBreakable": true
+    },
+    {
+      "id": "p17-2",
+      "type": "saw",
+      "x": 162,
+      "y": 325,
+      "w": 36,
+      "h": 36,
+      "dimension": "red",
+      "amplitude": 24,
+      "period": 3.2,
+      "phase": 0.5,
+      "spin": 3.4,
+      "axis": "x",
+      "pulseBreakable": true
+    },
+    {
+      "id": "p17-3",
+      "type": "laser",
+      "x": 244,
+      "y": 748.8,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.208889,
+      "startAngle": 166,
+      "endAngle": 180,
+      "sweepPeriod": 3.4,
+      "length": 244,
+      "beamWidth": 7,
+      "warnSec": 0.9,
+      "activeSec": 0.55,
+      "offSec": 0.8,
+      "disableSec": 1.2,
+      "axis": "none"
+    },
+    {
+      "id": "p17-4",
+      "type": "obstacle",
+      "x": 0,
+      "y": 507,
+      "w": 270,
+      "h": 12,
+      "dimension": "red"
+    }
+  ],
+  "replay": {
+    "taps": [
+      {
+        "t": 0.65,
+        "dir": 1
+      },
+      {
+        "t": 1.55,
+        "dir": -1
+      },
+      {
+        "t": 2.45,
+        "dir": -1
+      },
+      {
+        "t": 3.35,
+        "dir": 1
+      }
+    ]
+  }
+}

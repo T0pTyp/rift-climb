@@ -45,10 +45,10 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'android'],[web
  await p.goto(BASE+'?manual=1&dev=1&level=first-pulse');await p.waitForFunction(()=>window.__RIFT);
  check(label+' explicit development URL keeps archived campaign access',await p.evaluate(()=>document.body.dataset.menu==='levels'&&document.querySelectorAll('.level-card').length>=6));
  await p.goto(BASE+'assets/forge/');await p.waitForFunction(()=>document.body.dataset.ready==='1');
- await p.evaluate(async()=>{const book=await(await fetch('../endless/director.json')).json(),l=book.chunks.find(c=>c.level.chunk.pattern==='reactor').level;__FORGE.actions.loadDocument(l);__FORGE.actions.setSelection([l.objects.find(o=>o.type==='saw').id]);});
+ await p.evaluate(async()=>{const book=await(await fetch('../endless/director.json')).json(),l=book.chunks.find(c=>c.level.chunk.pattern==='P24').level;__FORGE.actions.loadDocument(l);__FORGE.actions.setSelection([l.objects.find(o=>o.type==='saw').id]);});
  check(label+' mobile Forge loads real new chunk and shared 270 arena',await p.evaluate(()=>__FORGE.doc.level.chunk.category==='COMBO'&&__FORGE.view.arena.width===270));
  await p.evaluate(()=>{const f=__FORGE;f.app.edit('Adjust mine charge',tx=>{const o=f.doc.objects.find(o=>o.type==='mine');tx.touch(o.id).chargeSec=.9;});});
- check(label+' editable trap and all metadata survive JSON export/import',await p.evaluate(async()=>{const f=__FORGE,{parseLevelText}=await import('../../js/level-data.js'),s=f.actions.exportText().text,r=parseLevelText(s);return r.ok&&r.level.chunk.pattern==='reactor'&&r.level.objects.find(o=>o.type==='mine').chargeSec===.9&&r.level.objects.find(o=>o.type==='saw').pulseBreakable;}));
+ check(label+' editable trap and all metadata survive JSON export/import',await p.evaluate(async()=>{const f=__FORGE,{parseLevelText}=await import('../../js/level-data.js'),s=f.actions.exportText().text,r=parseLevelText(s);return r.ok&&r.level.chunk.pattern==='P24'&&r.level.objects.find(o=>o.type==='mine').chargeSec===.9&&r.level.objects.find(o=>o.type==='saw').pulseBreakable;}));
  await p.evaluate(()=>__FORGE.app.validateChunk());
  check(label+' real shared simulation recertifies edited chunk',await p.evaluate(()=>__FORGE.S.play?.ok===true&&__FORGE.doc.level.chunk.validation.fixtures===9));
  await p.evaluate(()=>__FORGE.actions.playtest());await p.waitForFunction(()=>document.querySelector('#pt-frame').contentWindow?.__RIFT?.state==='paused');const frame=await(await p.$('#pt-frame')).contentFrame();
@@ -56,7 +56,7 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'android'],[web
  await frame.evaluate(()=>{__RIFT.debug.manual=true;__RIFT.audio.simulationOnly=true;__RIFT.autoplayQueue=__RIFT.level.replay.taps.map(t=>({...t}));});await frame.tap('#btn-resume');await frame.evaluate(()=>advanceTime(8000));
  check(label+' edited chunk playtest reaches 100% with ordinary input sequence',await frame.evaluate(()=>__RIFT.state==='won'));
  await frame.locator('body').press('Escape');await p.waitForFunction(()=>document.querySelector('#playtest').hidden);
- check(label+' return preserves editor and official records remain isolated',await p.evaluate(async saved=>{const {Progression}=await import('../../js/progression.js');return __FORGE.doc.level.chunk.pattern==='reactor'&&new Progression().data.endless.bestHeight===saved.height;},saved));
+ check(label+' return preserves editor and official records remain isolated',await p.evaluate(async saved=>{const {Progression}=await import('../../js/progression.js');return __FORGE.doc.level.chunk.pattern==='P24'&&new Progression().data.endless.bestHeight===saved.height;},saved));
  await p.screenshot({path:`${out}/${label}-forge.png`});check(label+' no uncaught browser errors',errors.length===0);results.push({label,viewport:device.viewport,levels,errors});
  }finally{await b.close();}
 }

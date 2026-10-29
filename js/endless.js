@@ -58,7 +58,7 @@ export function validateChunkBook(raw) {
  return raw;
 }
 function validateDirectorBook(raw) {
- if(raw.schema!=='rift-infinity-chunks'||raw.arenaStyle!=='narrow'||raw.metersPerUnit!==.1||!Array.isArray(raw.chunks)||raw.chunks.length<15)throw Error('RIFT DIRECTOR: ungültiges Modulbuch');
+ if(raw.schema!=='rift-infinity-chunks'||raw.arenaStyle!=='narrow'||raw.metersPerUnit!==.1||!Array.isArray(raw.chunks)||raw.chunks.length<(raw.patternForge?4:15))throw Error('RIFT DIRECTOR: ungültiges Modulbuch');
  if(raw.balance==='infinity-first'&&raw.chunks.filter(c=>c.level?.chunk?.opening).length!==1)throw Error('RIFT DIRECTOR: genau eine Eröffnung erforderlich');
  const ids=new Set();
  for(const c of raw.chunks){const l=c.level,m=l?.chunk,v=validateLevelData(l);
@@ -71,8 +71,13 @@ function validateDirectorBook(raw) {
   ids.add(c.id);
  }
  const categories=raw.balance==='infinity-first'?CATEGORIES.slice(0,7):CATEGORIES.slice(7);
- if(categories.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<4))throw Error('RIFT DIRECTOR: Kategorien unvollständig');
+ if(!raw.patternForge&&categories.some(k=>raw.chunks.filter(c=>c.level.chunk.category===k).length<4))throw Error('RIFT DIRECTOR: Kategorien unvollständig');
+ if(raw.patternForge&&raw.chunks.filter(c=>!c.level.chunk.opening&&c.level.chunk.category==='FLOW'&&c.level.chunk.tier===0&&c.level.chunk.enabled!==false&&(c.level.chunk.weight??1)>0).length<3)throw Error('RIFT DIRECTOR: drei sichere FLOW-Anschlüsse erforderlich');
  for(const a of raw.chunks)if(!raw.chunks.some(b=>b.id!==a.id&&!b.level.chunk.opening&&compatible(a.level.chunk.exit,b.level.chunk.entry)))throw Error('RIFT DIRECTOR: kein farbiger Anschluss für '+a.id);
+ if(raw.patternForge)for(const a of raw.chunks){
+  const safe=raw.chunks.some(b=>{const m=b.level.chunk;return !m.opening&&m.category==='FLOW'&&m.tier===0&&m.enabled!==false&&(m.weight??1)>0&&compatible(a.level.chunk.exit,m.entry);});
+  if(!safe)throw Error('RIFT DIRECTOR: zertifizierter FLOW-Fallback fehlt für '+a.id);
+ }
  return raw;
 }
 /** Seeded selection of proven modules. No geometry depends on rendering/audio. */
@@ -112,7 +117,7 @@ export class EndlessWorld {
    const index=this.nextIndex++,origin=this.nextY,scale=this.director?infinitySpaceScale(origin):1,span=source.length*scale,t0=this.director?infinityClimbTime(origin):origin/260,prefix=`c${index}-`;
    const level={...source.level,objects:source.level.objects.map(o=>({...o,id:prefix+o.id,y:o.y*scale+origin})),finish:{y:origin+span},height:origin+span+260};
    const rt=buildLevelRuntime(level);rt.traps=rt.traps.map(o=>makeTrap(o,t0));
-   this.chunks.push({index,id:source.id,tier:source.level.chunk?.tier??tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+span,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
+   this.chunks.push({index,id:source.id,pattern:source.level.chunk?.pattern,weight:source.level.chunk?.weight??1,entry:source.level.chunk?.entry,tier:source.level.chunk?.tier??tier,category:source.level.chunk?.category,stage:source.level.chunk?.stage,opening:source.level.chunk?.opening,challenge:source.level.chunk?.challenge,validation:source.level.chunk?.validation,origin,end:origin+span,t0,rt,taps:source.level.replay.taps.map(t=>({t:t.t+t0,dir:t.dir}))});
    this.nextY+=span;this.generated++;changed=true;
   }
   while(this.chunks.length&&this.chunks[0].end<y-520){this.chunks.shift();changed=true;}

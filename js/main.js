@@ -65,6 +65,12 @@ function postToEditor(msg) {
   if (window.parent && window.parent !== window) window.parent.postMessage(msg, location.origin);
 }
 
+function patternDebug(game){
+ const c=game.endless?.chunks.find(c=>game.y>=c.origin&&game.y<c.end),m=game.levelData.chunk;
+ if(!c&&!m)return null;
+ return {id:c?.pattern||m?.pattern,weight:c?.weight??m?.weight??1,category:c?.category||m?.category,entry:c?.entry||m?.entry,validation:c?.validation?.status||m?.validation?.status};
+}
+
 function showBootError(message) {
   const tag = document.querySelector('#menu .tagline');
   if (tag) {
@@ -222,6 +228,7 @@ async function boot() {
     coordinates: 'x right, y up, world units; y = simulation seconds * 260; 10 units = 1 m',
     ...(debug.hitboxes||debug.trace?{debug:{steps:game.stats.steps,fps:game.stats.fps,pulseRadius:120,activeObjects:game.obstacles.length+game.traps.traps.length,deaths:game.deathLog,phaseFlow:phaseFlowState(game),momentum:{nextTier:progression.data.endless.momentum.tier,earlyDeaths:progression.data.endless.momentum.consecutiveEarlyDeaths,qualifyingHeights:qualifyingRuns(progression.data.endless.momentum.recentRuns,progression.data.endless.bestHeight).map(r=>r.height)}}}:{}),
     level: game.level.id, state: game.state, mode: game.mode, t: game.t, progress: game.progress,
+    ...(debug.hitboxes||debug.trace?{pattern:patternDebug(game)}:{}),
     character:{id:'riftling',design:'classic-blob',ready:riftlingArt.ready,animation:game.anim.state,blend:game.anim.pose.blend,pulse:game.anim.pose.pulse||0,hitRadius:game.player.hitRadius},
     arena:{style:game.arena.id,width:game.arena.width,step:game.arena.step},lab:progression.data.lab,
     menu:ui.panels.page,skin:game.skinId,stats:progression.summary(),
@@ -306,7 +313,10 @@ async function boot() {
     // Direkt starten, kurzer Halt (wie beim Respawn), damit der Fokus nach dem Wechsel aus dem Editor sitzt
     const mode = handoff.mode === 'practice' ? 'practice' : 'normal';
     const from = handoff.from && Number.isFinite(handoff.from.y) ? handoff.from : null;
-    game.start(mode, from);
+    if(handoff.book){
+      try{game.startEndless(validateChunkBook(handoff.book),handoff.seed>>>0,progression.infinityStorage(handoff.seed>>>0,{momentumEligible:false}));}
+      catch(e){postToEditor({type:'forge:error',message:e.message});return;}
+    }else game.start(mode, from);
     // iframe navigation is not a reliable iOS audio gesture: explicit ready/Weiter button.
     game.pause();
     postToEditor({ type: 'forge:ready', levelId: level.id });
