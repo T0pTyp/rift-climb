@@ -14,7 +14,7 @@ import { PropsPanel, renderIssues } from './panels.js';
 import { riftlingArt } from '../art/riftling.js';
 import { TouchGestures } from './touch.js';
 import {PatternLibrary} from './patterns.js';
-import {patternStatus} from '../pattern-library.js';
+import {localPatternBook} from '../pattern-library.js';
 import {validateChunkBook} from '../endless.js';
 import { AudioEngine } from '../audio.js';
 import { buildLevelRuntime } from '../level-data.js';
@@ -1307,8 +1307,7 @@ function closePlaytest() {
 async function playPatternBook(patterns,prepared=null){
   try{
     $('#toast').classList.remove('show');
-    const book=prepared||await fetchJson('../endless/director.json');
-    if(!prepared)book.chunks=[...book.chunks.filter(c=>book.serviceIds?.includes(c.id)),...patterns.filter(l=>l.chunk.enabled!==false&&(l.chunk.weight??1)>0&&['VERIFIED','REVIEWED'].includes(patternStatus(l))).map(level=>({id:level.id,length:level.finish.y,level}))];
+    const book=prepared||localPatternBook(await fetchJson('../endless/director.json'),patterns);
     validateChunkBook(book);
     localStorage.setItem(PLAYTEST_KEY,JSON.stringify({level:book.chunks[0].level,book,seed:37,mode:'endless',debug:$('#pt-debug').checked}));
     stopRhythm();closeSheets();S.playtest={book,mode:'endless',from:null};

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import {parsePattern,patternStatus,certifyPattern,duplicatePattern,mergePatterns} from '../js/pattern-library.js';
+import {parsePattern,patternStatus,certifyPattern,duplicatePattern,mergePatterns,localPatternBook} from '../js/pattern-library.js';
 import {validateChunkBook,EndlessWorld} from '../js/endless.js';
 import {RiftDirector,chunkFingerprint,directorSignature} from '../js/rift-director.js';
 import {difficultyAt,INFINITY_BALANCE} from '../js/infinity-balance.js';
@@ -52,6 +52,7 @@ test('Administrative weights/enabled preserve proof; geometry invalidates it',()
  const merged=mergePatterns(patterns,[{level:{...patterns[0],name:'Eigene Version'}}]);assert.equal(merged[0].name,'Eigene Version');assert.equal(patterns[0].name,'Single Shift');
  const b=structuredClone(book),signature=directorSignature(b);b.chunks[4].level.chunk.weight=2;assert.notEqual(directorSignature(b),signature,'Replay signature must cover selection weights even though geometry proof does not');
  const reviewed=structuredClone(patterns[0]);reviewed.chunk.validation.review={hash:chunkFingerprint(reviewed),at:'test-fixture'};assert.equal(patternStatus(certifyPattern(reviewed).level),'REVIEWED','Unchanged geometry must retain explicit manual review metadata');
+ const savedService=structuredClone(book.chunks[1].level);savedService.chunk.weight=2;const local=validateChunkBook(localPatternBook(book,[...patterns,savedService]));assert.equal(local.chunks.length,book.chunks.length);assert.equal(local.chunks.find(c=>c.id===savedService.id).level.chunk.weight,2);assert.equal(book.chunks[1].level.chunk.weight,undefined);
 });
 test('Disabled and zero-weight patterns never selected; unverified certificate rejected',()=>{
  const b=structuredClone(book);for(const c of b.chunks)if(c.level.chunk.tier>0)c.level.chunk.enabled=false;

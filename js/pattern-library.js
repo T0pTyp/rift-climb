@@ -37,3 +37,12 @@ export function mergePatterns(references,records){
  for(const r of records)if(r.level?.chunk?.pattern&&typeof r.level.id==='string'&&Array.isArray(r.level.objects))map.set(r.level.id,structuredClone(r.level));
  return [...map.values()];
 }
+/** Existing locally saved service chunks replace their ID instead of duplicating it. */
+export function localPatternBook(base,patterns){
+ const chunks=new Map(base.chunks.filter(c=>base.serviceIds?.includes(c.id)).map(c=>[c.id,structuredClone(c)]));
+ for(const level of patterns){
+  if(level.chunk.enabled===false||(level.chunk.weight??1)<=0||!['VERIFIED','REVIEWED'].includes(patternStatus(level))){chunks.delete(level.id);continue;}
+  chunks.set(level.id,{id:level.id,length:level.finish.y,level:structuredClone(level)});
+ }
+ return {...base,chunks:[...chunks.values()]};
+}
