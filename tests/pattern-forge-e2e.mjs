@@ -22,7 +22,7 @@ for(const [engine,device,label] of [[chromium,devices['Pixel 7'],'android'],[web
  check(label+' weight editable without invalidating simulation proof',await p.evaluate(async()=>{const {patternStatus}=await import('../../js/pattern-library.js');return __FORGE.doc.level.chunk.weight===2&&patternStatus(__FORGE.doc.level)==='VERIFIED';}));
  check(label+' activation control visible in mobile property sheet',await p.locator('[data-key="chunk-enabled"]').isVisible());
  if(mobile)await p.click('#sheet-close');
- await p.click(mobile?'#m-save':'#btn-save');await p.waitForFunction(()=>__FORGE.S.sourceId==='pattern-p05'&&__FORGE.S.cleanJson===JSON.stringify(__FORGE.doc.level));
+ await p.click(mobile?'#m-save':'#btn-save');await p.waitForFunction(async()=>{const f=__FORGE,draft=await f.store.loadDraft();return f.S.sourceId==='pattern-p05'&&f.S.cleanJson===JSON.stringify(f.doc.level)&&draft?.level.id==='pattern-p05'&&draft.level.chunk.weight===2;});
  await p.reload();await p.waitForFunction(()=>document.body.dataset.ready==='1');check(label+' reload retains local pattern and weight',await p.evaluate(()=>__FORGE.doc.level.id==='pattern-p05'&&__FORGE.doc.level.chunk.weight===2));
  await library();await card('P05').getByRole('checkbox').uncheck();await p.waitForFunction(async()=>{const r=await __FORGE.store.listLevels();return r.some(x=>x.id==='pattern-p05'&&x.level.chunk.enabled===false);});
  await closeLibrary();await library();check(label+' deactivation persisted without deleting reference',!await card('P05').getByRole('checkbox').isChecked());

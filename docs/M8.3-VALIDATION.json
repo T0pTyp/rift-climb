@@ -1470,5 +1470,38 @@
     "No reliable heap measurement or proof of leak-free operation.",
     "Local library changes require JSON export/build/commit to affect the public game.",
     "Old generator/balance replay signatures are intentionally rejected; heights and saved profiles are retained."
-  ]
+  ],
+  "release": {
+    "implementationCommit": "52987e7059e5cb95a389138f9a38674de3ff83aa",
+    "workflowRun": 40939518459,
+    "conclusion": "success",
+    "gameURL": "https://t0ptyp.github.io/rift-climb/",
+    "forgeURL": "https://t0ptyp.github.io/rift-climb/assets/forge/",
+    "httpStatus": {
+      "game": 200,
+      "forge": 200,
+      "director": 200,
+      "index": 200
+    },
+    "livePatternBrowserChecks": 104,
+    "livePublicRun": {
+      "home": {
+        "arena": 270,
+        "travel": 90,
+        "glideHidden": true,
+        "compactHidden": true,
+        "mode": "home"
+      },
+      "run": {
+        "state": "playing",
+        "meters": 1560.0000000005405,
+        "revision": "pattern-forge-1",
+        "pulses": 48,
+        "impulses": 48,
+        "objects": 28
+      },
+      "errors": []
+    },
+    "testHarnessCorrection": "Wait for persisted IndexedDB draft before reloading; in-memory cleanJson alone does not signify transaction completion."
+  }
 }
