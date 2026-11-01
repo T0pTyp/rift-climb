@@ -1,0 +1,242 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "M02",
+  "name": "Return to Ground",
+  "category": "Mixed Transition",
+  "difficulty": 1,
+  "length": 900,
+  "entry": "flight",
+  "exit": "ground",
+  "idea": "Ein breiter Landebereich führt aus Flight zurück in einen normalen Sprung.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "ground-portal",
+      "type": "portal",
+      "x": 360,
+      "y": 0,
+      "target": "ground"
+    },
+    {
+      "id": "landing-hop",
+      "type": "rect",
+      "x": 666,
+      "y": 0,
+      "w": 25,
+      "h": 38,
+      "dimension": "neutral"
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 0,
+        "action": "motion"
+      },
+      {
+        "t": 1,
+        "action": "motion"
+      },
+      {
+        "t": 3.25,
+        "action": "motion"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "ec574ff5",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 900,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 0,
+          "action": "motion"
+        },
+        {
+          "t": 1,
+          "action": "motion"
+        },
+        {
+          "t": 3.25,
+          "action": "motion"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

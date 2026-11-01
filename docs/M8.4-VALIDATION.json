@@ -1,0 +1,481 @@
+{
+  "milestone": "M8.4 REWORK",
+  "date": "2026-11-01",
+  "branch": "experiment/m8.4-ground-flight",
+  "base": "0c14034dc670df094e58301e1570a3b08c8fa729",
+  "productionModified": false,
+  "config": {
+    "speed": 180,
+    "gravity": 980,
+    "jumpImpulse": 420,
+    "flightGravity": 480,
+    "flapImpulse": 240,
+    "maxUp": 440,
+    "maxFall": 360,
+    "flapCooldown": 0.065,
+    "phaseCooldown": 0.1,
+    "actionSplit": 0.7,
+    "portalLift": 320,
+    "ceiling": 300
+  },
+  "simulation": {
+    "groups": 21,
+    "entries": 62,
+    "pairs": 100,
+    "timing": 118,
+    "runs": [
+      {
+        "seed": 1,
+        "duration": 278.77916666666664,
+        "distance": 5018.025000000001,
+        "counts": {
+          "jumps": 45,
+          "flaps": 106,
+          "phases": 26,
+          "pulses": 26,
+          "portals": 20,
+          "landings": 55,
+          "interactions": 20,
+          "touches": 177
+        },
+        "completed": false,
+        "death": null,
+        "parameters": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "source": "automated",
+        "inputsTruncated": false,
+        "maxChunks": 5,
+        "maxObjects": 14,
+        "generated": 47,
+        "milestones": [
+          {
+            "target": 500,
+            "t": 27.8,
+            "distance": 500.40000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 1000,
+            "t": 55.6,
+            "distance": 1000.8000000000001,
+            "state": "playing"
+          },
+          {
+            "target": 2500,
+            "t": 138.9,
+            "distance": 2500.2000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 5000,
+            "t": 277.8,
+            "distance": 5000.400000000001,
+            "state": "playing"
+          }
+        ]
+      },
+      {
+        "seed": 37,
+        "duration": 278.77916666666664,
+        "distance": 5018.025000000001,
+        "counts": {
+          "jumps": 47,
+          "flaps": 66,
+          "phases": 44,
+          "pulses": 44,
+          "portals": 16,
+          "landings": 55,
+          "interactions": 29,
+          "touches": 157
+        },
+        "completed": false,
+        "death": null,
+        "parameters": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "source": "automated",
+        "inputsTruncated": false,
+        "maxChunks": 5,
+        "maxObjects": 14,
+        "generated": 47,
+        "milestones": [
+          {
+            "target": 500,
+            "t": 27.8,
+            "distance": 500.40000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 1000,
+            "t": 55.6,
+            "distance": 1000.8000000000001,
+            "state": "playing"
+          },
+          {
+            "target": 2500,
+            "t": 138.9,
+            "distance": 2500.2000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 5000,
+            "t": 277.8,
+            "distance": 5000.400000000001,
+            "state": "playing"
+          }
+        ]
+      },
+      {
+        "seed": 991,
+        "duration": 278.77916666666664,
+        "distance": 5018.025000000001,
+        "counts": {
+          "jumps": 31,
+          "flaps": 144,
+          "phases": 33,
+          "pulses": 33,
+          "portals": 12,
+          "landings": 37,
+          "interactions": 15,
+          "touches": 208
+        },
+        "completed": false,
+        "death": null,
+        "parameters": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "source": "automated",
+        "inputsTruncated": false,
+        "maxChunks": 5,
+        "maxObjects": 12,
+        "generated": 49,
+        "milestones": [
+          {
+            "target": 500,
+            "t": 27.8,
+            "distance": 500.40000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 1000,
+            "t": 55.6,
+            "distance": 1000.8000000000001,
+            "state": "playing"
+          },
+          {
+            "target": 2500,
+            "t": 138.9,
+            "distance": 2500.2000000000003,
+            "state": "playing"
+          },
+          {
+            "target": 5000,
+            "t": 277.8,
+            "distance": 5000.400000000001,
+            "state": "playing"
+          }
+        ]
+      }
+    ],
+    "fps": [
+      {
+        "fps": 30,
+        "state": "complete",
+        "duration": 80,
+        "distance": 14400
+      },
+      {
+        "fps": 60,
+        "state": "complete",
+        "duration": 80,
+        "distance": 14400
+      },
+      {
+        "fps": 120,
+        "state": "complete",
+        "duration": 80,
+        "distance": 14400
+      }
+    ],
+    "firstRun": {
+      "duration": 80,
+      "distance": 1440,
+      "counts": {
+        "jumps": 11,
+        "flaps": 32,
+        "phases": 10,
+        "pulses": 10,
+        "portals": 4,
+        "landings": 13,
+        "interactions": 6,
+        "touches": 53
+      },
+      "completed": true,
+      "death": null,
+      "parameters": {
+        "speed": 180,
+        "gravity": 980,
+        "jumpImpulse": 420,
+        "flightGravity": 480,
+        "flapImpulse": 240,
+        "maxUp": 440,
+        "maxFall": 360,
+        "flapCooldown": 0.065,
+        "phaseCooldown": 0.1,
+        "actionSplit": 0.7,
+        "portalLift": 320,
+        "ceiling": 300
+      },
+      "source": "automated",
+      "inputsTruncated": false
+    }
+  },
+  "browser": {
+    "checks": 96,
+    "results": [
+      {
+        "label": "android",
+        "errors": [],
+        "checks": 24
+      },
+      {
+        "label": "webkit",
+        "errors": [],
+        "checks": 48
+      },
+      {
+        "label": "small",
+        "errors": [],
+        "checks": 72
+      },
+      {
+        "label": "desktop",
+        "errors": [],
+        "checks": 96
+      }
+    ]
+  },
+  "nativeAudio": {
+    "checkpoints": [
+      {
+        "t": 20,
+        "state": "playing",
+        "mode": "ground",
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 20,
+          "nextStep": 161,
+          "sources": 16,
+          "dimension": "B",
+          "settings": {
+            "music": 0.55,
+            "sfx": 0.65,
+            "muted": false
+          },
+          "scheduled": 161,
+          "resyncs": 1,
+          "drift": 0.006166666666668874,
+          "maxDrift": 0.1,
+          "sfx": {
+            "portal": 1,
+            "jump": 6,
+            "land": 6,
+            "pass": 3
+          }
+        }
+      },
+      {
+        "t": 40,
+        "state": "playing",
+        "mode": "flight",
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 40,
+          "nextStep": 321,
+          "sources": 16,
+          "dimension": "B",
+          "settings": {
+            "music": 0.55,
+            "sfx": 0.65,
+            "muted": false
+          },
+          "scheduled": 321,
+          "resyncs": 1,
+          "drift": 0.006166666666665321,
+          "maxDrift": 0.1,
+          "sfx": {
+            "portal": 2,
+            "jump": 6,
+            "land": 6,
+            "pass": 6,
+            "switch": 4,
+            "pulse": 4,
+            "seal": 1,
+            "seal-close": 1,
+            "saw-break": 1,
+            "flap": 7
+          }
+        }
+      },
+      {
+        "t": 60.012499999999996,
+        "state": "playing",
+        "mode": "flight",
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 60.012499999999996,
+          "nextStep": 482,
+          "sources": 16,
+          "dimension": "B",
+          "settings": {
+            "music": 0.55,
+            "sfx": 0.65,
+            "muted": false
+          },
+          "scheduled": 482,
+          "resyncs": 1,
+          "drift": 0,
+          "maxDrift": 0.1,
+          "sfx": {
+            "portal": 2,
+            "jump": 6,
+            "land": 6,
+            "pass": 10,
+            "switch": 6,
+            "pulse": 6,
+            "seal": 1,
+            "seal-close": 1,
+            "saw-break": 1,
+            "flap": 28,
+            "mine-warn": 1,
+            "mine-blast": 1
+          }
+        }
+      },
+      {
+        "t": 79.0125,
+        "state": "playing",
+        "mode": "ground",
+        "audio": {
+          "state": "running",
+          "active": true,
+          "songTime": 79.0125,
+          "nextStep": 633,
+          "sources": 12,
+          "dimension": "R",
+          "settings": {
+            "music": 0.55,
+            "sfx": 0.65,
+            "muted": false
+          },
+          "scheduled": 633,
+          "resyncs": 1,
+          "drift": 0.010666666666665492,
+          "maxDrift": 0.1,
+          "sfx": {
+            "portal": 5,
+            "jump": 11,
+            "land": 12,
+            "pass": 12,
+            "switch": 9,
+            "pulse": 9,
+            "seal": 2,
+            "seal-close": 1,
+            "saw-break": 1,
+            "flap": 32,
+            "mine-warn": 1,
+            "mine-blast": 1,
+            "laser-disable": 1
+          }
+        }
+      }
+    ],
+    "errors": [],
+    "frames": 4562,
+    "meanFrameMs": 17.11900482244582,
+    "meanFPS": 58.41461056713041,
+    "p95FrameMs": 16.80000000000109,
+    "maxSources": 26,
+    "note": "Unthrottled desktop Chromium with Pixel7 viewport; not a physical phone benchmark."
+  },
+  "regression": {
+    "npmTest": {
+      "exitCode": 0,
+      "passLines": 480
+    },
+    "mobileForge": {
+      "checks": 50,
+      "exitCode": 0
+    },
+    "publicInfinity": {
+      "checks": 75,
+      "exitCode": 0
+    }
+  },
+  "preview": {
+    "mode": "local LAN only",
+    "path": "/experiments/ground-flight/",
+    "workflowModified": false,
+    "lanHttpSmoke": {
+      "secureContext": false,
+      "randomUUID": "unavailable",
+      "start": true,
+      "jump": true,
+      "pulseFromJump": 0
+    },
+    "landscapeSmoke": {
+      "viewport": [
+        844,
+        390
+      ],
+      "roofScreenY": 90,
+      "state": "playing",
+      "chunk": "F04"
+    }
+  },
+  "limits": [
+    "No physical smartphone tests",
+    "No human fun or fairness rating",
+    "Certified listed entry fixtures only, not every continuous human exit state",
+    "Frame metrics from desktop Chromium, not a phone benchmark",
+    "No horizontal Forge editor added",
+    "No production deployment or merge"
+  ]
+}

@@ -6,7 +6,25 @@ jeder Impuls wechselt die aktive Dimension und sendet einen **Rift Pulse**, der 
 
 **Spielen:** https://t0ptyp.github.io/rift-climb/ · **Level-Editor (Desktop & Mobil):** https://t0ptyp.github.io/rift-climb/assets/forge/
 
-## M8.3 – RIFT PATTERN FORGE (aktueller Release)
+## M8.4 REWORK – Ground & Flight (isolierter Experimentbranch)
+
+`experiment/m8.4-ground-flight` enthält einen horizontalen Hybrid-Prototyp mit
+Ground-Sprüngen, aktivem Flight, Transformationsportalen und separater Phase-Aktion.
+Die öffentliche Auto-Climb-Version und ihr Deployment bleiben unverändert.
+
+Test: `python -m http.server 8080 --bind 0.0.0.0`, dann
+<http://localhost:8080/experiments/ground-flight/>. Für ein Smartphone im gleichen
+WLAN `localhost` durch die IPv4-Adresse des PCs ersetzen. Im Lab: FIRST RUN
+(80 s), HYBRID INFINITY (14 geprüfte JSON-Chunks) oder echte isolierte
+AUTO-CLIMB-Referenz. Links 70 % Jump/Flap, rechts 30 % Phase/Pulse; Multitouch möglich.
+Eigene Testparameter und Statistiken bleiben getrennt von öffentlichen Spielständen.
+
+`npm run build:hybrid`, `npm run test:hybrid`, `npm run test:hybrid:e2e` und
+`npm run test:hybrid:audio` prüfen den Prototyp. [Startanleitung, Physik,
+Chunk-Liste, echte Testnachweise und Grenzen](docs/M8.4-GROUND-FLIGHT.md).
+Keine automatische Integration in main, keine separate öffentliche Preview eingerichtet.
+
+## M8.3 – RIFT PATTERN FORGE (aktueller öffentlicher Release)
 
 **Auto-Climb bleibt die endgültige Flugmechanik.** PLAY startet direkt RIFT INFINITY.
 Arena **270 u**, Zielversatz **90 u pro Touch**, **260 u/s**, 240-Hz-Simulation,

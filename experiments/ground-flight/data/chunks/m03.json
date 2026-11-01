@@ -1,0 +1,192 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "M03",
+  "name": "Hybrid Finale",
+  "category": "Mixed Combo",
+  "difficulty": 4,
+  "length": 1440,
+  "entry": "ground",
+  "exit": "ground",
+  "idea": "Springen, transformieren, fliegen, landen und ein Siegel im letzten Sprung öffnen.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "first-hop",
+      "type": "rect",
+      "x": 234,
+      "y": 0,
+      "w": 26,
+      "h": 42,
+      "dimension": "neutral"
+    },
+    {
+      "id": "flight-portal",
+      "type": "portal",
+      "x": 360,
+      "y": 0,
+      "target": "flight"
+    },
+    {
+      "id": "flight-saw",
+      "type": "saw",
+      "x": 720,
+      "y": 55,
+      "w": 36,
+      "h": 36,
+      "dimension": "blue",
+      "axis": "y",
+      "amplitude": 16,
+      "period": 2.8,
+      "phase": 0,
+      "spin": 4,
+      "pulseBreakable": true
+    },
+    {
+      "id": "ground-portal",
+      "type": "portal",
+      "x": 990,
+      "y": 0,
+      "target": "ground"
+    },
+    {
+      "id": "final-laser",
+      "type": "laser",
+      "x": 1233,
+      "y": 18,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "axis": "none",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.08620689655172414,
+      "startAngle": 0,
+      "endAngle": 0,
+      "sweepPeriod": 3,
+      "length": 56,
+      "beamWidth": 6,
+      "warnSec": 0.9,
+      "activeSec": 1.4,
+      "offSec": 0.6,
+      "disableSec": 1.2
+    },
+    {
+      "id": "final-seal",
+      "type": "seal",
+      "x": 1269,
+      "y": 0,
+      "w": 14,
+      "h": 110,
+      "dimension": "neutral",
+      "openSec": 1.05
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 0.85,
+        "action": "motion"
+      },
+      {
+        "t": 2.5,
+        "action": "motion"
+      },
+      {
+        "t": 3.5,
+        "action": "motion"
+      },
+      {
+        "t": 4.5,
+        "action": "motion"
+      },
+      {
+        "t": 6.4,
+        "action": "motion"
+      },
+      {
+        "t": 6.5,
+        "action": "phase"
+      },
+      {
+        "t": 7.5,
+        "action": "phase"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "89b55783",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1440,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 0.85,
+          "action": "motion"
+        },
+        {
+          "t": 2.5,
+          "action": "motion"
+        },
+        {
+          "t": 3.5,
+          "action": "motion"
+        },
+        {
+          "t": 4.5,
+          "action": "motion"
+        },
+        {
+          "t": 6.4,
+          "action": "motion"
+        },
+        {
+          "t": 6.5,
+          "action": "phase"
+        },
+        {
+          "t": 7.5,
+          "action": "phase"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

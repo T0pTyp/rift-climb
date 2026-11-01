@@ -1,0 +1,20 @@
+{
+  "schema": "rift-hybrid-library",
+  "version": 1,
+  "chunks": [
+    "chunks/g01.json",
+    "chunks/g02.json",
+    "chunks/g03.json",
+    "chunks/g04.json",
+    "chunks/g05.json",
+    "chunks/g06.json",
+    "chunks/m01.json",
+    "chunks/f01.json",
+    "chunks/f02.json",
+    "chunks/f03.json",
+    "chunks/f04.json",
+    "chunks/f05.json",
+    "chunks/m02.json",
+    "chunks/m03.json"
+  ]
+}

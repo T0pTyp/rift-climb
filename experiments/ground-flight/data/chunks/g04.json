@@ -1,0 +1,100 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "G04",
+  "name": "First Phase",
+  "category": "Ground Phase",
+  "difficulty": 1,
+  "length": 1080,
+  "entry": "ground",
+  "exit": "ground",
+  "idea": "Hohe farbige Wände lassen sich durch bewusste Phasenwechsel passieren.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "blue-wall",
+      "type": "rect",
+      "x": 306,
+      "y": 0,
+      "w": 22,
+      "h": 125,
+      "dimension": "blue"
+    },
+    {
+      "id": "red-wall",
+      "type": "rect",
+      "x": 684,
+      "y": 0,
+      "w": 22,
+      "h": 125,
+      "dimension": "red"
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 1.05,
+        "action": "phase"
+      },
+      {
+        "t": 3.05,
+        "action": "phase"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "854a7e02",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1080,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 1.05,
+          "action": "phase"
+        },
+        {
+          "t": 3.05,
+          "action": "phase"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

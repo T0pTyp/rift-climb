@@ -1,0 +1,126 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "G03",
+  "name": "Double Laser Hop",
+  "category": "Ground Laser",
+  "difficulty": 1,
+  "length": 1260,
+  "entry": "ground",
+  "exit": "ground",
+  "idea": "Zwei niedrige aktive Laser, zwei echte Sprünge, keine Zusatzbalken.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "low-laser-a",
+      "type": "laser",
+      "x": 378,
+      "y": 18,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "axis": "none",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.7241379310344827,
+      "startAngle": 0,
+      "endAngle": 0,
+      "sweepPeriod": 3,
+      "length": 56,
+      "beamWidth": 6,
+      "warnSec": 0.9,
+      "activeSec": 1.4,
+      "offSec": 0.6,
+      "disableSec": 1.2
+    },
+    {
+      "id": "low-laser-b",
+      "type": "laser",
+      "x": 648,
+      "y": 18,
+      "w": 26,
+      "h": 26,
+      "dimension": "blue",
+      "axis": "none",
+      "amplitude": 0,
+      "period": 4,
+      "phase": 0.20689655172413796,
+      "startAngle": 0,
+      "endAngle": 0,
+      "sweepPeriod": 3,
+      "length": 56,
+      "beamWidth": 6,
+      "warnSec": 0.9,
+      "activeSec": 1.4,
+      "offSec": 0.6,
+      "disableSec": 1.2
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 1.8,
+        "action": "motion"
+      },
+      {
+        "t": 3.3,
+        "action": "motion"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "db8d7c4f",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1260,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 1.8,
+          "action": "motion"
+        },
+        {
+          "t": 3.3,
+          "action": "motion"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

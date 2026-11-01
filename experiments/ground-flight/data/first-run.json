@@ -1,0 +1,63 @@
+{
+  "schema": "rift-hybrid-course",
+  "version": 1,
+  "id": "hybrid-first-run",
+  "name": "RIFT HYBRID – FIRST RUN",
+  "route": [
+    "G01",
+    "G02",
+    "G03",
+    "G04",
+    "G05",
+    "M01",
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "M02",
+    "G06",
+    "M03"
+  ],
+  "sections": [
+    {
+      "at": 0,
+      "name": "FIRST JUMP"
+    },
+    {
+      "at": 6,
+      "name": "DOUBLE HOP"
+    },
+    {
+      "at": 12,
+      "name": "DOUBLE LASER HOP"
+    },
+    {
+      "at": 19,
+      "name": "FIRST PHASE"
+    },
+    {
+      "at": 31,
+      "name": "FIRST FLIGHT"
+    },
+    {
+      "at": 36,
+      "name": "FLIGHT PRECISION"
+    },
+    {
+      "at": 48,
+      "name": "PHASE FLIGHT"
+    },
+    {
+      "at": 54,
+      "name": "TWIN SAWS"
+    },
+    {
+      "at": 60,
+      "name": "RETURN TO GROUND"
+    },
+    {
+      "at": 65,
+      "name": "HYBRID FINALE"
+    }
+  ]
+}

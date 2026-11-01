@@ -1,0 +1,284 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "F03",
+  "name": "Phase Flight",
+  "category": "Flight Phase",
+  "difficulty": 2,
+  "length": 1080,
+  "entry": "flight",
+  "exit": "flight",
+  "idea": "Flughöhe und Dimension sind unabhängige Entscheidungen.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "blue-wall",
+      "type": "rect",
+      "x": 288,
+      "y": 0,
+      "w": 20,
+      "h": 300,
+      "dimension": "blue"
+    },
+    {
+      "id": "red-wall",
+      "type": "rect",
+      "x": 737.9999999999999,
+      "y": 0,
+      "w": 20,
+      "h": 300,
+      "dimension": "red"
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 0,
+        "action": "motion"
+      },
+      {
+        "t": 1,
+        "action": "motion"
+      },
+      {
+        "t": 1.05,
+        "action": "phase"
+      },
+      {
+        "t": 2,
+        "action": "motion"
+      },
+      {
+        "t": 3,
+        "action": "motion"
+      },
+      {
+        "t": 3.5,
+        "action": "phase"
+      },
+      {
+        "t": 4,
+        "action": "motion"
+      },
+      {
+        "t": 5,
+        "action": "motion"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "f7a997a5",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 107,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 108,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -252,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false
+      },
+      {
+        "mode": "flight",
+        "y": 109,
+        "vy": -228,
+        "dim": "B",
+        "grounded": false
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 107.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 107.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 107.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 108,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 108,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 108,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 109.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 109.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      },
+      {
+        "x": 1080,
+        "mode": "flight",
+        "y": 109.00000000000001,
+        "vy": -240,
+        "dim": "B",
+        "grounded": false,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 0,
+          "action": "motion"
+        },
+        {
+          "t": 1,
+          "action": "motion"
+        },
+        {
+          "t": 1.05,
+          "action": "phase"
+        },
+        {
+          "t": 2,
+          "action": "motion"
+        },
+        {
+          "t": 3,
+          "action": "motion"
+        },
+        {
+          "t": 3.5,
+          "action": "phase"
+        },
+        {
+          "t": 4,
+          "action": "motion"
+        },
+        {
+          "t": 5,
+          "action": "motion"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

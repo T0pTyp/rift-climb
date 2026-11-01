@@ -1,0 +1,2624 @@
+{
+  "schema": "rift-hybrid-book",
+  "version": 1,
+  "chunks": [
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G01",
+      "name": "First Jump",
+      "category": "Ground Basic",
+      "difficulty": 0,
+      "length": 1080,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Zwei großzügige Einzelhürden; dazwischen vollständige Landung.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "hop-a",
+          "type": "rect",
+          "x": 288,
+          "y": 0,
+          "w": 24,
+          "h": 34,
+          "dimension": "neutral"
+        },
+        {
+          "id": "hop-b",
+          "type": "rect",
+          "x": 648,
+          "y": 0,
+          "w": 24,
+          "h": 34,
+          "dimension": "neutral"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.15,
+            "action": "motion"
+          },
+          {
+            "t": 3.15,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "d8516042",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.15,
+              "action": "motion"
+            },
+            {
+              "t": 3.15,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G02",
+      "name": "Double Hop",
+      "category": "Ground Precision",
+      "difficulty": 1,
+      "length": 1080,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Zwei kurze Sprungentscheidungen mit klar sichtbarer Zwischenzone.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "hop-a",
+          "type": "rect",
+          "x": 270,
+          "y": 0,
+          "w": 28,
+          "h": 44,
+          "dimension": "neutral"
+        },
+        {
+          "id": "hop-b",
+          "type": "rect",
+          "x": 540,
+          "y": 0,
+          "w": 28,
+          "h": 44,
+          "dimension": "neutral"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.05,
+            "action": "motion"
+          },
+          {
+            "t": 2.55,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "10f0bf02",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.05,
+              "action": "motion"
+            },
+            {
+              "t": 2.55,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G03",
+      "name": "Double Laser Hop",
+      "category": "Ground Laser",
+      "difficulty": 1,
+      "length": 1260,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Zwei niedrige aktive Laser, zwei echte Sprünge, keine Zusatzbalken.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "low-laser-a",
+          "type": "laser",
+          "x": 378,
+          "y": 18,
+          "w": 26,
+          "h": 26,
+          "dimension": "blue",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 4,
+          "phase": 0.7241379310344827,
+          "startAngle": 0,
+          "endAngle": 0,
+          "sweepPeriod": 3,
+          "length": 56,
+          "beamWidth": 6,
+          "warnSec": 0.9,
+          "activeSec": 1.4,
+          "offSec": 0.6,
+          "disableSec": 1.2
+        },
+        {
+          "id": "low-laser-b",
+          "type": "laser",
+          "x": 648,
+          "y": 18,
+          "w": 26,
+          "h": 26,
+          "dimension": "blue",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 4,
+          "phase": 0.20689655172413796,
+          "startAngle": 0,
+          "endAngle": 0,
+          "sweepPeriod": 3,
+          "length": 56,
+          "beamWidth": 6,
+          "warnSec": 0.9,
+          "activeSec": 1.4,
+          "offSec": 0.6,
+          "disableSec": 1.2
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.8,
+            "action": "motion"
+          },
+          {
+            "t": 3.3,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "db8d7c4f",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1260,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.8,
+              "action": "motion"
+            },
+            {
+              "t": 3.3,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G04",
+      "name": "First Phase",
+      "category": "Ground Phase",
+      "difficulty": 1,
+      "length": 1080,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Hohe farbige Wände lassen sich durch bewusste Phasenwechsel passieren.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "blue-wall",
+          "type": "rect",
+          "x": 306,
+          "y": 0,
+          "w": 22,
+          "h": 125,
+          "dimension": "blue"
+        },
+        {
+          "id": "red-wall",
+          "type": "rect",
+          "x": 684,
+          "y": 0,
+          "w": 22,
+          "h": 125,
+          "dimension": "red"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.05,
+            "action": "phase"
+          },
+          {
+            "t": 3.05,
+            "action": "phase"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "854a7e02",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.05,
+              "action": "phase"
+            },
+            {
+              "t": 3.05,
+              "action": "phase"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G05",
+      "name": "Pulse Break",
+      "category": "Ground Phase",
+      "difficulty": 2,
+      "length": 1080,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Erst ein goldenes Siegel öffnen, dann eine passende Säge zerlegen.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "rift-seal",
+          "type": "seal",
+          "x": 360,
+          "y": 0,
+          "w": 16,
+          "h": 80,
+          "dimension": "neutral",
+          "openSec": 0.85
+        },
+        {
+          "id": "pulse-saw",
+          "type": "saw",
+          "x": 882.0000000000001,
+          "y": 28,
+          "w": 36,
+          "h": 36,
+          "dimension": "blue",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 2.8,
+          "phase": 0,
+          "spin": 4,
+          "pulseBreakable": true
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.5,
+            "action": "phase"
+          },
+          {
+            "t": 4.4,
+            "action": "phase"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "2d773d78",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.5,
+              "action": "phase"
+            },
+            {
+              "t": 4.4,
+              "action": "phase"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "G06",
+      "name": "Phase Laser Hop",
+      "category": "Ground Laser",
+      "difficulty": 3,
+      "length": 1260,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Sprung, Landung, Sprung plus Phase: der Pulse erreicht den Laserprojektor.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "neutral-hop",
+          "type": "rect",
+          "x": 324,
+          "y": 0,
+          "w": 26,
+          "h": 38,
+          "dimension": "neutral"
+        },
+        {
+          "id": "phase-projector",
+          "type": "laser",
+          "x": 684,
+          "y": 24,
+          "w": 26,
+          "h": 26,
+          "dimension": "red",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 4,
+          "phase": 0.1379310344827586,
+          "startAngle": 0,
+          "endAngle": 0,
+          "sweepPeriod": 3,
+          "length": 56,
+          "beamWidth": 6,
+          "warnSec": 0.9,
+          "activeSec": 1.4,
+          "offSec": 0.6,
+          "disableSec": 1.2
+        },
+        {
+          "id": "blue-wall",
+          "type": "rect",
+          "x": 737.9999999999999,
+          "y": 0,
+          "w": 22,
+          "h": 120,
+          "dimension": "blue"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 1.35,
+            "action": "motion"
+          },
+          {
+            "t": 3.35,
+            "action": "motion"
+          },
+          {
+            "t": 3.55,
+            "action": "phase"
+          },
+          {
+            "t": 5.5,
+            "action": "phase"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "64ec158c",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1260,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 1.35,
+              "action": "motion"
+            },
+            {
+              "t": 3.35,
+              "action": "motion"
+            },
+            {
+              "t": 3.55,
+              "action": "phase"
+            },
+            {
+              "t": 5.5,
+              "action": "phase"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "M01",
+      "name": "First Flight",
+      "category": "Mixed Transition",
+      "difficulty": 0,
+      "length": 900,
+      "entry": "ground",
+      "exit": "flight",
+      "idea": "Das Portal erzeugt einen reproduzierbaren Startbogen; danach drei Flaps.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "flight-portal",
+          "type": "portal",
+          "x": 270,
+          "y": 0,
+          "target": "flight"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "111bd757",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 900,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "F01",
+      "name": "Air Current",
+      "category": "Flight Basic",
+      "difficulty": 0,
+      "length": 1080,
+      "entry": "flight",
+      "exit": "flight",
+      "idea": "Freier Ein-Sekunden-Rhythmus zwischen zwei weit auseinanderliegenden Energieinseln.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "low-island",
+          "type": "rect",
+          "x": 413.99999999999994,
+          "y": 0,
+          "w": 50,
+          "h": 55,
+          "dimension": "neutral"
+        },
+        {
+          "id": "high-island",
+          "type": "rect",
+          "x": 774,
+          "y": 215,
+          "w": 50,
+          "h": 85,
+          "dimension": "neutral"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          },
+          {
+            "t": 5,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "6eb73b19",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            },
+            {
+              "t": 5,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "F02",
+      "name": "Altitude Windows",
+      "category": "Flight Precision",
+      "difficulty": 2,
+      "length": 1080,
+      "entry": "flight",
+      "exit": "flight",
+      "idea": "Zwei unterschiedlich hohe Durchflugfenster mit sichtbaren Ober- und Unterkanten.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "low-a",
+          "type": "rect",
+          "x": 261,
+          "y": 0,
+          "w": 35,
+          "h": 90,
+          "dimension": "neutral"
+        },
+        {
+          "id": "high-a",
+          "type": "rect",
+          "x": 261,
+          "y": 192,
+          "w": 35,
+          "h": 108,
+          "dimension": "neutral"
+        },
+        {
+          "id": "low-b",
+          "type": "rect",
+          "x": 711,
+          "y": 0,
+          "w": 35,
+          "h": 85,
+          "dimension": "neutral"
+        },
+        {
+          "id": "high-b",
+          "type": "rect",
+          "x": 711,
+          "y": 185,
+          "w": 35,
+          "h": 115,
+          "dimension": "neutral"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          },
+          {
+            "t": 5,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "af618281",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            },
+            {
+              "t": 5,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "F03",
+      "name": "Phase Flight",
+      "category": "Flight Phase",
+      "difficulty": 2,
+      "length": 1080,
+      "entry": "flight",
+      "exit": "flight",
+      "idea": "Flughöhe und Dimension sind unabhängige Entscheidungen.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "blue-wall",
+          "type": "rect",
+          "x": 288,
+          "y": 0,
+          "w": 20,
+          "h": 300,
+          "dimension": "blue"
+        },
+        {
+          "id": "red-wall",
+          "type": "rect",
+          "x": 737.9999999999999,
+          "y": 0,
+          "w": 20,
+          "h": 300,
+          "dimension": "red"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 1.05,
+            "action": "phase"
+          },
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 3.5,
+            "action": "phase"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          },
+          {
+            "t": 5,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "f7a997a5",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 1.05,
+              "action": "phase"
+            },
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 3.5,
+              "action": "phase"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            },
+            {
+              "t": 5,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "F04",
+      "name": "Twin Saws",
+      "category": "Flight Saw",
+      "difficulty": 3,
+      "length": 1080,
+      "entry": "flight",
+      "exit": "flight",
+      "idea": "Zwei gegenphasige Sägen begrenzen einen Flugkorridor; eine tiefe Mine warnt sichtbar.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "lower-saw",
+          "type": "saw",
+          "x": 413.99999999999994,
+          "y": 65,
+          "w": 36,
+          "h": 36,
+          "dimension": "blue",
+          "axis": "y",
+          "amplitude": 20,
+          "period": 2.8,
+          "phase": 0,
+          "spin": 4,
+          "pulseBreakable": true
+        },
+        {
+          "id": "upper-saw",
+          "type": "saw",
+          "x": 503.99999999999994,
+          "y": 235,
+          "w": 36,
+          "h": 36,
+          "dimension": "blue",
+          "axis": "y",
+          "amplitude": 20,
+          "period": 2.8,
+          "phase": 0.5,
+          "spin": 4,
+          "pulseBreakable": true
+        },
+        {
+          "id": "low-mine",
+          "type": "mine",
+          "x": 720,
+          "y": 42,
+          "w": 28,
+          "h": 28,
+          "dimension": "blue",
+          "activationRadius": 85,
+          "chargeSec": 0.8,
+          "blastRadius": 40,
+          "blastSec": 0.2
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          },
+          {
+            "t": 5,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "8efdcb5f",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            },
+            {
+              "t": 5,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "F05",
+      "name": "Voltage Wing",
+      "category": "Flight Precision",
+      "difficulty": 3,
+      "length": 1080,
+      "entry": "flight",
+      "exit": "flight",
+      "idea": "Über einen kurzen freistehenden Laser hinwegfliegen und die tiefe Minenzone meiden.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "upright-laser",
+          "type": "laser",
+          "x": 540,
+          "y": 40,
+          "w": 26,
+          "h": 26,
+          "dimension": "blue",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 4,
+          "phase": 0.41379310344827586,
+          "startAngle": 90,
+          "endAngle": 90,
+          "sweepPeriod": 3,
+          "length": 48,
+          "beamWidth": 6,
+          "warnSec": 0.9,
+          "activeSec": 1.4,
+          "offSec": 0.6,
+          "disableSec": 1.2
+        },
+        {
+          "id": "mine",
+          "type": "mine",
+          "x": 756,
+          "y": 35,
+          "w": 28,
+          "h": 28,
+          "dimension": "blue",
+          "activationRadius": 85,
+          "chargeSec": 0.8,
+          "blastRadius": 40,
+          "blastSec": 0.2
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 2,
+            "action": "motion"
+          },
+          {
+            "t": 3,
+            "action": "motion"
+          },
+          {
+            "t": 4,
+            "action": "motion"
+          },
+          {
+            "t": 5,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "de27057d",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 107.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 1080,
+            "mode": "flight",
+            "y": 109.00000000000001,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 2,
+              "action": "motion"
+            },
+            {
+              "t": 3,
+              "action": "motion"
+            },
+            {
+              "t": 4,
+              "action": "motion"
+            },
+            {
+              "t": 5,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "M02",
+      "name": "Return to Ground",
+      "category": "Mixed Transition",
+      "difficulty": 1,
+      "length": 900,
+      "entry": "flight",
+      "exit": "ground",
+      "idea": "Ein breiter Landebereich führt aus Flight zurück in einen normalen Sprung.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "ground-portal",
+          "type": "portal",
+          "x": 360,
+          "y": 0,
+          "target": "ground"
+        },
+        {
+          "id": "landing-hop",
+          "type": "rect",
+          "x": 666,
+          "y": 0,
+          "w": 25,
+          "h": 38,
+          "dimension": "neutral"
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0,
+            "action": "motion"
+          },
+          {
+            "t": 1,
+            "action": "motion"
+          },
+          {
+            "t": 3.25,
+            "action": "motion"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "ec574ff5",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 107,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 108,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -252,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -240,
+            "dim": "B",
+            "grounded": false
+          },
+          {
+            "mode": "flight",
+            "y": 109,
+            "vy": -228,
+            "dim": "B",
+            "grounded": false
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          },
+          {
+            "x": 900,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0,
+              "action": "motion"
+            },
+            {
+              "t": 1,
+              "action": "motion"
+            },
+            {
+              "t": 3.25,
+              "action": "motion"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    },
+    {
+      "schema": "rift-hybrid-chunk",
+      "version": 1,
+      "id": "M03",
+      "name": "Hybrid Finale",
+      "category": "Mixed Combo",
+      "difficulty": 4,
+      "length": 1440,
+      "entry": "ground",
+      "exit": "ground",
+      "idea": "Springen, transformieren, fliegen, landen und ein Siegel im letzten Sprung öffnen.",
+      "enabled": true,
+      "objects": [
+        {
+          "id": "first-hop",
+          "type": "rect",
+          "x": 234,
+          "y": 0,
+          "w": 26,
+          "h": 42,
+          "dimension": "neutral"
+        },
+        {
+          "id": "flight-portal",
+          "type": "portal",
+          "x": 360,
+          "y": 0,
+          "target": "flight"
+        },
+        {
+          "id": "flight-saw",
+          "type": "saw",
+          "x": 720,
+          "y": 55,
+          "w": 36,
+          "h": 36,
+          "dimension": "blue",
+          "axis": "y",
+          "amplitude": 16,
+          "period": 2.8,
+          "phase": 0,
+          "spin": 4,
+          "pulseBreakable": true
+        },
+        {
+          "id": "ground-portal",
+          "type": "portal",
+          "x": 990,
+          "y": 0,
+          "target": "ground"
+        },
+        {
+          "id": "final-laser",
+          "type": "laser",
+          "x": 1233,
+          "y": 18,
+          "w": 26,
+          "h": 26,
+          "dimension": "blue",
+          "axis": "none",
+          "amplitude": 0,
+          "period": 4,
+          "phase": 0.08620689655172414,
+          "startAngle": 0,
+          "endAngle": 0,
+          "sweepPeriod": 3,
+          "length": 56,
+          "beamWidth": 6,
+          "warnSec": 0.9,
+          "activeSec": 1.4,
+          "offSec": 0.6,
+          "disableSec": 1.2
+        },
+        {
+          "id": "final-seal",
+          "type": "seal",
+          "x": 1269,
+          "y": 0,
+          "w": 14,
+          "h": 110,
+          "dimension": "neutral",
+          "openSec": 1.05
+        }
+      ],
+      "replay": {
+        "version": 1,
+        "inputs": [
+          {
+            "t": 0.85,
+            "action": "motion"
+          },
+          {
+            "t": 2.5,
+            "action": "motion"
+          },
+          {
+            "t": 3.5,
+            "action": "motion"
+          },
+          {
+            "t": 4.5,
+            "action": "motion"
+          },
+          {
+            "t": 6.4,
+            "action": "motion"
+          },
+          {
+            "t": 6.5,
+            "action": "phase"
+          },
+          {
+            "t": 7.5,
+            "action": "phase"
+          }
+        ]
+      },
+      "validation": {
+        "status": "VERIFIED",
+        "fingerprint": "89b55783",
+        "physics": {
+          "speed": 180,
+          "gravity": 980,
+          "jumpImpulse": 420,
+          "flightGravity": 480,
+          "flapImpulse": 240,
+          "maxUp": 440,
+          "maxFall": 360,
+          "flapCooldown": 0.065,
+          "phaseCooldown": 0.1,
+          "actionSplit": 0.7,
+          "portalLift": 320,
+          "ceiling": 300
+        },
+        "fixtures": [
+          {
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true
+          }
+        ],
+        "exitStates": [
+          {
+            "x": 1440,
+            "mode": "ground",
+            "y": 8,
+            "vy": 0,
+            "dim": "B",
+            "grounded": true,
+            "vx": 180,
+            "hitRadius": 8
+          }
+        ],
+        "clock": "chunk-local zero",
+        "replay": {
+          "version": 1,
+          "inputs": [
+            {
+              "t": 0.85,
+              "action": "motion"
+            },
+            {
+              "t": 2.5,
+              "action": "motion"
+            },
+            {
+              "t": 3.5,
+              "action": "motion"
+            },
+            {
+              "t": 4.5,
+              "action": "motion"
+            },
+            {
+              "t": 6.4,
+              "action": "motion"
+            },
+            {
+              "t": 6.5,
+              "action": "phase"
+            },
+            {
+              "t": 7.5,
+              "action": "phase"
+            }
+          ]
+        },
+        "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+      }
+    }
+  ]
+}

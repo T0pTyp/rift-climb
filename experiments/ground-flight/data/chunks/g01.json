@@ -1,0 +1,100 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "G01",
+  "name": "First Jump",
+  "category": "Ground Basic",
+  "difficulty": 0,
+  "length": 1080,
+  "entry": "ground",
+  "exit": "ground",
+  "idea": "Zwei großzügige Einzelhürden; dazwischen vollständige Landung.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "hop-a",
+      "type": "rect",
+      "x": 288,
+      "y": 0,
+      "w": 24,
+      "h": 34,
+      "dimension": "neutral"
+    },
+    {
+      "id": "hop-b",
+      "type": "rect",
+      "x": 648,
+      "y": 0,
+      "w": 24,
+      "h": 34,
+      "dimension": "neutral"
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 1.15,
+        "action": "motion"
+      },
+      {
+        "t": 3.15,
+        "action": "motion"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "d8516042",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1080,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 1.15,
+          "action": "motion"
+        },
+        {
+          "t": 3.15,
+          "action": "motion"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}

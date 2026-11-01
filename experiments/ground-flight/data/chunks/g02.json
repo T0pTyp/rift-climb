@@ -1,0 +1,100 @@
+{
+  "schema": "rift-hybrid-chunk",
+  "version": 1,
+  "id": "G02",
+  "name": "Double Hop",
+  "category": "Ground Precision",
+  "difficulty": 1,
+  "length": 1080,
+  "entry": "ground",
+  "exit": "ground",
+  "idea": "Zwei kurze Sprungentscheidungen mit klar sichtbarer Zwischenzone.",
+  "enabled": true,
+  "objects": [
+    {
+      "id": "hop-a",
+      "type": "rect",
+      "x": 270,
+      "y": 0,
+      "w": 28,
+      "h": 44,
+      "dimension": "neutral"
+    },
+    {
+      "id": "hop-b",
+      "type": "rect",
+      "x": 540,
+      "y": 0,
+      "w": 28,
+      "h": 44,
+      "dimension": "neutral"
+    }
+  ],
+  "replay": {
+    "version": 1,
+    "inputs": [
+      {
+        "t": 1.05,
+        "action": "motion"
+      },
+      {
+        "t": 2.55,
+        "action": "motion"
+      }
+    ]
+  },
+  "validation": {
+    "status": "VERIFIED",
+    "fingerprint": "10f0bf02",
+    "physics": {
+      "speed": 180,
+      "gravity": 980,
+      "jumpImpulse": 420,
+      "flightGravity": 480,
+      "flapImpulse": 240,
+      "maxUp": 440,
+      "maxFall": 360,
+      "flapCooldown": 0.065,
+      "phaseCooldown": 0.1,
+      "actionSplit": 0.7,
+      "portalLift": 320,
+      "ceiling": 300
+    },
+    "fixtures": [
+      {
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true
+      }
+    ],
+    "exitStates": [
+      {
+        "x": 1080,
+        "mode": "ground",
+        "y": 8,
+        "vy": 0,
+        "dim": "B",
+        "grounded": true,
+        "vx": 180,
+        "hitRadius": 8
+      }
+    ],
+    "clock": "chunk-local zero",
+    "replay": {
+      "version": 1,
+      "inputs": [
+        {
+          "t": 1.05,
+          "action": "motion"
+        },
+        {
+          "t": 2.55,
+          "action": "motion"
+        }
+      ]
+    },
+    "scope": "Only listed entry states and recorded inputs; not all human trajectories."
+  }
+}
